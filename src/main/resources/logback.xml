@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- debug:是否输出logback内容信息，true为是，默认为false -->
+<!-- scan:是否自动重新加载配置 true为是，默认为false -->
+<!-- scanPeriod:扫描周期 可自带单位 milliseconds、seconds、minutes、hours 
+ 				默认为milliseconds. scan为true时生效
+ -->
+<configuration debug="true" scan="true" scanPeriod="30 seconds">
+	<!-- 输出到近控制台 -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- 输出格式 -->
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<!-- 输出到文件 -->
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<file>eps.log</file>
+		<encoder>
+			<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+		</encoder>
+	</appender>
+	<!-- <appender name="FILE-DAO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>eps_dao.log</file>
+		基于时间的滚动策略
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            非当天的Log文件压缩备份为 archive/eps.2014-08-10.zip
+            <fileNamePattern>archive/eps_dao.%d{yyyy-MM-dd}.zip</fileNamePattern>
+            超过30天的备份文件会被删除
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        基于时间和大小的滚动策略
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>eps-%d{yyyy-MM-dd}.%i.txt</fileNamePattern> 
+            <timeBasedFileNamingAndTriggeringPolicy 
+            	class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"> 
+            	<maxFileSize>10MB</maxFileSize> 
+            </timeBasedFileNamingAndTriggeringPolicy> 
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+		<encoder>
+			<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+		</encoder>
+	</appender> -->
+	<!-- <appender name="FILE-SERVICE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>eps_service.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>archive/eps_service.%d{yyyy-MM-dd}.zip</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+			<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+		</encoder>
+	</appender> -->
+	<!-- 可选配置 logger元素 -->
+	<!-- name 为类名或类路径 
+	 	 level 可选 ，日志级别
+	  -->
+	<!-- <logger name="com.eps.dao" level="DEBUG">
+		<appender-ref ref="FILE-DAO" />
+	</logger>
+	<logger name="com.eps.service" level="DEBUG">
+		<appender-ref ref="FILE-SERVICE" />
+	</logger> -->
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</root>
+</configuration>

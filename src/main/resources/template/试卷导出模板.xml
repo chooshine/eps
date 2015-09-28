@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?mso-application progid="Word.Document"?>
+<w:wordDocument xmlns:aml="http://schemas.microsoft.com/aml/2001/core"
+	xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas"
+	xmlns:dt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml"
+	xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w="http://schemas.microsoft.com/office/word/2003/wordml"
+	xmlns:wx="http://schemas.microsoft.com/office/word/2003/auxHint"
+	xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml"
+	xmlns:wsp="http://schemas.microsoft.com/office/word/2003/wordml/sp2"
+	xmlns:sl="http://schemas.microsoft.com/schemaLibrary/2003/core"
+	w:macrosPresent="no" w:embeddedObjPresent="no" w:ocxPresent="no"
+	xml:space="preserve">
+	<w:ignoreSubtree
+	w:val="http://schemas.microsoft.com/office/word/2003/wordml/sp2" />
+	<o:DocumentProperties><o:Title></o:Title><o:Author></o:Author><o:LastAuthor></o:LastAuthor><o:Revision></o:Revision><o:TotalTime></o:TotalTime><o:Created></o:Created><o:LastSaved></o:LastSaved><o:Pages></o:Pages><o:Words>2103</o:Words><o:Characters>11991</o:Characters><o:Company></o:Company><o:Bytes>0</o:Bytes><o:Lines>99</o:Lines><o:Paragraphs>28</o:Paragraphs><o:CharactersWithSpaces>14066</o:CharactersWithSpaces><o:Version>15</o:Version></o:DocumentProperties>
+	<o:CustomDocumentProperties><o:KSOProductBuildVer
+	dt:dt="string">2052-9.1.0.4994</o:KSOProductBuildVer></o:CustomDocumentProperties>
+	<w:shapeDefaults><o:shapedefaults v:ext="edit"
+	spidmax="2055" /><o:shapelayout v:ext="edit"><o:idmap
+	v:ext="edit" data="1" /></o:shapelayout></w:shapeDefaults>
+	<w:body><wx:sect>
+	<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:widowControl /><w:jc
+	w:val="center" /></w:pPr>
+		<w:r><w:rPr><wx:font wx:val="宋体" /><w:b /><w:color
+	w:val="000000" /><w:position w:val="-4" /><w:sz w:val="30" /><w:sz-cs
+	w:val="30" /></w:rPr><w:t>${exam.name}</w:t></w:r>
+		<w:r><w:rPr><w:color w:val="000000" /><w:sz w:val="24" /></w:rPr><w:br /></w:r>
+		<w:r><w:rPr><wx:font wx:val="宋体" /><w:color w:val="000000" /><w:sz
+	w:val="24" /></w:rPr><w:t>满分：${exam.totalScore}</w:t></w:r>
+		<w:r><w:rPr><w:color w:val="000000" /><w:sz w:val="24" /></w:rPr><w:br /></w:r>
+		<w:r><w:rPr><wx:font wx:val="宋体" /><w:color w:val="000000" /><w:sz
+	w:val="24" /></w:rPr><w:t>班级：</w:t></w:r>
+		<w:r><w:rPr><w:color w:val="000000" /><w:sz w:val="24" /></w:rPr><w:t>_________  </w:t></w:r>
+		<w:r><w:rPr><wx:font wx:val="宋体" /><w:color w:val="000000" /><w:sz
+	w:val="24" /></w:rPr><w:t>姓名：</w:t></w:r>
+		<w:r><w:rPr><w:color w:val="000000" /><w:sz w:val="24" /></w:rPr><w:t>_________  </w:t></w:r>
+		<w:r><w:rPr><wx:font wx:val="宋体" /><w:color w:val="000000" /><w:sz
+	w:val="24" /></w:rPr><w:t>考号：</w:t></w:r>
+		<w:r><w:rPr><w:color w:val="000000" /><w:sz w:val="24" /></w:rPr><w:t>_________  </w:t></w:r>
+	</w:p>
+	<w:p></w:p>
+	<#list exam.bigQues as bigQues>
+	<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:widowControl /><w:spacing
+	w:line="288" w:line-rule="auto" /><w:jc w:val="left" /><w:textAlignment
+	w:val="center" /></w:pPr>
+	<w:r><w:rPr><wx:font wx:val="宋体" /><w:b /><w:color
+	w:val="000000" /><w:position w:val="-3" /><w:sz w:val="24" /></w:rPr>
+	<w:t>${bigQues.indexNo}、${bigQues.name}共(${bigQues.questions?size})题,${bigQues.defaultScore}分</w:t></w:r>
+	</w:p>
+		<#list bigQues.questions as ques>
+			<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:widowControl /><w:spacing
+	w:before="90" w:line="288" w:line-rule="auto" /><w:jc w:val="left" /><w:textAlignment
+	w:val="center" /></w:pPr>
+				<w:r><w:rPr><w:color w:val="000000" /><w:position
+	w:val="-3" /><w:sz w:val="24" /></w:rPr><w:t>${ques.indexNo}.</w:t></w:r>
+				<#list ques.contents as content>
+					<#if content.type == 'IMG'>
+					<#assign image = exam.images[content.data]>
+					<w:r wsp:rsidR="00C81516" wsp:rsidRPr="00C81516">
+						<w:rPr> <w:rFonts w:h-ansi="Times New Roman" w:ascii="Times New Roman" /><wx:font
+	wx:val="Times New Roman" /> <w:noProof /><w:color w:val="000000" /><w:sz
+	w:val="21" /><w:sz-cs w:val="21" /><w:lang w:fareast="ZH-CN" /></w:rPr>
+						<w:pict>
+							<w:binData xml:space="preserve"
+	w:name="wordml://${content.data}.${image.suffix}">${image.base64}</w:binData>
+							<v:shape type="#_x0000_t75" id="name${content.data}"
+	style="width:${image.width}pt;height:${image.height}pt;visibility:visible;mso-wrap-style:square"
+	o:spid="_x0000_i1028">
+								<v:imagedata o:title="${content.data}LqvTGAx3m3B3AuMGBXJk"
+	src="wordml://${content.data}.${image.suffix}" /></v:shape>
+						</w:pict>
+					</w:r>
+					<#else>
+					<w:r><w:rPr><wx:font wx:val="宋体" /><w:color w:val="000000" /><w:position
+	w:val="-3" /><w:sz-cs w:val="21" /></w:rPr><w:t>${content.data}</w:t></w:r>
+					</#if>
+				</#list>
+			</w:p>
+			<#if ques.options??>
+			<#list ques.options as option>
+			<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:widowControl /><w:spacing
+	w:line="420" w:line-rule="auto" /><w:jc w:val="left" /><w:textAlignment
+	w:val="center" /></w:pPr>
+				<w:r><w:rPr><w:color w:val="000000" /><w:position
+	w:val="-3" /><w:sz-cs w:val="21" /></w:rPr><w:t>${option.optionNo}.</w:t></w:r>
+				<#list option.contents as content>
+				<#if content.type == 'IMG'>
+				<#assign image = exam.images[content.data]>
+				<w:r wsp:rsidR="00C81516" wsp:rsidRPr="00C81516">
+					<w:rPr> <w:rFonts w:h-ansi="Times New Roman" w:ascii="Times New Roman" /><wx:font
+	wx:val="Times New Roman" /> <w:noProof /><w:color w:val="000000" /><w:sz
+	w:val="21" /><w:sz-cs w:val="21" /><w:lang w:fareast="ZH-CN" /></w:rPr>
+					<w:pict>
+						<w:binData xml:space="preserve"
+	w:name="wordml://${content.data}.${image.suffix}">${image.base64}</w:binData>
+						<v:shape type="#_x0000_t75" id="name${content.data}"
+	style="width:${image.width}pt;height:${image.height}pt;visibility:visible;mso-wrap-style:square"
+	o:spid="_x0000_i1028">
+							<v:imagedata o:title="${content.data}LqvTGAx3m3B3AuMGBXJk"
+	src="wordml://${content.data}.${image.suffix}" /></v:shape>
+					</w:pict>
+				</w:r>
+				<#else>
+					<w:r><w:rPr><wx:font wx:val="宋体" /><w:color w:val="000000" /><w:position
+	w:val="-3" /><w:sz-cs w:val="21" /></w:rPr><w:t>${content.data}</w:t></w:r>
+				</#if>
+				</#list>
+			</w:p>
+			</#list>
+			</#if>
+			<#if ques.childQuestions??>
+			<#list ques.childQuestions as childQues>
+				<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:widowControl /><w:spacing
+	w:before="90" w:line="288" w:line-rule="auto" /><w:jc w:val="left" /><w:textAlignment
+	w:val="center" /></w:pPr>
+					<w:r><w:rPr><w:color w:val="000000" /><w:position
+	w:val="-3" /><w:sz w:val="24" /></w:rPr><w:t>${childQues.indexNo}.</w:t></w:r>
+				<#list childQues.contents as content>
+					<#if content.type == 'IMG'>
+					<#assign image = exam.images[content.data]>
+					<w:r wsp:rsidR="00C81516" wsp:rsidRPr="00C81516">
+						<w:rPr> <w:rFonts w:h-ansi="Times New Roman" w:ascii="Times New Roman" /><wx:font
+	wx:val="Times New Roman" /> <w:noProof /><w:color w:val="000000" /><w:sz
+	w:val="21" /><w:sz-cs w:val="21" /><w:lang w:fareast="ZH-CN" /></w:rPr>
+						<w:pict>
+							<w:binData xml:space="preserve"
+	w:name="wordml://${content.data}.${image.suffix}">${image.base64}</w:binData>
+							<v:shape type="#_x0000_t75" id="name${content.data}"
+	style="width:${image.width}pt;height:${image.height}pt;visibility:visible;mso-wrap-style:square"
+	o:spid="_x0000_i1028">
+								<v:imagedata o:title="${content.data}LqvTGAx3m3B3AuMGBXJk"
+	src="wordml://${content.data}.${image.suffix}" /></v:shape>
+						</w:pict>
+					</w:r>
+					<#else>
+					<w:r><w:rPr><wx:font wx:val="宋体" /><w:color w:val="000000" /><w:position
+	w:val="-3" /><w:sz-cs w:val="21" /></w:rPr><w:t>${content.data}</w:t></w:r>
+					</#if>
+				</#list>
+				</w:p>
+				<#list childQues.options as option>
+				<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:widowControl /><w:spacing
+	w:line="420" w:line-rule="auto" /><w:jc w:val="left" /><w:textAlignment
+	w:val="center" /></w:pPr>
+					<w:r><w:rPr><w:color w:val="000000" /><w:position
+	w:val="-3" /><w:sz-cs w:val="21" /></w:rPr><w:t>${option.optionNo}.</w:t></w:r>
+					<#list option.contents as content>
+					<#if content.type == 'IMG'>
+					<#assign image = exam.images[content.data]>
+					<w:r wsp:rsidR="00C81516" wsp:rsidRPr="00C81516">
+						<w:rPr> <w:rFonts w:h-ansi="Times New Roman" w:ascii="Times New Roman" /><wx:font
+	wx:val="Times New Roman" /> <w:noProof /><w:color w:val="000000" /><w:sz
+	w:val="21" /><w:sz-cs w:val="21" /><w:lang w:fareast="ZH-CN" /></w:rPr>
+						<w:pict>
+							<w:binData xml:space="preserve"
+	w:name="wordml://${content.data}.${image.suffix}">${image.base64}</w:binData>
+							<v:shape type="#_x0000_t75" id="name${content.data}"
+	style="width:${image.width}pt;height:${image.height}pt;visibility:visible;mso-wrap-style:square"
+	o:spid="_x0000_i1028">
+								<v:imagedata o:title="${content.data}LqvTGAx3m3B3AuMGBXJk"
+	src="wordml://${content.data}.${image.suffix}" /></v:shape>
+						</w:pict>
+					</w:r>
+					<#else>
+					<w:r><w:rPr><wx:font wx:val="宋体" /><w:color w:val="000000" /><w:position
+	w:val="-3" /><w:sz-cs w:val="21" /></w:rPr><w:t>${content.data}</w:t></w:r>
+					</#if>
+					</#list>
+				</w:p>
+				</#list>
+			</#list>
+			</#if>
+				<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:widowControl /><w:spacing
+	w:line="420" w:line-rule="auto" /><w:jc w:val="left" /><w:textAlignment
+	w:val="center" /></w:pPr>
+					<w:r><w:rPr><wx:font wx:val="宋体" /><w:color w:val="FF0000" /><w:position
+	w:val="-3" /><w:sz-cs w:val="21" /></w:rPr><w:t>【答案】:</w:t></w:r>
+				<#list ques.parses as content>
+					<#if content.type == 'IMG'>
+					<#assign image = exam.images[content.data]>
+					<w:r wsp:rsidR="00C81516" wsp:rsidRPr="00C81516">
+						<w:rPr> <w:rFonts w:h-ansi="Times New Roman" w:ascii="Times New Roman" /><wx:font
+	wx:val="Times New Roman" /> <w:noProof /><w:color w:val="000000" /><w:sz
+	w:val="21" /><w:sz-cs w:val="21" /><w:lang w:fareast="ZH-CN" /></w:rPr>
+						<w:pict>
+							<w:binData xml:space="preserve"
+	w:name="wordml://${content.data}.${image.suffix}">${image.base64}</w:binData>
+							<v:shape type="#_x0000_t75" id="name${content.data}"
+	style="width:${image.width}pt;height:${image.height}pt;visibility:visible;mso-wrap-style:square"
+	o:spid="_x0000_i1028">
+								<v:imagedata o:title="${content.data}LqvTGAx3m3B3AuMGBXJk"
+	src="wordml://${content.data}.${image.suffix}" /></v:shape>
+						</w:pict>
+					</w:r>
+					<#else>
+					<w:r><w:rPr><wx:font wx:val="宋体" /><w:color w:val="000000" /><w:position
+	w:val="-3" /><w:sz-cs w:val="21" /></w:rPr><w:t>${content.data}</w:t></w:r>
+					</#if>
+				</#list>
+				</w:p>
+				<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:widowControl /><w:spacing
+	w:line="420" w:line-rule="auto" /><w:jc w:val="left" /><w:textAlignment
+	w:val="center" /></w:pPr>
+					<w:r><w:rPr><wx:font wx:val="宋体" /><w:color w:val="FF0000" /><w:position
+	w:val="-3" /><w:sz-cs w:val="21" /></w:rPr><w:t>【解析】:</w:t></w:r>
+				<#list ques.answers as content>
+					<#if content.type == 'IMG'>
+					<#assign image = exam.images[content.data]>
+					<w:r wsp:rsidR="00C81516" wsp:rsidRPr="00C81516">
+						<w:rPr> <w:rFonts w:h-ansi="Times New Roman" w:ascii="Times New Roman" /><wx:font
+	wx:val="Times New Roman" /> <w:noProof /><w:color w:val="000000" /><w:sz
+	w:val="21" /><w:sz-cs w:val="21" /><w:lang w:fareast="ZH-CN" /></w:rPr>
+						<w:pict>
+							<w:binData xml:space="preserve"
+	w:name="wordml://${content.data}.${image.suffix}">${image.base64}</w:binData>
+							<v:shape type="#_x0000_t75" id="name${content.data}"
+	style="width:${image.width}pt;height:${image.height}pt;visibility:visible;mso-wrap-style:square"
+	o:spid="_x0000_i1028">
+								<v:imagedata o:title="${content.data}LqvTGAx3m3B3AuMGBXJk"
+	src="wordml://${content.data}.${image.suffix}" /></v:shape>
+						</w:pict>
+					</w:r>
+					<#else>
+					<w:r><w:rPr><wx:font wx:val="宋体" /><w:color w:val="000000" /><w:position
+	w:val="-3" /><w:sz-cs w:val="21" /></w:rPr><w:t>${content.data}</w:t></w:r>
+					</#if>
+				</#list>
+				</w:p>
+		</#list>
+	</#list>
+	<w:sectPr wsp:rsidR="00D7153A"><w:hdr w:type="even"><w:p wsp:rsidR="00000000"
+	wsp:rsidRDefault="00D7153A"><w:pPr><w:pStyle w:val="a4" />
+	<w:pBdr><w:bottom w:val="none" w:sz="0" wx:bdrwidth="0"
+	w:space="0" w:color="auto" /></w:pBdr></w:pPr>
+	<w:r><w:rPr><w:lang w:val="EN-US" w:fareast="ZH-CN" /></w:rPr><w:pict>
+	<v:shapetype id="_x0000_t202" coordsize="21600,21600"
+	o:spt="202" path="m,l,21600r21600,l21600,xe"><v:stroke joinstyle="miter" /><v:path
+	gradientshapeok="t" o:connecttype="rect" /></v:shapetype>
+	<v:shape id="Text Box 7" o:spid="_x0000_s2049" type="#_x0000_t202"
+	style="position:absolute;left:0;text-align:left;margin-left:1045.05pt;margin-top:11.45pt;width:12.75pt;height:729.75pt;z-index:-4;mso-wrap-style:square"
+	stroked="f">
+	<v:textbox style="layout-flow:vertical-ideographic">
+	<w:txbxContent><wx:pBdrGroup><wx:borders><wx:top wx:val="solid"
+	wx:bdrwidth="10" wx:space="1" wx:color="auto" /></wx:borders>
+	<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:pBdr><w:top
+	w:val="single" w:sz="4" wx:bdrwidth="10" w:space="1" w:color="auto" /></w:pBdr><w:rPr><w:u
+	w:val="single" /><w:bdr w:val="single" w:sz="4" wx:bdrwidth="10"
+	w:space="0" w:color="auto" /></w:rPr></w:pPr></w:p>
+	<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:pBdr><w:top
+	w:val="single" w:sz="4" wx:bdrwidth="10" w:space="1" w:color="auto" /></w:pBdr><w:rPr><w:u
+	w:val="single" /></w:rPr></w:pPr></w:p>
+	<w:p wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:pBdr><w:top
+	w:val="single" w:sz="4" wx:bdrwidth="10" w:space="1" w:color="auto" /></w:pBdr><w:rPr><w:u
+	w:val="thick" /></w:rPr></w:pPr></w:p>
+	</wx:pBdrGroup></w:txbxContent> </v:textbox></v:shape></w:pict></w:r>
+	<w:r><w:rPr><w:lang w:val="EN-US" w:fareast="ZH-CN" /></w:rPr><w:pict><v:shape
+	id="Text Box 5" o:spid="_x0000_s2050" type="#_x0000_t202"
+	style="position:absolute;left:0;text-align:left;margin-left:1064.55pt;margin-top:9.95pt;width:30pt;height:725.25pt;z-index:-5;mso-wrap-style:square"
+	stroked="f"><v:textbox style="layout-flow:vertical-ideographic"><w:txbxContent><w:p wsp:rsidR="00000000"
+	wsp:rsidRDefault="00D7153A"><w:r><w:rPr><w:u w:val="single" /><w:lang
+	w:val="EN-US" w:fareast="ZH-CN" /></w:rPr><w:pict><v:shapetype
+	id="_x0000_t75" coordsize="21600,21600" o:spt="75" o:preferrelative="t"
+	path="m@4@5l@4@11@9@11@9@5xe" filled="f" stroked="f"><v:stroke
+	joinstyle="miter" /><v:formulas><v:f eqn="if lineDrawn pixelLineWidth 0" /><v:f
+	eqn="sum @0 1 0" /><v:f eqn="sum 0 0 @1" /><v:f eqn="prod @2 1 2" /><v:f
+	eqn="prod @3 21600 pixelWidth" /><v:f eqn="prod @3 21600 pixelHeight" /><v:f
+	eqn="sum @0 0 1" /><v:f eqn="prod @6 1 2" /><v:f
+	eqn="prod @7 21600 pixelWidth" /><v:f eqn="sum @8 21600 0" /><v:f
+	eqn="prod @7 21600 pixelHeight" /><v:f eqn="sum @10 21600 0" /></v:formulas><v:path
+	o:extrusionok="f" gradientshapeok="t" o:connecttype="rect" /><o:lock
+	v:ext="edit" aspectratio="t" /></v:shapetype><w:binData
+	w:name="wordml://06000001.emz" xml:space="preserve">H4sIAAAAAAAEC81XTWhcVRQ+b2bipLFJn6GtWYQ6L0Sa1ElSY9WYSPtifqQSdTppbcCIGoJSsDKV
+migKnUWJgi2OUHdpEvzBUrroooupC6lYwU1QpIIgUt2puKjgJpDw/L773nl9fc2Y8SfigW/Oueee
+d+8959xz7x1LRF4AvIA6If9yK34COmmJXJ0UyQw9OixiSc9tIofQl1aDgJ/fIHKhXuRrtNvxTZTu
+3ZWUe95MCQaQLJABMNxdlmtJM2QbSNiXvgOTLL4laDsO5ADatrgp2QiZtM3dEMqtGEP1O92EGStl
+rIp7HDcd9qVcCeWt6Oc3TUAdYANKcMO0u8AZhzvBadsgUozKXF8b0Aw8PLh3IAGuMdRvoTJ+jIGP
+APRjhyvSCplzY8g9/PFxXa5zpag2HJPhPHDgm09getY71veQN797yIGuFpgAuD7a8BsCtNtnN8pc
+43aAc9OehOENV9+oVxnjF59Aeyegvun+qIFuyVv2lryRpwsWQXnZ02+xP8J4wdT4E6ytH22lUOba
+WgD6wrkYX8bWBhi3lOv3oWliuhmc/jP2SXAnaG8Dp3+3A79hHPIl5DEPXoBznOcK9GByAsknStCD
+ZlLoduWtJ0cfZ/PvkiM9s45Z2+y8I82nHcnvs7opnwr0qTlHimi3RvQZTLd3cjFPG9qyjXIS9+6L
+1lfQMyY+WcUVzypSNonh2oFLr+fCnLJ+mOeuhpI1A67EOIm83bY1UFgCj0HXfb4yK/LcgtW9kizg
+N3v0Yia7o2xdGOy1vuC6ej7P3wF7TpmCX8RPr3xmdFnIXOvklHE93EOMt+6JuJxHXwGDcV3rmxPO
+zJ1FTrIByjzoCHpETnJMTwnSQt2EFNrLlg2ZnDqiCb5+ObOY3wJ5EPH5HW32H1nOTTeu5Kbf9T7O
+ZKA7Un85nx3rxeC0FDl+LTH9BnRTHc5cCfG8D7aU5TF0AozDsYNWN22Lte1miTVsgC4ftrp/SJ4Z
+PU6+6czoRoy/yfRwh9MX5awatlkdpITEc8J5NCdxuQ19Gqk8ZOaHo1XIj6AuWwbkWdwhh3AWvWTu
+Bpj/RfJrxsZXq9UM9dXWDP0ae+rBP68ZhgaI1wy/vb+zxM0QkpeQH71zghvHp/mgN+ozexbcT1Na
+M+MdZev8UHU1w7XG88N4a37isuaElbu+OeHMtwDkJNZHUsrYtwwB900WQgbt508u5mlVAlgzC9my
+xb1JTh0RrZmjiA9rhv16pqxVMxgipAXMOXBw37T7zv5pKuM1w1ywjj8a9WuJNr/imzmct11syGaA
+HjQCXHlTwNPgyzhZkzfVDOOtOYnL0ZrhiKwfxqiSfVTPmWkPSuzHD6Hkn/f+/X/1tXT/A1Pp/u+h
+ZGw5/gjAtbDyo3ddDu2M1Jj5HcjY6lLpXuQdYwNK2yFoNAIdAxT6wgbnnaQyIF3nFrRZJ7T5FtvF
+kWuQlMz7JmhEZe2/kWuMoC3G19gCJWPGedWOcagkNwb21eaEOSCU1D9+r3k4DWV1efDXtVYe/g8+
+ja+jT1H/8ohjAcGsAdczTGNdYpCDt9g/fYlxB/a855hTbPZDvMXeD95ikE8F+tQHeIuhbd5igT6D
+BZi3GGz4Hdurv8XqZcVa+y3Gb/v4FuORE5Av3vwW830exT16GJYvy4v4NffKI3iL9ZWtnmHcK1xX
+9C0Gv1JA+BaDvNpbjPHWGonLmhOe+BVy8u/d9Vi/jXlWywn11eaEdXmuofyf3/XPvBq8j5GTE5h/
+jO/jKnLCtcbvesZbcxKXG9HHc44lUckmqq90lzDXrUBvMJaeYWgK70OOr3cJdSTq+f83B57BvyfO
+o3M14EyOym3o4zoTwDCwC6Cu2v+7DmxrgQlA/eV6JgGlDgg/6xMdcifA9bXLWTUBj94rUTliEhFb
+IHM+7iOuuxmwAa474fp9aPK/v3kxULYD+Q/9UEqhOBEAAB==
+</w:binData><v:shape id="图片 3" o:spid="_x0000_i1025" type="#_x0000_t75"
+	style="width:11.25pt;height:732pt;mso-wrap-style:square;mso-position-horizontal-relative:page;mso-position-vertical-relative:page"><v:imagedata src="wordml://06000001.emz" o:title="" /></v:shape></w:pict></w:r></w:p></w:txbxContent></v:textbox></v:shape></w:pict></w:r><w:r><w:rPr><w:lang
+	w:val="EN-US" w:fareast="ZH-CN" /></w:rPr><w:pict><v:shape id="Text Box 6"
+	o:spid="_x0000_s2051" type="#_x0000_t202"
+	style="position:absolute;left:0;text-align:left;margin-left:1054.8pt;margin-top:156.2pt;width:13.5pt;height:403.5pt;z-index:6;mso-wrap-style:square"
+	stroked="f"><v:textbox style="layout-flow:vertical-ideographic"
+	inset="0,,0"><w:txbxContent><w:p wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:jc
+	w:val="distribute" /></w:pPr><w:r><w:rPr><w:rFonts w:hint="fareast" /><wx:font
+	wx:val="宋体" /></w:rPr><w:t>密封线内不要答题</w:t></w:r></w:p></w:txbxContent></v:textbox></v:shape></w:pict></w:r></w:p></w:hdr><w:hdr
+	w:type="odd"><w:p wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:pStyle
+	w:val="a4" /><w:pBdr><w:bottom w:val="none" w:sz="0"
+	wx:bdrwidth="0" w:space="0" w:color="auto" /></w:pBdr></w:pPr><w:r><w:rPr><w:lang
+	w:val="EN-US" w:fareast="ZH-CN" /></w:rPr><w:pict><v:shapetype
+	id="_x0000_t202" coordsize="21600,21600" o:spt="202"
+	path="m,l,21600r21600,l21600,xe"><v:stroke joinstyle="miter" /><v:path
+	gradientshapeok="t" o:connecttype="rect" /></v:shapetype><v:shape
+	id="Text Box 10" o:spid="_x0000_s2052" type="#_x0000_t202"
+	style="position:absolute;left:0;text-align:left;margin-left:-66.15pt;margin-top:14.3pt;width:31.35pt;height:725.4pt;z-index:4;mso-wrap-style:square"
+	stroked="f"><v:textbox><w:txbxContent><wx:pBdrGroup><wx:borders><wx:left
+	wx:val="solid" wx:bdrwidth="10" wx:space="4" wx:color="auto" /><wx:right
+	wx:val="solid" wx:bdrwidth="10" wx:space="4" wx:color="auto" /></wx:borders><w:p
+	wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:pBdr><w:left
+	w:val="single" w:sz="4" wx:bdrwidth="10" w:space="4" w:color="auto" /><w:right
+	w:val="single" w:sz="4" wx:bdrwidth="10" w:space="4" w:color="auto" /></w:pBdr></w:pPr></w:p></wx:pBdrGroup></w:txbxContent></v:textbox></v:shape></w:pict></w:r><w:r><w:pict><v:shape
+	id="Text Box 2" o:spid="_x0000_s2053" type="#_x0000_t202"
+	style="position:absolute;left:0;text-align:left;margin-left:-95pt;margin-top:14.3pt;width:66.5pt;height:725.4pt;z-index:1;mso-wrap-style:square"
+	stroked="f"><v:textbox
+	style="layout-flow:vertical;mso-layout-flow-alt:bottom-to-top"><w:txbxContent><w:p wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:ind
+	w:first-line-chars="350" w:first-line="735" /><w:rPr><w:u w:val="single" /></w:rPr></w:pPr><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /><wx:font wx:val="宋体" /></w:rPr><w:t>学校</w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /><w:u w:val="single" /></w:rPr><w:t>                     </w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /></w:rPr><w:t>        </w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /><wx:font wx:val="宋体" /></w:rPr><w:t>班级</w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /><w:u w:val="single" /></w:rPr><w:t>            </w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /><w:u w:val="single" /></w:rPr><w:t>         </w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /></w:rPr><w:t>        </w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /><wx:font wx:val="宋体" /></w:rPr><w:t>姓名</w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /><w:u w:val="single" /></w:rPr><w:t>                     </w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /></w:rPr><w:t>        </w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /><wx:font wx:val="宋体" /></w:rPr><w:t>学号</w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /><w:u w:val="single" /></w:rPr><w:t>                     </w:t></w:r></w:p><w:p
+	wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:rPr><w:u w:val="single" /></w:rPr></w:pPr></w:p><w:p
+	wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:snapToGrid
+	w:val="off" /><w:jc w:val="center" /></w:pPr></w:p><w:p
+	wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:rPr><w:u w:val="single" /></w:rPr></w:pPr></w:p></w:txbxContent></v:textbox></v:shape></w:pict></w:r><w:r><w:pict><v:shape
+	id="Text Box 1" o:spid="_x0000_s2054" type="#_x0000_t202"
+	style="position:absolute;left:0;text-align:left;margin-left:-61.2pt;margin-top:188.3pt;width:20.25pt;height:364.65pt;z-index:5;mso-wrap-style:square"
+	stroked="f"><v:textbox style="layout-flow:vertical-ideographic"
+	inset="0,,1.45pt"><w:txbxContent><w:p wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:jc
+	w:val="distribute" /><w:rPr><w:spacing w:val="20" /><w:kern
+	w:val="11" /></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:hint="fareast" /><wx:font
+	wx:val="宋体" /><w:spacing w:val="20" /><w:kern w:val="11" /></w:rPr><w:t>密封线内不得答题</w:t></w:r></w:p></w:txbxContent></v:textbox></v:shape></w:pict></w:r></w:p></w:hdr><w:ftr
+	w:type="even"><w:p wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:pStyle
+	w:val="a3" /><w:jc w:val="center" /></w:pPr><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /></w:rPr><w:t>                   </w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /><wx:font wx:val="宋体" /></w:rPr><w:t>第</w:t></w:r><w:r><w:fldChar
+	w:fldCharType="begin" /></w:r><w:r><w:rPr><w:rFonts w:hint="fareast" /></w:rPr><w:instrText>=</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="begin" /></w:r><w:r><w:rPr><w:rStyle w:val="a5" /></w:rPr><w:instrText> PAGE </w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="separate" /></w:r><w:r wsp:rsidR="007F51E1"><w:rPr><w:rStyle
+	w:val="a5" /><w:noProof /></w:rPr><w:instrText>2</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="end" /></w:r><w:r><w:rPr><w:rStyle w:val="a5" /><w:rFonts
+	w:hint="fareast" /></w:rPr><w:instrText>*2-1</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="separate" /></w:r><w:r wsp:rsidR="007F51E1"><w:rPr><w:noProof /></w:rPr><w:t>3</w:t></w:r><w:r><w:fldChar
+	w:fldCharType="end" /></w:r><w:r><w:rPr><w:rFonts w:hint="fareast" /><wx:font
+	wx:val="宋体" /></w:rPr><w:t>页</w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /></w:rPr><w:t>/</w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /><wx:font wx:val="宋体" /></w:rPr><w:t>共</w:t></w:r><w:r><w:fldChar
+	w:fldCharType="begin" /></w:r><w:r><w:rPr><w:rFonts w:hint="fareast" /></w:rPr><w:instrText>=</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="begin" /></w:r><w:r><w:rPr><w:rStyle w:val="a5" /></w:rPr><w:instrText> NUMPAGES </w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="separate" /></w:r><w:r wsp:rsidR="007F51E1"><w:rPr><w:rStyle
+	w:val="a5" /><w:noProof /></w:rPr><w:instrText>7</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="end" /></w:r><w:r><w:rPr><w:rStyle w:val="a5" /><w:rFonts
+	w:hint="fareast" /></w:rPr><w:instrText>*2</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="separate" /></w:r><w:r wsp:rsidR="007F51E1"><w:rPr><w:noProof /></w:rPr><w:t>14</w:t></w:r><w:r><w:fldChar
+	w:fldCharType="end" /></w:r><w:r><w:rPr><w:rFonts w:hint="fareast" /><wx:font
+	wx:val="宋体" /></w:rPr><w:t>页</w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /></w:rPr><w:t>                                                                                                               </w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /><wx:font wx:val="宋体" /></w:rPr><w:t>第</w:t></w:r><w:r><w:fldChar
+	w:fldCharType="begin" /></w:r><w:r><w:rPr><w:rFonts w:hint="fareast" /></w:rPr><w:instrText>=</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="begin" /></w:r><w:r><w:rPr><w:rStyle w:val="a5" /></w:rPr><w:instrText> PAGE </w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="separate" /></w:r><w:r wsp:rsidR="007F51E1"><w:rPr><w:rStyle
+	w:val="a5" /><w:noProof /></w:rPr><w:instrText>2</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="end" /></w:r><w:r><w:rPr><w:rStyle w:val="a5" /><w:rFonts
+	w:hint="fareast" /></w:rPr><w:instrText>*2</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="separate" /></w:r><w:r wsp:rsidR="007F51E1"><w:rPr><w:noProof /></w:rPr><w:t>4</w:t></w:r><w:r><w:fldChar
+	w:fldCharType="end" /></w:r><w:r><w:rPr><w:rFonts w:hint="fareast" /><wx:font
+	wx:val="宋体" /></w:rPr><w:t>页</w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /></w:rPr><w:t>/</w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /><wx:font wx:val="宋体" /></w:rPr><w:t>共</w:t></w:r><w:r><w:fldChar
+	w:fldCharType="begin" /></w:r><w:r><w:rPr><w:rFonts w:hint="fareast" /></w:rPr><w:instrText>=</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="begin" /></w:r><w:r><w:rPr><w:rStyle w:val="a5" /></w:rPr><w:instrText> NUMPAGES </w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="separate" /></w:r><w:r wsp:rsidR="007F51E1"><w:rPr><w:rStyle
+	w:val="a5" /><w:noProof /></w:rPr><w:instrText>7</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="end" /></w:r><w:r><w:rPr><w:rStyle w:val="a5" /><w:rFonts
+	w:hint="fareast" /></w:rPr><w:instrText>*2</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="separate" /></w:r><w:r wsp:rsidR="007F51E1"><w:rPr><w:noProof /></w:rPr><w:t>14</w:t></w:r><w:r><w:fldChar
+	w:fldCharType="end" /></w:r><w:r><w:rPr><w:rFonts w:hint="fareast" /><wx:font
+	wx:val="宋体" /></w:rPr><w:t>页</w:t></w:r></w:p></w:ftr><w:ftr
+	w:type="odd"><w:p wsp:rsidR="00000000" wsp:rsidRDefault="00D7153A"><w:pPr><w:pStyle
+	w:val="a3" /><w:ind w:first-line-chars="2100" w:first-line="3780" /></w:pPr><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /><wx:font wx:val="宋体" /></w:rPr><w:t>弟</w:t></w:r><w:r><w:fldChar
+	w:fldCharType="begin" /></w:r><w:r><w:rPr><w:rFonts w:hint="fareast" /></w:rPr><w:instrText>=</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="begin" /></w:r><w:r><w:rPr><w:rStyle w:val="a5" /></w:rPr><w:instrText> PAGE </w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="separate" /></w:r><w:r wsp:rsidR="007F51E1"><w:rPr><w:rStyle
+	w:val="a5" /><w:noProof /></w:rPr><w:instrText>1</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="end" /></w:r><w:r><w:rPr><w:rStyle w:val="a5" /><w:rFonts
+	w:hint="fareast" /></w:rPr><w:instrText>*2-1</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="separate" /></w:r><w:r wsp:rsidR="007F51E1"><w:rPr><w:noProof /></w:rPr><w:t>1</w:t></w:r><w:r><w:fldChar
+	w:fldCharType="end" /></w:r><w:r><w:rPr><w:rFonts w:hint="fareast" /><wx:font
+	wx:val="宋体" /></w:rPr><w:t>页</w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /></w:rPr><w:t>/</w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /><wx:font wx:val="宋体" /></w:rPr><w:t>（共</w:t></w:r><w:r><w:fldChar
+	w:fldCharType="begin" /></w:r><w:r><w:rPr><w:rFonts w:hint="fareast" /></w:rPr><w:instrText>=</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="begin" /></w:r><w:r><w:rPr><w:rStyle w:val="a5" /></w:rPr><w:instrText> NUMPAGES </w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="separate" /></w:r><w:r wsp:rsidR="007F51E1"><w:rPr><w:rStyle
+	w:val="a5" /><w:noProof /></w:rPr><w:instrText>7</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="end" /></w:r><w:r><w:rPr><w:rStyle w:val="a5" /><w:rFonts
+	w:hint="fareast" /></w:rPr><w:instrText>*2</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="separate" /></w:r><w:r wsp:rsidR="007F51E1"><w:rPr><w:noProof /></w:rPr><w:t>14</w:t></w:r><w:r><w:fldChar
+	w:fldCharType="end" /></w:r><w:r><w:rPr><w:rFonts w:hint="fareast" /><wx:font
+	wx:val="宋体" /></w:rPr><w:t>页）</w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /></w:rPr><w:t>                                                                                                             </w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /><wx:font wx:val="宋体" /></w:rPr><w:t>弟</w:t></w:r><w:r><w:fldChar
+	w:fldCharType="begin" /></w:r><w:r><w:rPr><w:rFonts w:hint="fareast" /></w:rPr><w:instrText>=</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="begin" /></w:r><w:r><w:rPr><w:rStyle w:val="a5" /></w:rPr><w:instrText> PAGE </w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="separate" /></w:r><w:r wsp:rsidR="007F51E1"><w:rPr><w:rStyle
+	w:val="a5" /><w:noProof /></w:rPr><w:instrText>1</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="end" /></w:r><w:r><w:rPr><w:rFonts w:hint="fareast" /></w:rPr><w:instrText>*2</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="separate" /></w:r><w:r wsp:rsidR="007F51E1"><w:rPr><w:noProof /></w:rPr><w:t>2</w:t></w:r><w:r><w:fldChar
+	w:fldCharType="end" /></w:r><w:r><w:rPr><w:rFonts w:hint="fareast" /><wx:font
+	wx:val="宋体" /></w:rPr><w:t>页</w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /></w:rPr><w:t>/</w:t></w:r><w:r><w:rPr><w:rFonts
+	w:hint="fareast" /><wx:font wx:val="宋体" /></w:rPr><w:t>（共</w:t></w:r><w:r><w:fldChar
+	w:fldCharType="begin" /></w:r><w:r><w:rPr><w:rFonts w:hint="fareast" /></w:rPr><w:instrText>=</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="begin" /></w:r><w:r><w:rPr><w:rStyle w:val="a5" /></w:rPr><w:instrText> NUMPAGES </w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="separate" /></w:r><w:r wsp:rsidR="007F51E1"><w:rPr><w:rStyle
+	w:val="a5" /><w:noProof /></w:rPr><w:instrText>7</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="end" /></w:r><w:r><w:rPr><w:rStyle w:val="a5" /><w:rFonts
+	w:hint="fareast" /></w:rPr><w:instrText>*2</w:instrText></w:r><w:r><w:fldChar
+	w:fldCharType="separate" /></w:r><w:r wsp:rsidR="007F51E1"><w:rPr><w:noProof /></w:rPr><w:t>14</w:t></w:r><w:r><w:fldChar
+	w:fldCharType="end" /></w:r><w:r><w:rPr><w:rFonts w:hint="fareast" /><wx:font
+	wx:val="宋体" /></w:rPr><w:t>页）</w:t></w:r></w:p></w:ftr><w:type
+	w:val="continuous" /><w:pgSz w:w="23814" w:h="16840" w:orient="landscape" /><w:pgMar
+	w:top="1134" w:right="1134" w:bottom="1134" w:left="2268" w:header="851"
+	w:footer="992" w:gutter="0" /><w:cols w:num="2" w:space="840" /><w:docGrid
+	w:type="lines" w:line-pitch="312" w:char-space="-4108" /></w:sectPr></wx:sect>
+	</w:body>
+</w:wordDocument>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+	<classPathEntry
+		location="C:\Users\adminPC\.m2\repository\mysql\mysql-connector-java\5.1.6\mysql-connector-java-5.1.6.jar" />
+	<context id="context1" targetRuntime="MyBatis3">
+		<plugin type="com.eps.mybatis.plugin.MysqlPaginationPlugin" />
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/eps_develop" userId="root"
+			password="123456" />
+		<!-- 生成Model对象 -->
+		<javaModelGenerator targetPackage="com.eps.mybatis.auto.entity"
+			targetProject="C:\Users\adminPC\workspace\eps\src\main\java">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+
+		<!-- 生成sqlXML文件路径配置 -->
+		<sqlMapGenerator targetPackage="com.eps.mybatis.auto.xml"
+			targetProject="C:\Users\adminPC\workspace\eps\src\main\java">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+
+		<!-- 生成DAO的类文件以及配置文件 -->
+		<javaClientGenerator targetPackage="com.eps.mybatis.auto"
+			targetProject="C:\Users\adminPC\workspace\eps\src\main\java" type="XMLMAPPER">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+		<!-- S -->
+		<table tableName="s_user" domainObjectName="User" alias="">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="user_id" />
+		</table>
+		<table tableName="s_user_detail" domainObjectName="UserDetail" alias=""></table>
+		<table tableName="s_user_fav" domainObjectName="UserFav" alias=""></table>
+		<table tableName="s_code" domainObjectName="Code" alias=""></table>
+		<table tableName="s_link" domainObjectName="Link" alias="">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="link_id" />
+		</table>
+		<table tableName="s_login_log" domainObjectName="LoginLog" alias="">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="login_log_id" />
+		</table>
+		<table tableName="s_message" domainObjectName="Message" alias="">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="message_id" />
+		</table>
+		<table tableName="s_parameter" domainObjectName="Parameter" alias="">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="parameter_id" />
+		</table>
+		<table tableName="s_card" domainObjectName="Card" alias="">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="card_id" />
+		</table>
+		<table tableName="s_cardservice" domainObjectName="CardService" alias="">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="cardservice_id" />
+		</table>
+		<!-- C -->
+		<table tableName="c_class" domainObjectName="Cclass" alias="">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="class_id" />
+		</table>
+		<table tableName="c_student" domainObjectName="Student" alias="">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="student_id" />
+		</table>
+		<table tableName="c_class_student" domainObjectName="ClassStudent" alias=""></table>
+		<table tableName="c_grade" domainObjectName="Grade" alias="">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="grade_id" />
+		</table>
+		<table tableName="c_lesson" domainObjectName="Lesson" alias="">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="lesson_id" />
+		</table>
+		<table tableName="c_lesson_class" domainObjectName="LessonClass" alias="" />
+		<table tableName="s_school" domainObjectName="School" alias="">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="school_id" />
+		</table>
+		<table tableName="c_seat" domainObjectName="Seat" alias="">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="seat_id" />
+		</table>
+		<table tableName="c_teacher" domainObjectName="Teacher" alias="">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="teacher_id" />
+		</table>
+		<table tableName="c_warranty" domainObjectName="Warranty" alias=""></table>
+		<!-- E -->
+		<table tableName="e_analy_class" domainObjectName="AnalyClass"></table>
+		<table tableName="e_analy_grade" domainObjectName="AnalyGrade"></table>
+		<table tableName="e_analy_person" domainObjectName="AnalyPerson"></table>
+		<table tableName="e_arrange" domainObjectName="Arrange">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="arrange_id" />
+		</table>
+		<table tableName="e_assess" domainObjectName="Assess">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="ass_id" />
+		</table>
+		<table tableName="e_catalog" domainObjectName="Catalog">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="ca_id" />
+		</table>
+		<table tableName="e_catalog_rel" domainObjectName="CatalogRel"></table>
+		<table tableName="e_error" domainObjectName="EError">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="err_id" />
+		</table>
+		<table tableName="e_exam" domainObjectName="Exam">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="exam_id" />
+		</table>
+		<table tableName="e_exam_preview" domainObjectName="ExamPreview"></table>
+		<table tableName="e_exam_question" domainObjectName="ExamQuestion"></table>
+		<table tableName="e_formula" domainObjectName="Formula">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="id" />
+		</table>
+		<table tableName="e_homework" domainObjectName="Homework">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="hw_id" />
+		</table>
+		<table tableName="e_hw_class" domainObjectName="HomeworkClass"></table>
+		<table tableName="e_hw_question" domainObjectName="HomeworkQuestion"></table>
+		<table tableName="e_hw_record" domainObjectName="HomeworkRecord">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="hw_rec_id" />
+		</table>
+		<table tableName="e_hw_record_detail" domainObjectName="HomeworkRecordDetail"></table>
+		<table tableName="e_knowledge" domainObjectName="Knowledge">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="kp_id" />
+		</table>
+		<table tableName="e_kp_rel" domainObjectName="KnowledgeRel"></table>
+		<table tableName="e_note" domainObjectName="Note">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="note_id" />
+		</table>
+		<table tableName="e_option" domainObjectName="Option">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="opt_id" />
+		</table>
+		<table tableName="e_ques_catalog" domainObjectName="QuestionCatalog"></table>
+		<table tableName="e_ques_kp" domainObjectName="QuestionKnowledge"></table>
+		<table tableName="e_ques_type" domainObjectName="QuestionType">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="type_id" />
+		</table>
+		<table tableName="e_question" domainObjectName="Question">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="ques_id" />
+		</table>
+		<table tableName="e_test" domainObjectName="Test">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="test_id" />
+		</table>
+		<table tableName="e_test_exam" domainObjectName="TestExam"></table>
+		<table tableName="e_test_record" domainObjectName="TestRecord">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="test_rec_id" />
+		</table>
+		<table tableName="e_test_record_detail" domainObjectName="TestRecordDetail"></table>
+		<table tableName="e_type_subject" domainObjectName="TypeSubject"></table>
+		<table tableName="z_ques" domainObjectName="ZhujuanQues"></table>
+		<table tableName="z_image" domainObjectName="ZhujuanImages">
+			<generatedKey sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" column="id" />
+		</table>
+	</context>
+</generatorConfiguration>

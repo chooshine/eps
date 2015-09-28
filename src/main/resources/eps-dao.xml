@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+    
+    
+
+     <!-- 配置数据源 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close"
+          p:driverClass="${jdbc.driverClass}"
+          p:jdbcUrl="${jdbc.jdbcUrl}"
+          p:user="${jdbc.userName}"
+          p:password="${jdbc.password}" 
+          p:preferredTestQuery="${jdbc.c3p0.preferredTestQuery}"
+          p:idleConnectionTestPeriod="${jdbc.c3p0.idleConnectionTestPeriod}"
+          p:maxIdleTime="${jdbc.c3p0.maxIdleTime}"/>
+    <!-- 配置mybatis -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:com/eps/mybatis/auto/xml/**/*.xml</value>
+				<value>classpath:com/eps/mybatis/manual/xml/**/*.xml</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 搜索mybatis映射器 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.eps.mybatis.auto;com.eps.mybatis.manual" />
+	</bean>
+    <!-- 配置Jdbc模板  -->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" p:dataSource-ref="dataSource" />
+	
+	<bean id="nameParameTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate" >
+		<constructor-arg name="classicJdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+	<!-- 扫描类包，将标注Spring注解的类自动转化Bean，同时完成Bean的注入 --> 
+    <context:component-scan base-package="com.eps.dao" />
+    <context:component-scan base-package="com.eps.mybatis" />
+   	<context:component-scan base-package="com.eps.android.dao" />
+	<!-- 序列号生成策略
+		incrementerName:主键表
+		columnName:序列号字段
+		tableName:为哪张表产生序列号
+	 -->
+	<bean id="seq_userId" class="com.eps.dao.MaxValueINcrementer" 
+	     p:dataSource-ref="dataSource"
+	     p:incrementerName="s_sequence"  
+	     p:columnName="sequence_id"
+	     p:tableColumn="table_name"
+	     p:tableName="s_user"
+	     p:cacheSize="10"/>
+	     
+	<!-- 序列号生成策略
+		incrementerName:主键表
+		columnName:序列号字段
+		tableName:为哪张表产生序列号
+	 -->
+	<bean id="seq_typeId" class="com.eps.dao.MaxValueINcrementer" 
+	     p:dataSource-ref="dataSource"
+	     p:incrementerName="s_sequence"  
+	     p:columnName="sequence_id"
+	     p:tableColumn="table_name"
+	     p:tableName="e_ques_type"
+	     p:cacheSize="10"/>
+	     
+	<!-- 序列号生成策略
+		incrementerName:主键表
+		columnName:序列号字段
+		tableName:为哪张表产生序列号
+	 -->
+	<bean id="seq_quesId" class="com.eps.dao.MaxValueINcrementer" 
+	     p:dataSource-ref="dataSource"
+	     p:incrementerName="s_sequence"  
+	     p:columnName="sequence_id"
+	     p:tableColumn="table_name"
+	     p:tableName="e_question"
+	     p:cacheSize="10"/>
+	     
+	<!-- 序列号生成策略
+		incrementerName:主键表
+		columnName:序列号字段
+		tableName:为哪张表产生序列号
+	 -->
+	<bean id="seq_optId" class="com.eps.dao.MaxValueINcrementer" 
+	     p:dataSource-ref="dataSource"
+	     p:incrementerName="s_sequence"  
+	     p:columnName="sequence_id"
+	     p:tableColumn="table_name"
+	     p:tableName="e_option"
+	     p:cacheSize="30"/>
+	     
+	     
+	<!-- 序列号生成策略
+		incrementerName:主键表
+		columnName:序列号字段
+		tableName:为哪张表产生序列号
+	 -->
+	<bean id="seq_examId" class="com.eps.dao.MaxValueINcrementer" 
+	     p:dataSource-ref="dataSource"
+	     p:incrementerName="s_sequence"  
+	     p:columnName="sequence_id"
+	     p:tableColumn="table_name"
+	     p:tableName="e_exam"
+	     p:cacheSize="30"/>
+	     
+	<!-- 序列号生成策略
+		incrementerName:主键表
+		columnName:序列号字段
+		tableName:为哪张表产生序列号
+	 -->
+	<bean id="seq_testRecId" class="com.eps.dao.MaxValueINcrementer" 
+	     p:dataSource-ref="dataSource"
+	     p:incrementerName="s_sequence"  
+	     p:columnName="sequence_id"
+	     p:tableColumn="table_name"
+	     p:tableName="e_test_record"
+	     p:cacheSize="10"/>
+	     
+	     <!-- 序列号生成策略
+		incrementerName:主键表
+		columnName:序列号字段
+		tableName:为哪张表产生序列号
+	 -->
+	<bean id="seq_testId" class="com.eps.dao.MaxValueINcrementer" 
+	     p:dataSource-ref="dataSource"
+	     p:incrementerName="s_sequence"  
+	     p:columnName="sequence_id"
+	     p:tableColumn="table_name"
+	     p:tableName="e_test"
+	     p:cacheSize="10"/>
+	     
+	<bean id="seq_arrangeId" class="com.eps.dao.MaxValueINcrementer" 
+	     p:dataSource-ref="dataSource"
+	     p:incrementerName="s_sequence"  
+	     p:columnName="sequence_id"
+	     p:tableColumn="table_name"
+	     p:tableName="e_arrange"
+	     p:cacheSize="10"/>
+	<bean id="seq_hwId" class="com.eps.dao.MaxValueINcrementer" 
+	     p:dataSource-ref="dataSource"
+	     p:incrementerName="s_sequence"  
+	     p:columnName="sequence_id"
+	     p:tableColumn="table_name"
+	     p:tableName="e_homework"
+	     p:cacheSize="10"/>
+	<bean id="seq_hwRecId" class="com.eps.dao.MaxValueINcrementer" 
+	     p:dataSource-ref="dataSource"
+	     p:incrementerName="s_sequence"  
+	     p:columnName="sequence_id"
+	     p:tableColumn="table_name"
+	     p:tableName="e_hw_record"
+	     p:cacheSize="10"/>
+	<bean id="seq_noteId" class="com.eps.dao.MaxValueINcrementer" 
+	     p:dataSource-ref="dataSource"
+	     p:incrementerName="s_sequence"  
+	     p:columnName="sequence_id"
+	     p:tableColumn="table_name"
+	     p:tableName="e_note"
+	     p:cacheSize="10"/>
+</beans>
+
+	
