@@ -1,0 +1,240 @@
+<#import "spring.ftl" as spring/>
+<div class="text_sju">
+	<div class="paperx_comx">
+		<ul id="QuestionsUl">
+			<#if qiMap??>
+				<#list qiMap?keys as oneKey>
+					<#assign qi=qiMap[oneKey]>
+					<#if oneKey?starts_with("normal")>
+						<li id="${qi.ques_id?c}">
+							<div class="questop">
+								<div class="quesinfowrap"><div class="mtopic" title="题目ID：${qi.ques_id?c}"><span></span></div></div>
+								<div class="quesinfowrap">
+									<div class="usetimeskey quesinfokey" title="使用次数"></div>
+									<div class="usetimes quesinfovalue">你做过<span class="color-orange"><#if qi.total_do_num??>${qi.total_do_num?c}<#else>0</#if></span>次<a class='detailbtn' title='查看做题记录明细'>明细</a></div>
+								</div>
+								<div class="quesinfowrap">
+									<div class="resourcekey quesinfokey" title="出处"></div>
+									<div class="resource quesinfovalue" title="${qi.resource}">${qi.format_resource}</div>
+								</div>
+								<div class="quesinfowrap">
+									<div class="paperx_zsd">
+										<div class="paperx_zsdl quesinfokey" title="考点"></div>
+										<div class="paperx_zsdr quesinfovalue">
+										<#if qi.knowledge_point??>
+										<#list qi.knowledge_point as kp>
+											<div class="knowledgepointdiv-nodelete" kpid="${kp.kpId}" title="${kp.kpPath}">${kp.kpName}</div>
+										</#list>
+										</#if>
+										</div>
+										<div class="nofl"></div>
+									</div>
+								</div>
+								<div class="quesinfowrap timewrap">
+									<div class="timekey quesinfokey" title="更新时间"></div>
+									<div class="time quesinfovalue"><span>${qi.input_time?string("yyyy-MM-dd")}</span></div>
+								</div>
+								<div class="nofl"></div>
+							</div>
+							<div class="paperx_tl">
+								<dl>
+									<dt>
+										<div class="allNum"></div>
+										<div class="paperx_tlxr" quesid="${qi.QUES_ID?c}" questype="${qi.ques_type}" gradelevel="${qi.grade_level}" resource="${qi.resource}">
+											<div type='title' class='ttxt test_box equ'>
+												${qi.QUES_CONTENT}
+											</div>
+										</div>
+										<#if qi.remark??>
+										<div class="pulloutwrap"><a class="pullout" art="${qi.art_content}">弹出材料</a></div>
+										</#if>
+										<div class="nofl"></div>
+									</dt>
+									<#if qi.QUES_TYPE=='1' || qi.QUES_TYPE=='2'>
+										<#list qi.OPT_CONTENT as optContent>
+											<#list qi.OPT_ID as optId>
+											    <#if optContent_index==optId_index>
+													<dd class="test_box2_bgc border-hover hide">
+														<div class="pap_tlt">${qi.OPT_NO[optId_index]+"."}</div>
+														<div class="pap_tct" optid=${optId?c}>
+															<div class='ttxt test_box2 equ' >${optContent}</div>
+														</div>
+														<div class="nofl"></div>
+													</dd>
+												</#if>
+											</#list>
+										</#list>
+									</#if>
+								</dl>
+								<div class="paperx_btda hide">
+									<#if qi.QUES_TYPE='4'>
+									<div class="paperx_tjx paperx_line_tjx">
+									<#else>
+									<div class="paperx_tjx">
+									</#if>
+										<input type="hidden" value=${qi.QUES_TYPE}>
+										<#assign ascArr2=["对","错"] >
+										<#assign index2=-1 > <#-- 选项索引，即A、B、C等的索引 -->
+										<#assign index3=-1 > <#--填空题的选项号索引-->
+										<#list qi.OPT_REFER as l>
+											<#assign index2=index2+1 >
+											<#if qi.QUES_TYPE=='1'>
+												<#if l=='0'>
+													<label class="paperx_tjxb2 radc">
+													 	<input class='markc' type="radio" name=${"rad"+qi.QUES_ID} value="0">
+													 	<span>${qi.OPT_NO[l_index]}</span>
+													</label>
+												<#else>
+													<label class="paperx_tjxb2 radc radio">
+													 	<input class='markc' type="radio" name=${ "rad"+qi.QUES_ID} value="0" checked="checked" />
+													 	<span>${qi.OPT_NO[l_index]}</span> 
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='2'>
+												<#if l=='0'>
+													<label class="paperx_tjxb2 chkc">
+														<input class='markc' type="checkbox" name=${"rad"+qi.QUES_ID} value="0"/>
+														<span>${qi.OPT_NO[l_index]}</span>
+													</label>
+												<#else>
+												 	<label class="paperx_tjxb2 chkc radio">
+														<input class='markc' type="checkbox" name=${"rad"+qi.QUES_ID} value="0" checked="checked"/>
+														<span>${qi.OPT_NO[l_index]}</span>
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='3'>
+												<#if l=='0'>
+													<label class="paperx_tjxb2 radc">
+														<input class='markc' type="radio" name=${"rad"+qi.QUES_ID} value="0"/>
+														<span>${ascArr2[index2]}</span> 
+													</label>
+												<#else>
+													<label class="paperx_tjxb2 radc radio">
+														<input class='markc' type="radio" name=${ "rad"+qi.QUES_ID} value="0" checked="checked"/>
+														<span>${ascArr2[index2]}</span>
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='4'>
+												<#assign index3=index3+1>
+												<div class="paperxt_tjxb2">
+													<div class="cleanBoth">
+														<span class="tkNum">${qi.OPT_NO[index3]}</span>
+														<div class='markc test_box4 equ'>${l}</div>
+														<input type='hidden' value='1' class='tkScore' />
+													</div>
+												</div>
+											<#elseif qi.QUES_TYPE=='5'>
+												<div class="jiedati-tip">答：</div>
+												<div class="paperxt_tjxb2 answer-type5">
+													<div class='markc equ test_box5'>${l!}</div>
+												</div>
+											</#if>
+										</#list>
+										<div class="nofl"></div>
+									</div>
+									<div class="nofl"></div>
+									<div class="paperx_fxk">
+										<div class="paperx_zsd hide">
+											<div class="paperx_zsdl">考点：</div>
+											<div class="paperx_zsdr">
+											<#if qi.knowledge_point??>
+											<#list qi.knowledge_point as kp>
+												<div class="knowledgepointdiv-nodelete" kpid="${kp.kpId}" title="${kp.kpPath}">${kp.kpName}</div>
+											</#list>
+											</#if>
+											</div>
+											<div class="nofl"></div>
+										</div>
+										<div class="paperx_jxxq">
+											<div class="paperx_zsdl" >解析：</div>
+											<div class="paperx_jxxqr">
+												<div class='fftxt test_box3 equ'>${qi.keyword}</div>
+											</div>
+											<div class="nofl"></div>
+										</div>
+										<div class="statistic">
+											<div class="statistic-left">统计：</div>
+											<div class="statistic-right">
+												<div>本题共被作答<#if qi.ques_total_num??>${qi.ques_total_num}<#else>0</#if>次，正确率为<#if qi.CORRECT_PERCENT??>${qi.CORRECT_PERCENT}<#else>0</#if></div>
+											</div>
+											<div class="nofl"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+					</#if>
+				</#list>
+			</#if>
+		</ul>
+	</div>
+</div>
+
+<div style="height:30px;margin-top:12px;font-size:15px;">
+<#include "pagination.htm" parse="true" encoding="UTF-8">
+<@pagination page=page/>
+</div>
+
+<script>
+$(function() {
+	//给小题头部的图标添加点击事件
+	$(".quesinfokey").click(function() {
+		if($(this).next().hasClass("hide")) {
+			$(this).next().removeClass("hide");
+		} else {
+			$(this).next().addClass("hide");
+		}
+	});
+	//给每个小题添加小题号
+	$(".mtopic").each(function(index) {
+		$(this).find("span").text(${start}+index+1);
+	});
+	
+	$(".paperx_tlxr").each(function() {
+		var liNode = $(this).parents("li")[0];
+		//禁用单选按钮
+		$(liNode).find(".radc").each(function(){
+			$(this).children("input").attr("disabled",true);	//初始化禁用单选框
+		});
+		//禁用多选按钮
+		$(liNode).find(".chkc").each(function(){
+			$(this).children("input").attr("disabled",true);	//初始化禁用多选框
+		});
+		//题干点击事件
+		$(this).click(function() {
+			var daNode = $(liNode).find(".paperx_btda");
+			if(daNode.hasClass("hide")) daNode.removeClass("hide");
+			else daNode.addClass("hide");
+		});
+	});
+	//分页
+	$(".fcenter,.show").each(function() {
+		$(this).click(function() {
+			showQuestions($(this).attr("url"));
+		});
+	});
+	//弹出材料的点击事件
+	$(".pullout").click(function() {
+		$("#ArtDialog").find("h3").html("第"+$($(this).parents("li")[0]).find(".mtopic").html()+"题材料");
+		$("#ArtDialog").find(".struct-artcontent").html($(this).attr("art"));
+		$("#ArtDialog").dialog("open");
+	});
+	//点击“，明细”
+	$(".detailbtn").each(function() {
+		$(this).click(function() {
+			var liNode = $(this).parents('li')[0];
+			$.ajax({
+				url:"<@spring.url '/student/getQuesRecDetail.html'/>",
+				type:"POST",
+				data:'quesId='+$(liNode).attr('id')+'&quesType='+$(liNode).find('.paperx_tlxr').attr('questype'),
+				contentType:"application/x-www-form-urlencoded;charset=utf-8",
+				dataType:"html",
+				success:function(result) {
+					$('#DetailWrap').html(result);
+					$('#RecDetailDia').dialog('open');
+				}
+			});
+		});
+	});
+});
+</script>

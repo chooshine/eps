@@ -1,0 +1,116 @@
+<style>
+.showtitle-dialog .ui-dialog-titlebar {display:block;border:none;background:#eee;}
+.showtitle-dialog .ui-dialog-buttonpane {border:1px solid #aaa;padding-right:13px;margin-top:0px;margin-bottom:0px;}
+.histroywrap {text-align:center;margin:0 auto;}
+.histroywrap:hover {background:#eff2f9;}
+.histroywrap:hover .histimgdiv {border-color:#eff2f9;}
+.histimgdiv {width:375px;border:1px solid #fff;border-bottom:1px dashed #aaa;margin:0 auto;}
+.historyimg {max-width:200px;max-height:50px;margin:20px 0;}
+.currhistory {border-bottom:1px solid #ff0000;}
+</style>
+<div id="HistoryDia">
+</div>
+<script type="text/javascript">
+var formulaHistoryInputNode = undefined;//历史公式需要插入的节点
+$("#HistoryDia").dialog({
+	title:"公式历史",
+	dialogClass:"chooshine-dialog showtitle-dialog",
+	autoOpen:false,
+	width:400,
+	height:360,
+	resizable:false,
+	modal:true,
+	buttons: [{
+		text:"确定",
+		click:function() {
+			//将公式插入指定位置
+			var img = $(".currhistory").find(".struct-historyimg");
+			var id = img.attr("imgid");
+			var src = img.attr("src");
+			var latex = img.attr("latex");
+			var html = '<img class="kfformula" src="'+src+'" data-latex="'+latex+'" />';
+			
+			//更新公式的使用次数
+			$.ajax({
+				url:"<@spring.url '/updateFormuluCount.json'/>",
+				type:"POST",
+				data:"id="+id,
+				contentType:"application/x-www-form-urlencoded;charset=utf-8",
+				success:function() {
+					//历史公式输入节点不是undefind，代表当前操作的不是编辑器
+					if(formulaHistoryInputNode != undefined) {
+						$(divElement).html($(divElement).html().replace(/<span class="chooshine-placeholder"><\/span>/g, html));
+						
+						$(divElement).find("img").each(function() {
+							if(!($(this).attr("data-latex") == undefined)) {
+								$(this).dblclick(function() {
+		        					formulaDbClickEvent(this);
+		        				});
+							}
+	        			});
+					} else {
+						if(ue.hasContents()) {
+							var content = ue.getContent();
+		        			ue.setContent(content.replace(/<span class="chooshine-placeholder"><\/span>/g, html));
+						} else {
+							ue.setContent(html);
+						}
+					}
+					
+					$("#HistoryDia").dialog("close");
+				}
+			});
+			
+		}
+	},{
+		text:"关闭",
+		click:function() {
+			//删除替换符
+			$(divElement).html($(divElement).html().replace(/(&nbsp;)*##(&nbsp;)*/g, ""));
+			$(this).dialog("close");
+		}
+	}]
+});
+
+//弹框弹出的事件
+function openFormulaHistory() {
+	insertHTML(divElement,'<span class="chooshine-placeholder"></span>');//node未定义代表不是双击公式触发该方法
+	formulaHistoryInputNode = divElement;
+	$.ajax({
+		url:"<@spring.url '/formulaHistory.html'/>",
+		type:"POST",
+		contentType:"application/x-www-form-urlencoded;charset=utf-8",
+		dataType:"html",
+		success:function(result) {
+			$("#HistoryDia").html(result).dialog("open");
+			$(".struct-histimgdiv").each(function() {
+				$(this).click(function() {
+					$(".currhistory").removeClass("currhistory");
+					$(this).addClass("currhistory");
+				});
+			});
+		}
+	});
+}
+//弹框弹出的事件
+function openFormulaHistoryInUE() {
+	ue.execCommand('inserthtml', '<span class="chooshine-placeholder"></span>');
+	
+	formulaHistoryInputNode = undefined;
+	$.ajax({
+		url:"<@spring.url '/formulaHistory.html'/>",
+		type:"POST",
+		contentType:"application/x-www-form-urlencoded;charset=utf-8",
+		dataType:"html",
+		success:function(result) {
+			$("#HistoryDia").html(result).dialog("open");
+			$(".struct-histimgdiv").each(function() {
+				$(this).click(function() {
+					$(".currhistory").removeClass("currhistory");
+					$(this).addClass("currhistory");
+				});
+			});
+		}
+	});
+}
+</script>

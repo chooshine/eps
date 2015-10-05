@@ -1,0 +1,36 @@
+<#import "spring.ftl" as spring/>
+ <div class="wrap03_nr">
+  	<ul>
+		<#if liberList??>
+			<#if liberList.data?size &gt; 0>
+				<#list liberList.data as item>
+					<li class="li_nr">
+						<span class="span-objectname">
+							<img alt="作业" src="<@spring.url '/images/examsystem/exam_2.png'/>">
+							<div>
+								<div class="objectname">${item.exam_name}</div>
+								<div class="commoninfo">
+									<label>科目：<em class="sortname color-orange">${item.sort_name}</em></label>
+									<label>总分：<em class="releasetime color-orange">${item.total}</em></label>
+									<label>发布时间：<em class="releasetime color-orange">${item.release_time}</em></label>
+								</div>
+							</div>
+						</span>
+						<span class="span01"><em class="color-orange">${item.user_no}</em> 分享</span>
+						<span class="span01"><em class="color-orange">${item.b_topic_num}</em> 大题 / <em class="color-orange">${item.m_topic_num}</em> 小题</span>
+						<span class="span00">
+							<a href="javascript:void(0);" class="see" examId=${item.exam_id?c} types='see'><b class="ap_ks">查看</b></a>
+	   						| <a href="javascript:void(0);" class="arrangetest" examId="${item.exam_id?c}" subjectNo="${item.subject_no}"><b class="ap_ks">安排考试</b></a>
+						</span>
+					</li>
+					<input type="hidden" name="status" value="${item.e_status}" />
+					<input type="hidden" name="eId" value="${item.exam_id?c}" />
+				</#list>
+			<#else>
+				<li class="li_nr" style="height:19px; line-height:19px; text-align:center; padding-top:15px; padding-bottom:15px; font-size:18px;">当前条件下未搜索到共享试卷。</li>
+			</#if>
+		<#else>
+			<li class="li_nr" style="height:19px; line-height:19px; text-align:center; padding-top:15px; padding-bottom:15px; font-size:18px;">当前条件下未搜索到共享试卷。</li>
+		</#if>
+	</ul>
+</div>

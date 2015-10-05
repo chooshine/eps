@@ -1,0 +1,198 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<#include "homework/teacher/arrangeHomeworkLogo.htm" parse="true" encoding="UTF-8" >
+<style>
+.sharedhw-searchwrap {height:32px;padding:10px 0;border:1px solid #CCCCCC;}
+.sharedhw-conditionswarp, .sharedhw-conditioncontainer { float:left; }
+.or_rgttconanu { width:100px; position:static; float:left;}
+.testh_problemrbotrjx {height:25px;margin-top:3px;}
+.chooshine-select {height:32px;}
+body {background-color:#eeeeee;}
+.nr_wrap03 {min-height:500px;background-color:#ffffff;box-shadow:0 0 5px #aaa;}
+</style>
+
+<div class="nr_wrap03" style="width:1024px;">
+	<div class="wrap03_title">
+		<a href="<@spring.url '/homework/teacher/homeworkLibrary.html' />"><span>我的作业</span></a>
+		<a href="<@spring.url '/teacher/myWharehouse.html'/>"><span>我的题库</span></a>
+		<span class="wrap03_current">他人共享</span>
+	</div>
+	<div class="sharedhw-searchwrap">
+		<div class="sharedhw-conditionswarp">
+			<div class="sharedhw-conditioncontainer">
+				<b class="padd25">时间:</b>
+				<select id="releasetime" class="chooshine-select" name="releasetime" >
+					<#list releaseTimeMap?keys as key>
+						<#if key_index==4>
+							<option value=${releaseTimeMap[key]} selected="selected">${key}</option>
+						<#else>
+							<option value=${releaseTimeMap[key]}>${key}</option>
+						</#if>
+					</#list>
+				</select>
+			</div>
+			<div class="sharedhw-conditioncontainer">
+				<b class="padd25">考试地区:</b>
+				<select id="s2" class="chooshine-select" name="area">
+					<#if areaList??>
+						<#list areaList as etl>
+							<#if etl.CODE=5>
+								<option value=${etl.CODE} selected="selected">${etl.NAME!}</option>
+							<#else>
+								<option value=${etl.CODE} >${etl.NAME!}</option>
+							</#if>
+						</#list>
+					</#if>
+				</select>
+			</div>
+			<div class="sharedhw-conditioncontainer">
+				<b class="padd25">学校:</b>
+				<select id="s3" class="chooshine-select" name="schoolid">
+					<#if schoolList??>
+						<#list schoolList as etl>
+							<option value=${etl.school_id}>${etl.school_name!}</option>
+						</#list>
+					</#if>
+				</select>
+			</div>
+			<div class="sharedhw-conditioncontainer">
+				<b class="padd25">科目：</b>
+				<select name="subjectid" class="chooshine-select">
+					<#if ofterSort??>
+						<#if ofterSort?size &gt; 0>
+							<#list ofterSort as sort>
+								<option value="${sort.sort_id}">${sort.parent_sort+"·"+sort.sort_name}</option>
+							</#list>
+						<#else>
+							<option valu="-2">请选择科目</option>
+						</#if>
+					<#else>
+						<option valu="-2">请选择科目</option>
+					</#if>
+					<option value="-1" id="OtherSubject">其他</option>
+				</select>
+			</div>
+			<div class="nofl"></div>
+		</div>
+		<div class="or_rgttconanu">
+			<button type="submit" id="searchAll" class="testh_problemrbotrjx ckbj">搜索试卷</button>
+		</div>
+		<div class="nof"></div>
+	</div>
+	<div class="sharedhw-hwlist">
+	
+	</div>
+</div>
+
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script src="<@spring.url '/javascripts/jquery-ui-timepicker-addon.js'/>" ></script>
+<#--布置作业-->
+<#include "homework/teacher/settle/settleHwToClassDialog.htm" parse="true" encoding="UTF-8" >
+<#--其他科目-->
+<#include "allSortDialog.htm" parse="true" encoding="UTF-8" >
+<#--设置作业名称-->
+<#include "homework/teacher/setHwNameDialog.htm" parse="true" encoding="UTF-8" >
+<script>
+$(function() {
+	
+	//切换科目类型
+	$("select[name='subjectid']").change(function(){
+		if($(this).val()==-1){
+			$("#answerspop_up").dialog("open");
+		}
+	});
+	//点击选择科目的弹框中的不同科目的事件
+	sortClick($("select[name='subjectid']"), $("#OtherSubject"));
+
+	//地区和学校的级联操作
+	$("#s2").each(function(i,o){
+		$(this).change(function(){
+			//拿到地区编号
+			var codeId=$(this).val();
+			 $.ajax({
+				type:"post",
+				url:"<@spring.url '/network/net_shareSelect.json' />",
+				contentType:"application/x-www-form-urlencoded; charset=utf-8",
+				data:{codeId:codeId},
+				success:function(data){
+				//保存成功之后重新查看最新安排的考试
+					var option = "";
+					var dataList = data["schoolList"];
+					var dataT = JSON.parse(dataList);
+					if(dataT.length == 0) {
+						option = "<option value='-1'>无该地区学校信息</option>";
+					} else {
+						$.each(dataT, function(k, v) {
+						  	option += "<option value=\"" + v['school_id'] + "\">" + v['school_name'] + "</option>";
+						});
+					}
+					$("#s3").html("");
+					$("#s3").append(option);
+				}
+			});
+		});
+	});
+	
+	//加载完页面后自动发送搜索请求
+	if($("select[name='subjectid']").val()!=-2 && $("select[name='subjectid']").val()!=-1 && $("select[name='schoolid']").val()!=-1) {
+		searchSharedHomework($("select[name='releasetime']").val(), $("select[name='schoolid']").val(), $("select[name='subjectid']").val());
+	}
+	function searchSharedHomework(releaseTime, schoolId, subjectId) {
+		$.ajax({
+			type:"POST",
+			url:"<@spring.url '/homework/teacher/searchSharedHomeworks.html' />",
+			contentType:"application/x-www-form-urlencoded; charset=utf-8",
+			data:{"releaseTime":releaseTime, "schoolId":schoolId, "subjectId":subjectId},
+			dataType:"html",
+			success:function(data){
+				$(".sharedhw-hwlist").html(data);
+
+				$(".settlehw").each(function() {
+					$(this).click(function() {
+						openSettleHwDialog($(this).attr("hwid"), $(this).attr("subjectid"));
+					});
+				});
+				$(".see").each(function(){
+					viewHomework(this);
+				});
+				//复制
+				$(".sharedhw-copyhomework").each(function() {
+					$(this).click(function() {
+						$("#SetHwNameDialog").dialog("open");
+						var hwId = $(this).attr("hwid");
+						setHwId(hwId);
+					});
+				});
+			}
+		});
+	}
+	//点击“搜索试卷”
+	$("#searchAll").click(function(){
+		var schoolId = $("select[name='schoolid']").val();
+		if(schoolId == -1) {
+			$.chooshine.alert("请选择地区。");
+			return;
+		}
+		var subjectId = $("select[name='subjectid']").val();
+		if(subjectId==-1 || subjectId==-2) {
+			$.chooshine.alert("请选择科目。");
+			return;
+		}
+		var releaseTime = $("select[name='releasetime']").val();
+		searchSharedHomework(releaseTime, schoolId, subjectId);
+	});
+	
+	//查看
+	function viewHomework(Node){
+		$(Node).click(function(){
+			var hwId = $(this).attr("hwid");
+			location.href = "<@spring.url '/homework/teacher/edithomework.html?hwId="+hwId+"&type=see'/>";
+		});
+	}
+	
+});
+</script>
+<style>
+.wrap03_nr ul li span.span01 {width:120px;}
+.wrap03_nr ul li span.sharelist-shortspan {width:200px;}
+.wrap03_nr ul li span.sharelist-shortspan em {font-style:normal;}
+</style>

@@ -1,0 +1,547 @@
+<#include "header.htm" parse="true" encoding="UTF-8" > 
+<#include "logheader.htm" parse="true" encoding="UTF-8" >
+<style>
+.nav ul li a { padding-top:0px;}
+</style>
+<div id="perIndexMain" >
+			<div class="per_nav">
+				<div class="nav">
+	   				<div class="top">
+	   					<ul>
+		   					<li><a href="<@spring.url '/achievement/myoffice.html'/>">我的办公室</a></li>
+		   					<li><a href="<@spring.url '/achievement/class/ability.html'/>">班级能力</a></li>
+		   					<li><a href="<@spring.url '/achievement/lesson.html'/>">课程表</a></li>
+		   					<li><a href="<@spring.url '/achievement/seating.html'/>">座位表</a></li>
+		   					<li><a href="<@spring.url '/achievement/scoreNotice.html'/>">考试分析</a></li>
+		   					<li class="perIndexNavLi">成绩录入</li>
+	   					</ul>
+	   				</div>
+	   				<div id="indexNavFirst" class="bottom" >
+			   			<ul>
+			   				<li>成绩录入</li>
+			   			</ul>
+	   				</div>
+	   			</div>
+			</div>
+</div>
+<form action="<@spring.url '/scorerecord/report.html'/>"  method="post" class="init_chooseform" id="init_chooseform">
+	<input type="hidden" name="schoolId" value=${schoolId} />
+	<input type="hidden" name="testName" />
+	<input type="hidden" name="className" />
+	<input type="hidden" name="subjectName" />
+	<div class="init_container">
+	  	<div class="init_title"><span>班级：</span></div>   		
+		  <select name="classId" class="init_select">
+		  	<#if classes??>
+		  	<#list classes as class>
+		    <option value=${class.class_id} classId=${class.class_id}>${class.class_name}</option>
+		    </#list>
+		    <!-- <option value=-1>其他</option> -->
+		    </#if>
+		  </select>
+		  <span class="init_notice" id="class_notice">班级不能为空</span>
+	</div>
+	<div class="init_container">
+	  <div class="init_title"><span>科目：</span></div>
+	  <select name="subjectId" class="init_select">
+	    <#if sorts??>
+	  	<#list sorts as sort>
+	    <option value=${sort.sort_id} sortId=${sort.sort_id} subjectName=${sort.sort_name}>${sort.parent_name}·${sort.sort_name}</option>
+	    </#list>
+	    <option value=-1 id="other" subjectName="其他">其他</option>
+	    </#if>
+	  </select>
+	  <span class="init_notice" id="subject_notice">科目不能为空</span>
+	</div>
+	<div class="init_container">
+	  <div class="init_title"><span>考试名称：</span></div>
+	  <div>
+		  <select name="testId" class="init_select">
+		    <#if tests??>
+		  	<#list tests as test>
+		    <option value=${test.test_id} testId=${test.test_id}>${test.test_Name}</option>
+		    </#list>
+		    </#if>
+		  </select> 
+		  <a id="createTest" class="init_createTest">新建考试</a>
+		  <span class="init_notice" id="test_notice">考试不能为空</span>
+	  </div>
+	</div>
+	<div class="init_container">
+	    <input type="button" id="nextStep" class="init_nextstep"value="下一步" />
+	</div>
+</form>
+<!-- 学校所有班级 -->
+<div class="answerspop_up" id="allclass">
+	<#if allClass??>
+		<#list allClass?keys as key>
+			<dl>
+				<#list allClass[key] as classP>
+					<dt class="getPsubjectNo" parentId=${classP.grade_id}>${key}</dt>
+					<#break>
+				</#list>
+				<dd>
+					<#list allClass[key] as class>
+					<div class="answerspop_upcem getSubjectno initClass" parentTitle=${key} classId=${class.class_id}><a>${class.class_name}</a></div>
+					</#list>
+				</dd>
+			</dl>
+			
+		</#list>
+	</#if>
+	<div class="nofl"></div>
+</div>
+
+<!-- 所有科目 -->
+<div class="answerspop_up" id="allsorts">
+	<#if allSorts??>
+		<#list allSorts?keys as key>
+			<dl>
+				<#list allSorts[key] as sortp>
+					<dt class="getPsubjectNo" parentId=${sortp.sort_parent_id}>${key}</dt>
+					<#break>
+				</#list>
+				<dd>
+					<#list allSorts[key] as sort>
+					<div class="answerspop_upcem getSubjectno initSort" parentTitle=${key} sortId=${sort.sort_id}><a>${sort.sort_name}</a></div>
+					</#list>
+					<div class="nofl"></div>
+				</dd>
+			</dl>
+			
+		</#list>
+	</#if>
+	<div class="nofl"></div>
+</div>
+<!-- 创建考试 -->
+<div class="answerspop_up" id="test_up" style="border:1px solid #CCC; text-align: center; vertical-align:middle;">
+	<div id="main_container">
+		<form action="<@spring.url '/netWork/newTest.json'/>" name="newTest" id="newTest" method="post">
+		<div id="u0" class="u0"  >
+		<div id="u0_rtf"><p style="text-align:left;"><span style="font-family:Arial;font-size:16px;font-weight:normal;font-style:normal;text-decoration:none;color:#333333;">考试</span><span style="font-family:Arial;font-size:16px;font-weight:normal;font-style:normal;text-decoration:none;color:#333333;">名称</span></p></div>
+		</div>
+		<select  class="u1" id="testType"   name="testType">
+			<option value="1"  selected="selected">期中考试</option>
+			<option value="2">期末考试</option>
+			<option value="3">测验</option>
+		</select>
+
+		<input id="testName" name="testName" type=text value="" class="u2"     >
+
+		<div id="u3" class="u3"  >
+		<div id="u3_rtf"><p style="text-align:left;"><span style="font-family:Arial;font-size:16px;font-weight:normal;font-style:normal;text-decoration:none;color:#333333;">考试</span><span style="font-family:Arial;font-size:16px;font-weight:normal;font-style:normal;text-decoration:none;color:#333333;">类型</span></p></div>
+		</div>
+		<div id="u4" class="u4"  >
+		<div id="u4_rtf"><p style="text-align:left;"><span style="font-family:Arial;font-size:16px;font-weight:normal;font-style:normal;text-decoration:none;color:#333333;">学年</span></p></div>
+		</div>
+		
+		
+		<select  class="u5" id="year"  name="year" >
+			<#if dateList??>
+						${dateList_index}
+							<#list dateList as dd>
+							<#if dd?c=.now?string("yyyy-MM-dd HH:mm")?substring(0,4)>
+								<option value=${dd?c} selected="selected">${dd?c}</option>
+							<#else>
+								<option value=${dd?c}>${dd?c}</option>
+							</#if>
+							</#list>
+						</#if>
+		</select >
+		<!-- 隐藏学校ID -->
+		<select id="schoolId" name="schoolId" style="display: none;">
+			<#if grades??>
+				<#list grades[0] as g>
+					<option value=${g.school_id}>${g.school_id}</option>
+				</#list>
+			</#if>
+		</select>
+
+		<div  class="u6"  >
+		<div id="u6_rtf"><p style="text-align:left;"><span style="font-family:Arial;font-size:16px;font-weight:normal;font-style:normal;text-decoration:none;color:#333333;">学期</span></p></div>
+		</div>
+		<select  class="u7"  id="semester"  name="semester" >
+			<option value="0">不限</option>
+		    <option value="1">上</option>
+		    <option value="2">下</option>
+		</select>
+
+		<select  class="u8" id="gradeId"  name="gradeId" >
+			<#if grades??>
+						<#list grades as g>
+							<option value=${g.GRADE_ID}>${g.GRADE_NAME}</option>
+						</#list>
+					</#if>
+		</select>
+
+		<div id="u9" class="u9"  >
+		<div id="u9_rtf"><p style="text-align:left;"><span style="font-family:Arial;font-size:16px;font-weight:normal;font-style:normal;text-decoration:none;color:#333333;">考试年级</span></p></div>
+		</div>
+		
+		<input type="text" id="testTime" class="start" value="请选择考试开始时间" name="testTime"><!-- U11 -->
+		<select id="s_h" class="s_h"  name="h_1">
+			<option id="00" selected="selected">00</option>
+			<option id="01">01</option>
+			<option id="02">02</option>
+			<option id="03">03</option>
+			<option id="04">04</option>
+			<option id="05">05</option>
+			<option id="06">06</option>	
+			<option id="07">07</option>
+			<option id="08">08</option>
+			<option id="09">09</option>
+			<option id="10">10</option>
+			<option id="11">11</option>
+			<option id="12">12</option>
+			<option id="13">13</option>
+			<option id="14">14</option>
+			<option id="15">15</option>
+			<option id="16">16</option>
+			<option id="17">17</option>
+			<option id="18">18</option>
+			<option id="19">19</option>
+			<option id="20">20</option>
+			<option id="21">21</option>
+			<option id="22">22</option>
+			<option id="23">23</option>	
+		</select>
+		<span class="tTime_h">时</span>
+		<select id="s_m" class="s_m"  name="m_1">
+			<option id="00" selected="selected">00</option>
+			<option id="05">05</option>
+			<option id="10">10</option>
+			<option id="15">15</option>
+			<option id="20">20</option>
+			<option id="25">25</option>
+			<option id="30">30</option>
+			<option id="35">35</option>
+			<option id="40">40</option>
+			<option id="45">45</option>
+			<option id="50">50</option>
+			<option id="55">55</option>
+		</select>
+		<span class="tTime_m">分</span>	
+		<div id="u11" class="u11"  >
+		<div id="u11_rtf"><p style="text-align:left;"><span style="font-family:Arial;font-size:16px;font-weight:normal;font-style:normal;text-decoration:none;color:#333333;">结束时间</span></p></div>
+		</div>
+		 
+		<input type="text" id="testEndTime" class="end" value="请选择考试结束时间" name="testEndTime"><!-- U10 -->
+		<select id="s_h2" class="s_h2" name="h_2">
+			<option id="00" selected="selected">00</option>
+			<option id="01">01</option>
+			<option id="02">02</option>
+			<option id="03">03</option>
+			<option id="04">04</option>
+			<option id="05">05</option>
+			<option id="06">06</option>	
+			<option id="07">07</option>
+			<option id="08">08</option>
+			<option id="09">09</option>
+			<option id="10">10</option>
+			<option id="11">11</option>
+			<option id="12">12</option>
+			<option id="13">13</option>
+			<option id="14">14</option>
+			<option id="15">15</option>
+			<option id="16">16</option>
+			<option id="17">17</option>
+			<option id="18">18</option>
+			<option id="19">19</option>
+			<option id="20">20</option>
+			<option id="21">21</option>
+			<option id="22">22</option>
+			<option id="23">23</option>	
+		</select>
+		<span class="tTime_h2">时</span>
+		<select id="s_m2" class="s_m2" name="m_2">
+			<option id="00" selected="selected">00</option>
+			<option id="05">05</option>
+			<option id="10">10</option>
+			<option id="15">15</option>
+			<option id="20">20</option>
+			<option id="25">25</option>
+			<option id="30">30</option>
+			<option id="35">35</option>
+			<option id="40">40</option>
+			<option id="45">45</option>
+			<option id="50">50</option>
+			<option id="55">55</option>
+		</select>
+		<span class="tTime_m2">分</span>
+		
+		<div id="u13" class="u13"  >
+		<div id="u13_rtf"><p style="text-align:left;"><span style="font-family:Arial;font-size:16px;font-weight:normal;font-style:normal;text-decoration:none;color:#333333;">开始时间</span></p></div>
+		</div>
+		<input id="u14" type="button" class="u14" value="保&nbsp; &nbsp; 存"   >
+
+		</div>
+		<div class="preload"></div>
+			<div class="nofl"></div>
+			</form>
+	</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+$((function($){  
+	$.datepicker.regional['zh-CN'] = {  
+            clearText: '清除',  
+            clearStatus: '清除已选日期',  
+            closeText: '关闭',  
+            closeStatus: '不改变当前选择',  
+            prevText: '<上月',  
+            prevStatus: '显示上月',  
+            prevBigText: '<<',  
+            prevBigStatus: '显示上一年',  
+            nextText: '下月>',  
+            nextStatus: '显示下月',  
+            nextBigText: '>>',  
+            nextBigStatus: '显示下一年',  
+            currentText: '今天',  
+            currentStatus: '显示本月',  
+            monthNames: ['一月','二月','三月','四月','五月','六月', '七月','八月','九月','十月','十一月','十二月'],  
+            monthNamesShort: ['一','二','三','四','五','六', '七','八','九','十','十一','十二'],  
+            monthStatus: '选择月份',  
+            yearStatus: '选择年份',  
+            weekHeader: '周',  
+            weekStatus: '年内周次',  
+            dayNames: ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],  
+            dayNamesShort: ['周日','周一','周二','周三','周四','周五','周六'],  
+            dayNamesMin: ['日','一','二','三','四','五','六'],  
+            dayStatus: '设置 DD 为一周起始',  
+            dateStatus: '选择 m月 d日, DD',  
+            dateFormat: 'yy-mm-dd',  
+            firstDay: 1,  
+            initStatus: '请选择日期',  
+            isRTL: false};  
+        $.datepicker.setDefaults($.datepicker.regional['zh-CN']);  
+	})(jQuery));  
+
+	$(function(){
+		//页面初始加载时的操作
+		$(".init_notice").hide();
+		var nowDate = new Date();
+		$("#testTime").val(getFormatDate(nowDate));
+		nowDate.setUTCDate(nowDate.getUTCDate()+7); 
+		$("#testEndTime").val(getFormatDate(nowDate));
+		var initClassId = $("select[name='classId']").val();
+		getTest(initClassId);
+		//设置一个标记，用于标示dialog是否选择之后才关闭的,如果是，则为true
+		var dialogflag = false;
+		
+		//初始加载和列表改变的时候，其后面的提示语言隐藏
+		$("select").each(function(){
+			$($($(this).children()).find("span")).hide();
+			$(this).change(function(){
+				$($($(this).children()).find("span")).hide();
+			});
+		});
+		//选择班级
+		$("#allclass").dialog({
+			title:"选择班级",
+			autoOpen: false,
+			height: 350,
+		    width: 1023,
+		    modal: true
+		});
+		$("select[name='classId']").change(function(){
+			var classId=$(this).val();
+			if(classId==-1){
+				$("#allclass").dialog("open");
+			} else if(classId!=0){
+				getTest(classId);
+			} else{
+				$($($("select[name='testId']").children()).get(1)).remove();
+			}
+		});
+		
+		//下面的是所有班级选择的dialog的事件
+		/* $(".initClass").each(function(){
+			$(this).click(function(){
+				$($("select[name='classId']").next()).hide();
+				var className=$($($(this).children()).get(0)).text();
+				var classId=$(this).attr("classId");
+				$("option[classId="+classId+"]").remove();
+				$("select[name='classId']").find("option:selected").removeAttr("selected");
+				$("option[classId=0]").after("<option value="+classId+" classId="+classId+" selected='selected'>"+className+"</option>");
+				getTest(classId);
+				$("#allclass").dialog("close");
+			});
+		}); */
+		
+		//选择科目
+		$("#allsorts").dialog({
+			title:"选择科目",
+			autoOpen: false,
+			height: 350,
+		    width: 1023,
+		    modal: true,
+		    close:function(){
+		    	if(dialogflag == false) {
+		    		$(sortOption).remove();
+					$("select[name='subjectId']").find("option:selected").removeAttr("selected");
+					$("select[name='subjectId']").prepend(sortOption);
+		    	}
+		    }
+		});
+		var sortOption = null;
+		$("select[name='subjectId']").focus(function(){
+			sortOption =  $("option[sortId="+$(this).val()+"]");
+		});
+		$("select[name='subjectId']").change(function(){
+			var sortId=$(this).val();
+			if(sortId==-1){
+				$("#allsorts").dialog("open");
+			}
+		});
+		$(".initSort").each(function(){
+			$(this).click(function(){
+				var sortName=$(this).attr("parentTitle")+"·"+$($($(this).children()).get(0)).text();
+				var sortId=$(this).attr("sortId");
+				$("option[sortId="+sortId+"]").remove();
+				$("select[name='subjectId']").find("option:selected").removeAttr("selected");
+				$("select[name='subjectId']").prepend("<option value="+sortId+" sortId="+sortId+" selected='selected'>"+sortName+"</option>");
+				dialogflag = true;
+				$("#allsorts").dialog("close");
+			});
+		});
+		
+		//选择考试
+		//当考试列表的选择改变时，进行相应的操作 
+		$('#test_up').dialog({
+			title:"新建考试",
+			autoOpen: false,
+		    height: 500,
+		    width: 980,
+		    modal: true
+		});
+		$("#createTest").click(function(){
+			$("#test_up").dialog("open");
+		});
+		
+		//下面是新建考试的脚本
+		$("#testTime").datepicker({
+			showSecond: true,  
+				changeMonth: true,  
+			    changeYear: true,  
+			    timeFormat: 'hh:mm:ss',  
+			    dateFormat: 'yy-mm-dd' 
+		});  
+		$("#testEndTime").datepicker(); 
+		$("#u14").click(function(){
+			var flag=true;
+			if($("#testName").val()==''){
+				var message="请输入考试名称";
+				document.getElementById("showtestName").innerHTML="";
+				$(".showtestName").append(message);
+				}
+			
+			if($("#testTime").val()=='请选择考试开始时间'){
+				var message="请选择考试开始时间";
+				document.getElementById("showtestTime").innerHTML="";
+				$(".showtestTime").append(message);	
+			}
+			
+			if($("#testEndTime").val()=='请选择考试结束时间'){
+				var message="请选择考试结束时间";
+				document.getElementById("showtestEndTime").innerHTML="";
+				$(".showtestEndTime").append(message);
+				return;
+			}
+			
+			var h1 = $("#s_h").val();
+			var m1 = $("#s_m").val();		
+			var h2 = $("#s_h2").val();
+			var m2 = $("#s_m2").val();
+			
+			var testName = $("#testName").val();
+			var year = $("#year").val();
+			var semester = $("#semester").val();
+			var schoolId = $("#schoolId").val();
+			var gradeId = $("#gradeId").val();
+			var testType = $("#testType").val();
+			var testTime = $("#testTime").val();
+			var testEndTime = $("#testEndTime").val();
+			
+			if(flag){
+				$.get(
+						"<@spring.url '/netWork/newTest.json'/>",
+						{s_h:h1,s_m:m1,s_h2:h2,s_m2:m2,testName:testName,year:year,semester:semester,schoolId:schoolId,gradeId:gradeId,testType:testType,testTime:testTime,testEndTime:testEndTime},
+						 function(data){
+							var classId = $("select[name='classId']").val();
+							getTest(classId);
+							$("#test_up" ).dialog("close");
+						}  
+					);
+			}
+		})
+		
+		//根据选择的班级编号获取该班级最近的一次考试
+		function getTest(classId) {
+			$.get(
+				"<@spring.url '/init/getTest.json'/>", 
+				{class_id : classId}, 
+				function(data) {
+				var flag = data['flag'];
+				if (flag == true) {
+					var testId = data['test_id'];
+					var testName = data['test_name'];
+					$($($("select[name='testId']").children()).get(0)).remove();
+					$("select[name='testId']").prepend("<option value="+testId+" testId="+testId+" selected='selected'>"+testName+"</option>");
+				}
+			});
+		}
+		
+		$("select[name='classId']").click(function(){
+			$("#class_notice").hide();
+		});
+		$("select[name='testId']").click(function(){
+			$("#test_notice").hide();
+		});
+		$("select[name='subjectId']").click(function(){
+			$("#subject_notice").hide();
+		});
+		$("#nextStep").click(function(){
+			var flag = true;
+			var className = $("select[name='classId'] option:selected").text();
+			if(className == ""){
+				flag = false;
+				$("#class_notice").show();
+			}
+			
+			var testName = $("select[name='testId'] option:selected").text();
+			if(testName == ""){
+				flag = false;
+				$("#test_notice").show();
+			}
+			
+			var subjectName = $("select[name='subjectId'] option:selected").attr("subjectName");
+			if(subjectName == ""){
+				flag = false;
+				$("#subject_notice").text("科目不能为空");
+				$("#subject_notice").show();
+			}  else if(subjectName == "其他"){
+				flag = false;
+				$("#subject_notice").text("科目无效");
+				$("#subject_notice").show();
+			}
+			if(flag == false) return;
+			$("input[name='className']").val(className);
+			$("input[name='testName']").val(testName);
+			$("input[name='subjectName']").val(subjectName);
+			$("#init_chooseform").submit();
+		});
+		
+		
+		//得到规定格式的日期
+		function getFormatDate(date) {
+	        var year = date.getFullYear();  //获取年
+	        var month = date.getMonth()+1;  //获取月
+	        if(month>0 && month<10){
+	        	month="0"+month;
+	        }
+	        var day = date.getUTCDate() ; 	//获取日
+	        if(day>0 && day<10) day="0"+day;
+	        var time = year + "-" + month + "-" + day;
+	        return time;
+    	}
+	});
+</script>

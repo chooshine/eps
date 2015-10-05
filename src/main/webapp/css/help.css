@@ -1,0 +1,37 @@
+.bs-docs-example {
+  position: relative;
+  margin: 15px 0;
+ 
+  padding-top: 30px;
+  padding-left:30px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+          margin: auto 0;
+         
+         
+}
+.bs-docs-example h1{ background: url(../images/title1.png) no-repeat left top;}
+.bs-docs-example h1{height: 36px; margin:0 0 20px 0; padding: 20px 0 15px 10px; letter-spacing: 2px; font-size: 120%; text-shadow: 0px 1px 0px #fff;  }
+
+#top { margin-top: 20px; width: 860px;}
+#top .test{border: 1px solid #CCC; width: 175px; height: 35px; float: left; text-align: center; line-height: 35px; margin-right: 2PX;background-color:#06C;}
+#top .test a{ color:white; height: 35px;line-height: 35px;}
+ h3.step{background: url(../images/title_step.png) no-repeat left top;  color: #293c6b; height: 25px; padding: 5px 0 15px 15px; margin: 20px 0 20px 0; }
+.step span{ height: 35px; line-height: 35px;}
+.d{ clear: both; margin-top: 80px; margin-bottom: 58px;}
+
+.bs-docs-example .lp{  float: left; background: url(../images/arrow3.png) no-repeat  3px;margin-left: 50px; }
+.bs-docs-example .n_b{background: url(../images/pilcrow.png) no-repeat 3px; float:left; font-weight:bold; font-size:14px;}
+.bs-docs-example .n_b1{background: url(../images/arrow_medium_right2.png) no-repeat  3px 3px; float:left;}
+.bs-docs-example .n_b2{background: url(../images/arrow_medium_right.png) no-repeat  3px 3px; float:left;}
+
+.bs-docs-example ul{width:700px;list-style:none; margin-bottom: 20px;}
+.bs-docs-example ul li{width:700px;float:left;line-height:20px; margin-bottom: 10px; margin-left: 18px; }
+.p{ width: 700px; }
+.p img{ width: 100%; height: 100%;}
+.nb{ margin-left: 20px;}
+.nb2{ margin-left: 60px;}
+hr{ width: 95%; margin-right: 40px;}

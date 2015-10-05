@@ -1,0 +1,93 @@
+<div id="Datika" class="answercard-container bottom-fixed">
+	<h3 class="answercard-title"><div id="CardSwitch"><span id="SwitchText">显示</span>答题卡</div></h3>
+	<div class="cardborder"></div>
+	<div id="CardWrap" class="cardwrap">
+	<#if questionsInfo??>
+  		<ul class="answercard-answerul">
+    		<dd>
+    			<#list questionsInfo as question>
+   					<#if question.ques_flag==1><#--red, fault-->
+    					<a id="mtopic${question['m_topic']?c}" quesid="${question['ques_id']?c}" class="answercard-question answercard-red">${question['m_topic']?c}</a>
+	    			<#elseif question.ques_flag==2><#--blue, do-->
+	    				<a id="mtopic${question['m_topic']?c}" quesid="${question['ques_id']?c}" class="answercard-question answercard-blue">${question['m_topic']?c}</a>
+	    			<#elseif question.ques_flag==3><#--green, right-->
+	    				<a id="mtopic${question['m_topic']?c}" quesid="${question['ques_id']?c}" class="answercard-question answercard-green">${question['m_topic']?c}</a>
+	    			<#elseif question.ques_flag==4><#--gray, empty-->
+	    				<a id="mtopic${question['m_topic']?c}" quesid="${question['ques_id']?c}" class="answercard-question answercard-gray">${question['m_topic']?c}</a>
+	    			</#if>
+    			</#list>
+    		</dd>
+ 		</ul>
+   	</#if>
+   	</div>
+</div>
+<div id="DivAfterDatika"></div>
+<style>
+.text_sju {margin-bottom:0;}
+.bottom-fixed {position:fixed;bottom:0;}
+.answercard-container {width:998px;border:1px #d7d7d7 solid;background-color:#fff;margin-top:40px;}
+.answercard-title {height:0;font-size:16px;text-align:center;position:relative;}
+.answercard-title > div {width:180px;height:30px;line-height:30px;text-align:center;color:#fff;border-radius:4px 4px 0 0;position:absolute;top:-30px;left:410px;background:none repeat scroll 0 0 #f06000;cursor:pointer;}
+.cardborder {width:998px;height:5px;position:absolute;z-index:21;border-radius:4px 4px 0 0;background:none repeat scroll 0 0 #f06000;}
+.cardwrap {display:none;}
+.answercard-answerul {width:864px;min-height:188px;padding:30px 0;margin:0 auto;}
+.answercard-typedt {font-size:14px; color:#999; margin-bottom:15px;}
+.answercard-question {display:inline-block;width:34px;height:27px;line-height:27px;text-align:center;border:2px solid #fff;margin-right:5px;margin-bottom:6px;}
+.answercard-red {background-color:#d80f1a; color:#FFFFFF;}
+.answercard-green {background-color:#156f3b; color:#FFFFFF;}
+.answercard-blue {background-color:#0099ff; color:#FFFFFF;}
+.answercard-gray {background-color:#c6c1c1; color:#000000;}
+.mark {border:2px solid #ff0000;}
+</style>
+<script>
+document.getElementById("CardSwitch").onclick = function() {
+	var switchTextNode = document.getElementById("SwitchText");
+	var cardWrapNode = document.getElementById("CardWrap");
+	if(switchTextNode.innerHTML == "隐藏") {
+		switchTextNode.innerHTML = "显示";
+		cardWrapNode.style.display = "none";
+	} else {
+		switchTextNode.innerHTML = "隐藏";
+		cardWrapNode.style.display = "block";
+	}
+}
+//获取窗口可视范围的高度
+function getClientHeight(){
+    var clientHeight=0;
+    if(document.body.clientHeight&&document.documentElement.clientHeight){
+        var clientHeight=(document.body.clientHeight<document.documentElement.clientHeight)?document.body.clientHeight:document.documentElement.clientHeight;
+    }else{
+        var clientHeight=(document.body.clientHeight>document.documentElement.clientHeight)?document.body.clientHeight:document.documentElement.clientHeight;
+    }
+    return clientHeight;
+}
+//获取窗口滚动条的高度
+function getScrollTop(){
+    var scrollTop=0;
+    if(document.documentElement&&document.documentElement.scrollTop){
+        scrollTop=document.documentElement.scrollTop;
+    }else if(document.body){
+        scrollTop=document.body.scrollTop;
+    }
+    return scrollTop;
+}
+//获取文档实际高度
+function getScrollHeight(){
+    return Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);
+}
+
+function fixAnswerCard() {
+	var height = getClientHeight();
+	var scrollTop = getScrollTop();
+	var scrollHeight = getScrollHeight();
+	var bottomHeight = scrollHeight-scrollTop-height;
+	var datikaHeight = $("#Datika").height()+47;//答题卡的高度
+	if(bottomHeight < 190) {
+		$("#Datika").removeClass("bottom-fixed");
+		$("#DivAfterDatika").css("height", "0px");
+	} else {
+		$("#Datika").addClass("bottom-fixed");
+		$("#DivAfterDatika").css("height", datikaHeight+"px");
+	}
+}
+</script>

@@ -1,0 +1,53 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+.content {min-height:600px;}
+</style>
+<div class="content">
+     <!-- <div class="active_banner active_banner02" style="display:none"><a href="<@spring.url '/actives/active.html'/>" class="check"></a><a id="banner" href="javascript:;">[关闭]</a></div> -->
+     <div class="logo_search02">
+    	<div class="search_wrap">
+        	<span class="big_logo"></span>
+            <span class="tishi_wrap">
+            	<span class="tishi_icon"></span>
+                <span class="tishi_nr">在线日语语料库</span>
+            </span>
+        </div>
+        <div class="clear"></div>
+        <div class="search_wrap">
+            <span id="index_search02">
+                <form id="search_form" method="GET" action="<@spring.url '/corpus/search.html' />">
+                    <input type="hidden" value="20" name="pageSize">
+					<input type="hidden" value="1" name="pageNo">
+                    <input type="text" id="search02" name="key" value=""class="swap_value" />
+                    <input type="image" src="<@spring.url'/img/s-right.gif'/>" width="97" height="49" id="go_search" title="语料搜索" />  
+                </form>
+            </span>
+            <span class="search_help"><a href="<@spring.url '/corpus/advanced.html' />">高级</a><a href="<@spring.url '/corpus/instructions.html' />">帮助</a></span>
+        </div>
+    </div>
+    <ul class="search_pic">
+    	<li><img src="<@spring.url'/img/search_pic01.gif'/>" width="320" height="200" /></li>
+        <li class="have_margin"><img src="<@spring.url'/img/search_pic02.gif'/>" width="320" height="200"  /></li>
+        <li><img src="<@spring.url'/img/search_pic03.gif'/>" width="320" height="200" /></li>
+	</ul>
+    <div class="clear"></div>
+	<div class="search_p">
+    	<p>更新时间：<span class="gx_time">${updateDate.value}</span></p>
+        <p>畅选日语语料库规模：${totalCount.value}</p>
+        <p>语料分布：<a href="<@spring.url '/corpus/distribute.html' />" class="blue">点击查看</a></p>
+    </div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+	$(function(){
+		$("form").submit(function(){
+ 			if($("#search02").val() == "" || $("#search02").val().length < 1)return false;
+ 			//showBlock();
+ 			return true;
+ 		});
+		$("#banner").click(function(){
+ 			$(".active_banner").hide(800);
+ 		});
+ 		$(".active_banner").show(1000);
+	})
+</script>

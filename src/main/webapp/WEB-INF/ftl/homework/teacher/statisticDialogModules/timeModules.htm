@@ -1,0 +1,87 @@
+<#import "spring.ftl" as spring/>
+<div id="TimeOfCommit" class="module">
+	<#if studentsInDurationMap??>
+	<#list studentsInDurationMap?keys as key>
+	<div>
+		<div class="imgstip durationimgstip">
+			<div style="float: left; margin-right: 30px;">
+				<span>做作业时长在和 ${key} 内的学生</span>
+			</div>
+			<#assign width=(numOfDurationList[key_index].num/classNum)*100>
+			<div style="width:100px;border:1px solid #aaa;border-radius:5px;float:left;margin-right:10px;"><div style="width:${width}%;background-color:#ff9966;border-radius:4px;">&nbsp;</div></div>
+			<div style="float: left;">
+				<span>${numOfDurationList[key_index].num}人 / ${classNum}人</span>
+			</div>
+			<div class="nofl"></div>
+		</div>
+
+		<div class="stuimgs" <#if key_index!=0>style="display:none;"</#if>>
+			<div <#if studentsInDurationMap[key]??&&studentsInDurationMap[key]?size&gt;18>class="imgswrap"</#if>>
+				<#--上面的学生头像-->
+				<#if studentsInDurationMap[key]??&&studentsInDurationMap[key]?size&gt;0>
+				<#list studentsInDurationMap[key] as stu>
+					<#if stu_index==0>
+					<div id="DurationImgs${key}0" class="stuphotos">
+						<div class="stuphoto">
+							<img src="<@spring.url '/${stu.photo}'/>">
+							<div class="stuname"><span>${stu.student_name}</span></div>	
+						</div>
+					<#elseif stu_index%18==0>
+					</div>
+					<div id="DurationImgs${key}${stu_index/18}" class="stuphotos" style="display:none;">
+						<div class="stuphoto">
+							<img src="<@spring.url '/${stu.photo}'/>">
+							<div class="stuname"><span>${stu.student_name}</span></div>	
+						</div>
+					<#else>
+						<div class="stuphoto">
+							<img src="<@spring.url '/${stu.photo}'/>">
+							<div class="stuname"><span>${stu.student_name}</span></div>	
+						</div>
+						<#if ((stu_index+1)%9)==0>
+						<div class="nofl"></div>
+						</#if>
+					</#if>
+					
+					<#if stu_index==(studentsInDurationMap[key]?size-1)>
+					</div>
+					</#if>
+				</#list>
+				<#else>
+					<div class="nostu"><span>无做作业时长在该范围内的学生</span></div>
+				</#if>
+					<div class="nofl"></div>
+				</div>
+							
+							<#--下面的换页按钮-->
+							<#if studentsInDurationMap[key]??&&studentsInDurationMap[key]?size&gt;18>
+							<ul class="pageul">
+								<#list studentsInDurationMap[key] as stu>
+									<#if stu_index%18==0>
+									<#if stu_index==0>
+									<li id="DurationPage${key}${stu_index/18}" class="durationpages"><img src="<@spring.url '/images/bullet_blue.png'/>"></li>
+									<#else>
+									<li id="DurationPage${key}${stu_index/18}" class="durationpages"><img src="<@spring.url '/images/bullet-grey.png'/>"></li>
+									</#if>
+									</#if>
+								</#list>
+								<div class="nofl"></div>
+							</ul>
+							</#if>
+						</div>
+		<div class="nofl"></div>
+	</div>
+	</#list> </#if>
+
+</div>
+<script>
+//点击弹框中的时间分布学生的标题
+$(".durationimgstip").click(function() {
+	$("#TimeOfCommit").find(".stuimgs").hide();
+	$(this).parent().find(".stuimgs").show();
+});
+//点击时间分布的分页按钮
+$(".durationpages").click(function() {
+	pageChange(this, $("#DurationImgs"+$(this).attr("id").substr(12)));
+});
+</script>

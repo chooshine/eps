@@ -1,0 +1,46 @@
+<#--一级知识点-->
+<#if oneLayerKnowledges?? && (oneLayerKnowledges?size &gt; 0)>
+	<div class="examaddupdate-selectdiv">
+		<select id="ExamAddUpdate-OneLayerSelect" class="chooshine-select">
+		<#list oneLayerKnowledges as oneLayerKnowledgePoint>
+			<option kpid="${oneLayerKnowledgePoint.kp_id?c}">${oneLayerKnowledgePoint.kp_name}</option>
+		</#list>
+		</select>
+	</div>
+	
+	<#if twoLayerKnowledges?? && (twoLayerKnowledges?size &gt; 0)>
+		<#--二级知识点-->
+		<div class="examaddupdate-selectdiv">
+			<select id="ExamAddUpdate-TwoLayerSelect" class="chooshine-select">
+			<#list twoLayerKnowledges as twoLayerKnowledgePoint>
+				<option kpid="${twoLayerKnowledgePoint.kp_id?c}">${twoLayerKnowledgePoint.kp_name}</option>
+			</#list>
+			</select>
+		</div>
+		
+		<#if threeLayerKnowledges?? && (threeLayerKnowledges?size &gt; 0)>
+			<#--三级知识点-->
+			<div class="examaddupdate-selectdiv">
+				<select id="ExamAddUpdate-ThreeLayerSelect" class="chooshine-select">
+				<#list threeLayerKnowledges as threeLayerKnowledgePoint>
+					<option kpid="${threeLayerKnowledgePoint.kp_id?c}">${threeLayerKnowledgePoint.kp_name}</option>
+				</#list>
+				</select>
+			</div>
+		<#else>
+			<#--三级知识点-->
+			<div class="examaddupdate-selectdiv examaddupdate-selecthide">
+				<select id="ExamAddUpdate-ThreeLayerSelect" class="chooshine-select"></select>
+			</div>
+		</#if>
+	<#else>
+		<#--二级知识点-->
+		<div class="examaddupdate-selectdiv examaddupdate-selecthide">
+			<select id="ExamAddUpdate-TwoLayerSelect" class="chooshine-select"></select>
+		</div>
+	</#if>
+<#else>
+	<div class="examaddupdate-selectdiv examaddupdate-selecthide">
+		<select id="ExamAddUpdate-OneLayerSelect" class="chooshine-select"></select>
+	</div>
+</#if>

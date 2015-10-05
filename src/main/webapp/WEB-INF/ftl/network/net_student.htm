@@ -1,0 +1,22 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<div class="content">
+	<div class="testl_con">
+		<div class="ori_li stu_li" id="myExam"><span>我的考试</span></div>
+	</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >	
+<form id="getExamForm" method="GET" action="<@spring.url '/netWork_StudentRoom.html' />" />
+	<input type="hidden" value="10" name="pageSize">
+	<input type="hidden" value="1" name="pageNo">
+	<input type="hidden" value="-1" name="sortNo">
+	<input type="hidden" value="-1" name="commitFlag">
+</form>	
+	
+<script type="text/javascript">
+$(function(){
+	//学生考试考试
+	$("#myExam").click(function(){
+		$("#getExamForm").submit();
+	});
+});
+</script>

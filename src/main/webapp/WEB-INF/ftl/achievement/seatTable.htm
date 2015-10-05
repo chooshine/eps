@@ -1,0 +1,25 @@
+<#import "spring.ftl" as spring/>
+<#if seats??>
+<ul>
+	<#list seats as students>
+		<li>
+			<#list students as student>
+				<#if student_index%2 == 0>
+					<div class="resz_l1">
+				</#if>
+				<div class="resz_l1x">
+					<div class="resz_l1xl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="45" height="50"/></div>
+					<div class="resz_l1xr">${student.studentName}</div>
+				</div>
+				<#if student_index%2 != 0 || (student_index%2 == 0 && !student_has_next)>
+					</div>
+				</#if>
+			</#list>
+			<div class="nofl"></div>
+		</li>
+	</#list>
+</ul>
+</#if>
+<div class="resz_jt">
+	<div class="resz_jtz">讲台</div>
+</div>

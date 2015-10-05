@@ -1,0 +1,76 @@
+<div id='dialog-suredelete'>
+	<h3>提示</h3>
+	<div id='dialogson'>
+		<div id='msggrandpa'>
+			<div id='msgparent'>
+				<div id='whetherclose'>确定关闭吗？</div>
+			</div>
+		</div>
+		<div id='choosecontainer'>
+		    <div id='dialog-suredelete-sureclose' class='chooshine-btn'>确定</div>
+		    <div id='dialog-suredelete-cancel' class='chooshine-btn'>取消</div>
+		</div>
+	</div>
+</div>
+<script>
+$("#dialog-suredelete").dialog({
+	dialogClass:"chooshine-dialog",
+	autoOpen:false,
+	width:350,
+	height:250,
+	modal:true
+});
+
+var chooseContainerNode = document.getElementById("choosecontainer");
+var whetherCloseNode = document.getElementById("whetherclose");
+var sureNode = document.getElementById("dialog-suredelete-sureclose");
+var cancelNode = document.getElementById("dialog-suredelete-cancel");
+
+jQuery.chooshine = {
+	alert:function(txt) {
+		//清除原有绑定点击事件
+		sureNode.onclick = null;
+		//设置提示信息
+		whetherCloseNode.innerHTML = txt;
+		//隐藏取消按钮
+		cancelNode.style.display = "none";
+		//设置确定按钮的margin-right为0
+		sureNode.style.marginRight = "";
+		//设置确定按钮的显示蓝色方块按钮
+		sureNode.className = "chooshine-btn";
+		//设置确定按钮的左边距
+		sureNode.style.marginLeft = "100px";
+		//显示dialog
+		$("#dialog-suredelete").dialog("open");
+		//为确定添加点击事件
+		sureNode.onclick = function() {
+			$("#dialog-suredelete").dialog("close");
+		}
+	},
+	confirm:function(txt, fn) {
+		//清除原有绑定点击事件
+		sureNode.onclick = null;
+		//设置提示信息
+		whetherCloseNode.innerHTML = txt;
+		//设置确定按钮的margin-right为20px
+		sureNode.style.marginRight = "20px";
+		//设置确定按钮的显示蓝色方块按钮
+		sureNode.className = "chooshine-cancel";
+		//设置确定按钮的左边距
+		sureNode.style.marginLeft = "80px";
+		//显示取消按钮
+		cancelNode.style.display = "block";
+		//显示dialog
+		$("#dialog-suredelete").dialog("open");
+		//如果点击了确定，就执行fn，并关闭dialog
+		sureNode.onclick = function() {
+			$("#dialog-suredelete").dialog("close");
+			fn();
+		};
+		//如果点击了取消，就关闭dialog
+		cancelNode.onclick = function() {
+			$("#dialog-suredelete").dialog("close");
+		}
+	}
+}
+</script>

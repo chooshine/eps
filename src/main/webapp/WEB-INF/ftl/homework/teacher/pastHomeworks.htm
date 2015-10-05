@@ -1,0 +1,91 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<#include "homework/teacher/correctHomeworkLogo.htm" parse="true" encoding="UTF-8" >
+<link rel="stylesheet" href="<@spring.url '/css/homework.css'/>" />
+<style>
+body {background-color:#eee;}
+.testli { border-bottom:1px dotted #CCCCCC; width:100%;}
+.wrap03_nr ul li.li_nr { border:none;}
+.wrap03_nr ul li.li_header .span-objectname {height:59px;line-height:59px;text-indent:66px;color:#999;}
+.wrap03_nr ul li span.span-objectname {width:300px;}
+.li_nr .span-objectname .objectname {line-height:39px;}
+.wrap03_nr ul li span.span01, .wrap03_nr ul li span.span02 {width:120px;text-align:left;}
+.wrap03_nr ul li span.span02 {width:150px;}
+.wrap03_nr ul li span.span03 {width:200px;}
+.wrap03_nr ul li span.span01 em, .wrap03_nr ul li span.span02 em {font-style:normal;}
+.nr_wrap03 .span02 a {font-size:16px;font-weight:bold;}
+.nr_wrap03 .span02 a:HOVER {color:#ff9966;}
+.li_nr .operates {text-align:center;}
+</style>
+<div class="nr_wrap03">
+	<div class="wrap03_title"><span class="wrap03_current">作业情况查看</span></div>
+    <div class="wrap03_nr">
+    	<ul>
+         	<#if unmarkedInfo?? && (unmarkedInfo?keys)?size&gt;0>
+         		<li class="li_header">
+	    			<span class="span-objectname">作业名称</span>
+	    			<span class="span01">班级</span>
+	    			<span class="span01">已交 / 总数</span>
+	    			<span class="span01">已批 / 未批</span>
+	    			<span class="span01 span03">状态</span>
+	    			<span class="span02"></span>
+	    		</li>
+         		<#list unmarkedInfo?keys as ankey>
+         			<div class="testli">
+	         			<#list unmarkedInfo[ankey] as oneInfo>
+	         			<li class="li_nr">
+							<form action="<@spring.url '/homework/teacher/correctInfoOfOneClass.html'/>" method="post">
+								<input type="hidden" name="hwId" value="${oneInfo.hw_id?c}">
+								<input type="hidden" name="classId" value="${oneInfo.class_id?c}">
+							</form>
+							<#if oneInfo_index==0>
+							<span class="span-objectname">
+							<#else>
+							<span class="span-objectname" style="visibility:hidden">
+							</#if>
+								<img alt="作业" src="<@spring.url '/images/examsystem/exam_2.png'/>">
+								<div>
+									<div class="objectname">${oneInfo.hw_name}</div>
+								</div>
+							</span>
+							<span class="span01">${oneInfo.class_name}</span>
+							<span class="span01">
+								<em class="color-orange">${oneInfo.actual_num}</em> /  <em class="color-orange">${oneInfo.class_num}</em>
+							</span>
+							<span class="span01">
+								<em class="color-orange">${oneInfo.marked_num}</em> / <em class="color-orange">${oneInfo.unmarked_num}</em>
+							</span>
+							<span class="span01 span03">
+								<#if (oneInfo.start_time?datetime?long &gt; oneInfo.now_time?datetime?long)>
+								<em class="color-orange">${oneInfo.start_time?string("yyyy-MM-dd HH:mm")}</em> 开始
+								<#elseif  (oneInfo.end_time?datetime?long &lt; oneInfo.now_time?datetime?long)>
+								<em class="color-gray">作业已结束</em>
+								<#else>
+								<em class="color-orange">${oneInfo.end_time?string("yyyy-MM-dd HH:mm")}</em> 截止
+								</#if>
+							</span>
+							<span class="span02 operates">
+								<#if oneInfo.start_time?datetime?long &lt; oneInfo.now_time?datetime?long>
+									<a class="submitform" href="javascript:void(0)">查看详情</a>
+									<#if (oneInfo.unmarked_num==0)>
+									| <a class="" href="<@spring.url '/homework/teacher/homeworkStatistic.html?hwId=${oneInfo.hw_id?c}&classId=${oneInfo.class_id?c}'/>">作业报告</a>
+									</#if>
+								</#if>
+							</span>
+	          			</li>
+	         			</#list>
+         			</div>
+         		</#list>
+         	<#else>
+         	<li class="li_nr" style='line-height:79px;text-align:center;border-bottom:1px solid #ccc;'><span style='width:100%;'>您没有作业需要批改</span></li>
+			</#if>
+        </ul>
+    </div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+$(".submitform").each(function() {
+	$(this).click(function() {
+		$($($(this).parents("li")[0]).find("form")[0]).submit();
+	});
+});
+</script>

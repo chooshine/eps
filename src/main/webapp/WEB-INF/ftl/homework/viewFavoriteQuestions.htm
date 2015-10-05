@@ -1,0 +1,180 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eee;}
+.sortcontainer {float:right;}
+.sorts {min-width:52px;height:0;position:relative;}
+.sort {height:25px;line-height:25px;padding:0 10px;cursor:pointer;color:#fff;background-color:#00afed;}
+.sort:hover {background-color:#fff;color:#000;}
+.firstkp {margin-bottom:20px;}
+.imgwrap {width:40px;text-align:center;float:left;}
+.imgwrap img {cursor:pointer;}
+.first-kpinfo .kpname {height:25px;line-height:25px;float:left;}
+.second-kpinfo .kpname {height:17px;line-height:17px;float:left;}
+.thirdkpinfo .kpname {height:15px;line-height:15px;float:left;}
+.kpname a:hover {color:#ff9966;}
+.questionnum {color:#aaa;margin-left:20px;}
+.associatedline {height:20px;border-left:1px solid #00afed;margin-top:-2px;margin-left:19px;}
+.hide {display:none;}
+
+.paperx_tl dl {width:770px;}
+.paperx_tjx {width:600px;}
+.test_box4 {width:509px;margin-left:-3px;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f" style="margin-right:487px;">个人收藏</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f"><a href="<@spring.url '/homework/student/viewAnaly.html'/>">作业历史</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/student/viewAnaly.html'/>">考试历史</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/student/viewErrorQuestions.html'/>" style="border-right:none;">错题集</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+	<div>
+		<#--左侧-->
+		<div style="width:200px;height:589px;border:1px solid #aaa;float:left;background-color:#ddd;">
+			<div style="padding:10px 0 10px 10px;background-color:#00afed;margin-bottom:20px;">
+				<div style="float:left;margin-right:20px;">
+					<span id="Subject" subjectid="${subjectId?c}" style="color:#fff;">${sortName}</span>
+				</div>
+				<div class="sortcontainer">
+					<div style="padding:0 10px;cursor:pointer;color:#fff;margin-bottom:5px;"><span id="ChangeSort">切换科目</span></div>
+					<div id="Sorts" class="sorts hide">
+						<#list sortList as sort>
+						<div class="sort" sortid="${sort.sort_id?c}">${sort.sort_name}</div>
+						</#list>
+					</div>
+				</div>
+				<div class="nofl"></div>
+			</div>
+			
+			<div>
+				<#if knowledgePoints??>
+				<#list knowledgePoints as kp>
+				<div class="firstkp kp">
+					<div class="first-kpinfo">
+						<div class="imgwrap">
+						<#if kp.subkps?size&gt;0>
+						<img src="<@spring.url '/images/close.png'/>" style="width:25px;height:25px;">
+						<#else>
+						<img src="<@spring.url '/images/cd.png'/>" style="width:25px;height:25px;">
+						</#if>
+						</div>
+						<div class="kpname"><a kpid=${kp.kp_id?c}>${kp.kp_name}</a><span class="questionnum">${kp.total?c}题</span></div>
+						<div class="nofl"></div>
+					</div>
+					<#if kp.subkps?size&gt;0>
+					<div class="second-kps">
+					<#list kp.subkps as subkp>
+					<div class="associatedline"> </div>
+					<div class="secondkp kp">
+						<div class="second-kpinfo">
+							<div class="imgwrap">
+								<#if subkp.subkps?size&gt;0>
+								<img src="<@spring.url '/images/close.png'/>" style="width:17px;height:17px;">
+								<#else>
+								<img src="<@spring.url '/images/cd.png'/>" style="width:17px;height:17px;">
+								</#if>
+							</div>
+							<div class="kpname"><a kpid=${subkp.kp_id?c}>${subkp.kp_name}</a><span class="questionnum">${subkp.total?c}题</span></div>
+							<div class="nofl"></div>
+						</div>
+						<#if subkp.subkps?size&gt;0>
+						<div class="third-kps">
+						<#list subkp.subkps as subkp2>
+						<div class="associatedline"> </div>
+						<div class="thirdkp kp">
+							<div class="third-kpinfo">
+								<div class="imgwrap"><img src="<@spring.url '/images/cd.png'/>" style="width:15px;height:15px;"></div>
+								<div class="kpname"><a kpid=${subkp2.kp_id?c}>${subkp2.kp_name}</a><span class="questionnum">${subkp2.total?c}题</span></div>
+								<div class="nofl"></div>
+							</div>
+						</div>
+						</#list>
+						</div>
+						</#if>
+					</div>
+					</#list>
+					</div>
+					</#if>
+					
+				</div>
+				</#list>
+				</#if>
+			</div>
+		</div>
+		
+		<#--右侧-->
+		<div id="Right" style="float:right;"></div>
+	</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<script>
+$(function() {
+	//点击“切换科目”
+	$("#ChangeSort").click(function() {
+		$("#Sorts").toggleClass("hide");
+	});
+	//点击不同的科目
+	$(".sort").click(function() {
+		location.href = "<@spring.url '/homework/viewFavoriteQuestions.html?subjectId='/>"+$(this).attr("sortid");
+	});
+	
+	$(".first-kpinfo").find(".imgwrap").each(function() {
+		$(this).click(function() {
+			var secondKpsNode = $($(this).parents(".firstkp")[0]).find(".second-kps");
+			if(secondKpsNode[0] != undefined) {
+				if(secondKpsNode.hasClass("hide")) {
+					secondKpsNode.removeClass("hide");
+					$(this).find("img").attr("src", "<@spring.url '/images/close.png'/>");
+				} else {
+					secondKpsNode.addClass("hide");
+					$(this).find("img").attr("src", "<@spring.url '/images/open.png'/>");
+				}
+			}
+		});
+	});
+	$(".second-kpinfo").find(".imgwrap").each(function() {
+		$(this).click(function() {
+			var thirdKpsNode = $($(this).parents(".secondkp")[0]).find(".third-kps");
+			if(thirdKpsNode[0] != undefined) {
+				if(thirdKpsNode.hasClass("hide")) {
+					thirdKpsNode.removeClass("hide");
+					$(this).find("img").attr("src", "<@spring.url '/images/close.png'/>");
+				} else {
+					thirdKpsNode.addClass("hide");
+					$(this).find("img").attr("src", "<@spring.url '/images/open.png'/>");
+				}
+			}
+		});
+	});
+	
+	//点击知识点
+	$(".kpname").find("a").click(function() {
+		var node = this;
+		var kpId = $(this).attr("kpid");
+		$.ajax({
+			url:"<@spring.url '/homework/showFavoriteQuestions.html'/>",
+			contentType:"application/x-www-form-urlencoded; charset=utf-8",
+			data:"kpId="+kpId+"&subjectId="+$("#Subject").attr("subjectid"),
+			dataType:"html",
+			success: function(data) {
+				$(".kpname").find("a").removeClass("color-blue");
+				$(node).addClass("color-blue");
+				$("#Right").html(data);
+			}
+		});
+	});
+	
+	//页面加载之后浏览器自动做的事情
+	autoDo();
+	function autoDo() {
+		$("#Right").html("<p style='font-size:32px;margin-top:200px;margin-right:340px;'>你还没有收藏哦！</p>");
+		var firstKp = $(".kpname").eq(0).find("a");
+		if(firstKp[0] != undefined) firstKp.trigger("click");
+	}
+});
+</script>

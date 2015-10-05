@@ -1,0 +1,589 @@
+<#import "spring.ftl" as spring/>
+<div class="text_sju">
+	<div class="paperx_comx">
+		<ul id="QuestionsUl">
+			<#if qiMap??>
+				<#list qiMap?keys as oneKey>
+					<#assign qi=qiMap[oneKey]>
+					<#if oneKey?starts_with("normal")>
+						<li id="${qi.ques_id?c}">
+							<div class="questop">
+								<div class="quesinfowrap"><div class="mtopic" title="题目ID：${qi.ques_id?c}"><span></span></div></div>
+								<div class="quesinfowrap">
+									<div class="usetimeskey quesinfokey" title="使用次数"></div>
+									<div class="usetimes quesinfovalue">共被使用<span class="color-orange"><#if qi.use_times??>${qi.use_times?c}<#else>0</#if></span>次</div>
+								</div>
+								<div class="quesinfowrap">
+									<div class="resourcekey quesinfokey" title="出处"></div>
+									<div class="resource quesinfovalue" title="${qi.resource}">${qi.format_resource}</div>
+								</div>
+								<div class="quesinfowrap">
+									<div class="paperx_zsd">
+										<div class="paperx_zsdl quesinfokey" title="考点"></div>
+										<div class="paperx_zsdr quesinfovalue">
+										<#if qi.knowledge_point??>
+										<#list qi.knowledge_point as kp>
+											<div class="knowledgepointdiv-nodelete" kpid="${kp.kpId}" title="${kp.kpPath}">${kp.kpName}</div>
+										</#list>
+										</#if>
+										</div>
+										<div class="nofl"></div>
+									</div>
+								</div>
+								<div class="quesinfowrap timewrap">
+									<div class="timekey quesinfokey" title="更新时间"></div>
+									<div class="quesinfovalue"><span>${qi.input_time?string("yyyy-MM-dd")}</span></div>
+								</div>
+								<div class="nofl"></div>
+							</div>
+							<div class="paperx_tl" tsid="${qi.ts_id?c}">
+								<div class="pep_bjd">
+									<div class="pep_bj">
+										<a class="toolbar">操作▼</a>
+										<div class="tools">
+											<div class="pep_bjb editOne <#if qi.release_flag!=0>hide</#if>">编辑</div>
+											<div class="copyques struct-copyques <#if qi.release_flag=0>hide</#if>">复制</div>
+											<div class="releaseques struct-releaseques <#if qi.release_flag=1>hide</#if>">发布</div>
+											<div class="pep_bjc deleteOne <#if qi.release_flag=2>hide</#if>">删除</div>
+											<div class="share struct-share <#if qi.release_flag!=1>hide</#if>"><#if qi.share_flag=0>共享<#else>取消共享</#if></div>
+										</div>
+										<div class="nofl"></div>
+									</div>
+								</div>
+								<dl>
+									<dt>
+										<div class="allNum"></div>
+										<div class="paperx_tlxr" quesid="${qi.QUES_ID?c}" questype="${qi.ques_type}" gradelevel="${qi.grade_level}" resource="${qi.resource}">
+											<div type='title' class='ttxt test_box equ'>
+												${qi.QUES_CONTENT}
+											</div>
+											<div class="linkClass2 linkClass2_postion" style="visibility:hidden">
+												<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+												<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+												<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+												<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+												<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+											</div>
+										</div>
+										<input class="onequesscore" type="hidden" value="${qi.SCORE}">
+										<div class="nofl"></div>
+									</dt>
+									<#if qi.QUES_TYPE=='1' || qi.QUES_TYPE=='2'>
+										<#list qi.OPT_CONTENT as optContent>
+											<#list qi.OPT_ID as optId>
+											    <#if optContent_index==optId_index>
+													<dd class="test_box2_bgc border-hover hide">
+														<div class="pap_tlt">${qi.OPT_NO[optId_index]+"."}</div>
+														<div class="pap_tct" optid=${optId?c}>
+															<div class='ttxt test_box2 equ' >${optContent}</div>
+														</div>
+														<div class="linkClass2 linkClass3_postion" style="visibility:hidden;">
+															<span><img src="<@spring.url '/images/examsystem/delete_grey.png'/>" class="pap_trt deleteTxt" title="删除选项"></span>
+															<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+															<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+															<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+															<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+															<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+														</div>
+														<div class="nofl"></div>
+													</dd>
+												</#if>
+											</#list>
+										</#list>
+									</#if>
+								</dl>
+								<#if (qi.ques_type=='1' || qi.ques_type=='2')>
+								<div class="paperx_tj"><img src="<@spring.url '/images/examsystem/plus.png'/>" alt="添加选项"><div>添加选项</div></div>
+								</#if>
+								<div class="paperx_btda hide">
+									<#if qi.QUES_TYPE='4'>
+									<div class="paperx_tjx paperx_line_tjx">
+									<#else>
+									<div class="paperx_tjx">
+									</#if>
+										<input type="hidden" value=${qi.QUES_TYPE}>
+										<#assign ascArr2=["对","错"] >
+										<#assign index2=-1 > <#-- 选项索引，即A、B、C等的索引 -->
+										<#assign index3=-1 > <#--填空题的选项号索引-->
+										<#list qi.OPT_REFER as l>
+											<#assign index2=index2+1 >
+											<#if qi.QUES_TYPE=='1'>
+												<#if l=='0'>
+													<label class="paperx_tjxb2 radc">
+													 	<input class='markc' type="radio" name=${"rad"+qi.QUES_ID} value="0">
+													 	<span>${qi.OPT_NO[l_index]}</span>
+													</label>
+												<#else>
+													<label class="paperx_tjxb2 radc radio">
+													 	<input class='markc' type="radio" name=${ "rad"+qi.QUES_ID} value="0" checked="checked" />
+													 	<span>${qi.OPT_NO[l_index]}</span> 
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='2'>
+												<#if l=='0'>
+													<label class="paperx_tjxb2 chkc">
+														<input class='markc' type="checkbox" name=${"rad"+qi.QUES_ID} value="0"/>
+														<span>${qi.OPT_NO[l_index]}</span>
+													</label>
+												<#else>
+												 	<label class="paperx_tjxb2 chkc radio">
+														<input class='markc' type="checkbox" name=${"rad"+qi.QUES_ID} value="0" checked="checked"/>
+														<span>${qi.OPT_NO[l_index]}</span>
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='3'>
+												<#if l=='0'>
+													<label class="paperx_tjxb2 radc">
+														<input class='markc' type="radio" name=${"rad"+qi.QUES_ID} value="0"/>
+														<span>${ascArr2[index2]}</span> 
+													</label>
+												<#else>
+													<label class="paperx_tjxb2 radc radio">
+														<input class='markc' type="radio" name=${ "rad"+qi.QUES_ID} value="0" checked="checked"/>
+														<span>${ascArr2[index2]}</span>
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='4'>
+												<#assign index3=index3+1>
+												<div class="paperxt_tjxb2">
+													<div class="cleanBoth">
+														<span class="tkNum">${qi.OPT_NO[index3]}</span>
+														<div class='markc test_box4 equ'>${l}</div>
+														<div class='linkClass2 linkClass4_postion'>
+															<span><img title="删除空格" class="deleteLine" src="<@spring.url '/images/examsystem/delete_grey.png'/>"></span>
+															<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+															<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+															<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+														</div>
+														<input type='hidden' value='1' class='tkScore' />
+													</div>
+												</div>
+											<#elseif qi.QUES_TYPE=='5'>
+												<div class="jiedati-tip">答：</div>
+												<div class="paperxt_tjxb2 answer-type5">
+													<div class='markc equ test_box5'>${l!}</div>
+													<div class='linkClass2 mar5'>
+														<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+														<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+														<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+													</div>
+												</div>
+											</#if>
+										</#list>
+										<div class="nofl"></div>
+									</div>
+									<#if qi.ques_type='4'>
+									<div class='nofl'></div>
+									<div class='paperx_tj paperx_line_tj' style="display:block;">
+										<img alt='添加空格' src="<@spring.url '/images/examsystem/plus.png'/>"/>
+										<button>添加空格</button>
+									</div>
+									</#if>
+									<div class="nofl"></div>
+									<div class="paperx_fxk">
+										<div class="paperx_zsd hide">
+											<div class="paperx_zsdl">考点：</div>
+											<div class="paperx_zsdr">
+											<#if qi.knowledge_point??>
+											<#list qi.knowledge_point as kp>
+												<div class="knowledgepointdiv-nodelete" kpid="${kp.kpId}" title="${kp.kpPath}">${kp.kpName}</div>
+											</#list>
+											</#if>
+												<div class="examaddupdate-addkp examaddupdate-addkphide"><img alt='添加考点' src="<@spring.url '/images/examsystem/plus.png'/>">添加考点</div>
+											</div>
+											<div class="nofl"></div>
+										</div>
+										<div class="paperx_jxxq">
+											<div class="paperx_zsdl" >解析：</div>
+											<div class="paperx_jxxqr">
+												<div class='fftxt test_box3 equ'>${qi.keyword}</div>
+												<div class="linkClass2" style="visibility:hidden;">
+													<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+													<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+													<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+													<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+													<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+													<span title="录音" class="quesrec struct-quesrec">&nbsp;</span>
+												</div>
+											</div>
+											<div class="nofl"></div>
+											<div class="recorderwrap" recpath="${qi.ques_rec}"></div>
+											<div class="nofl"></div>
+										</div>
+										<div class="statistic">
+											<div class="statistic-left">统计：</div>
+											<div class="statistic-right">
+												<div>本题共被作答<#if qi.ques_total_num??>${qi.ques_total_num}<#else>0</#if>次，正确率为<#if qi.CORRECT_PERCENT??>${qi.CORRECT_PERCENT}<#else>0</#if></div>
+											</div>
+											<p class="nofl"></p>
+										</div>
+										<div class="paperx_diff">
+											<div class="paperx_zsdl">难度：</div>
+											<div class="difficultywrap">
+												<div class="difficulty fl"><#if qi.difficulty??>${qi.difficulty}<#else>1.0</#if></div>
+										    	<div class="selectwrap fl">
+										        	<span class="simplespan fl">简单</span>
+										            <div class="fl">
+										            	<div class="selectdiv">
+										                	<div class="selectdot" style="left:<#if qi.difficulty??>${(qi.difficulty-1)*96/4}<#else>0</#if>px"></div>
+										                </div>
+										            </div>
+										            <span class="diffspan fl">困难</span>
+										        </div>
+										        <div class="nofl"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class='pep_bcyc'>
+								<div class="quesstatus">
+									<div><input type="checkbox" name="release" /><span>发布</span></div>
+									<div><input type="checkbox" name="share" disabled="disabled"/><span>共享</span></div>
+								</div>
+								<div class='pep_bcx save'>保 存</div>
+								<div class='pep_scx deleteOne chooshine-cancel'>删  除</div>
+							</div>
+						</li>
+					<#else>
+						<#if qi?size&gt;0>
+							<li>
+								<#assign tsId=0>
+								<div class='paperxt_stx'>
+								<#list qi as tkl>
+									<#if tkl.QUES_TYPE==6>
+										<div class="questop">
+											<div class="quesinfowrap"><div class="mtopic" title="题目ID：${tkl.ques_id?c}"><span></span></div></div>
+											<div class="quesinfowrap">
+												<div class="usetimeskey quesinfokey" title="使用次数"></div>
+												<div class="usetimes quesinfovalue">共被使用<span class="color-orange"><#if tkl.use_times??>${tkl.use_times?c}<#else>0</#if></span>次</div>
+											</div>
+											<div class="quesinfowrap">
+												<div class="resourcekey quesinfokey" title="出处"></div>
+												<div class="resource quesinfovalue" title="${tkl.resource}">${tkl.format_resource}</div>
+											</div>
+											<div class="quesinfowrap">
+												<div class="paperx_zsd">
+													<div class="paperx_zsdl quesinfokey" title="考点"></div>
+													<div class="paperx_zsdr quesinfovalue">
+													<#if tkl.knowledge_point??>
+													<#list tkl.knowledge_point as kp>
+														<div class="knowledgepointdiv-nodelete" kpid="${kp.kpId}" title="${kp.kpPath}">${kp.kpName}</div>
+													</#list>
+													</#if>
+													</div>
+													<div class="nofl"></div>
+												</div>
+											</div>
+											<div class="quesinfowrap timewrap">
+												<div class="timekey quesinfokey" title="更新时间"></div>
+												<div class="quesinfovalue"><span>${tkl.input_time?string("yyyy-MM-dd")}</span></div>
+											</div>
+											<div class="nofl"></div>
+										</div>
+										<#assign tsId=tkl.ts_id?c>
+										<#assign articleUlId=tkl.QUES_ID?c>
+										<#--材料内容部分-->
+										<div class="article-above-operatewrap">
+											<div class="article-above-tip"><a>操作▼</a></div>
+											<div class="article-above-operates">
+												<div class="article-above-operate struct-edit <#if tkl.release_flag!=0>hide</#if>">编辑</div>
+												<div class="article-above-operate struct-copyques <#if tkl.release_flag=0>hide</#if>">复制</div>
+												<div class="article-above-operate struct-releaseques <#if tkl.release_flag=1>hide</#if>">发布</div>
+												<div class="article-above-operate struct-share <#if tkl.release_flag!=1>hide</#if>"><#if tkl.share_flag=0>共享<#else>取消共享</#if></div>
+												<div class="article-above-operate article_edit hide">编辑材料</div>
+												<div class="article_ques_delete article-above-operate <#if tkl.release_flag=2>hide</#if>">删除材料</div>
+											</div>
+										</div>
+										<div class="article_area">
+											<div class='articletip'>（材料）</div>
+											<div class="struct-artcontent test_box6 equ" artid="${tkl.QUES_ID?c}" resource="${tkl.resource}" gradelevel="${tkl.grade_level}">${tkl.QUES_CONTENT}</div>
+											<div class='linkClass2 mar6'>
+												<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+												<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+												<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+												<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+												<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+											</div>
+										</div>
+										<div class="paperx_zsd article_paperx_zsd hide">
+											<div class="paperx_zsdl">考点：</div>
+											<div class="paperx_zsdr">
+											<#if tkl.knowledge_point??>
+											<#list tkl.knowledge_point as kp>
+												<div class="knowledgepointdiv-nodelete" kpid="${kp.kpId}" title="${kp.kpPath}">${kp.kpName}</div>
+											</#list>
+											</#if>
+												<div class="examaddupdate-addkp examaddupdate-addkphide"><img alt='添加考点' src="<@spring.url '/images/examsystem/plus.png'/>">添加考点</div>
+											</div>
+											<div class="nofl"></div>
+										</div>
+										<div class="paperx_diff">
+											<div class="paperx_zsdl">难度</div>
+											<div class="difficultywrap">
+												<div class="difficulty fl"><#if tkl.difficulty??>${tkl.difficulty}<#else>3.0</#if></div>
+										    	<div class="selectwrap fl">
+										        	<span class="simplespan fl">简单</span>
+										            <div class="fl">
+										            	<div class="selectdiv">
+										                	<div class="selectdot" style="left:<#if tkl.difficulty??>${(tkl.difficulty-1)*96/4}<#else>47</#if>px"></div>
+										                </div>
+										            </div>
+										            <span class="diffspan fl">困难</span>
+										        </div>
+										        <div class="nofl"></div>
+											</div>
+										</div>
+										<div class="article-under-operate">
+											<div class="savArticle pep_bcx">保存材料</div>
+											<div class="article_ques_delete chooshine-cancel">删除材料</div>
+											<span class="nofl"></span>
+										</div>
+										<div class="nofl"></div>
+									</#if>
+								</#list>
+								</div>
+								<div class='paperxt_bot hide' tsid="${tsId}">
+									<ul id=${"ul"+articleUlId+"a"}>
+										<#list qi as tkl>
+											<#if tkl.QUES_TYPE!=6>
+												<li id=${tkl.QUES_ID?c}>
+													<div class="paperx_tl" tsid="${tkl.ts_id?c}">
+														<div class="pep_bjd hide">
+															<div class="pep_bj">
+																<a class="toolbar">操作▼</a>
+																<div class="tools">
+																	<div class="pep_bjb editOne">编辑</div>
+																	<div class="pep_bjc deleteOne">删除</div>
+																</div>
+															</div>
+														</div>
+														<dl>
+															<dt>
+																<div class="allNum" mTopic="${tkl.M_TOPIC}" style="font-size:14px;color:#aaa;">题干</div>
+																<div class="paperx_tlxr" quesid="${tkl.QUES_ID?c}" questype="${tkl.ques_type}" gradelevel="${tkl.grade_level}" resource="${tkl.resource}">
+																	<div class='ttxt test_box equ'>
+																		${tkl.QUES_CONTENT}
+																	</div>
+																	<div class="linkClass2 linkClass2_postion" style="visibility:hidden">
+																		<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+																		<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+																		<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+																		<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+																		<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+																	</div>
+																</div>
+																<input class="onequesscore" type="hidden" value="${tkl.SCORE}">
+																<div class="nofl"></div>
+															</dt>
+															<#if tkl.QUES_TYPE=='1' || tkl.QUES_TYPE=='2'>
+																<#list tkl.OPT_CONTENT as optContent>
+																	<#list tkl.OPT_ID as optId>
+																		<#if optContent_index==optId_index>
+																			<dd class='test_box2_bgc border-hover hide'>
+																				<div class="pap_tlt">${tkl.OPT_NO[optId_index]+"."}</div>
+																				<!-- 初始化状态下选项插入公式 -->
+																				<div class="pap_tct" optid=${optId?c}>
+																					<div class='ttxt test_box2 equ'>${optContent}</div>
+																				</div>
+																				<div class="linkClass2 linkClass3_postion" style="visibility:hidden;">
+																					<span><img src="<@spring.url '/images/examsystem/delete_grey.png'/>" class="pap_trt deleteTxt" title="删除选项"></span>
+																					<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+																					<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+																					<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+																					<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+																					<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+																				</div>
+																				<div class="nofl"></div>
+																			</dd>
+																		</#if>
+																	</#list> 
+																</#list> 
+															</#if>
+														</dl>
+														<div class="paperx_tj"><img src="<@spring.url '/images/examsystem/plus.png'/>" alt="添加选项"><div>添加选项</div></div>
+														<div class="paperx_btda hide">
+															<#if tkl.QUES_TYPE=='4'>
+															<div class="paperx_tjx paperx_line_tjx">
+															<#else>
+															<div class="paperx_tjx">
+															</#if>
+																<input type="hidden" value=${tkl.QUES_TYPE}>
+																<#assign ascArr2=["对","错"] > 
+																<#assign index2=-1> 
+																<#assign index3=-1>
+																<#list tkl.OPT_REFER as l> 
+																	<#assign index2=index2+1 > 
+																	<#if tkl.QUES_TYPE=='1'>
+																		<#if l=='0'>
+																			<label class="paperx_tjxb2 radc">
+																			 	<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID} value="0"/>
+																			 	<span>${tkl.OPT_NO[l_index]}</span>
+																			</label>
+																		<#else>
+																			<label class="paperx_tjxb2 radc radio">
+																			 	<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID} value="0" checked="checked"/>
+																			 	<span>${tkl.OPT_NO[l_index]}</span>
+																			</label>
+																		</#if>
+																	<#elseif tkl.QUES_TYPE=='2'>
+																		<#if l=='0'> 
+																			<label class="paperx_tjxb2 chkc">
+																				<input class='markc' type="checkbox" name=${"rad"+tkl.QUES_ID} value="0"/>
+																				<span>${tkl.OPT_NO[l_index]}</span>
+																			</label>
+																		<#else> 
+																			<label class="paperx_tjxb2 chkc radio">
+																				<input class='markc' type="checkbox" name=${"rad"+tkl.QUES_ID} value="0" checked="checked"/>
+																				<span>${tkl.OPT_NO[l_index]}</span>
+																			</label>
+																		</#if>
+																	<#elseif tkl.QUES_TYPE=='3'>
+																		<#if l=='0'> 
+																			<label class="paperx_tjxb2 radc">
+																				<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID} value="0"/>
+																				<span>${ascArr2[index2]}</span>
+																			</label>
+																		<#else>
+																			<label class="paperx_tjxb2 radc radio">
+																				<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID} value="0" checked="checked"/>
+																				<span>${ascArr2[index2]}</span>
+																			</label>
+																		</#if>
+																	<#elseif tkl.QUES_TYPE=='4'>
+																		<#assign index3=index3+1>
+																		<div class="paperxt_tjxb2">
+																			<div class="cleanBoth">
+																				<span class="tkNum">${tkl.OPT_NO[index3]}</span>
+																				<div class='markc test_box4'>${l} </div>
+																				<input type='hidden' value='1' class='tkScore' />
+																			</div>
+																			<div class="nofl"></div>
+																		</div>
+																	<#elseif tkl.QUES_TYPE=='5'>
+																		<div class="jiedati-tip">答：</div>
+																		<div class="paperxt_tjxb2 answer-type5">
+																			<div class='markc equ test_box5'>${l!}</div>
+																		</div>
+																	</#if> 
+																</#list>
+																<div class="nofl"></div>
+															</div>
+															<div class="nofl"></div>
+															<div class="paperx_fxk">
+																<div class="paperx_zsd hide">
+																	<div class="paperx_zsdl">考点：</div>
+																	<div class="paperx_zsdr">
+																	<#if tkl.knowledge_point??>
+																	<#list tkl.knowledge_point as kp>
+																		<div class="knowledgepointdiv-nodelete" kpid="${kp.kpId}" title="${kp.kpPath}">${kp.kpName}</div>
+																	</#list>
+																	</#if>
+																		<div class="examaddupdate-addkp examaddupdate-addkphide"><img alt='添加考点' src="<@spring.url '/images/examsystem/plus.png'/>">添加考点</div>
+																	</div>
+																	<div class="nofl"></div>
+																</div>
+																<div class="paperx_jxxq">
+																	<div class="paperx_zsdl">解析：</div>
+																	<div class="paperx_jxxqr">
+																		<div class='fftxt test_box3 equ'>${tkl.keyword}</div>
+																		<div class="linkClass2" style="visibility:hidden;">
+																			<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+																			<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+																			<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+																			<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+																			<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+																			<span title="录音" class="quesrec struct-quesrec">&nbsp;</span>
+																		</div>
+																	</div>
+																	<div class="nofl"></div>
+																	<div class="recorderwrap" recpath="${tkl.ques_rec}"></div>
+																	<div class="nofl"></div>
+																</div>
+																<div class="statistic">
+																	<div class="statistic-left">统计：</div>
+																	<div class="statistic-right">
+																		<div>本题共被作答<#if tkl.ques_total_num??>${tkl.ques_total_num}<#else>0</#if>次，正确率为<#if tkl.CORRECT_PERCENT??>${tkl.CORRECT_PERCENT}<#else>0</#if></div>
+																	</div>
+																	<p class="nofl"></p>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class='pep_bcyc'>
+														<div class='pep_bcx save'>保 存</div>
+														<div class='pep_scx deleteOne chooshine-cancel'>删  除</div>
+													</div>
+												</li>
+											</#if>
+										</#list>
+									</ul>
+									<div class="paperxt_botbx hide">
+										<div class='paperxt_botbx2'>
+											<select class='chooshine-select'>
+												<option value='1'>选择题</option>
+												<option value='2'>多选题</option>
+												<option value='3'>判断题</option>
+												<option value='4'>填空题</option>
+												<option value='5'>解答题</option>
+											</select>
+										</div>
+										<div class='paperxt_botbx3'>添加材料小题</div>
+									</div>
+								</div>
+								<div class="pep_bc struct-savearticle artbc hide">
+									<div class="quesstatus">
+										<div><input type="checkbox" name="release"><span>发布</span></div>
+										<div><input type="checkbox" disabled="disabled" name="share"><span>共享</span></div>
+									</div>
+									<div class="pep_bcx struct-saveart">保 存</div>
+								</div>
+							</li>
+						</#if>
+					</#if>
+				</#list>
+			</#if>
+		</ul>
+	</div>
+</div>
+
+<div style="height:30px;margin-top:12px;font-size:15px;">
+<#include "pagination.htm" parse="true" encoding="UTF-8">
+<@pagination page=page/>
+</div>
+
+<script>
+$(function() {
+	//给小题头部的图标添加点击事件
+	$(".quesinfokey").click(function() {
+		if($(this).next().hasClass("hide")) {
+			$(this).next().removeClass("hide");
+		} else {
+			$(this).next().addClass("hide");
+		}
+	});
+	//给每个小题添加小题号
+	$(".mtopic").each(function(index) {
+		$(this).find("span").text(${start}+index+1);
+	});
+	//给每个小题增加点击事件
+	$(".paperx_tl").each(function() {
+		addEventToQues($(this).parents("li")[0]);//给每个小题添加事件
+	});
+
+	$(".article_area").each(function() {
+		$(this).click(function() {//材料点击事件
+			if($(this).find(".struct-artcontent").attr("contenteditable") != "true") $(this).parent().next().toggleClass("hide");
+		});
+		addEventToArticle(this);//给材料部分添加事件
+	});
+	
+	//分页
+	$(".fcenter,.show").each(function() {
+		$(this).click(function() {
+			showQuestions($(this).attr("url"));
+		});
+	});
+	
+});
+</script>

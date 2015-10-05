@@ -1,0 +1,889 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style type="text/css">
+body {background-color:#eee;}
+.content {padding:0px;}
+.ui-widget {font-family:"微软雅黑";}
+.fixed{position:fixed; top:0; width:1000px;}
+.largermargin {margin-top:60px;}
+
+.paper_tpcmr a {display:inline-block;line-height:32px;font-size:16px;color:000;margin-right:20px;}
+.paper_tpcmr a:hover {color:#ff9966;}
+.paper_tpcmlx2 .stuscoreimg {float:none;margin-right:0px;}
+
+.article_area {margin-bottom:100px;}
+.paperxt_com {width:700px; float:left; margin-right:20px;}
+
+.tip_span {display:inline-block;width:40px;height:20px;color:#ACABA8;margin-right:20px;padding-left:22px;}
+.viewanaly {cursor:pointer; color:#0DA0FF; font-weight:500; float:right;}
+.analy_divs {margin-bottom:20px;}
+.analy-left {float:left;margin-top:5px;}
+.analy-right {width:660px;min-height:23px;line-height:23px;font-size:14px;word-wrap:break-word;float:left;}
+.analys_container {display:none;margin-top:10px;}
+.analys-analy {padding-top:10px;border-top:1px dashed #ddd;}
+.viewdetailanalys-analycontainer {margin-left:30px;}
+.lineContent {text-decoration:underline;}
+.correct_student_answer{padding-top:30px;padding-bottom:30px}
+.cleanBoth {clear:none;}
+.gradePaper-stuanswers .paperx_line_tjx .cleanBoth {margin-left:-10px;}
+
+/*填空题及解答题本题答案*/
+.paperx_comxp .paperx_btda {min-height:32px;padding:10px 0;}
+.viewdetail-answers {height:32px;line-height:32px;padding-left:20px;float:left;}
+.viewdetail-title {height:32px;line-height:30px;font-size:14px;font-weight:bold;margin-left:30px;}
+.viewdetail-commentcontainer .viewdetail-title {float:left;}
+.paperxt_tjxb2 .cleanBoth .tkScore {margin-top:2px;}
+.viewdetail-gradecontainer {float:left;margin-left:32px;}
+.paperx_line_tjx .viewdetail-gradecontainer {margin-top:10px;margin-left:25px;}
+.viewdetail-gradecontainer .struct-grade-correct, .viewdetail-gradecontainer .struct-grade-false {float:left;}
+.viewdetail-gradecontainer .struct-grade-score {width:36px;height:14px;font-size:14px;color:#333;text-align:right;border:none;background-color:#fff;float:left;margin:10px 10px auto auto;  }
+.viewdetail-gradecontainer > span {display:inline-block;margin-top:11px;}
+.test_box5 {float:left;margin-left:5px;}
+.viewdetail-referanswer .test_box5 {margin-left:68px;}
+.viewdetail-referanswer {padding-top:10px;border-top:1px dashed #ddd;}
+.viewdetail-commentcontainer {padding-top:10px;border-top:1px dashed #ddd;}
+.viewdetail-comment {margin-top:-2px;}
+
+.viewdetail-statistic {background:url("<@spring.url '/images/examsystem/graph.png' />") no-repeat;}
+.viewdetail-analy {background:url("<@spring.url '/images/examsystem/article.png' />") no-repeat;}
+.viewdetail-knowledge {float:left; background:url("<@spring.url '/images/examsystem/light.png' />") no-repeat;}
+.viewdetail-doubtopts {background:url("<@spring.url '/images/examsystem/question.png' />") no-repeat;}
+
+.viewdetail-kpcontainer {float:left;}
+
+.network-openrefer {margin-left:840px;}
+li:hover .quesoperates {display:block;}
+.quesoperates {display:none;float:left;}
+.nextques {display:inline-block;padding-left:18px;background:url("<@spring.url '/images/examsystem/arrow_next.png'/>") no-repeat;color:#888;}
+.nextques:hover {color:#ff9900;}
+
+/*录音*/
+.recorderwrap {margin-left:80px;}
+.viewdetail-commentcontainer .recorderwrap {margin-top:-10px;}
+.deletewav {display:none;}
+</style>
+<!--[if IE 6]>
+<style type="text/css">
+html{overflow:hidden;}
+body{height:100%;overflow:auto;}
+.fixed{position:absolute;top:expression(eval(document.body.scrollTop + 25));}
+</style>
+<![endif]-->
+
+<div class="content">
+<div class="paper_tpct">
+	<label>${examInfoMap["exam_name"]!}</label>
+</div>
+<div class="paper_top">
+	<div class="paper_tpcm">
+		<div class="paper_tpcml">
+			<div class="paper_tpcmlx2">
+				<div class="examinfo-container">
+					<img alt="题目" src="<@spring.url '/images/examsystem/list_nested_28.png' />">
+					<div class="examinfo">
+						大题 <span style="font-size:15px;color:#ff9966;font-weight:700;margin-right:1px;">${examInfoMap["b_topic_num"]!}</span> 题<em> | </em>
+						小题 <span id="last" style="font-weight:700;color:#ff9966;">${examInfoMap["m_topic_num"]!}</span>
+					</div>
+				</div>
+				<div class="examinfo-container">
+					<img alt="分数" src="<@spring.url '/images/examsystem/target.png' />">
+					<div class="examinfo">
+						总分 <span style="font-weight:700;color:#ff9966;">${examInfoMap["total"]!}</span> 分<em> | </em>
+						得分<span id="StuScore" style="margin-left:10px;"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="paper_tpcmr">
+			<label><a id="ViewResult">查看报告</a></label>
+			<#if viewType=='all'>
+				<label><a id="ViewOnlyErrors">只看错题</a></label>
+			<#else>
+				<label><a id="ViewAnaly">查看解析</a></label>
+			</#if>
+			<label id="Quit"><a class="color-blue" href="<@spring.url '/student/viewAnaly.html'/>">退出</a></label>
+			<div class="nofl"></div>
+		</div>
+	</div>
+</div>
+<#-- 下面的div用于消除滚动时闪屏问题 -->
+<div></div>
+<!-- 列出试卷的所有大题 -->
+<div class="paper_tpct3">
+	<#if qtList??>
+		<#list qtList as list>
+			<div class="paper_tpctlm" realityId=${list.TYPE!} id=${list.TYPE_ID?c!} ordernum='${list.order_num}'>${list.TYPE_NAME!}</div>
+			<input type="hidden" id=${"score"+list.TYPE_ID?c} value=${list.DEFAULT_SCORE?c!}>
+			<#if bctList??>
+				<#list bctList as bct>
+					<#if bct_index==list_index>
+						<input type="hidden" id=${"bct"+list.TYPE_ID?c} value=${bct+"、"!} >
+					</#if>
+				</#list>
+			</#if>
+			<input type="hidden" id=${"detail"+list.TYPE_ID?c} value=${list.TYPE_DETAIL!}>
+		</#list>
+	</#if>
+	<div class="nofl"></div>
+</div>
+
+<div class="text_sju">
+	<div class="paper_tpnav">
+		<div class="paper_tpnavc" id="paper_tpnavc">
+			<div class="paper_tpnavc1">
+				<span id="bctNum"></span>
+				<label id="quesTypeDetail"></label>
+				<span id="titleAfter" style="padding-left:12px; font-size:12px; color:#fff;">
+					(共<span id="nowTopic" style=" padding-left:3px; padding-right:3px; color:#fff;">0</span>
+					题 ，共有<span id="nowScore" style=" padding-left:3px; padding-right:3px; color:#fff;">0</span>分) 
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<#if qiMap?? && qtList??>
+		<#list qtList as list>
+			<#if list.type_id??>
+			    <#assign items=qiMap[list.type_id?c] >
+				<div class="paperx_com" id=${"ques"+list.type_id?c}>
+					<ul id=${"ul"+list.type_id?c}>
+					<#list items?keys as key>
+						<#assign qi = items[key]>
+						<#if key?starts_with("normal")>
+						<li id="ques${qi.ques_id?c}" questype=${qi.ques_type}>
+								<div class="paperx_tl">
+									<dl>
+										<dt>
+											<div class="allNum" mTopic=${qi.M_TOPIC}>${qi.M_TOPIC}</div>
+											<div type="title" class="paperx_tlxr" quesid=${qi.QUES_ID?c}>
+												<div type='title' class='ttxt test_box' >
+													${qi.QUES_CONTENT}
+												</div>
+											</div>
+											<div class="paperx_tr1_fs">
+												<#if qi.STU_SCORE==-1>
+													<#assign student_score="">
+												<#else>
+													<#assign student_score=qi.STU_SCORE>
+												</#if>
+												<div class="stuscore-container"><input disabled="true" class="struct-stuscore" type="text" value="<#if qi.stu_score!=-1>${qi.stu_score}<#else>0</#if>"></div>
+												<div><em class="color-gray">/ </em><em class="onequesscore">${qi.SCORE}</em><span> 分</span></div>
+											</div>
+											<div class="nofl"></div>
+										</dt>
+										<#if qi.QUES_TYPE=='1' || qi.QUES_TYPE=='2'>
+											<#list qi.OPT_CONTENT as optContent>
+												<#list qi.OPT_ID as optId>
+												    <#if optContent_index==optId_index>
+														<dd class="test_box2_bgc">
+															<div class="pap_tlt">${qi.OPT_NO[optId_index]+"."}</div>
+															<div type="option" class="pap_tct questionItme" optid=${optId?c}>
+																<div class='ttxt test_box2' >${optContent}</div>
+															</div>
+															<div class="nofl"></div>
+														</dd>
+													</#if>
+												</#list>
+											</#list>
+										</#if>
+									</dl>
+									<!-- 本题答案 -->
+									<div class="paperx_btda">
+										<#-- 普通小题 -->
+										<#if qi.QUES_TYPE!='4' && qi.QUES_TYPE!='5'>
+											<div class="gradePaper-stuanswers">
+												<#if qi.STUDENT_ANSWER=="@#@#">
+												<img class="network-duicuoimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>"/>
+												<div class="viewdetail-answers">你答对了！
+												<#else>
+												<img class="network-duicuoimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+												<div class="viewdetail-answers">
+													<#if qi.STUDENT_ANSWER??>
+													<span>你的回答是：</span>
+													<span>${qi.STUDENT_ANSWER ?replace("@@", "、")}，</span>
+													<#else>
+													<span>，没有回答该题</span>
+													</#if>
+												</#if>
+													<!-- 正确答案部分 -->
+													<span>正确答案是：</span>
+													<span>${qi.QUES_REFER ?replace("@@", "、")}</span>
+												</div>
+												<div class="nofl"></div>
+												<div class="network-openrefer">
+													<div class="quesoperates">
+														<div class="quesoperate"><a class="nextques struct-nq">下一题</a></div>
+													</div>
+													<span class="struct-opencmd">展开解析▼</span>
+												</div>
+											</div>
+										<#elseif qi.QUES_TYPE=='4'>
+											<div class="gradePaper-stuanswers">
+												<div class="viewdetail-title">考生答案：</div>
+												<div class="paperx_tjx paperx_line_tjx">
+													<#assign index3=0 > <#--填空题的选项号索引-->
+													<#if qi.STU_OSCORE??>
+														<#assign stuOScoreArr=qi.STU_OSCORE ?split(",")>
+													</#if>
+													<#list qi.OPT_NO as l>
+													<div class="paperxt_tjxb2">
+														<div class="viewdetail-gradecontainer struct-gradecontainer">
+															<#if stuOScoreArr?? && stuOScoreArr[l_index]==qi.O_SCORE[l_index]>
+																<img alt="对" title="对" class="struct-grade-correct" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+															<#else>
+																<img alt="错" title="错" class="struct-grade-false" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+															</#if>
+														</div>
+														<div class="cleanBoth">
+															<span class="tkNum">${l}</span>
+															<#assign lineContent="">
+															<#if qi.STUDENT_ANSWER??>
+																<#list qi.STUDENT_ANSWER?split("@@") as sa>
+																	<#if sa?starts_with(l+"##")>
+																		<#assign lineContent=sa?substring(sa?index_of("##")+2)>
+																	</#if>
+																</#list>
+															</#if>
+															<div class='test_box4 test_bg' optId="${qi.OPT_ID[l_index]?c}">${lineContent}</div>
+														</div>
+														<div class="viewdetail-gradecontainer struct-gradecontainer">
+															<input class="struct-grade-score" type="text" value="<#if stuOScoreArr?? && stuOScoreArr[l_index]??>${stuOScoreArr[l_index]}<#else>0</#if>" disabled="disabled"/>
+															<span class="color-gray">/</span>
+															<span class='tkScore'>${qi.O_SCORE[index3]}</span>
+															<span class="color-blue">分</span>
+														</div>
+														<div class="nofl"></div>
+													</div>
+													<#assign index3=index3+1>
+													</#list>
+												</div>
+												<div class="nofl"></div>
+												<div class="network-openrefer">
+													<div class="quesoperates">
+														<div class="quesoperate"><a class="nextques struct-nq">下一题</a></div>
+													</div>
+													<span class="struct-opencmd">展开解析▼</span>
+												</div>
+											</div>
+										<#elseif qi.QUES_TYPE=='5'>
+											<div class="gradePaper-stuanswers">
+												<div class="viewdetail-title">考生答案：</div>
+												<div>
+													<div class="paperxt_tjxb2">
+														<div class="cleanBoth">
+															<div class="viewdetail-gradecontainer">
+																<#if qi.STU_SCORE=qi.SCORE>
+																	<img alt="对" title="对" class="struct-grade-correct" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+																<#else>
+																	<img alt="错" title="错" class="struct-grade-false" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+																</#if>
+															</div>
+															<div class='test_box5 test_bg'>${qi.STUDENT_ANSWER}</div>
+														</div>
+													</div>
+												</div>
+												<div class="nofl"></div>
+												<div class="network-openrefer">
+													<div class="quesoperates">
+														<div class="quesoperate"><a class="nextques struct-nq">下一题</a></div>
+													</div>
+													<span class="struct-opencmd">展开解析▼</span>
+												</div>
+											</div>
+										</#if>
+										<!-- 小题解析 -->
+										<div class="analys_container">
+											<#if qi.QUES_TYPE=='4'>
+											<div class="viewdetail-referanswer">
+												<div class="viewdetail-title">参考答案：</div>
+												<div class="paperx_tjx paperx_line_tjx">
+													<#assign index3=-1 > <#--填空题的选项号索引-->
+													<#list qi.OPT_REFER as l>
+													<#assign index3=index3+1>
+													<div class="paperxt_tjxb2">
+														<div class="cleanBoth">
+															<span class="tkNum">${qi.OPT_NO[index3]}</span>
+															<div class='test_box4'>${l}</div>
+														</div>
+													</div>
+													</#list>
+												</div>
+												<div class="nofl"></div>
+											</div>
+											<#elseif qi.QUES_TYPE=='5'>
+											<div class="viewdetail-referanswer">
+												<div class="viewdetail-title">参考答案：</div>
+												<div>
+													<div class="paperxt_tjxb2">
+														<div class="cleanBoth">
+															<div class='test_box5 viewdetail-refer-type5'>${qi.QUES_REFER}</div>
+														</div>
+													</div>
+												</div>
+												<div class="nofl"></div>
+											</div>
+											</#if>
+											
+											<div class="analys-analy">
+												<div class="viewdetailanalys-analycontainer">
+													<!-- 统计 -->
+													<div class="analy_divs">
+														<div class="analy-left"><span class="tip_span viewdetail-statistic">统计</span></div>
+														<div class="analy-right">
+															<span>本题共被作答${qi.ANSWER_TOTAL}次，正确率为${qi.CORRECT_PERCENT}
+																<!-- 对易错项的处理，只有单选和多选有易错项 -->
+																<#if qi.QUES_TYPE=='1' || qi.QUES_TYPE=='2'>
+																	<#if qi.ERROR_NUM!=0>
+																		，易错项为${qi.EASY_ERROR_OPT}
+																	<#else>
+																		，暂无易错项
+																	</#if>
+																</#if>
+															</span>
+														</div>
+														<div class="nofl"></div>
+													</div>
+													
+													<!-- 解析 -->
+													<div class="analy_divs">
+														<div class="analy-left"><span class="tip_span viewdetail-analy">解析</span></div>
+														<div class="analy-right"><span>${qi.keyword}</span></div>
+														<div class="nofl"></div>
+														<div class="recorderwrap" recpath="${qi.ques_rec}"></div>
+														<div class="nofl"></div>
+													</div>
+													
+													<!-- 考点 -->
+													<div class="analy_divs">
+														<div class="analy-left"><span class="tip_span viewdetail-knowledge">考点</span></div>
+														<div class="analy-right">
+															<div class="viewdetail-kpcontainer">
+															<#if qi.knowledge_point??>
+															<#list qi.knowledge_point as kp>
+																<span class="knowledgepointdiv-nodelete" title="${kp.kpPath}">${kp.kpName}</span>
+															</#list>
+															</#if>
+															</div>
+														</div>
+														<div class="nofl"></div>
+													</div>
+													
+													<#if qi.QUES_TYPE!='4' && qi.QUES_TYPE!='5'>
+													<!-- 选过 -->
+													<div class="analy_divs">
+														<div class="analy-left"><span class="tip_span viewdetail-doubtopts">选过</span></div>
+														<div class="analy-right">
+															<span>
+															<#list qi.doubt_options as opt>
+																<#if opt==1>
+																${qi.opt_no[opt_index]}
+																</#if>
+															</#list>
+															</span>
+														</div>
+														<div class="nofl"></div>
+													</div>
+													</#if>
+													<div class="paperx_diff analy_divs">
+														<div class="paperx_zsdl">难度</div>
+														<div class="difficultywrap">
+															<div class="difficulty fl"><#if qi.difficulty??>${qi.difficulty}<#else>1.0</#if></div>
+													    	<div class="selectwrap fl">
+													        	<span class="simplespan fl">简单</span>
+													            <div class="fl">
+													            	<div class="selectdiv">
+													                	<div class="selectdot" style="left:<#if qi.difficulty??>${(qi.difficulty-1)*96/4}<#else>0</#if>px"></div>
+													                </div>
+													            </div>
+													            <span class="diffspan fl">困难</span>
+													        </div>
+													        <div class="nofl"></div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<#if qi.QUES_TYPE=='4' || qi.QUES_TYPE=='5'>
+											<div class="viewdetail-commentcontainer">
+												<div class="viewdetail-title">评语：</div>
+												<div class="viewdetail-comment struct-comment test_box4">${qi.teacher_comment}</div>
+												<div class="nofl"></div>
+												<div class="recorderwrap" recpath="${qi.comment_rec}"></div>
+												<div class="nofl"></div>
+											</div>
+											</#if>
+										</div>
+									</div>
+								</div>
+								<div class="nofl"></div>
+							</li>
+						<#else>
+						<li>
+							<#assign articleUlId="">
+							<div class='paperxtc_com'>
+								<div class='paperxt_stx'>
+								<#list qi as tkList>
+									<#list tkList as tkl>
+										<#if tkl.QUES_TYPE==6>
+											<#assign articleUlId=tkl.QUES_ID?c>
+											<#--文章内容部分-->
+											<div class="article_area">
+												<div class='articletip'>（材料）</div>
+												<div remark='article' class="questionItme paperxt_com test_box6 equlabel"  type="artlic" artid=${tkl.QUES_ID?c}>${tkl.QUES_CONTENT}</div>
+											</div>
+											<div class="nofl"></div>
+										</#if>
+									</#list>
+								</#list>
+								</div>
+								<div class='paperxt_bot'>
+									<ul id=${"ul"+articleUlId+"a"}>
+									<#list qi as tkList>
+										<#list tkList as tkl>
+											<#if tkl.QUES_TYPE!=6>
+												<li id="ques${tkl.QUES_ID?c}" questype=${tkl.ques_type}>
+													<div class="paperx_tl">
+														<dl>
+															<dt>
+																<div class="allNum" mTopic="${tkl.M_TOPIC}">${tkl.M_TOPIC}</div>
+																<div type="title" class="paperx_tlxr" quesid=${tkl.QUES_ID?c}>
+																	<div  type='title' class='ttxt test_box' >
+																		${tkl.QUES_CONTENT}
+																	</div>
+																</div>
+																<div class="paperx_tr1_fs">
+																	<#if tkl.STU_SCORE==-1>
+																		<#assign studentScore="">
+																	<#else>
+																		<#assign studentScore=tkl.STU_SCORE>
+																	</#if>
+																	<div class="stuscore-container"><input disabled="true" class="struct-stuscore" type="text" value="<#if tkl.stu_score!=-1>${tkl.stu_score}<#else>0</#if>"></div>
+																	<div><em class="color-gray">/ </em><em class="onequesscore">${tkl.SCORE}</em><span> 分</span></div>
+																</div>
+																<div class="nofl"></div>
+															</dt>
+															<#if tkl.QUES_TYPE=='1' || tkl.QUES_TYPE=='2'> 
+																<#list tkl.OPT_CONTENT as optContent>
+																	<#list tkl.OPT_ID as optId>
+																		<#if optContent_index==optId_index>
+																			<dd class='test_box2_bgc'>
+																				<div class="pap_tlt">${tkl.OPT_NO[optId_index]+"."}</div>
+																				<div type="option" class="pap_tct questionItme" optid=${optId?c}>
+																					<div class='ttxt test_box2' >${optContent}</div>
+																				</div>
+																				<div class="nofl"></div>
+																			</dd>
+																		</#if>
+																	</#list> 
+																</#list> 
+															</#if>
+														</dl>
+														<div class="paperx_btda">
+															<#-- 普通小题 -->
+															<#if tkl.QUES_TYPE!='4' && tkl.QUES_TYPE!='5'>
+																<div class="gradePaper-stuanswers">
+																	<#if tkl.STUDENT_ANSWER=="@#@#">
+																	<img class="network-duicuoimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>"/>
+																	<div class="viewdetail-answers">你答对了！
+																	<#else>
+																	<img class="network-duicuoimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+																	<div class="viewdetail-answers">
+																		<#if tkl.STUDENT_ANSWER??>
+																		<span>你的回答是：</span>
+																		<span>${tkl.STUDENT_ANSWER ?replace("@@", "、")}，</span>
+																		<#else>
+																		<span>，没有回答该题</span>
+																		</#if>
+																	</#if>
+																		<!-- 正确答案部分 -->
+																		<span>正确答案是：</span>
+																		<span>${tkl.QUES_REFER ?replace("@@", "、")}</span>
+																	</div>
+																	<div class="nofl"></div>
+																	<div class="network-openrefer">
+																		<div class="quesoperates">
+																			<div class="quesoperate"><a class="nextques struct-nq">下一题</a></div>
+																		</div>
+																		<span class="struct-opencmd">展开解析▼</span>
+																	</div>
+																</div>
+															<#elseif tkl.QUES_TYPE=='4'>
+																<div class="gradePaper-stuanswers">
+																	<div class="viewdetail-title">考生答案：</div>
+																	<div class="paperx_tjx paperx_line_tjx">
+																		<#assign index3=0 > <#--填空题的选项号索引-->
+																		<#if tkl.STU_OSCORE??>
+																			<#assign stuOScoreArr=tkl.STU_OSCORE ?split(",")>
+																		</#if>
+																		<#list tkl.OPT_NO as l>
+																		<div class="paperxt_tjxb2">
+																			<div class="viewdetail-gradecontainer struct-gradecontainer">
+																				<#if stuOScoreArr?? && stuOScoreArr[l_index]==tkl.O_SCORE[l_index]>
+																					<img alt="对" title="对" class="struct-grade-correct" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+																				<#else>
+																					<img alt="错" title="错" class="struct-grade-false" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+																				</#if>
+																			</div>
+																			<div class="cleanBoth">
+																				<span class="tkNum">${l}</span>
+																				<#assign lineContent="">
+																				<#if tkl.STUDENT_ANSWER??>
+																					<#list tkl.STUDENT_ANSWER?split("@@") as sa>
+																						<#if sa?starts_with(l+"##")>
+																							<#assign lineContent=sa?substring(sa?index_of("##")+2)>
+																						</#if>
+																					</#list>
+																				</#if>
+																				<div class='test_box4 test_bg' optId="${tkl.OPT_ID[l_index]?c}">${lineContent}</div>
+																			</div>
+																			<div class="viewdetail-gradecontainer struct-gradecontainer">
+																				<input class="struct-grade-score" type="text" value="<#if stuOScoreArr?? && stuOScoreArr[l_index]??>${stuOScoreArr[l_index]}<#else>0</#if>" disabled="disabled"/>
+																				<span class="color-gray">/</span>
+																				<span class='tkScore'>${tkl.O_SCORE[index3]}</span>
+																				<span class="color-blue">分</span>
+																			</div>
+																			<div class="nofl"></div>
+																		</div>
+																		<#assign index3=index3+1>
+																		</#list>
+																	</div>
+																	<div class="nofl"></div>
+																	<div class="network-openrefer">
+																		<div class="quesoperates">
+																			<div class="quesoperate"><a class="nextques struct-nq">下一题</a></div>
+																		</div>
+																		<span class="struct-opencmd">展开解析▼</span>
+																	</div>
+																</div>
+															<#elseif tkl.QUES_TYPE=='5'>
+																<div class="gradePaper-stuanswers">
+																	<div class="viewdetail-title">考生答案：</div>
+																	<div>
+																		<div class="paperxt_tjxb2">
+																			<div class="cleanBoth">
+																				<div class="viewdetail-gradecontainer">
+																					<#if tkl.STU_SCORE=tkl.SCORE>
+																						<img alt="对" title="对" class="struct-grade-correct" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+																					<#else>
+																						<img alt="错" title="错" class="struct-grade-false" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+																					</#if>
+																				</div>
+																				<div class='test_box5 test_bg'>${tkl.STUDENT_ANSWER}</div>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="nofl"></div>
+																	<div class="network-openrefer">
+																		<div class="quesoperates">
+																			<div class="quesoperate"><a class="nextques struct-nq">下一题</a></div>
+																		</div>
+																		<span class="struct-opencmd">展开解析▼</span>
+																	</div>
+																</div>
+															</#if>
+															<!-- 小题解析 -->
+															<div class="analys_container">
+																<#if tkl.QUES_TYPE=='4'>
+																<div class="viewdetail-referanswer">
+																	<div class="viewdetail-title">参考答案：</div>
+																	<div class="paperx_tjx paperx_line_tjx">
+																		<#assign index3=-1 > <#--填空题的选项号索引-->
+																		<#list tkl.OPT_REFER as l>
+																		<#assign index3=index3+1>
+																		<div class="paperxt_tjxb2">
+																			<div class="cleanBoth">
+																				<span class="tkNum">${tkl.OPT_NO[index3]}</span>
+																				<div class='test_box4'>${l}</div>
+																			</div>
+																		</div>
+																		</#list>
+																	</div>
+																	<div class="nofl"></div>
+																</div>
+																<#elseif tkl.QUES_TYPE=='5'>
+																<div class="viewdetail-referanswer">
+																	<div class="viewdetail-title">参考答案：</div>
+																	<div>
+																		<div class="paperxt_tjxb2">
+																			<div class="cleanBoth">
+																				<div class='test_box5 viewdetail-refer-type5'>${tkl.QUES_REFER}</div>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="nofl"></div>
+																</div>
+																</#if>
+																
+																<div class="analys-analy">
+																	<div class="viewdetailanalys-analycontainer">
+																		<!-- 统计 -->
+																		<div class="analy_divs">
+																			<div class="analy-left"><span class="tip_span viewdetail-statistic">统计</span></div>
+																			<div class="analy-right">
+																				<span>本题共被作答${tkl.ANSWER_TOTAL}次，正确率为${tkl.CORRECT_PERCENT}
+																					<!-- 对易错项的处理，只有单选和多选有易错项 -->
+																					<#if tkl.QUES_TYPE=='1' || tkl.QUES_TYPE=='2'>
+																						<#if tkl.ERROR_NUM!=0>
+																							，易错项为${tkl.EASY_ERROR_OPT}
+																						<#else>
+																							，暂无易错项
+																						</#if>
+																					</#if>
+																				</span>
+																			</div>
+																			<div class="nofl"></div>
+																		</div>
+																		
+																		<!-- 解析 -->
+																		<div class="analy_divs">
+																			<div class="analy-left"><span class="tip_span viewdetail-analy">解析</span></div>
+																			<div class="analy-right"><span>${tkl.keyword}</span></div>
+																			<div class="nofl"></div>
+																			<div class="recorderwrap" recpath="${tkl.ques_rec}"></div>
+																			<div class="nofl"></div>
+																		</div>
+																		
+																		<!-- 考点 -->
+																		<div class="analy_divs">
+																			<div class="analy-left"><span class="tip_span viewdetail-knowledge">考点</span></div>
+																			<div class="analy-right">
+																				<div class="viewdetail-kpcontainer">
+																				<#if tkl.knowledge_point??>
+																				<#list tkl.knowledge_point as kp>
+																					<span class="knowledgepointdiv-nodelete" title="${kp.kpPath}">${kp.kpName}</span>
+																				</#list>
+																				</#if>
+																				</div>
+																			</div>
+																			<div class="nofl"></div>
+																		</div>
+																		
+																		<#if tkl.QUES_TYPE!='4' && tkl.QUES_TYPE!='5'>
+																		<!-- 选过 -->
+																		<div class="analy_divs">
+																			<div class="analy-left"><span class="tip_span viewdetail-doubtopts">选过</span></div>
+																			<div class="analy-right">
+																				<span>
+																				<#list tkl.doubt_options as opt>
+																					<#if opt==1>
+																					${tkl.opt_no[opt_index]}
+																					</#if>
+																				</#list>
+																				</span>
+																			</div>
+																			<div class="nofl"></div>
+																		</div>
+																		</#if>
+																		
+																		<div class="paperx_diff">
+																			<div class="paperx_zsdl">难度</div>
+																			<div class="difficultywrap">
+																				<div class="difficulty fl"><#if tkl.difficulty??>${tkl.difficulty}<#else>1.0</#if></div>
+																		    	<div class="selectwrap fl">
+																		        	<span class="simplespan fl">简单</span>
+																		            <div class="fl">
+																		            	<div class="selectdiv">
+																		                	<div class="selectdot" style="left:<#if tkl.difficulty??>${(tkl.difficulty-1)*96/4}<#else>0</#if>px"></div>
+																		                </div>
+																		            </div>
+																		            <span class="diffspan fl">困难</span>
+																		        </div>
+																		        <div class="nofl"></div>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+																<#if tkl.QUES_TYPE=='4' || tkl.QUES_TYPE=='5'>
+																<div class="viewdetail-commentcontainer">
+																	<div class="viewdetail-title">评语：</div>
+																	<div class="viewdetail-comment struct-comment test_box4">${tkl.teacher_comment}</div>
+																	<div class="nofl"></div>
+																	<div class="recorderwrap" recpath="${tkl.comment_rec}"></div>
+																	<div class="nofl"></div>
+																</div>
+																</#if>
+															</div>
+														</div>
+													</div>
+													<div class="nofl"></div>
+												</li> 
+											</#if>
+										</#list>
+									</#list>
+									</ul>
+								</div>
+							</div>
+						</li>
+						</#if>
+					</#list>
+					</ul>
+				</div>
+			</#if>
+		</#list>
+	</#if>
+</div>
+<#include "network/answerCard.htm" parse="true" encoding="UTF-8">
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<#include "recorder.htm" parse="true" encoding="UTF-8" >
+<script>
+$(function(){
+	var typeInfo = ${typeInfo};
+	var nowId = $(".paper_tpctlm :first").attr('id');		//用于存放当前的题型id
+	var oldId = '';		//原来的题型id
+	var nowQuesType = '';
+	var bQuesType = '';
+	var examId = ${examInfoMap["exam_id"]?c};
+	var quesScoreArr = {};
+	var oScoreArr = {};
+	var commentArr = {};
+	var orderArr = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+	
+//******************************页面整体显示效果的设置*******************************
+	//滚动条滚动时，让div一直显示在页面顶部
+	var paperTopNode = $(".paper_top")[0];
+	var startPos = $(paperTopNode).offset().top;
+	$(window).scroll(function() {
+		fixDiv(paperTopNode, startPos, "fixed", "largermargin");
+	});
+	
+	
+	initChange();
+	function initChange(){
+		//切换div与按钮的显示
+		if(oldId==''){
+			$("#"+nowId).addClass("paper_tpctlmxp1");
+			$("#ques"+nowId).attr("class","paperx_comxp");
+		}else{
+			$("#"+oldId).removeClass("paper_tpctlmxp1");
+			$("#"+nowId).addClass("paper_tpctlmxp1");
+
+			$("#ques"+oldId).attr("class","paperx_com");
+			$("#ques"+nowId).attr("class","paperx_comxp");
+		}
+		
+		//题目描述
+		var orderNum = parseInt($('#'+nowId).attr('ordernum'))-1;
+		$('#bctNum').text(orderArr[orderNum])//设置大题号
+		$('#quesTypeDetail').html($('#detail'+nowId).val());//题目描述
+		if(nowId != undefined) {
+			$("#nowTopic").html(typeInfo[nowId].ques_num);	//改变该大题的所有小题数
+			$("#nowScore").html(typeInfo[nowId].score);	//改变该大题下的所有小题的总分
+		}
+		
+	}
+	
+	//切换大题
+	$(".paper_tpctlm").each(function(){
+		$(this).click(function(){
+			oldId=nowId;
+			nowId=($(this).attr("id"));
+			initChange();
+		});
+	});
+	
+	//设置评语中公式img标签的显示
+	$(".struct-comment").each(function() {
+		//将页面加载的转换后的img标签转换回来
+		$(this).html(changeImgToNormal($(this).html(), "<@spring.url ''/>"));
+	});
+//************************************操作的事件********************************/
+	$("#ViewResult").click(function() {
+		location.href = "<@spring.url '/examsystem/viewresult.html?examId=${examId?c}&testRecId=${testRecId?c}'/>";
+	});
+	$("#ViewOnlyErrors").click(function() {
+		location.href = "<@spring.url '/examsystem/viewDetail.html?examId=${examId?c}&testRecId=${testRecId?c}&viewType=errorQuestions'/>";
+	});
+	$("#ViewAnaly").click(function() {
+		location.href = "<@spring.url '/examsystem/viewDetail.html?examId=${examId?c}&testRecId=${testRecId?c}&viewType=all'/>";
+	});
+
+	$(".struct-nq").each(function(index) {
+		//删除最后一题的“下一题”
+		if(index == $(".struct-nq").length-1){
+			$(this).parent().remove();
+		}
+		//点击小题的“下一题”
+		$(this).click(function() {
+			//得到当前小题的大题的id和下一小题的大题id
+			var liNode = $(this).parents("li")[0];
+			var mTopic = $($(liNode).find(".allNum")[0]).attr("mtopic");
+			var nextLiNode = $($(".allNum")[mTopic]).parents("li")[0];
+			
+			var typeId = $(".paperx_comxp").attr("id");
+			var nextLiTypeId = $(nextLiNode).parents(".paperx_com").attr("id");
+			
+			//如果根据paperx_com这个类找到的下一个节点不是undefined，则说明下一小题和当前小题不是同一大题
+			if(nextLiTypeId != undefined) {
+				oldId=nowId;	//将点击前显示的大题的编号变成oldId
+				nowId=nextLiTypeId.substr(4);	//将点击后显示的大题的编号变成nowId
+				initChange();	//设置当前选中大题下的基本信息
+			}
+			
+			var x = $(nextLiNode).offset().left;
+			var y = $(nextLiNode).offset().top-120;
+			//将滚动条滚动到制定位置
+			window.scrollTo(x, y);
+		});
+	});
+	//点击“查看解析”显示小题解析，点击“收起解析”隐藏小题解析
+	$(".struct-opencmd").each(function() {
+		$(this).click(function() {
+			if($(this).html() == "展开解析▼") {
+				$(this).html("收起解析▲");
+				$($(this).parents("li")[0]).find(".analys_container").show();
+			} else {
+				$(this).html("展开解析▼");
+				$($(this).parents("li")[0]).find(".analys_container").hide();
+			}
+		});
+	});
+	//点击答题卡中的小题号
+	$(".answercard-question").each(function(){
+		$(this).click(function(){
+			oldId=nowId;	//将点击前显示的大题的编号变成oldId
+			nowId=$($(this).parents(".answercard-answerul")[0]).attr("id");	//将点击后显示的大题的编号变成nowId
+			initChange();	//设置当前选中大题下的基本信息
+			//得到小题的位置
+			var liNode = $("#ques"+$(this).attr("quesid"));
+			
+			if(liNode[0] != undefined) {	//如果页面存在当前小题（错题页面会出现不存在正确小题的情况）
+				var x = $(liNode).offset().left;
+				var y = $(liNode).offset().top-54;
+				//将滚动条滚动到制定位置
+				window.scrollTo(x, y);
+			}
+			
+			<#if viewType!="all">
+			var mtopicId = $(this).attr("id");
+			location.href = "<@spring.url '/examsystem/viewDetail.html?examId=${examId?c}&testRecId=${testRecId?c}&viewType=all&mtopicId='/>"+mtopicId;
+			</#if>
+		});
+	});
+	
+	<#if viewType=="all" && mtopicId??>
+		triggerMouseEvent(${mtopicId}, "click");
+	</#if>
+	
+	<#if stuScore??>
+	scoreToImg(${stuScore});
+	function scoreToImg(score) {
+		score = score+"";
+		for ( var i = 0; i < score.length; i++) {
+			var tempNum = score.substr(i,1);
+			if(isNaN(tempNum)) {
+				var name='dfdot.png';
+			} else {
+				var name='df'+tempNum+'.png';
+			}
+			
+			$('#StuScore').append("<img class='stuscoreimg' src=<@spring.url '/images/score/"+name+"'/> />");
+		}
+	}
+	</#if>
+});
+
+//****************************录音部分********************************
+//给每个小题添加播放录音功能
+$(".paperx_tl").each(function(index) {
+	addRecorder(this, index);
+});
+</script>

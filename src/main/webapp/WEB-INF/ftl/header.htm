@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<#import "spring.ftl" as spring/>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>畅选网|日语语料|在线考试|小学|初中|高中|成绩</title>
+    <meta name="Keywords" content="畅先,畅选,畅选网,日语,语料,日语语料,考试, 在线考试,成绩,成绩分析,小学,初中,高中" />
+    <meta name="Description" content="畅选网是国内首家上线的日语语料库, 能对日语学习及考试提供极大的帮助">
+    <link rel="shortcut icon"  type="image/x-icon" href="<@spring.url '/favicon.ico'/>" >
+    <link rel='stylesheet' href="<@spring.url '/css/style.css' />">
+    <!--<link rel='stylesheet' href="<@spring.url '/css/icons/silk.css'/>"> -->
+    <link rel="stylesheet" href="<@spring.url '/stylesheets/jquery-ui.css'/>">
+    <link rel="stylesheet" href="<@spring.url '/css/header.css'/>" >
+    <link rel="stylesheet" href="<@spring.url '/css/child-page.css'/>" >
+    <link rel="stylesheet" href="<@spring.url '/css/network.css'/>" >
+    <link rel="stylesheet" href="<@spring.url '/css/help.css'/>" >
+    <link rel="stylesheet" href="<@spring.url '/css/equation-embed.css'/>" >
+    <link rel="stylesheet" href="<@spring.url '/css/ourtip/ourtip.css'/>"/>
+ </head>
+	<div class="indt_top">
+		<div class="indt_tocm">
+			<div class="indt_tocml">
+				<ul class="indt_tocmlr">
+					<li><a href="<@spring.url '/index.html' />">首页</a></li>
+					<li><a href="<@spring.url'/homework/entrance.html'/>">课后作业</a></li>
+					<li><a href="<@spring.url'/network/paperFactory.html'/>">在线考场</a></li>
+				</ul>
+			</div>
+			<div class="indt_tocmr">
+			   	<ul class="indt_tocmlr">
+				<#if USER_CONTEXT??>
+				    <li style="background:none;"><span style="color:#589ef9;'"><span style="color:#16a951;">欢迎回来！</span>${USER_CONTEXT.userNo}</span></li>
+				    <#if USER_CONTEXT.isEnterpriseUser == 0>
+					<li><a href="<@spring.url '/person/center.html'/>">个人中心</a></li>
+					</#if>
+					<li><a href="<@spring.url '/logout.html'/>">注销</a></li>
+				<#elseif cookieName??>
+					<li style="background:none;"><span style="color:#589ef9;'"><span style="color:#16a951;">欢迎回来！</span>${cookieName}</span></li>
+					<li><a href="<@spring.url '/person/center.html'/>">个人中心</a></li>
+					<li><a href="<@spring.url '/logout.html'/>">注销</a></li>
+				<#else>
+					<li><a href="<@spring.url '/login.html'/>">登陆</a></li>
+					<li><a href="<@spring.url '/regist.html'/>">免费注册</a></li>
+				</#if>
+					<li><a href="<@spring.url '/message/message.html'/>">问题反馈</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>

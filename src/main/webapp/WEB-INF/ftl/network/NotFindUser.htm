@@ -1,0 +1,23 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eeeeee;}
+#Message {width:760px; height:200px; margin-top:80px; margin-left:120px; text-align:center; background-color:#F5F5F5; border:1px #DDDDDD solid;}
+#Message p#SorryMessage {width:580px; height:20px; margin:40px auto 20px 62px; padding-top:23px; padding-bottom:20px; padding-left:55px; font-size:20px; text-align:left; background:url("<@spring.url '/images/unopen-service.png'/>") no-repeat scroll left center;}
+#Message p#ServicePhone {font-size:14px; }
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">在线考场</h2>
+	   	<ul class="weblog-f">
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+	<div id='Message'>
+		<p id='SorryMessage'>${errorInfo}</p>
+		<p id='ServicePhone'>客服电话0571-85855842（周一至周五 9:00～18:00）18658190803 15394291428（周一至周日 9:00～24:00）</p>
+	</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >

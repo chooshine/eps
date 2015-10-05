@@ -1,0 +1,405 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eeeeee;}
+.test_bennerx {width:700px;height:63px;margin:-25px auto 10px 370px;text-align:center;}
+.test_bennerx img {width:600px;}
+.test_bennerx p {text-align:left;margin-top:10px;}
+.test_bennerx p span {font-size:16px;}
+.testl_con {background-color:#ffffff;}
+.testl_con .test_paper_k {box-shadow:0 0 5px #aaa;}
+.testl_con > .test_paper_k #upExamInfoForm input {height:30px;line-height:30px;padding:0 10px; font-weight:400;font-family:微软雅黑;}
+.testl_con > .test_paper_k #upExamInfoForm select {height:33px;padding:6px;font-family:微软雅黑;}
+.test_paper_kmenl {width:110px;height:32px;line-height:32px;margin-right:10px;font-size:16px;font-weight:bold;}
+.test_paper_kmenl span {margin-right:10px;}
+.test_paper_kmenr {width:570px;}
+.test_paper_kmenrsx label input {margin-top:0;}
+/* .btn_1asa input:HOVER {border:1px solid #0088ff;} */
+.test_paper_kbot {padding-left:234px;}
+.test_paper_kbot .chooshine-btn {width:200px;height:50px;font-size:16px;font-weight:normal;font-family:"Microsoft Yahei";background:#0075C9;float:left;margin-right:100px;}
+.test_paper_kbot input#Auto {background:#096;}
+.test_paper_kbot input#Auto:hover {border-color:#096;}
+#newTestOther {color:#00afed;}
+#newTestOther:HOVER {color:#ff9933;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">在线考场</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"><a href="<@spring.url '/network/paperFactory.html'/>">出卷</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/room.html'/>">考场</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/result.html'/>" style="border-right:none;">阅卷</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+	<div class="test_bennerx">
+		<img src="<@spring.url '/images/step1.png'/>" />
+		<p>
+			<span style="margin-left:20px">填写试卷说明</span>
+			<span style="margin-left:185px;">编辑试卷内容</span>
+			<span style="margin-left:213px;">完成</span>
+		</p>
+	</div>
+<div class="testl_con">
+	<div class="test_paper_k">
+		<form id="upExamInfoForm" action="<@spring.url '/network/createExam.html'/>" method="post">
+			<input type="hidden" name="way" />
+			<div>
+				<div class="test_paper_kmenlxf">试卷基本信息 
+					<span style="padding-left:12px;color:#ff0000;">(带    *  的必填)</span>
+				</div>
+				<br>
+				<div class="test_paper_kmen">
+					<div class="test_paper_kmenl"><span></span>考试</div>
+					<select id="TestSelect" style="width:150px;float:left;" name="testId">
+						<option id="other" value="-2">请选择考试</option>
+						<#if testList??>
+							<#list testList as te>
+								 <option value=${te.test_id?c}>${te.test_name}</option>
+							</#list>
+						</#if>
+					</select>
+					<div style="float:left;height:32px;line-height:32px;margin-left:20px;">
+						<a href="javascript:void(0);" id="newTestOther">新建考试</a>
+					</div>
+					<div class="nofl"></div>
+				</div>
+				
+				<div class="test_paper_kmen">
+					<div class="test_paper_kmenl"><span>*</span>试卷</div>
+					<div class="test_paper_kmenr"><input class="isNull" id="titlebyc" type="text" name="examName" placeholder="请填写试卷名称"/> <span>例如: 2012年会计基础考试真题</span></div>
+					<div class="nofl"></div>
+				</div>
+				
+				<div class="test_paper_kmen">
+					<div class="test_paper_kmenl"><span>*</span>科目</div>
+					<div class="test_paper_kmenr">
+						<select id="subjectNo" name="subjectNo">
+							<#if ofterSort??>
+								<#if ofterSort?size &gt; 0>
+									<#list ofterSort as sort>
+										<option value="${sort.sort_id?c}" sortno="${sort.sort_no}">${sort.parent_sort+"·"+sort.sort_name}</option>
+							  		</#list>
+								<#else>
+									<option value="-2">请选择科目</option>
+								</#if>
+						  	<#else>
+						  		<option value="-2">请选择科目</option>
+							</#if>
+						 	<option value="-1" id="other">其它</option>
+						</select>
+						<span>请选择试卷所属考试科目</span>
+					</div>
+					<div class="nofl"></div>
+				</div>
+				
+				<div class="test_paper_kmen">
+					<div class="test_paper_kmenl"><span>*</span>年级</div>
+					<div class="test_paper_kmenr">
+						<select name="gradeLevel"></select>
+						<span>请选择试卷适用年级</span>
+					</div>
+					<div class="nofl"></div>
+				</div>
+				
+				
+				<div class="test_paper_kmen">
+					<div class="test_paper_kmenl"><span>*</span>年份</div>
+					<div class="test_paper_kmenr">
+						<select id="yearSelect" name="year">
+							<#if dateList??>
+								${dateList_index}
+								<#list dateList as dd>
+									<#if dd?c=.now?string("yyyy-MM-dd HH:mm")?substring(0,4)>
+										<option value=${dd?c} selected="selected">${dd?c}</option>
+									<#else>
+										<option value=${dd?c}>${dd?c}</option>
+									</#if>
+								</#list>
+							</#if>
+						</select>
+						<span> 请选择试卷年份</span>
+					</div>
+					<div class="nofl"></div>
+				</div>
+				
+				<div class="test_paper_kmen">
+					<div class="test_paper_kmenl"><span>*</span>地区</div>
+					<div class="test_paper_kmenr">
+						<select id="areaSelect" name="examArea">
+							<#if areaList??>
+								<#list areaList as etl>
+									<#if etl.CODE=5>
+										<option value=${etl.CODE} selected="selected">${etl.NAME!}</option>
+									<#else>
+										<option value=${etl.CODE} >${etl.NAME!}</option>
+									</#if>
+								</#list>
+							</#if>
+						</select>
+					</div>
+					<div class="nofl"></div>
+				</div>
+				
+				<div class="test_paper_kmen">
+					<div class="test_paper_kmenl"><span>*</span>类型</div>
+					<div class="test_paper_kmenr">
+						<select id="subject" name="examType">
+							<#if examTypeList??>
+								<#list examTypeList as etl>
+									<option value=${etl.CODE}>${etl.NAME!}</option>
+								</#list>
+							</#if>
+						</select> 
+					</div>
+					<div class="nofl"></div>
+				</div>
+				<div class="test_paper_kmen">
+					<div class="test_paper_kmenl"><span>*</span>属性</div>
+					<div class="test_paper_kmenrsx">
+						<label>
+							<img src="<@spring.url '/images/examsystem/award_stroke_16.png' />">
+							总分 <input class="isNull" id="TP" type="text" name="total"/> 分
+						</label>
+						<label>
+							<img src="<@spring.url '/images/examsystem/target.png' />">
+							及格 <input class="isNull" id="pass_score" type="text" name="passScore" value=""/> 分
+						</label>
+						<label>
+							<img src="<@spring.url '/images/examsystem/clock.png' />">
+							用时 <input class="isNull" id="test_time" type="text" name="costTime"/> 分钟
+						</label>
+					</div>
+					<div class="nofl"></div>
+				</div>
+				<div class="test_paper_kmen">
+				<div class="test_paper_kmenl">标签</div>
+				<div class="test_paper_kmenr"><span><input id="tag" type="text" name="remark" /></span> <span>（请填写试卷的关键字,以便更容易搜索到您的试卷,多个请用逗号","隔开）</span></div>
+				<div class="nofl"></div>
+			</div>
+			</div>
+			<div class="test_paper_kmen" style="display: none">
+				<div class="test_paper_kmenlxf">高级属性 <span>展开</span></div>
+				<div class="test_paper_kmenl"></div>
+				<div class="test_paper_kmenrsx">
+					<label>
+						<span>学期：</span>
+						<select id="semester" name="semester">
+							<option value="0">不限</option>
+						  	<option value="1">上</option>
+						  	<option value="2">下</option>
+						</select> 
+					</label> 
+					
+					<label>
+						<span>试题顺序：</span>
+						<select id="test_sequence" name="qRandom">
+							<option value="0">默认</option>
+							<option value="1">随机</option>
+						</select>
+					</label>
+					<label>
+						<span>选项顺序：</span>
+						<select id="option_sequence" name="oRandom">
+							<option value="0">默认</option>
+							<option value="1">随机</option>
+						</select>
+					</label>  
+					<label>
+						<span>大题编号类型：</span>
+						<select id="select_datibhlx" name="bCodeType">
+							<#if codeTypeList??>
+								<#list codeTypeList as etl>
+									<option value=${etl.CODE}>${etl.NAME!}</option>
+								</#list>
+							</#if>
+						</select>
+					</label> 
+					<label>
+						<span>小题编号类型：</span>
+						<select id="select_xiaotibhlx" name="sCodeType">
+							<#if codeTypeList??>
+								<#list codeTypeList as etl>
+									<option value=${etl.CODE}>${etl.NAME!}</option>
+								</#list>
+							</#if>
+						</select>
+					</label>  
+					
+					<span> 请填写完整的试卷属性！</span>
+				</div>
+				<div class="nofl"></div>
+			</div>
+		</form>
+		<div class="test_paper_kbot">
+			<!-- <div id="but" class="btn_1asa" style="margin-left:236px;"><input id="next" type="button" value="下一步 "/></div> -->
+			<input type="button" id="ByHand" value="我自己选（人工组卷）" class="chooshine-btn"/>
+			<input type="button" id="Auto" value="交给你了（自动组卷）" class="chooshine-btn"/>
+			<div class="nofl"></div>
+		</div>
+	</div>
+</div>
+
+<div class="answerspop_up" id="answerspop_up" style="display:none;">
+	<#if sortList??>
+		<#list sortList?keys as key>
+			<dl>
+				<dt>${key}</dt>
+				<dd>
+					<#list sortList[key] as sort>
+						<div class="answerspop_upcem" parentTitle='${key}' sortno="${sort.p_sort_no}" data-value='${sort.sort_id}'>${sort.sort_name}</div>
+					</#list>
+					<div class="nofl"></div>
+				</dd>
+			</dl>
+		</#list>
+	</#if>
+	<div class="nofl"></div>
+</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script src="<@spring.url '/javascripts/jquery-ui-timepicker-addon.js'/>" ></script>
+<#--引入新建考试弹出框-->
+<#include "network/createNewTestDialog.htm" parse="true" encoding="UTF-8" >
+<script>
+//获得所有年级
+var grades = [<#if allGrades??><#list allGrades as grade><#if grade_index!=0>,</#if>{"remark":"${grade.remark}","data":{value:"${grade.code}",name:"${grade.name}"}}</#list></#if>];
+$(function(){
+	//总分失去焦点的事件
+	$("#TP").blur(function(){
+		if($("#TP").val()!=''){
+			var score=$("#TP").val();
+			score=score*0.6;
+			$("#pass_score").val(score);
+		}
+	});
+	
+	$('#answerspop_up').dialog({
+		title:"选择科目",
+		autoOpen: false,
+	    height: 280,
+	    width: 1023,
+	    modal: true,
+	    close:function() {
+	    	if($("select[name='subjectNo']").val() == -1) {
+	    		var remark = $("select[name='gradeLevel'] option:selected").attr("remark");
+	    		$("select[name='subjectNo'] option").each(function() {
+	    			if($(this).attr("sortno") == remark) {
+	    				$(this)[0].selected = true;
+	    			}
+	    		});
+	    	}
+	    }
+	});
+	
+
+	var sortNo = $("select[name='subjectNo'] option:selected").attr("sortno");
+	changeGrade(sortNo);
+	
+	//切换科目类型
+	$("#subjectNo").change(function(){
+		if($(this).val()==-1){
+			$("#answerspop_up" ).dialog("open");
+		} else {
+			changeGrade($("select[name='subjectNo'] option:selected").attr("sortno"));
+		}
+	});
+	
+	//新建一次考试
+	$("#newTestOther").click(function(){
+		$("#CreatNewTestDialog").dialog("open");
+	});
+	
+	$("#ByHand").click(function(){
+		if(!checkInfo()) return;
+		$("input[name='way']").val("byhand");
+		$("#upExamInfoForm").submit();
+	});
+	$("#Auto").click(function(){
+		if(!checkInfo()) return;
+		$("input[name='way']").val("auto");
+		$("#upExamInfoForm").submit();
+	});
+	
+	//判断信息是否填写正确
+	function checkInfo() {
+		if($('#titlebyc').val()=="请填写试卷名称"){
+			$.chooshine.alert("试卷名称不能为空。");
+			return false;
+		}
+		if($('#subjectNo option:selected').text()=="请选择科目"){
+			$.chooshine.alert("考试科目不能为空。");
+			return false;
+		}
+		if($('#TP').val()==""){
+			$.chooshine.alert("试卷总分不能为空。");
+			return false;
+		}
+		if($('#test_time').val()==""){
+			$.chooshine.alert("考试用时不能为空。");
+			return false;
+		}
+		if($("select[name='subjectNo'] option:selected").attr("sortno") != $("select[name='gradeLevel'] option:selected").attr("remark")) {
+			$.chooshine.alert("所选科目与年级不匹配。");
+			return false;
+		}
+		return true;
+	}
+	
+	$("#answerspop_uptpc").click(function(){
+		$("#answerspop_up" ).dialog("close");
+	})
+	
+	$('.answerspop_upcem').each(function(e){
+		$(this).click(function(){
+			var selectNode = $("select[name='subjectNo']");
+			
+			//获得选择的科目的信息
+			var str=$(this).attr('parentTitle')+"·"+$(this).html();
+			var value = $(this).attr("data-value");
+			var sortNo = $(this).attr("sortno");
+			var node = "<option sortno="+sortNo+" value='"+value+"'>"+str+"</option>";
+			//如果选择的科目不存在，则直接在第一位，如果已经存在，则删除原有的该科目，将选择的科目放在第一位
+			if($("option[value='"+value+"']") != undefined) {
+				$("option[value='"+value+"']").remove();
+			}
+			$(selectNode).prepend($(node));
+			$(selectNode).find('option')[0].selected = true;
+			changeGrade(sortNo);
+			$("#answerspop_up" ).dialog("close");
+		});
+	});
+	
+});
+//改变年级下拉框中显示的年级
+function changeGrade(sortNo) {
+	if(sortNo == $("select[name='gradeLevel'] option:selected").attr("remark")) {
+		return;
+	}
+	//删除原有option
+	$("select[name='gradeLevel'] option").remove();
+	//新增option
+	for(var i=0; i<grades.length; i++) {
+		if(grades[i].remark == sortNo) {
+			$("select[name='gradeLevel']").append("<option value="+grades[i].data.value+" remark="+grades[i].remark+">"+grades[i].data.name+"</option>");
+		}
+	}
+	//如果此时没有年级，就设置年级为“无年级限制”
+	$("select[name='gradeLevel']").append("<option value='0' remark="+sortNo+">不限年级</option>");
+}
+
+function afterSaveNewTest(data) {
+	var test = data['testMap'];
+	$("#TestSelect").append("<option value='"+test.testId+"'>"+test.testName+"</option");
+	$("#TestSelect option[value='"+test.testId+"']").attr("selected",true);
+	var gradeLevel = $("#gradeId option:selected").attr("gradelevel");
+	changeGrade(grades[gradeLevel-1].remark);
+	$("select[name='gradeLevel'] option[value='"+gradeLevel+"']")[0].selected = true;
+	$("#CreatNewTestDialog").dialog("close");
+}
+function closeCreateNewTestEvent() {
+	$("#CreatNewTestDialog").dialog("close");
+};
+</script>

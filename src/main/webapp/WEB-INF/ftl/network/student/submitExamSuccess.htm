@@ -1,0 +1,61 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eee;}
+.content {padding-top:0px;}
+.testl_con, .test_paper_kfb, .or_fkclu2cgfb, .or_fkclu2cg {width:1000px;}
+.testl_con {margin-top:80px;}
+.or_fkclu2cg {text-align:center;}
+.or_fkclu2cg1 {width:250px;float:left;margin-left:410px;}
+#submitexamsuccess-score {margin-top:18px;}
+.textw_con label.submitexamsuccess-gobackindex {margin-right:40px;}
+.textw_con {padding-top:30px;padding-bottom:10px;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">在线考场</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav mytest"><a href="<@spring.url '/network/paperFactory.html'/>">我的考试</a></li>
+	   		<li class="weblog-f viewanaly"><a href="<@spring.url '/student/viewAnaly.html'/>" style="border-right:none;">查看解析</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+<div class="testl_con">
+	<div class="test_paper_kfb">
+		<div class="or_fkclu2cg">
+			<div>
+				<div class="or_fkclu2cg1">交卷成功！
+					<#if scoreMap?? && scoreMap["score"]??>
+						<span style="visibility:visible;">得分</span>
+					<#else>
+						<span style="visibility:hidden;">得分</span>
+					</#if>
+				</div>
+				<div class="nofl"></div>
+			</div>
+			<div id="submitexamsuccess-score"></div>
+			<div class="textw_con">
+				<label class="submitexamsuccess-gobackindex">返回试卷首页进行其他操作，<a href="<@spring.url '/network/paperFactory.html'/>">点击返回》</a></label>
+				<#if scoreMap?? && scoreMap["score"]??><label>查看做题详情及解析，<a href="<@spring.url '/examsystem/viewDetail.html?examId=${scoreMap.exam_id?c}&testRecId=${scoreMap.test_rec_id?c}&viewType=all'/>">点击查看》</a></label></#if>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<script>
+$(function() {
+	<#if scoreMap?? && scoreMap["score"]??>
+	scoreToImg(${scoreMap["score"]});
+	function scoreToImg(score) {
+		score = score+"";
+		for ( var i = 0; i < score.length; i++) {
+			var name='df'+score.substr(i,1)+'.png';
+			$('#submitexamsuccess-score').append("<img class='stuscoreimg' src=<@spring.url '/images/score/"+name+"'/> />");
+		}
+	}
+	</#if>
+});
+</script>

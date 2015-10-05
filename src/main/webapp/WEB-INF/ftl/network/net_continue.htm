@@ -1,0 +1,101 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eeeeee;}
+.nr_wrap03 {width:1024px;min-height:500px;background-color:#ffffff;box-shadow:0 0 5px #aaa;}
+
+.wrap03_nr ul li {height:79px;}
+.wrap03_nr ul li span.span00, .wrap03_nr ul li span.span01, .wrap03_nr ul li span.span02 {font-size:16px;padding:10px 0;}
+.wrap03_nr ul li.li_nr span.modifi-examname {width:810px;color:#000;text-align:left;}
+.li_nr .modifi-examname > img {width:48px;height:48px;float:left;margin:5px 10px auto 10px;}
+.li_nr .modifi-examname .examname {font-size:16px;font-weight:bold;text-align:left;margin-bottom:10px;}
+.span01.modifi-examname > div {padding-top:10px;}
+.span01.modifi-examname > div label {font-size:12px;color:#aaa;margin-right:10px;}
+.span01.modifi-examname > div em {font-style:normal;}
+.wrap03_nr ul li.li_nr .color-orange {color:#ff9933;}
+.wrap03_nr ul li.li_nr .color-green {color:#009966;}
+.wrap03_nr ul li.li_nr span.span00 {font-weight:bold;color:#000;}
+.wrap03_nr ul li span.span01 {width:200px;}
+.wrap03_nr ul li span.span01 .ap_ks {color:#00afed;font-size:16px;}
+.wrap03_nr ul li span.span01 .ap_ks:HOVER {color:#ff9966;}
+</style>
+
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f" style="margin-right:487px;">在线考场</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"><a href="<@spring.url '/network/paperFactory.html'/>">出卷</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/room.html'/>">考场</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/result.html'/>" style="border-right:none;">阅卷</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<div class="nr_wrap03">
+	<div class="wrap03_title"><span class="wrap03_current">未完成的试卷</span><a href="<@spring.url '/network/modification.html'/>"><span>已发布的试卷</span></a></div>
+    <div class="wrap03_nr" >
+    	<ul >
+            <#if examList?? && (examList.data?size&gt;0)>
+				<#list examList.data as exl>
+					<li class="li_nr">
+						<span class="span01 modifi-examname">
+							<img alt="试卷" src="<@spring.url '/images/examsystem/exam_2.png'/>">
+							<div>
+								<div class="examname">${exl.exam_name}</div>
+								<div class="commoninfo">
+									<label>科目：<em class="sortname color-orange">${exl.sort_name}</em></label>
+									<label>总分：<em class="color-orange">${exl.total}</em>分</label>
+									<label>题数：<em class="releasetime color-orange">${exl.M_TOPIC_NUM}</em></label>
+									<label>时长：<em class="releasetime color-orange">${exl.COST_TIME}</em>分钟</label>
+								</div>
+							</div>
+						</span>
+						<span class="span01">
+							<a href="<@spring.url '/previewExam.html?examId=${exl.exam_id?c}'/>&page=unFinished">
+								<b class="ap_ks preview">打印预览</b>
+							</a>
+							|
+							<a href="<@spring.url '/network/getExamInfo.html?examId=${exl.EXAM_ID?c}'/>">
+								<b class="ap_ks">继续出题</b>
+							</a>
+							|
+							<a href="javascript:void(0);" class="del" examId="${exl.exam_id?c}" releaseStatus="${exl.release_status}" pageType="delCon">
+								<b class="ap_ks">删除</b>
+							</a>
+						</span>
+					</li>
+				</#list>
+			<#else>
+			<li class="li_nr" style='line-height:79px;text-align:center;'><span style='width:100%;'>您没有未完成的试卷</span></li>
+			</#if>
+        </ul>
+    </div>
+
+	<form id="delCon" method="POST" action="<@spring.url '/delExam.html'/>" />
+		<input type="hidden"  name="examId" >	
+		<input type="hidden"  name="releaseStatus" >	
+		<input type="hidden"  name="pageType" >			
+	</form>
+	<#include "pagination.htm" parse="true" encoding="UTF-8"> 
+	<@pagination page=examList/>
+	<div style="clear:both"></div>
+	<input type="hidden" type="hidden" name="pageSize" value="${pageSize}">
+	<input type="hidden" type="hidden" name="pageNo" value="1">
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script type="text/javascript">
+$(function() {
+	$(".del").each(function(){
+		$(this).click(function(){
+			var examId=$(this).attr("examId");
+			var releaseStatus=$(this).attr("releaseStatus");
+			var pageType=$(this).attr("pageType");
+			$.chooshine.confirm("确定要删除？",function(){
+				location.href="<@spring.url '/delExam.html?examId="+examId+"&releaseStatus="+releaseStatus+"&pageType="+pageType+"'/>"; 
+			});
+		});
+	});
+	
+});						    
+</script>

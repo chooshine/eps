@@ -1,0 +1,91 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+
+<div class="or_top">
+	<div class="or_tlt"><a href="<@spring.url '/' />"><div class="intop1" ></div></a></div>
+	<div class="or_trt">
+		<ul class="or_trtcl">
+			<li id="myExam">我的试卷</li>
+			<li id="myTeacher">我的老师</li>
+			<li id="myRelease">我的发布</li>
+		</ul>
+		<div class="or_trtcr">
+			
+		</div>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<div class="testl_con" style=" padding-top:12px;">
+	<div class="or_fkc">
+		<div class="or_fkclu1"><span><img src="<@spring.url '/images/order/fk2.png'/>" width="826" height="92"/></span></div>
+		<div class="or_fudd">
+			<div class="or_fuddl"><img src="<@spring.url '/images/order/zfb.png'/>" width="240" height="75"/></div>
+			<div class="or_fuddr">
+				<div class="or_fkclu2t">付款金额：<span id="price">${PRICE}元</span></div>
+				<div  class="or_fkclu2b">资源名称：<span id="orderNum">我的完美试卷</span></div>
+				<div  class="or_fkclu2b">订购时长：<span id="orderNum">${ORDER_MONTH}个月</span></div>
+				<div  class="or_fkclu2b">资源类型：<span id="orderNum">试卷</span></div>
+				<div  class="or_fkclu2b">订单编号：<span id="orderNum">${ORDERNUM}</span></div>
+			</div>
+			<div class="nofl"></div>
+		</div>
+		<div class="or_fkan">
+			<div class="or_fkanl" id="payMoney">确认付款</div>
+			<div class="or_fkanr">取消订单</div>
+			<div class="nofl"></div>	
+		</div>
+	</div>
+</div>
+			<input type="hidden" value="${GOODS_ID}" name="goodsId">
+			<input type="hidden" value="${MODEL_ID}" name="modelId">
+			
+	<form id="getExamForm" method="GET" action="<@spring.url '/exam_orderExam.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="sortNo" id="sortNo">
+			<input type="hidden" value="-1" name="commitFlag" id="commitFlag">
+	</form>
+	
+	<form id="getTeacherForm" method="GET" action="<@spring.url '/exam_orderTeacher.html' />" />
+			<input type="hidden" value="12" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="isLose" id="isLose">
+			<input type="hidden" value="-1" name="subjectNo" id="subjectNo">
+	</form>
+	
+	<form id="getReleaseForm" method="GET" action="<@spring.url '/exam_orderRelease.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="release" id="release">
+	</form>		
+			
+
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<script>
+	$(function(){
+		
+		$("#myExam").click(function(){
+			$("#getExamForm").submit();
+		});
+		
+		$("#myTeacher").click(function(){
+			$("#getTeacherForm").submit();		
+		});
+		
+		$("#myRelease").click(function(){
+			$("#getReleaseForm").submit();
+		});
+		
+		
+		$("#payMoney").click(function(){
+			var price=${PRICE};
+			var authorName=$("#authorName").html();
+			var goodsId=$("input:hidden[name='goodsId']").val();
+			var modelId=$("input:hidden[name='modelId']").val();
+			var orderNum=${ORDERNUM};
+			var param="?total_fee="+price+"&out_trade_no="+orderNum+"&subject=订购试卷&goodsId="+goodsId+"&modelId="+modelId;
+			location.href="<@spring.url '/in/order_createOrder.html"+param+"'/>";	
+		});
+		
+	});
+</script>

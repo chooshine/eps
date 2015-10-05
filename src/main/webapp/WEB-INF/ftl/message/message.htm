@@ -1,0 +1,137 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+.footer {margin-top:300px;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">留言板</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f"></li>
+	   		<li class="weblog-f"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<!-------content code------------>
+<div class="center">
+    	<div class="left">
+        	<div class="pic">
+        	<#if USER_CONTEXT?? && USER_CONTEXT.photo!="">
+        	<img class="left_img" src="<@spring.url '/${USER_CONTEXT.photo}'/>" width="120" height="120"  title="头像" />
+        	<#else>
+        	<img class="left_img" src="<@spring.url '/images/headImage/default_head.jpg'/>" width="120" height="120"  title="头像" />
+        	</#if>
+        	</div>
+        </div>
+    	<div class="right">
+             	<div class="message">
+             		<form id="view_form" action="<@spring.url '/message/message.html'/>" method="post">
+						<div class="hidden_area">
+							<input type="hidden" name="choice" value="${choice}" /> 
+							<input type="hidden" name="pageNo" />
+						</div>
+	                <div class="message_wrap">
+	                	<textarea class="message_new" name="message_content">请填写留言信息......</textarea>
+	                    <button type="button" value="留言" class="mess_btn"  id="submitBtn">留言</button>
+	                </div>
+			        <div class="message_tag">
+			        	<div class="tag_title">
+			            	<#if tag==1>
+			            		<#if USER_CONTEXT??> 
+								<span class="tag02" style="background-image: url(../img/tag01.gif);">我的留言</span>
+								</#if> 
+								<span class="tag01" style="background-image: url(../img/tag02.gif);">所有留言</span>
+							<#else>
+								<#if USER_CONTEXT??> 
+								<span class="tag02" style="background-image: url(../img/tag02.gif);">我的留言</span>
+								</#if> 
+								<span class="tag01" style="background-image: url(../img/tag01.gif);">所有留言</span>
+							</#if>
+			            </div>
+			            <div class="message_wrap02">
+			            	<div class="show_tag">
+			            		<#if page??>
+									<#list page.data as message>	
+			                	<span class="message01">
+			                    	<span class="mess_left">
+				                    	<span class="mess_pic">
+				                    		<#if message.photo??>
+				                    		<img src="<@spring.url '/${message.photo}'/>" width="59" height="59" />
+				                    		<#else>
+				                    		<img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="59" height="59" />
+				                    		</#if>
+				                    	</span>
+				                    	<span class="mess_name">
+											<#if message.message_user_no??>
+												${message.message_user_no}
+											<#else>
+												匿名
+											</#if>
+										</span>
+									</span>
+			                    	<span class="mess_right">
+			                        	<p>${message.message_content}</p>
+										<p id="time" class="mess_time">${message.message_date}</p>
+										<#if message.state==1>
+			                            <span class="huifu">
+			                                <span class="hf_content">
+			                                	<span class="hf_icon"></span>
+			                                	<p>畅选网回复：${message.re_content}</p>
+			                                    <p>${message.re_date}</p>
+			                                </span>
+			                            </span>
+			                            </#if>
+			                        </span> 
+			                    </span>
+			                    </#list>
+			                    </#if>
+			                </div>
+			            </div>
+			        </div>
+        <div class="nofl"></div>
+		<div style="width:1000px; height:30px; margin-top:12px; font-size: 15px;">
+		<#include "pagination.htm" parse="true" encoding="UTF-8">
+		<@pagination page=page/>
+		</div>
+        </form>
+    	</div> 
+     </div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+
+<script>
+$(function() {
+	$(".fcenter,.show").each(function() {
+		$(this).click(function() {
+			var url = $(this).attr("url");
+			$("input[name='pageNo']").val(url);
+			$("form").submit();
+			showBlock();
+		});
+	});
+	$(".tag01").click(function() {
+		$("input[name='choice']").val("viewAll");
+		$("input[name='pageNo']").val("1");
+		$("#view_form").submit();
+	})
+	$(".tag02").click(function() {
+		$("input[name='choice']").val("viewById");
+		$("input[name='pageNo']").val("1");
+		$("#view_form").submit();
+	});
+	$("#submitBtn").click(function() {
+		var content = $("textarea[name=message_content]").val();
+		if(content.length <1 || content == '请填写留言信息......') return;
+		$("textarea[name=message_content]").val(content.replace(/\n/g, "<br/>"));
+		$("input[name='choice']").val("submitMessage");
+		$("input[name='pageNo']").val("1");
+		$("#view_form").submit();
+	});
+	$(".message_new").click(function(){
+		if($(this).text() == "请填写留言信息......") {
+			$(this).text("");
+		}
+	});
+});
+</script>

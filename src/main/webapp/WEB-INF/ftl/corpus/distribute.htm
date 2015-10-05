@@ -1,0 +1,229 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eeeeee;}
+#corpusDistributeMain {box-shadow:0 0 5px #aaa;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">语料分布</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+<div class="bs-docs-example" id="corpusDistributeMain">
+	<h1><span>畅选日语语料库语料情况统计</span></h1>
+	<div class="d">
+		<h3 class="step"  >
+	   	<span>1&nbsp;&nbsp;&nbsp;&nbsp;语料样本分布统计</span>
+	  </h3>
+	  	<ul>  
+    		<li class="n_b"><span class="nb" ></span>语料库样本收录&nbsp;<font color="green"><b>538945</b></font>&nbsp篇，总计&nbsp;<font color="blue"><b>3304827142（33亿）</b></font>&nbsp;字。</li> 
+				<li class="n_b1"><span class="nb" ></span>【近代文庫】：收录&nbsp;<font color="green"><b>11792</b></font>&nbsp;篇，共计&nbsp;<font color="blue"><b>165901623</b></font>&nbsp;字</li>
+				<li class="n_b1"><span class="nb" ></span>【古典文庫】：收录&nbsp;<font color="green"><b>56</b></font>&nbsp;篇，共计&nbsp;<font color="blue"><b>8015107</b></font>&nbsp;字</li>
+       	<li class="n_b1"><span class="nb" ></span>【国会会議録】：收录&nbsp;<font color="green"><b>48732</b></font>&nbsp;篇，共计&nbsp;<font color="blue"><b>2090835880</b></font>&nbsp;字</li>
+       	<li class="n_b1"><span class="nb" ></span>【法律議案】：收录&nbsp;<font color="green"><b>3348</b></font>&nbsp;篇，共计&nbsp;<font color="blue"><b>50627333</b></font>&nbsp;字</li>
+       	<li class="n_b1"><span class="nb" ></span>【ネット小説】：收录&nbsp;<font color="green"><b>194156</b></font>&nbsp;篇，共计&nbsp;<font color="blue"><b>848516928</b></font>&nbsp;字</li>
+       	<li class="n_b1"><span class="nb" ></span>【新聞ニュース】：收录&nbsp;<font color="green"><b>219732</b></font>&nbsp;篇，共计&nbsp;<font color="blue"><b>97795271</b></font>&nbsp;字</li>
+				  <ul>
+					  <li class="lp"><span class="nb"></span>朝日新聞：收录&nbsp;<font color="green"><b>173413</b></font>&nbsp;篇，共计&nbsp;<font color="blue"><b>70287710</b></font>&nbsp;字</li>
+					  <li class="lp"><span class="nb"></span>毎日新聞：收录&nbsp;<font color="green"><b>11015</b></font>&nbsp;篇，共计&nbsp;<font color="blue"><b>8818336</b></font>&nbsp;字</li>
+					  <li class="lp"><span class="nb"></span>産経新聞：收录&nbsp;<font color="green"><b>50755</b></font>&nbsp;篇，共计&nbsp;<font color="blue"><b>22174371</b></font>&nbsp;字</li>
+					  <li class="lp"><span class="nb"></span>日本経済新聞：收录&nbsp;<font color="green"><b>5970</b></font>&nbsp;篇，共计&nbsp;<font color="blue"><b>2658107</b></font>&nbsp;字</li>
+					  <li class="lp"><span class="nb"></span>読売新聞：收录&nbsp;<font color="green"><b>39708</b></font>&nbsp;篇，共计&nbsp;<font color="blue"><b>36991747</b></font>&nbsp;字</li>				
+					</ul>
+				</li>	
+    	</ul>
+	</div>
+	<div class="d">
+		<h3 class="step" >
+	   	<span >2&nbsp;&nbsp;&nbsp;&nbsp;文库语料样本分布图</span>
+	  </h3>
+  	<div class="picTwo" >
+			<div class="picFirst">
+	  		<div class="pic" id="leftExt" ></div>
+	  		<div>语料年代分布</div>
+	  	</div>
+			<div class="picFirst">
+	  		<div class="pic" id="rightExt"></div>
+	  		<div>作者作品数量排名</div>
+	  	</div>
+	  </div>
+	</div>
+	<div class="d">
+		<h3 class="step">
+			<span>3&nbsp;&nbsp;&nbsp;&nbsp;文库语料样本明细</span>
+		</h3>
+		
+		
+		
+		<div class="authorAndArticle">
+			<div style="width:1000px">
+				<div class="author_list">
+					<div id="tabs" style="float:left;width:56%;">
+						<#if codes??>
+							<ul>
+								<#list codes as code>
+									<#assign key=code["NAMECODE"]>
+									<li><a href="#tab_${key}">${key}</a></li>
+								</#list>
+							</ul>
+							<#list codes as code>
+								<#assign key=code["NAMECODE"]>
+								<div id="tab_${key}">
+									<#assign authors=code["AUTHORS"]>
+									<#if authors?exists>
+										<table class="table table-bordered table-hover table-condensed">
+											<thead>
+												<tr>
+													<th>序号</th>
+													<th>作者</th>
+													<th>作品数量</th>
+												</tr>
+											</thead>
+											<tbody>
+												<#list authors as author>
+												<tr>
+													<td>${author_index+1}</td>
+													<td>${author.lastName + ' ' + author.firstName}</td>
+													<td><a id="${author.authorId}" class="articleNum">${author.articleNum}</a></td>
+												</tr>
+												</#list>
+											</tbody>
+										</table>
+									</#if>
+								</div>
+							</#list>
+						</#if>
+					</div>
+				</div>
+					<div id="articleInfo" style="float:right;width:40%;">
+					</div>
+					<div class="nofl">
+					</div>
+			</div>
+			
+		</div>
+	</div>
+</div>	
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script src="<@spring.url '/javascripts/amcharts.js'/>" ></script>
+<script>
+	$(function(){
+		$("#tabs").tabs({
+			//event: "mouseover"
+			collapsible: true
+		});
+		$(".articleNum").each(function(){
+			$(this).click(function(){
+				var authorId = $(this).attr("id");
+				//showMsg(authorId);
+				$.get("<@spring.url '/corpus/getArticleByAuthor.html'/>",{"authorId":authorId},function(data){
+					$("#articleInfo").html(data);
+					//alert(data);
+				},"html");
+			});
+		});
+		
+		/* $.getJSON("<@spring.url '/corpus/getChartData.json'/>",function(data){
+			createColumnchart(data['pieData']);
+			createBarChart(data['barData']);
+		}); */
+		
+		function createColumnchart(){
+			var data = ${pieData};
+			for(var i=0;i<data.length;i++){
+				data[i]['color'] = colors[i];
+			}
+			var chart = new AmCharts.AmSerialChart();
+			//chart = new AmCharts.AmSerialChart();
+            chart.dataProvider = data;
+            chart.categoryField = "name";
+            // the following two lines makes chart 3D
+            chart.depth3D = 20;
+            chart.angle = 30;
+
+            // AXES
+            // category
+            var categoryAxis = chart.categoryAxis;
+            categoryAxis.labelRotation = 45;
+           // categoryAxis.dashLength = 5;
+            categoryAxis.gridAlpha = 0;
+            categoryAxis.fillAlpha = 1;
+            categoryAxis.fillColor = "#FAFAFA";
+            categoryAxis.gridPosition = "start";
+
+            // value
+            var valueAxis = new AmCharts.ValueAxis();
+            valueAxis.title = "篇数";
+            valueAxis.dashLength = 5;
+            chart.addValueAxis(valueAxis);
+
+            // GRAPH            
+            var graph = new AmCharts.AmGraph();
+            graph.valueField = "count";
+            graph.colorField = "color";
+            graph.balloonText = "[[category]]: [[value]]篇";
+            graph.type = "column";
+            graph.lineAlpha = 0;
+            graph.fillAlphas = 1;
+            chart.addGraph(graph);
+
+            // WRITE
+            chart.write("leftExt");
+		}
+		function createBarChart(){
+			var data = ${barData};
+			for(var i=0;i<data.length;i++){
+				data[i]['color'] = colors[i];
+			}
+			var chart = new AmCharts.AmSerialChart();
+            chart.dataProvider = data;
+            chart.categoryField = "name";
+            // this single line makes the chart a bar chart, 
+            // try to set it to false - your bars will turn to columns                
+            chart.rotate = true;
+            // the following two lines makes chart 3D
+            chart.depth3D = 20;
+            chart.angle = 30;
+
+            // AXES
+            // Category
+            var categoryAxis = chart.categoryAxis;
+            categoryAxis.gridPosition = "start";
+            categoryAxis.axisColor = "#DADADA";
+            categoryAxis.fillAlpha = 1;
+            categoryAxis.gridAlpha = 0;
+            categoryAxis.fillColor = "#FAFAFA";
+
+            // value
+            var valueAxis = new AmCharts.ValueAxis();
+            valueAxis.axisColor = "#DADADA";
+            valueAxis.title = "篇数";
+            valueAxis.gridAlpha = 0.1;
+            chart.addValueAxis(valueAxis);
+
+            // GRAPH
+            var graph = new AmCharts.AmGraph();
+            //graph.title = "作者";
+            graph.valueField = "count";
+            graph.colorField = "color";
+            graph.type = "column";
+            graph.balloonText = "[[category]]:[[value]]篇";
+            graph.lineAlpha = 0;
+            graph.fillColors = "#bf1c25";
+            graph.fillAlphas = 1;
+            chart.addGraph(graph);
+
+            // WRITE
+            chart.write("rightExt");
+		}
+		 createColumnchart();
+		 createBarChart();
+		 
+	});
+</script>

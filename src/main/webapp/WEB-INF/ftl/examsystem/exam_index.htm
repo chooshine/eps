@@ -1,0 +1,94 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+
+<div class="test_benner">
+	<img src="<@spring.url '/images/examsystem/test_banner.jpg'/>" width="1024" height="170"/>
+</div>
+<div class="test_cem">
+	<div class="test_cleft">
+		<div class="test_cleftop">
+			<div class="test_cleftbt">我们的服务</div>
+			<div class="test_cleftopcm1">
+				<dl>
+					<dt class="test_clx1"></dt>
+					<dd>在线考试</dd>
+				</dl>
+				<dl>
+					<dt class="test_clx2"></dt>
+					<dd>你问我答</dd>
+				</dl>
+				<dl>
+					<dt class="test_clx3"></dt>
+					<dd>预料搜索</dd>
+				</dl>
+				<dl>
+					<dt class="test_clx4"></dt>
+					<dd>网络考场</dd>
+				</dl>
+				<dl>
+					<dt class="test_clx5"></dt>
+					<dd>素材市场</dd>
+				</dl>
+				<dl>
+					<dt class="test_clx6"></dt>
+					<dd>成绩管家</dd>
+				</dl>
+				<dl>
+					<dt class="test_clx7"></dt>
+					<dd>个人中心</dd>
+				</dl>
+				<div class="nofl"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="test_cright">
+		<div class="test_crightop">
+			<div class="test_crightplm">
+				试题分类
+				<div class="testh_crightoptr" id="testh_crightoptr"><a href="<@spring.url '/exam/createExam.html'/>">发布试卷</a></div>
+			</div>
+			<div class="test_crightpcm" id="test_crightpcm" >
+				<#if examType??>
+				<#list examType?keys as key>
+					<div  class="test_crightpcmin">
+						<div class="test_crightn1" id="bType"><a class="choosePage">${key}</a></div>
+						<div class="test_crightnb">
+							<#list examType[key] as et>
+								<a  class="choosePage2" id=${et.SUBJECT_NO} >${et.SORT_NAME}(${et.COUNT_NAME})</a>
+							</#list>
+							<div class="nofl"></div>
+						</div>
+					</div>
+				</#list>	
+				</#if>	
+			</div>
+		</div>
+	</div>
+
+<div class="nofl"></div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<script>
+$(function(){
+	
+	$(".choosePage2").each(function(e){
+		 $(this).click(function(){
+			 type=$(this).attr('id');
+			 sortName=$(this).parent().prev().children()[0].innerHTML;
+			 location.href="<@spring.url '/exam_examChoose.html?subjectNo="+type+"&examArea=all&examType=all&sortName="+sortName+"'/>";
+		}); 
+	});
+	
+	$(".choosePage").each(function(e){
+		 $(this).click(function(){
+			 type=$(this).parent().siblings().children()[0].id;
+			 type=type.substring(0,3);
+			 location.href="<@spring.url '/exam_examChoose.html?subjectNo="+type+"&examArea=all&examType=all&sortName="+$(this).html()+"'/>";
+		}); 
+	});
+
+});
+	
+	
+	
+</script>

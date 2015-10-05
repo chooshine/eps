@@ -1,0 +1,263 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<#include "logheader.htm" parse="true" encoding="UTF-8" >
+<style>
+.nav ul li a { padding-top:0px;}
+</style>
+<div id="perIndexMain">
+	<div class="per_nav">
+		<div class="nav">
+			<div class="top">
+				<ul>
+					<li><a href="<@spring.url '/achievement/myoffice.html'/>">我的办公室</a></li>
+					<li class="perIndexNavLi">班级能力</li>
+					<li><a href="<@spring.url '/achievement/lesson.html'/>">课程表</a></li>
+					<li><a href="<@spring.url '/achievement/seating.html'/>">座位表</a></li>
+					<li><a href="<@spring.url '/achievement/scoreNotice.html'/>">考试分析</a></li>
+				</ul>
+			</div>
+			<div id="indexNavFirst" class="bottom">
+				<ul>
+					<li>班级能力</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="res_cmx">
+	<div class="res_cmx_t">
+		<div class="res_cmx_tl">
+			<select name='class_id'>
+				<#if classes??>
+					<#list classes as class>
+						<#if class.classId==class_id>
+						<option value="${class.classId}" selected="selected">${class.className}</option>
+						<#else>
+						<option value="${class.classId}">${class.className}</option>
+						</#if>
+					</#list>
+				<#else>
+					<option value="-1">未带班级</option>
+				</#if>
+			</select>
+		</div>
+		<div class="res_cmx_tr">
+			<span>班主任：</span> <label>${teacher.teacherName}</label>
+		</div>
+	</div>
+
+	<ul class="res_cmxt">
+		<li class="res_cmxta1">
+			<div class="res_cmxt1">班级人数</div>
+			<div class="res_cmxb2">
+				<span>${classInfo.student_num}</span>人
+			</div>
+		</li>
+		<li class="res_cmxta2">
+			<div class="res_cmxt1">男女生比例</div>
+			<div class="res_cmxb2">
+				男<span>${classInfo.sex_ratio}</span>女
+			</div>
+		</li>
+		<li class="res_cmxta3">
+			<div class="res_cmxt1">年级排名</div>
+			<div class="res_cmxb2">
+				<span>${classInfo.score_avg_gr}</span>
+			</div>
+		</li>
+		<li class="res_cmxta4">
+			<div class="res_cmxt1">尖子生人数</div>
+			<div class="res_cmxb2">
+				<span>${classInfo.top_num}</span>人
+			</div>
+		</li>
+		<li class="res_cmxta5">
+			<div class="res_cmxt1">活跃度</div>
+			<div class="res_cmxb2">
+				<span>50%</span>
+			</div>
+		</li>
+	</ul>
+</div>
+<div class="res_nlb">
+	<div class="res_nlbl">
+		<div class="res_nlbl1">
+			<div class="ren_ltl">
+				<div class="ren_ltl1">学习成绩总体情况</div>
+				<div class="ren_ltl2">
+					<div class="ren_ltl2l">${max.sort_name}</div>
+					<div class="ren_ltl2r">较好继续保持</div>
+				</div>
+				<div class="ren_ltl3">
+					<div class="ren_ltl3l">较弱需要加强</div>
+					<div class="ren_ltl3r">${min.sort_name}</div>
+				</div>
+			</div>
+			<div class="ren_ltr" id="radarChart" style="height:230px">
+				
+			</div>
+			<div class="nofl"></div>
+		</div>
+		<div class="res_nlbl2">
+			<div class="ren_ltl1">学习成绩分科情况</div>
+			<div class="res_nlbl2b" id="columnChart" style="height:250px">
+				
+			</div>
+		</div>
+	</div>
+	<div class="res_nlbr">
+		<div class="res_nlbl1">
+			<div class="ren_ltl1">班级成绩情况</div>
+			<div class="ren_ltr2">
+				<span class="ren_ltr2l">${classInfo.class_name}</span> 在 <span class="ren_ltr2r">${classInfo.test_name}</span>
+				中的总成绩<br />平均分为 <span class="ren_ltr3">${classInfo.score_avg_g}</span> 年级排名第<span
+					class="ren_ltr4">${classInfo.score_avg_gr}</span> 名。
+			</div>
+			<div class="ren_ltrlr">
+				<ul>
+					<li class="ren_ltrlr1"></li>
+					<li class="ren_ltrlr1"></li>
+					<li class="ren_ltrlr1"></li>
+					<li class="ren_ltrlr1"></li>
+					<li class="ren_ltrlr1"></li>
+					<li class="ren_ltrlr1"></li>
+					<li class="ren_ltrlr1"></li>
+					<li class="ren_ltrlr2"></li>
+					<li class="ren_ltrlr3"></li>
+					<li class="ren_ltrlr3"></li>
+					<li class="ren_ltrlr3"></li>
+					<li class="ren_ltrlr3"></li>
+					<li class="ren_ltrlr3"></li>
+					<li class="ren_ltrlr3"></li>
+				</ul>
+			</div>
+
+		</div>
+		<div class="res_nlbl2">
+			<div class="ren_ltl1">进步与退步情况</div>
+			<div class="res_nrbr" id="pieChart" style="height:250px">
+			
+			</div>
+		</div>
+	</div>
+	<div class="nofl"></div>
+</div>
+<form action="<@spring.url '/achievement/class/ability.html'/>">
+	<input type="hidden" name='class_id'/>
+</form>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script src="<@spring.url '/javascripts/amcharts.js'/>" ></script>
+<script>
+		$(function(){
+		
+			//班级选择事件
+			$("select[name='class_id']").change(function(){
+				$("input[name='class_id']").val($(this).val());
+				$("form").submit();
+			});
+		
+			var chartData = ${charData};
+			var chart = new AmCharts.AmRadarChart();
+            chart.dataProvider = chartData;
+            chart.categoryField = "sort_name";
+            chart.startDuration = 2;
+
+            // VALUE AXIS
+            var valueAxis = new AmCharts.ValueAxis();
+            valueAxis.axisAlpha = 0.15;
+            valueAxis.minimum = 0;
+            valueAxis.dashLength = 3;
+            valueAxis.axisTitleOffset = 20;
+            valueAxis.gridCount = 5;
+            chart.addValueAxis(valueAxis);
+
+            // GRAPH
+            var graph = new AmCharts.AmGraph();
+            graph.valueField = "score_avg";
+            graph.bullet = "round";
+            graph.balloonText = "[[category]]:平均分[[value]]";
+            chart.addGraph(graph);
+
+            // WRITE
+            chart.write("radarChart");
+            var pieData = [{
+            	'name':'进步人数',
+            	'value':'${classInfo.improve_num}',
+            },{
+            	'name':'退步人数',
+            	'value':'${classInfo.fall_num}',
+            },{
+            	'name':'未进退人数',
+            	'value':'${classInfo.stable_num}',
+            }];
+            // PIE CHART
+            var piechart = new AmCharts.AmPieChart();
+
+            // title of the chart
+           // piechart.addTitle("Visitors countries", 16);
+
+            piechart.dataProvider = pieData;
+            piechart.titleField = "name";
+            piechart.valueField = "value";
+            piechart.sequencedAnimation = true;
+            piechart.startEffect = "elastic";
+            piechart.innerRadius = "30%";
+            piechart.startDuration = 2;
+            piechart.labelRadius = 15;
+
+            // the following two lines makes the chart 3D
+            piechart.depth3D = 10;
+            piechart.angle = 15;
+			//LEGEND
+			//var legend = new AmCharts.AmLegend();
+           //  legend.borderAlpha = 0.2;
+            // legend.horizontalGap = 10;
+            // legend.autoMargins = false;
+            // legend.marginLeft = 20;
+            // legend.marginRight = 20;
+             //legend.switchType = "v";
+            // piechart.addLegend(legend);
+            // WRITE                                 
+            	piechart.write("pieChart");
+             
+            	/* for(var i=0;i<chartData.length;i++){
+            		chartData[i]['color'] = colors[i];
+    			} */
+            	var columnChart = new AmCharts.AmSerialChart();
+    			//chart = new AmCharts.AmSerialChart();
+                columnChart.dataProvider = chartData;
+                columnChart.categoryField = "sort_name";
+                chart.startDuration = 1;
+                // the following two lines makes chart 3D
+                //columnChart.depth3D = 20;
+                //columnChart.angle = 30;
+
+                // AXES
+                // category
+                var categoryAxis = columnChart.categoryAxis;
+                categoryAxis.labelRotation = 45;
+               // categoryAxis.dashLength = 5;
+                categoryAxis.gridAlpha = 0;
+                categoryAxis.fillAlpha = 1;
+                categoryAxis.fillColor = "#FAFAFA";
+                categoryAxis.gridPosition = "start";
+
+                // value
+                var valueAxis = new AmCharts.ValueAxis();
+                valueAxis.title = "平均分";
+                valueAxis.dashLength = 5;
+                columnChart.addValueAxis(valueAxis);
+
+                // GRAPH            
+                var graph = new AmCharts.AmGraph();
+                graph.valueField = "score_avg";
+                graph.colorField = "color";
+                graph.balloonText = "[[category]]平均分: [[value]]分";
+                graph.type = "column";
+                graph.lineAlpha = 0;
+                graph.fillAlphas = 1;
+                columnChart.addGraph(graph);
+
+                // WRITE
+                columnChart.write("columnChart");
+		})
+</script>

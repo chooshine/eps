@@ -1,0 +1,88 @@
+<#import "spring.ftl" as spring/>
+<div id="QuesErrorInfo" class="module">
+	<#if errorStudentsInDialog??>
+	<#list errorStudentsInDialog?keys as key>
+	<div>
+		<div class="imgstip errorimgstip">
+			<div class="shuoming">
+				<span>第${key}题</span>
+			</div>
+			<#assign width=(erroStudentsNumList[key_index].error_num/classNum)*100>
+			<div style="width:100px;border:1px solid #aaa;border-radius:5px;float:left;margin-right:10px;"><div style="width:${width}%;background-color:#ff9966;border-radius:4px;">&nbsp;</div></div>
+			<div style="float: left;">
+				<span>${erroStudentsNumList[key_index].error_num} 人错误 / ${classNum}人</span>
+			</div>
+			<div class="nofl"></div>
+		</div>
+
+		<div class="stuimgs" <#if key_index!=0>style="display:none;"</#if>>
+			<div <#if errorStudentsInDialog[key]??&&errorStudentsInDialog[key]?size&gt;18>class="imgswrap"</#if>>
+			<#--上面的学生头像-->
+			<#if errorStudentsInDialog[key]??&&errorStudentsInDialog[key]?size&gt;0>
+				<#list errorStudentsInDialog[key] as stu>
+					<#if stu_index==0>
+					<div id="ErrorImgs${key}0" class="stuphotos">
+						<div class="stuphoto">
+							<img src="<@spring.url '/${stu.photo}'/>">
+							<div class="stuname"><span>${stu.student_name}</span></div>
+						</div>
+					<#elseif stu_index%18==0>
+					</div>
+					<div id="ErrorImgs${key}${stu_index/18}" class="stuphotos" style="display:none;">
+						<div class="stuphoto">
+							<img src="<@spring.url '/${stu.photo}'/>">
+							<div class="stuname"><span>${stu.student_name}</span></div>
+						</div>
+					<#else>
+						<div class="stuphoto">
+							<img src="<@spring.url '/${stu.photo}'/>">
+							<div class="stuname"><span>${stu.student_name}</span></div>
+						</div>
+						<#if ((stu_index+1)%9)==0>
+						<div class="nofl"></div>
+						</#if>
+					</#if>
+					
+					<#if stu_index==(errorStudentsInDialog[key]?size-1)>
+					</div>
+					</#if>
+				</#list>
+			<#else>
+				<div class="nostu"><span>第${key}题无错误学生</span></div>
+			</#if>
+				<div class="nofl"></div>
+			</div>
+						
+			<#--下面的换页按钮-->
+			<#if errorStudentsInDialog[key]??&&errorStudentsInDialog[key]?size&gt;18>
+			<ul class="pageul">
+			<#list errorStudentsInDialog[key] as stu>
+				<#if stu_index%18==0>
+				<#if stu_index==0>
+				<li id="ErrorPage${key}${stu_index/18}" class="errorpages"><img src="<@spring.url '/images/bullet_blue.png'/>"></li>
+				<#else>
+				<li id="ErrorPage${key}${stu_index/18}" class="errorpages"><img src="<@spring.url '/images/bullet-grey.png'/>"></li>
+				</#if>
+				</#if>
+			</#list>
+				<div class="nofl"></div>
+			</ul>
+			</#if>
+						
+		</div>
+		<div class="nofl"></div>
+	</div>
+	</#list>
+	</#if>
+</div>
+<script>
+//点击弹框中的小题对应做错学生的标题
+$(".errorimgstip").click(function() {
+	$("#QuesErrorInfo").find(".stuimgs").hide();
+	$(this).parent().find(".stuimgs").show();
+});
+//点击小题错误学生数量的分页按钮
+$(".errorpages").click(function() {
+	pageChange(this, $("#ErrorImgs"+$(this).attr("id").substr(9)));
+});
+</script>

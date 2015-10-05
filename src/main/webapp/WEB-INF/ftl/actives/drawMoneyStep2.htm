@@ -1,0 +1,52 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">余额提现</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<!-------content code------------>
+<div class="content">
+    <div class="tx_step3">
+        
+	        <#if writedInfo.state == 0>
+	    		<p class="jindu">您的提现申请已提交，请耐心等待 .....</p>
+	    		<div class="jindu_ts">
+	    		<p>申请信息：${writedInfo.bankname}(${writedInfo.account})${writedInfo.receiver}</p>
+				<p>提现金额：<b class="red">${writedInfo.amount}元</b></p>
+				<p>到账时间：7个工作日</p>
+				<p class="back_center"><a href="<@spring.url '/person/center.html'/>">返回个人中心>></a></p>
+				</div>
+	    	<#elseif writedInfo.state == 1>
+	    		<p class="jindu">提现成功</p>
+	    		<div class="jindu_ts">
+	    		<p>申请信息：${writedInfo.bankname}(${writedInfo.account})${writedInfo.receiver}</p>
+	    		<p>申请时间：${writedInfo.drawmoney_time}</p>
+	    		<p>提现金额：<b class="red">${writedInfo.amount}元</b></p>
+	    		<p class="back_center"><a href="<@spring.url '/person/center.html'/>">返回个人中心>></a></p>
+	    		</div>
+	    	<#elseif writedInfo.state == 2>
+	    		<p class="jindu">提现失败</p>
+	    		<div class="jindu_ts">
+		    		<p>申请信息：${writedInfo.bankname}(${writedInfo.account})${writedInfo.receiver}</p>
+		    		<p>申请时间：${writedInfo.drawmoney_time}</p>
+		    		<p>提现金额：<b class="red">${writedInfo.amount}元</b></p>
+		    		<p style="margin-top:8px;">
+			    		<span style="float:left;line-height:12px;">失败原因：</span>
+			    		<br/>
+			    		<span style="line-height:14px;width:325px;display:block;">${writedInfo.unpassReason}</span>
+		    		</p>
+		    		<p class="back_center">
+		    			<a href="<@spring.url '/person/center.html'/>">返回个人中心>></a>
+		    		</p>
+	    		</div>
+	    	</#if>
+	    	
+    </div>
+</div>
+<div class="clear"></div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >

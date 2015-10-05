@@ -1,0 +1,104 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eeeeee;}
+.nr_wrap03 {min-height:500px;background-color:#ffffff;box-shadow:0 0 5px #aaaaaa;}
+.liTest{border-bottom:1px dotted #CCCCCC;width:100%;}
+.wrap03_nr ul li span.span-objectname {width:380px;padding-left:20px;line-height:59px;color:#999;}
+.wrap03_nr ul li span.span-objectname .objectname {color:#000;}
+.wrap03_nr ul li span.span00 {width:90px;}
+.wrap03_nr ul li span.span01 {width:150px;}
+.wrap03_nr ul li span.span02 {width:140px;}
+b {font-weight:normal;}
+b.ap_ks {font-weight:bold;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">在线考场</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f"><a href="<@spring.url '/network/paperFactory.html'/>">出卷</a></li>
+	   		<li class="weblog-f curNav"><a href="<@spring.url '/netWork/room.html'/>">考场</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/result.html'/>" style="border-right:none;">阅卷</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<!-- planClazz -->
+<div class="nr_wrap03">
+	<div class="wrap03_title" ><a href="<@spring.url '/netWork/net_plan.html'/>"><span>待安排的考试</span></a><a href="<@spring.url '/network/plantests.html'/>"><span class="wrap03_current">已安排的考试</span></a></div>
+    <div class="wrap03_nr" >
+    	<ul>
+	    	<#if planClazz?? && (planClazz?size&gt;0)>
+	    		<li class="li_header">
+		    		<span class="span-objectname">考试</span>
+		    		<span class="span01">班级</span>
+		    		<span class="span00">人数</span>
+		    		<span class="span01">考场</span>
+		    		<span class="span00">开考时间</span>
+		    	</li>
+				<#list planClazz as lis>
+					<#list lis?keys as key>
+						<div class="liTest">
+	      				<#list lis[key] as item>
+      						<li class="li_nr" style="border-bottom:0px;">
+   				 				<#if item_index==0>
+   				 				<span class="span-objectname">
+   				 				<#elseif item_index!=0>
+   				 				<span class="span-objectname" style="visibility:hidden;">
+   				 				</#if>
+									<!-- <img alt="作业" src="<@spring.url '/images/examsystem/exam_2.png'/>"> -->
+									<div>
+										<div class="objectname">${item.exam_name}</div>
+										<div class="commoninfo">
+											<label>科目：<em class="sortname color-orange">${item.sort_name}</em></label>
+										</div>
+									</div>
+								</span>
+   				 				<span class="span01">${item.class_name}</span>
+   				 				<span class="span00 color-orange">${item.stu}</span>
+   				 				<span class="span01 ap"><b>${item.network_addr}</b></span>
+   				 				<span class="span00 color-orange">${item.date}</span>
+   				 				<#if item.startflag="started">
+		   				 			<span class="span02"><b>考试已开始</b></span>
+		   				 		<#elseif item.startflag="over">
+		   				 			<span class="span02"><b>考试已结束</b></span>
+		   				 		<#else>
+		   				 			<span class="span02"><b class="ap_ks">修改</b></span>
+		   				 		</#if>
+   				 				<input value="${item.user_id}" name="userId" type="hidden"/>
+		   				 		<input value="${item.grade_id?c}" name="gradeId" type="hidden"/>
+		   				 		<input value="${item.sort_id?c}" name="sortId" type="hidden"/>
+		   				 		<input value="${item.test_id?c}" name="testId" type="hidden" />
+		   				 		<input value="${item.exam_name}" name="examName" type="hidden" />
+       				 		</li>
+	       				</#list>
+	       				</div>	 
+	       			</#list> 
+	       		</#list>
+	       	<#else>
+       			<li class="li_nr" style="line-height:79px;"><span style="float:none;text-align:center;">您没有已安排的考试</span></li>
+	      	</#if>
+        </ul>
+    </div>
+</div>
+
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script src="<@spring.url '/javascripts/jquery-ui-timepicker-addon.js'/>" ></script>
+<#include "network/includedArrangeDialogPage.htm" parse="true" encoding="UTF-8" >
+<script>
+$(function() {
+	
+	//安排考场
+	$(".ap_ks").each(function(){
+		var liNode = $(this).parent().parent();
+		$(this).click(function(){
+			var sortId = $(liNode).find("input[name='sortId']").val();
+			var testId = $(liNode).find("input[name='testId']").val();
+			var gradeId = $(liNode).find("input[name='gradeId']").val();
+			getPlanClazz(sortId, testId);
+		});
+	});
+	
+});
+</script>

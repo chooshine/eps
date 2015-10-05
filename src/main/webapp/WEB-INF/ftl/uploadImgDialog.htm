@@ -1,0 +1,79 @@
+<script type="text/javascript" src="<@spring.url '/javascripts/swfobject.js' />"></script>
+<style type="text/css">
+.showtitle-dialog .ui-dialog-titlebar {display:block;border:none;border-bottom:1px solid #aaa;}
+.showtitle-dialog .ui-dialog-buttonpane {border:1px solid #aaa;padding-right:13px;margin-top:0px;margin-bottom:0px;}
+.uploadimgwrap {padding-top:88px;padding-left:126px;}
+.uploadimgwrap .imgwrap {height:112px;float:left;}
+.imgwrap img {height:100px;margin-bottom:20px;}
+#UploadImg {position:relative;margin-top:-112px;}
+#CameraEnter {cursor:pointer;}
+.imgwrap .titleimg {display:block;width:88px;height:88px;margin-bottom:10px;}
+.imgwrap .title {display:block;text-align:center;}
+.imgwrap:hover .title {color:#ff9966;}
+</style>
+<div id='UploadImgDialog'>
+	<div class='uploadimgwrap'>
+		<div class='imgwrap' style='margin-right:100px;'>
+			<a class="titleimg" style="background:url('<@spring.url '/images/uploadimgs.png' />') -408px 0px;">&nbsp;</a>
+			<a class='title'>本地上传</a>
+			<form id="UploadImg" action="<@spring.url '/test/uploadImg.html' />" method="post" target="if" enctype="multipart/form-data">
+		  		<a><input id='LocalImg' type='file' name='img' style='position:relative;filter:alpha(opacity=0);-moz-opacity:0;opacity:0;width:86px;height:112px;cursor:pointer;'/></a>
+		  		<iframe name='if' style='display:none;'></iframe>
+		  	</form>
+		</div>
+		<div id="CameraEnter" class='imgwrap'>
+			<a class="titleimg" style="background:url('<@spring.url '/images/uploadimgs.png' />') -504px 0px;">&nbsp;</a>
+			<a class='title'>摄像头拍摄</a></div>
+		<div class='nofl'></div>
+	</div>
+</div>
+<#include "crop.htm" parse="true" encoding="UTF-8" >
+<#include "camera.htm" parse="true" encoding="UTF-8" >
+<script type="text/javascript">
+
+$("#UploadImgDialog").dialog({
+	title:"上传图片",
+	dialogClass:"chooshine-dialog showtitle-dialog",
+	autoOpen:false,
+	width:520,
+	height:380,
+	resizable:false,
+	modal:true,
+	buttons:[{
+		text:"关闭",
+		click:function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+//替换原有的文件上传input
+function openUploadDialog() {
+	$("#LocalImg").replaceWith("<input id='LocalImg' type='file' name='img' style='position:relative;filter:alpha(opacity=0);-moz-opacity:0;opacity:0;width:86px;height:110px;cursor:pointer;'/>");
+	$("#LocalImg").change(function(){
+		fileChangeEvent(this);
+	});
+	$('#UploadImgDialog').dialog('open');
+}
+
+//文件更改事件
+function fileChangeEvent(node) {
+	$('#UploadImgDialog').dialog('close');
+	$('#CropDialog').dialog('open');
+	$('#UploadImg').submit();
+}
+
+//上传图片失败时的操作
+function uploadError(msg) {
+	openUploadDialog();
+	$('#CropDialog').dialog('close');
+	if(msg != undefined) {
+		$.chooshine.alert(msg);
+	}
+}
+
+//点击摄像头
+$("#CameraEnter").click(function() {
+	startCamera();
+});
+</script>

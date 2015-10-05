@@ -1,0 +1,744 @@
+<#import "spring.ftl" as spring/>
+<style>
+.text_sju {border:none;box-shadow:none;background-color:#eee;margin-bottom:0px;}
+.footer {margin-top:200px;}
+/*小题头部信息样式*/
+.questop {padding:10px 35px;}
+.questop .quesinfowrap {float:left;margin-right:20px;}
+.quesinfowrap > div {line-height:25px;font-size:14px;float:left;}
+.quesinfowrap .mtopic {font-size:20px;font-weight:bold;color:#b2d5ff;margin-top:-2px;}
+.quesinfowrap .usetimeskey {height:20px;padding-left:24px;background:url("<@spring.url '/images/document_alt_stroke_24.png'/>") no-repeat scroll 0 5px;}
+.quesinfowrap .usetimes {max-width:410px;}
+.quesinfowrap .usertimes .color-orange {font-weight:bold;margin:auto 2px;}
+.quesinfowrap .resourcekey {height:20px;padding-left:24px;cursor:pointer;background:url("<@spring.url '/images/book_gray.png'/>") no-repeat scroll 0 5px;}
+.quesinfowrap .resource {max-width:410px;}
+.quesinfowrap .paperx_zsd {margin-bottom:auto;}
+.quesinfowrap .paperx_zsd .paperx_zsdl {width:0;cursor:pointer;margin-top:4px;}
+.quesinfowrap .paperx_zsd .paperx_zsdr {max-width:410px;margin-top:2px;}
+.paperxt_stx .paperx_zsd {margin-left:auto;margin-top:auto;}
+.quesinfowrap .timekey {height:20px;padding-left:24px;cursor:pointer;background:url("<@spring.url '/images/clock_gray.png'/>") no-repeat scroll 0 4px;}
+.quesinfowrap .time {max-width:410px;}
+.questop .joinques {height:25px;padding:0px 10px;color:#fff;border-radius:3px;line-height:23px;float:right;margin-right:auto;cursor:pointer;background-color:#00afed;}
+.questop .removeques {height:25px;padding:0px 10px;color:#fff;border-radius:3px;line-height:23px;float:right;margin-right:auto;cursor:pointer;background-color:#888;}
+.questop .joinques:hover /**, .questop .removeques:hover**/ {background-color:#039DD3;}
+.questop .bluebg {background-color:#039DD3;}
+.questop .graybg {background-color:#888;}
+
+.text_sju li {border:1px solid #aaa;margin-bottom:20px;background-color:#fff;}
+.paperx_fxk .paperx_zsdr, .paperx_fxk .paperx_jxxqr {width:660px;}
+.paperx_jxxqr .fftxt {min-height:50px;}
+.statistic {margin-top:15px;margin-bottom:35px;}
+.statistic > div {font-size:14px;float:left;}
+.statistic .statistic-left {width:58px;padding-left:22px;color:#acaba8;background:url("<@spring.url '/images/examsystem/graph.png'/>") no-repeat scroll 0 0;}
+.statistic .statistic-right {padding-left:10px;}
+.paperx_tjx {width:auto;}
+.hide {display:none;}
+</style>
+
+<div class="text_sju">
+	<div class="paperx_comx">
+		<ul id="QuestionsUl">
+			<#if qiMap??>
+				<#list qiMap?keys as oneKey>
+					<#assign qi=qiMap[oneKey]>
+					<#if oneKey?starts_with("normal")>
+						<li id="${qi.ques_id?c}">
+							<div class="questop">
+								<div class="quesinfowrap"><div class="mtopic" title='题目ID：${qi.ques_id?c}'><span></span></div></div>
+								<div class="quesinfowrap">
+									<div class="usetimeskey" title="使用次数"></div>
+									<div class="usertimes">共被使用<span class="color-orange"><#if qi.use_times??>${qi.use_times?c}<#else>0</#if></span>次</div>
+								</div>
+								<div class="quesinfowrap">
+									<div class="resourcekey struct-quesinfokey" title="出处"></div>
+									<div class="resource struct-quesinfovalue">${qi.resource}</div>
+								</div>
+								<div class="quesinfowrap">
+									<div class="paperx_zsd">
+										<div class="paperx_zsdl struct-quesinfokey" title="考点"></div>
+										<div class="paperx_zsdr hide struct-quesinfovalue">
+										<#if qi.knowledge_point??>
+										<#list qi.knowledge_point as kp>
+											<div class="knowledgepointdiv-nodelete" kpid="${kp.kpId}" title="${kp.kpPath}">${kp.kpName}</div>
+										</#list>
+										</#if>
+										</div>
+										<div class="nofl"></div>
+									</div>
+								</div>
+								<div class="quesinfowrap">
+									<div class="timekey struct-quesinfokey" title="更新时间"></div>
+									<div class="time hide struct-quesinfovalue"><span>${qi.input_time?string("yyyy-MM-dd")}</span></div>
+								</div>
+								<#if qi.join_flag==0>
+									<div class="quesinfowrap joinques">加入试卷</div>
+								<#else>
+									<div class="quesinfowrap removeques">移出试卷</div>
+								</#if>
+								<div class="nofl"></div>
+							</div>
+							<div class="paperx_tl" questype="${qi.ques_type}">
+								<dl>
+									<dt>
+										<div class="allNum" mTopic=${qi.M_TOPIC}>${qi.M_TOPIC}</div>
+										<div class="paperx_tlxr" quesid=${qi.QUES_ID?c}>
+											<div type='title' class='ttxt test_box equ' >
+												${qi.QUES_CONTENT}
+											</div>
+										</div>
+										<input class="onequesscore" type="hidden" value="${qi.SCORE}">
+										<div class="nofl"></div>
+									</dt>
+									<#if qi.QUES_TYPE=='1' || qi.QUES_TYPE=='2'>
+										<#list qi.OPT_CONTENT as optContent>
+											<#list qi.OPT_ID as optId>
+											    <#if optContent_index==optId_index>
+													<dd class="test_box2_bgc border-hover hide">
+														<div class="pap_tlt">${qi.OPT_NO[optId_index]+"."}</div>
+														<div type="option" class="pap_tct questionItme" optid=${optId?c}>
+															<div class='ttxt test_box2 equ' >${optContent}</div>
+														</div>
+														<div class="nofl"></div>
+													</dd>
+												</#if>
+											</#list>
+										</#list>
+									</#if>
+								</dl>
+								<div class="paperx_btda hide">
+									<#if qi.QUES_TYPE=='4'>
+									<div class="paperx_tjx paperx_line_tjx">
+									<#else>
+									<div class="paperx_tjx">
+									</#if>
+										<input type="hidden" value=${qi.QUES_TYPE}>
+										<#assign ascArr2=["对","错"] >
+										<#assign index2=-1 > <#-- 选项索引，即A、B、C等的索引 -->
+										<#assign index3=-1 > <#--填空题的选项号索引-->
+										<#list qi.OPT_REFER as l>
+											<#assign index2=index2+1 >
+											<#if qi.QUES_TYPE=='1'>
+												<#if l=='0'>
+													<label class="paperx_tjxb2 radc">
+													 	<input class='markc' type="radio" name=${"rad"+qi.QUES_ID} value="0">
+													 	<span>${qi.OPT_NO[l_index]}</span>
+													</label>
+												<#else>
+													<label class="paperx_tjxb2 radc radio">
+													 	<input class='markc' type="radio" name=${ "rad"+qi.QUES_ID} value="0" checked="checked" />
+													 	<span>${qi.OPT_NO[l_index]}</span> 
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='2'>
+												<#if l=='0'>
+													<label class="paperx_tjxb2 chkc">
+														<input class='markc' type="checkbox" name=${"rad"+qi.QUES_ID} value="0"/>
+														<span>${qi.OPT_NO[l_index]}</span>
+													</label>
+												<#else>
+												 	<label class="paperx_tjxb2 chkc radio">
+														<input class='markc' type="checkbox" name=${"rad"+qi.QUES_ID} value="0" checked="checked"/>
+														<span>${qi.OPT_NO[l_index]}</span>
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='3'>
+												<#if l=='0'>
+													<label class="paperx_tjxb2 radc">
+														<input class='markc' type="radio" name=${"rad"+qi.QUES_ID} value="0"/>
+														<span>${ascArr2[index2]}</span> 
+													</label>
+												<#else>
+													<label class="paperx_tjxb2 radc radio">
+														<input class='markc' type="radio" name=${ "rad"+qi.QUES_ID} value="0" checked="checked"/>
+														<span>${ascArr2[index2]}</span>
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='4'>
+												<#assign index3=index3+1>
+												<div class="paperxt_tjxb2">
+													<div class="cleanBoth">
+														<span class="tkNum">${qi.OPT_NO[index3]}</span>
+														<div class='markc test_box4 equ'>${l}</div>
+														<input type='hidden' value='1' class='tkScore' />
+													</div>
+												</div>
+											<#elseif qi.QUES_TYPE=='5'>
+												<div class="jiedati-tip">答：</div>
+												<div class="paperxt_tjxb2 answer-type5">
+													<div class='markc equ test_box5'>${l!}</div>
+												</div>
+											</#if>
+										</#list>
+										<div class="nofl"></div>
+									</div>
+									<div class="nofl"></div>
+									<div class="paperx_fxk">
+										<div class="paperx_jxxq">
+											<div class="paperx_zsdl" >解析：</div>
+											<div class="paperx_jxxqr">
+												<div class='fftxt test_box3 equ'>${qi.keyword}</div>
+											</div>
+											<div class="nofl"></div>
+										</div>
+										<div class="statistic">
+											<div class="statistic-left">统计：</div>
+											<div class="statistic-right">
+												<div>本题共被作答<#if qi.ques_total_num??>${qi.ques_total_num}<#else>0</#if>次，正确率为<#if qi.CORRECT_PERCENT??>${qi.CORRECT_PERCENT}<#else>0</#if></div>
+											</div>
+											<div class="nofl"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+					<#else>
+						<#if qi?size&gt;0>
+							<li>
+								<div class='paperxt_stx'>
+								<#list qi as tkl>
+									<#if tkl.QUES_TYPE==6>
+										<div class="questop">
+											<div class="quesinfowrap"><div class="mtopic" title='题目ID：${tkl.ques_id?c}'><span></span></div></div>
+											<div class="quesinfowrap">
+												<div class="usetimeskey" title="使用次数"></div>
+												<div class="usertimes">共被使用<span class="color-orange"><#if tkl.use_times??>${tkl.use_times?c}<#else>0</#if></span>次</div>
+											</div>
+											<div class="quesinfowrap">
+												<div class="resourcekey struct-quesinfokey" title="出处"></div>
+												<div class="resource struct-quesinfovalue">${tkl.resource}</div>
+											</div>
+											<div class="quesinfowrap">
+												<div class="paperx_zsd">
+													<div class="paperx_zsdl struct-quesinfokey" title="考点"></div>
+													<div class="paperx_zsdr hide struct-quesinfovalue">
+													<#if tkl.knowledge_point??>
+													<#list tkl.knowledge_point as kp>
+														<div class="knowledgepointdiv-nodelete" kpid="${kp.kpId}" title="${kp.kpPath}">${kp.kpName}</div>
+													</#list>
+													</#if>
+													</div>
+													<div class="nofl"></div>
+												</div>
+											</div>
+											<div class="quesinfowrap">
+												<div class="timekey struct-quesinfokey" title="更新时间"></div>
+												<div class="time hide struct-quesinfovalue"><span>${tkl.input_time?string("yyyy-MM-dd")}</span></div>
+											</div>
+											<#if tkl.join_flag==0>
+												<div class="quesinfowrap joinques">加入试卷</div>
+											<#else>
+												<div class="quesinfowrap removeques">移出试卷</div>
+											</#if>
+											<div class="nofl"></div>
+										</div>
+										<#assign articleUlId=tkl.QUES_ID?c>
+										<#--材料内容部分-->
+										<div class="article_area">
+											<div class='articletip'>（材料）</div>
+											<div remark='article' class="questionItme paperxt_com test_box6 equ" type="artlic" artid=${tkl.QUES_ID?c}>${tkl.QUES_CONTENT}</div>
+										</div>
+										<div class="nofl"></div>
+									</#if>
+								</#list>
+								</div>
+								<div class='paperxt_bot hide'>
+									<ul id=${"ul"+articleUlId+"a"}>
+										<#list qi as tkl>
+											<#if tkl.QUES_TYPE!=6>
+												<li id=${tkl.QUES_ID?c}>
+													<div class="paperx_tl" questype="${tkl.ques_type}">
+														<dl>
+															<dt>
+																<div class="allNum" mTopic="${tkl.M_TOPIC}">${tkl.M_TOPIC}</div>
+																<div type="title" class="paperx_tlxr" quesid=${tkl.QUES_ID?c}>
+																	<div  type='title' class='ttxt test_box equ' >
+																		${tkl.QUES_CONTENT}
+																	</div>
+																</div>
+																<input class="onequesscore" type="hidden" value="${tkl.SCORE}" >
+																<div class="nofl"></div>
+															</dt>
+															<#if tkl.QUES_TYPE=='1' || tkl.QUES_TYPE=='2'>
+																<#list tkl.OPT_CONTENT as optContent>
+																	<#list tkl.OPT_ID as optId>
+																		<#if optContent_index==optId_index>
+																			<dd class='test_box2_bgc border-hover hide'>
+																				<div class="pap_tlt">${tkl.OPT_NO[optId_index]+"."}</div>
+																				<!-- 初始化状态下选项插入公式 -->
+																				<div type="option" class="pap_tct questionItme" optid=${optId?c}>
+																					<div class='ttxt test_box2 equ' >${optContent}</div>
+																				</div>
+																				<div class="nofl"></div>
+																			</dd>
+																		</#if>
+																	</#list> 
+																</#list> 
+															</#if>
+														</dl>
+														<div class="paperx_btda hide">
+															<#if tkl.QUES_TYPE=='4'>
+															<div class="paperx_tjx paperx_line_tjx">
+															<#else>
+															<div class="paperx_tjx">
+															</#if>
+																<input type="hidden" value=${tkl.QUES_TYPE}>
+																<#assign ascArr2=["对","错"] > 
+																<#assign index2=-1> 
+																<#assign index3=-1>
+																<#list tkl.OPT_REFER as l> 
+																	<#assign index2=index2+1 > 
+																	<#if tkl.QUES_TYPE=='1'>
+																		<#if l=='0'>
+																			<label class="paperx_tjxb2 radc">
+																			 	<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID} value="0"/>
+																			 	<span>${tkl.OPT_NO[l_index]}</span>
+																			</label>
+																		<#else>
+																			<label class="paperx_tjxb2 radc radio">
+																			 	<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID} value="0" checked="checked"/>
+																			 	<span>${tkl.OPT_NO[l_index]}</span>
+																			</label>
+																		</#if>
+																	<#elseif tkl.QUES_TYPE=='2'>
+																		<#if l=='0'> 
+																			<label class="paperx_tjxb2 chkc">
+																				<input class='markc' type="checkbox" name=${"rad"+tkl.QUES_ID} value="0"/>
+																				<span>${tkl.OPT_NO[l_index]}</span>
+																			</label>
+																		<#else> 
+																			<label class="paperx_tjxb2 chkc radio">
+																				<input class='markc' type="checkbox" name=${"rad"+tkl.QUES_ID} value="0" checked="checked"/>
+																				<span>${tkl.OPT_NO[l_index]}</span>
+																			</label>
+																		</#if>
+																	<#elseif tkl.QUES_TYPE=='3'>
+																		<#if l=='0'> 
+																			<label class="paperx_tjxb2 radc">
+																				<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID} value="0"/>
+																				<span>${ascArr2[index2]}</span>
+																			</label>
+																		<#else>
+																			<label class="paperx_tjxb2 radc radio">
+																				<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID} value="0" checked="checked"/>
+																				<span>${ascArr2[index2]}</span>
+																			</label>
+																		</#if>
+																	<#elseif tkl.QUES_TYPE=='4'>
+																		<#assign index3=index3+1>
+																		<div class="paperxt_tjxb2">
+																			<div class="cleanBoth">
+																				<span class="tkNum">${tkl.OPT_NO[index3]}</span>
+																				<div class='markc test_box4'>${l} </div>
+																				<input type='hidden' value='1' class='tkScore' />
+																			</div>
+																			<div class="nofl"></div>
+																		</div>
+																	<#elseif tkl.QUES_TYPE=='5'>
+																		<div class="jiedati-tip">答：</div>
+																		<div class="paperxt_tjxb2 answer-type5">
+																			<div class='markc equ test_box5'>${l!}</div>
+																		</div>
+																	</#if> 
+																</#list>
+																<div class="nofl"></div>
+															</div>
+															<div class="nofl"></div>
+															<div class="paperx_fxk">
+																<div class="paperx_jxxq">
+																	<div class="paperx_zsdl">解析：</div>
+																	<div class="paperx_jxxqr">
+																		<div class='fftxt test_box3 equ'>${tkl.keyword}</div>
+																	</div>
+																	<div class="nofl"></div>
+																</div>
+																<div class="statistic">
+																	<div class="statistic-left">统计：</div>
+																	<div class="statistic-right">
+																		<div>本题共被作答<#if tkl.ques_total_num??>${tkl.ques_total_num}<#else>0</#if>次，正确率为<#if tkl.CORRECT_PERCENT??>${tkl.CORRECT_PERCENT}<#else>0</#if></div>
+																	</div>
+																	<div class="nofl"></div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</li>
+											</#if>
+										</#list>
+									</ul>
+								</div>
+							</li>
+						</#if>
+					</#if>
+				</#list>
+			</#if>
+		</ul>
+	</div>
+</div>
+
+<div style="height:30px;margin-top:12px;font-size:15px;">
+<#include "pagination.htm" parse="true" encoding="UTF-8">
+<@pagination page=page/>
+</div>
+
+<script>
+$(function() {
+	//修改小题的加入和移出的对象
+	if($("#Total")[0] == undefined) {
+		$(".joinques").text("加入作业");
+		$(".removeques").text("移出作业");
+	}
+	//给小题头部的图标添加点击事件
+	$(".struct-quesinfokey").click(function() {
+		//隐藏已经显示的信息
+		$(this).parents(".questop").find(".struct-quesinfovalue").addClass("hide");
+		//显示当前图标对应的信息
+		$(this).next().removeClass("hide");;
+	});
+	//给每个小题添加小题号
+	$(".mtopic").each(function(index) {
+		$(this).find("span").text(${start}+index+1);
+	});
+	//给每个小题增加点击事件
+	$(".paperx_tl").click(function() {
+		$(this).find(".paperx_btda").toggleClass("hide");
+		$(this).find("dd").toggleClass("hide");
+	});
+	//材料点击事件
+	$(".article_area").click(function() {
+		$(this).parent().next().toggleClass("hide");
+	});
+	//为单选框添加事件
+	$(".radc").each(function(){
+		$(this).children("input").attr("disabled",true);	//初始化禁用单选框
+	});
+	//为多选框添加事件
+	$(".chkc").each(function(){
+		$(this).children("input").attr("disabled",true);	//初始化禁用多选框
+	});
+	
+	//点击“加入试卷”
+	$(".joinques").click(function() {
+		var text = $(this).text();
+		if(text == "加入试卷") {
+			joinQues(this);
+		} else if(text == "移出试卷"){
+			removeQuesFromExam(this);
+		} else if(text == "加入作业") {
+			joinQuesToHw(this);
+		} else {
+			removeQuesFromHw(this);
+		}
+	});
+	//“移出试卷”
+	$(".removeques").each(function() {
+		//点击
+		$(this).click(function() {
+			var text = $(this).text();
+			if(text == "加入试卷") {
+				joinQues(this);
+			} else if(text == "移出试卷"){
+				removeQuesFromExam(this);
+			} else if(text == "加入作业") {
+				joinQuesToHw(this);
+			} else {
+				removeQuesFromHw(this);
+			}
+		});
+		$(this).mouseover(function() {
+			$(this).addClass('bluebg').removeClass('graybg');
+		}).mouseleave(function() {
+			$(this).addClass('graybg').removeClass('bluebg');
+		});
+	});
+	
+	/**
+	* 将小题加入试卷
+	* @param node “加入试卷”节点
+	*/
+	function joinQues(node) {
+		var quesIds = {},
+			mTopics = {},
+			scores = {},
+			oScores = {},
+			count = 0,
+			paperxtNode = $(node).closest(".paperxt_stx"),
+			currentType = paperxtNode[0]!=undefined?'6':$(node).closest(".questop").next().attr("questype"),//当前的题目类型
+			nowTotal = nowScore,
+			typeNowScore = parseInt($("#TypeTotalScore").text());
+		if(currentType == '6') { //是材料题
+			var quesNodes = paperxtNode.next().find(".paperx_tl"),
+				count = quesNodes.length;//新增小题的数量，不算上材料，count主要用于计算后台需更新的小题
+			
+			quesNodes.each(function(index) {//遍历所有小题
+				//如果小题是填空题，则需要计算它的score和oScore
+				if($(this).find(".paperx_tjx").eq(0).find("input").val() == '4') {
+					var score = 0, oScore = "";
+					$(this).find(".tkNum").each(function() {
+						oScore = oScore+defaultScore+",";
+						score = score+defaultScore;
+					});
+					
+					nowTotal = nowTotal+score;
+					typeNowScore = typeNowScore+score;
+					//材料作为第一个小题，所以这里要是index+1
+					oScores[index+1] = oScore.substring(0,oScore.length-1)+"";
+					scores[index+1] = score+"";
+				} else {
+					nowTotal = nowTotal+defaultScore;
+					typeNowScore = typeNowScore+defaultScore;
+					oScores[index+1] = defaultScore+"";
+					scores[index+1] = defaultScore+"";
+				}
+				
+				//判断当前总分加上新增的小题的总分，是不是超出了总分，是，则给出提示
+				if(nowTotal > total) {
+					$.chooshine.alert("出题共"+nowTotal+"分，已超出试卷总分，不能进行智能选题。");
+					return;
+				}
+				quesIds[index+1] = $($(this).parents("li")[0]).attr("id");
+				mTopics[index+1] = lastTypeMtopic+index+1+"";
+			});
+			
+			//得到材料的小题信息
+			quesIds[0] = paperxtNode.find(".questionItme").attr("artid");
+			mTopics[0] = mTopics[1];
+			oScores[0] = null;
+			scores[0] = "0";
+		} else {//是普通小题
+			//如果是填空题，是，则设置oscore，并计算score
+			if(currentType == '4') {
+				var oScore = "";
+				var score = 0;
+				$(node).parents("li").eq(0).find(".tkNum").each(function() {
+					oScore = oScore+defaultScore+",";
+					score = score+defaultScore;
+				});
+				nowTotal = nowTotal+score;
+				typeNowScore = typeNowScore+score;
+				oScore = oScore.substring(0,oScore.length-1);
+				oScores[0] = oScore+"";
+				scores[0] = score+"";
+			} else {
+				nowTotal = nowTotal+defaultScore;
+				typeNowScore = typeNowScore+defaultScore;
+				oScores[0] = defaultScore+"";
+				scores[0] = defaultScore+"";
+			}
+			if(nowTotal > total) {
+				$.chooshine.alert("出题共"+nowTotal+"分，已超出试卷总分，不能进行智能选题。");
+				return;
+			}
+			
+			quesIds[0] = $($(node).parents("li")[0]).attr("id");
+			count = 1;
+			mTopics[0] = lastTypeMtopic+1+"";
+		}
+		
+		$.ajax({
+			url:"<@spring.url '/network/teacher/joinQuestions.json'/>",
+			data:"examId="+examId+"&typeId="+typeId+"&quesIds="+JSON.stringify(quesIds)+"&mTopics="+JSON.stringify(mTopics)+"&scores="+JSON.stringify(scores)+"&oScores="+JSON.stringify(oScores)+"&count="+count+"&lastTypeMtopic="+lastTypeMtopic,
+			type:"post",
+			contentType:"application/x-www-form-urlencoded;charset=utf-8",
+			success:function() {
+				$("#TotalQuesNum").text(parseInt($("#TotalQuesNum").text())+count);//设置全卷共有多少小题
+				$("#Total").text(nowTotal);//设置全卷共有多少分
+				$("#TypeQuesNum").text(parseInt($("#TypeQuesNum").text())+count);//设置大题共有多少小题
+				$("#TypeTotalScore").text(typeNowScore);//设置大题共有多少分
+				lastTypeMtopic = lastTypeMtopic+count;//设置当前大题最后一个小题的小题号
+				$(node).text("移出试卷").addClass("removeques").removeClass("joinques");//设置“加入试卷”为“移出试卷”
+				
+				$(node).mouseover(function() {
+					$(node).addClass('bluebg').removeClass('graybg');
+				}).mouseleave(function() {
+					$(node).addClass('graybg').removeClass('bluebg');
+				});
+			}
+		});
+	}
+	
+	/**
+	* 将小题移出试卷
+	* @param node “移出试卷”节点
+	*/
+	function removeQuesFromExam(node) {
+		var quesId = 0,
+			count = 0,
+			nowTotalQuesNum = parseInt($("#TotalQuesNum").text()),
+			nowTypeQuesNum = parseInt($("#TypeQuesNum").text()),
+			nowTotalScore = parseInt($("#Total").text()),
+			nowTypeScore = parseInt($("#TypeTotalScore").text()),
+			paperxtNode = $(node).closest(".paperxt_stx"),
+			currentType = paperxtNode[0]!=undefined?'6':$(node).closest(".questop").next().attr("questype");//当前的题目类型
+		if(currentType == 6) { //是材料题
+			var quesNodes = paperxtNode.next().find(".paperx_tl");
+			quesId = quesNodes.eq(0).closest("li").attr("id");//设置材料下的第一个小题的编号为quesId
+			count = quesNodes.length;
+			quesNodes.each(function(index) {//遍历所有小题
+				if($($(this).find(".paperx_tjx")[0]).find("input").val() == '4') {
+					var length = $(this).parents("li").eq(0).find(".tkNum").length;
+					nowTotalScore = nowTotalScore-length * defaultScore;
+					nowTypeScore = nowTypeScore-length * defaultScore;
+				} else {
+					nowTotalScore = nowTotalScore-defaultScore;
+					nowTypeScore = nowTypeScore-defaultScore;
+				}
+			});
+		} else {
+			quesId = $(node).parents("li").eq(0).attr("id");
+			count = 1;
+			if(currentType == '4') {
+				var length = $(this).parents("li").eq(0).find(".tkNum").length;
+				nowTotalScore = nowTotalScore-length * defaultScore;
+				nowTypeScore = nowTypeScore-length * defaultScore;
+			} else {
+				nowTotalScore = nowTotalScore-defaultScore;
+				nowTypeScore = nowTypeScore-defaultScore;
+			}
+		}
+		nowTotalQuesNum = nowTotalQuesNum - count;
+		nowTypeQuesNum = nowTypeQuesNum - count;
+		
+		$.ajax({
+			url:"<@spring.url '/network/teacher/removeQuestionsFromExam.json'/>",
+			data:"examId="+examId+"&quesId="+quesId+"&count="+count,
+			type:"post",
+			contentType:"application/x-www-form-urlencoded;charset=utf-8",
+			success:function() {
+				$("#TotalQuesNum").text(nowTotalQuesNum);	//设置全卷共有多少小题
+				$("#Total").text(nowTotalScore);			//设置全卷共有多少分
+				$("#TypeQuesNum").text(nowTypeQuesNum);		//设置大题共有多少小题
+				$("#TypeTotalScore").text(nowTypeScore);	//设置大题共有多少分
+				lastTypeMtopic = lastTypeMtopic-count;		//设置当前大题最后一个小题的小题号
+				$(node).text("加入试卷").addClass("joinques").removeClass("removeques");//设置“移出试卷”为“加入试卷”
+				$(node).unbind('mouseover').unbind('mouseleave').removeClass('bluebg graybg');
+			}
+		});
+		
+	}
+	
+	//将小题加入到作业中
+	function joinQuesToHw(node) {
+		var quesIds = {};
+		var mTopics = {};
+		var scores = {};
+		var oScores = {};
+		var count = 0;
+		var currentType = $(node).closest(".paperxt_stx").get(0)!=undefined?6:$(node).closest(".questop").eq(0).attr("questype");//当前的题目类型
+		if(currentType == 6) { //是材料题
+			var quesNodes = $(node).parents(".paperxt_stx").next().find(".paperx_tl");
+			count = quesNodes.length;//新增小题的数量，不算上材料，count主要用于计算后台需更新的小题
+			quesNodes.each(function(index) {//遍历所有小题
+				if($($(this).find(".paperx_tjx")[0]).find("input").val() == 4) {
+					var score = 0;
+					var oScore = "";
+					
+					$(this).find(".tkNum").each(function() {
+						oScore = oScore+1+",";
+						score = score+1;
+					});
+					
+					//材料作为第一个小题，所以这里要是index+1
+					oScores[index+1] = oScore.substring(0,oScore.length-1)+"";
+					scores[index+1] = score+"";
+				} else {
+					oScores[index+1] = "1";
+					scores[index+1] = "1";
+				}
+				
+				quesIds[index+1] = $($(this).parents("li")[0]).attr("id");
+				mTopics[index+1] = lastTypeMtopic+index+1+"";
+			});
+			
+			//得到材料的小题信息
+			quesIds[0] = $(node).parents(".paperxt_stx").find(".questionItme").attr("artid");
+			mTopics[0] = mTopics[1];//材料题的小题号等于材料下第一个小题的小题号
+			oScores[0] = null;
+			scores[0] = "0";
+		} else {//是普通小题
+			//如果是填空题，是，则设置oscore，并计算score
+			if(currentType == 4) {
+				var oScore = "";
+				var score = 0;
+				$($(node).parents("li")[0]).find(".tkNum").each(function() {
+					oScore = oScore+1+",";
+					score = score+1;
+				});
+				oScore = oScore.substring(0,oScore.length-1);
+				oScores[0] = oScore+"";
+				scores[0] = score+"";
+			} else {
+				oScores[0] = "1";
+				scores[0] = "1";
+			}
+			
+			quesIds[0] = $($(node).parents("li")[0]).attr("id");
+			count = 1;
+			mTopics[0] = lastTypeMtopic+1+"";
+		}
+		
+		$.ajax({
+			url:"<@spring.url '/homework/joinQuestions.json'/>",
+			data:"hwId="+hwId+"&quesIds="+JSON.stringify(quesIds)+"&mTopics="+JSON.stringify(mTopics)+"&scores="+JSON.stringify(scores)+"&oScores="+JSON.stringify(oScores)+"&count="+count+"&lastTypeMtopic="+lastTypeMtopic,
+			type:"post",
+			contentType:"application/x-www-form-urlencoded;charset=utf-8",
+			success:function() {
+				//设置作业共有多少小题
+				$("#TotalQuesNum").text(parseInt($("#TotalQuesNum").text())+count);
+				//设置最后一个小题
+				lastTypeMtopic = lastTypeMtopic+count;
+				//设置“加入作业”为“移出作业”
+				$(node).text("移出作业").addClass("removeques").removeClass("joinques");
+				
+				$(node).mouseover(function() {
+					$(node).addClass('bluebg').removeClass('graybg');
+				}).mouseleave(function() {
+					$(node).addClass('graybg').removeClass('bluebg');
+				});
+			}
+		});
+	}
+	
+	//将小题移出作业
+	function removeQuesFromHw(node) {
+		var quesId = 0;
+		var count = 0;
+		var nowTotalQuesNum = parseInt($("#TotalQuesNum").text());
+		var currentType = $(node).closest(".paperxt_stx").get(0)!=undefined?6:$(node).closest(".questop").eq(0).attr("questype");//当前的题目类型
+		if(currentType == 6) { //是材料题
+			var quesNodes = $(node).parents(".paperxt_stx").next().find(".paperx_tl");
+			quesId = $($(quesNodes[0]).parents("li")[0]).attr("id");//设置材料下的第一个小题的编号为quesId
+			count = quesNodes.length;
+		} else {
+			quesId = $($(node).parents("li")[0]).attr("id");
+			count = 1;
+		}
+		nowTotalQuesNum = nowTotalQuesNum - count;
+		
+		$.ajax({
+			url:"<@spring.url '/homework/removeQuestionsFromHw.json'/>",
+			data:"hwId="+hwId+"&quesId="+quesId+"&count="+count,
+			type:"post",
+			contentType:"application/x-www-form-urlencoded;charset=utf-8",
+			success:function() {
+				//设置全卷共有多少小题
+				$("#TotalQuesNum").text(nowTotalQuesNum);
+				//设置最后一个小题号
+				lastTypeMtopic = lastTypeMtopic-count;
+				//设置“移出作业”为“加入作业”
+				$(node).text("加入作业").addClass("joinques").removeClass("removeques");
+				
+				$(node).unbind('mouseover').unbind('mouseleave').removeClass('bluebg graybg');
+			}
+		});
+		
+	}
+	
+	//分页
+	$(".fcenter,.show").each(function() {
+		$(this).click(function() {
+			showQuestions($(this).attr("url"));
+		});
+	});
+	
+});
+</script>

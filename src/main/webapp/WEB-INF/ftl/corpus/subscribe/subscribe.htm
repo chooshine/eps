@@ -1,0 +1,161 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">语料订购</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+<div class="pay">
+    	<p>订阅续费</p>
+        
+        <#if expired??>
+        <span class="pay_left02">
+        <p>尊敬的${USER_CONTEXT.userNo}，您订阅的日语语料搜索服务尚未过期，欢迎续订。</p>
+        </span>
+        <span class="pay_right02"></span>
+        <#else>
+        <span class="pay_left">
+        <p>尊敬的${USER_CONTEXT.userNo}，您尚未订阅日语语料搜索服务或订阅已过期，请先订购/续订。</p>
+        </span>
+        <span class="pay_right"></span>
+        </#if>
+        <div class="clear"></div>
+        <ul id="goods">
+        	<#if goods??>
+				<#list goods as good>
+				<#assign temp = good.remark + '#' + good.unit_price + '#' + good.model_id + '#' + good.goods_id >
+					<#if (good_index+1)%3 == 0>
+						<li class="pay_nomargin" data-value="${temp}"><a href="javascript:void(0)" style="height:58px;line-height:58px;padding-top:0px;">${good.model_name}<b>${good.unit_price}</b>元</a></li>
+					<#else>
+						<li data-value="${temp}"><a href="javascript:void(0)" style="height:58px;line-height:58px;padding-top:0px;">${good.model_name}<b>${good.unit_price}</b>元</a></li>
+					</#if>
+				</#list>
+			</#if>
+        </ul>
+        <div class="clear"></div>
+        	<div style="text-align:center;margin:8px auto -20px;color:red;"><span name="recommendcode_notice">&nbsp;</span></div>
+        	<table style="text-align:center;width:1000px;margin:20px auto;">
+        		<tr>
+        			<td style="width:402px;"><span style="float:right;">输入推荐码，享八折优惠</span></td>
+        			<td style="width:202px;height:35px;padding-left:5px;"><input type="text" name="recommendcode" style="width:200px;height:30px;line-height:30px;" /></td>
+        			<td style="width:366px;text-align:left;padding-left:40px;">
+        				<div style="color:blue;float:left;padding-top:8px;text-decoration:underline;">
+        					<a href="<@spring.url '/corpus/membershipcard.html'/>" style="text-decoration:underline;padding-bottom:0px;color:blue;line-height:19px;">VIP通道</a>
+        				</div>
+        				<img src="<@spring.url '/images/helplog.png'/>" title="VIP通道。点击进入开通会员服务界面。" style="width:30px;height:30px;margin-left:10px;"/>
+        			</td>
+        		</tr>
+        	</table>
+        	<div class="clear"></div>
+        	<a href="javascript:void(0)" class="pay_btn">马上订购</a>
+        	<#if flag??>
+	        <a href="<@spring.url '/corpus/receive.html' />" class="pay_btn free_btn">领取7天体验券</a>
+	      	</#if>
+	       	<#if subs??>
+	        <p>你已获得7天体验时间&nbsp;<a href="<@spring.url '/corpus/index.html' />">&gt;&gt;马上体验</a></p>
+	        </#if>
+        <p class="top_border">语料特色</p>
+        <ul class="search_pic02">
+            <li><img src="<@spring.url '/img/search_pic01.gif'/>" width="320" height="200" /></li>
+            <li class="have_margin"><img src="<@spring.url '/img/search_pic02.gif'/>" width="320" height="200" /></li>
+            <li><img src="<@spring.url '/img/search_pic03.gif'/>" width="320" height="200"/></li>
+		</ul>
+   		<div class="clear"></div>
+    </div>
+	<form action="<@spring.url '/corpus/confimOrder.html'/>" method="POST">
+		<input type="hidden" name="total"/>
+		<input type="hidden" name="date" />
+		<input type="hidden" name="modelId">
+		<input type="hidden" name="goodsId">
+		<input type="hidden" name="recommendUser">
+	</form>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+	$(function(){
+		var isTrue = false;
+		var buy = -1;
+		/* 	$("label").each(function(){
+			$(this).click(function(){
+				$("label[class=fukxz]").attr("class","fukh");
+				$(this).attr("class","fukxz");
+				buy = $(this).attr("data");
+				//showMsg(buy);
+			});
+		}); */
+		$("#goods li").each(function(index){
+			if(index == 0){
+				$(this).addClass("pay_current");
+				buy = $(this).attr("data-value");
+			}
+			$(this).click(function(){
+				buy = $(this).attr("data-value");
+				$(this).addClass("pay_current").siblings().removeClass("pay_current")
+				//alert(buy);
+			})
+		});
+		
+		var noticeObject = $("span[name='recommendcode_notice']");
+		$("input[name='recommendcode']").keyup(function(){
+			var recommendcode = $(this).val();
+			if(recommendcode.length>11){
+				noticeObject.css("color","red");
+				noticeObject.text("推荐码不正确");
+				isTrue = false;
+			} else if(recommendcode.length<11) {
+				noticeObject.html("&nbsp;");
+				isTrue = false;
+			} else {
+				$.ajax("<@spring.url '/corpus/confimOrder.json'/>",{
+					data:{'recommendcode':recommendcode},
+					success:function(data){
+						var differnum = data['differnum'];
+						if(differnum==0){//验证推荐码
+							noticeObject.css("color","red");
+							noticeObject.text("推荐码不正确");
+							isTrue = false;
+						} else if(differnum==1){
+							noticeObject.css("color","red");
+							noticeObject.text("不能使用自己的推荐码");
+							isTrue = false;
+						} else{
+							noticeObject.text("推荐码正确");
+							noticeObject.css("color","blue");
+							$("input[name='recommendUser']").val(data['recommendUser']);
+							isTrue = true;
+						}
+					}
+				});
+			}
+		});
+		
+		$(".pay_btn").click(function(){
+			var recommendcode = $("input[name='recommendcode']").val();
+			if(recommendcode == ""){
+				if(buy==-1)return;
+				$("input[name=total]").val((buy.split('#')[1]));
+				$("input[name=date]").val(buy.split('#')[0]);
+				$("input[name=modelId]").val(buy.split('#')[2]);
+				$("input[name=goodsId]").val(buy.split('#')[3]);
+				$("input[name='recommendUser']").val(null);
+				$("form").submit();
+			} else if(isTrue == false){
+				noticeObject.text("推荐码不正确，请重新输入或者保持为空");
+				$("input[name='recommendUser']").val(null);
+				$("input[name='recommendcode']").val("");
+			} else {
+				if(buy==-1)return;
+				$("input[name=total]").val((buy.split('#')[1])*0.8);
+				$("input[name=date]").val(buy.split('#')[0]);
+				$("input[name=modelId]").val(buy.split('#')[2]);
+				$("input[name=goodsId]").val(buy.split('#')[3]);
+				$("form").submit();
+			}
+		});
+	})
+</script>

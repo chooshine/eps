@@ -1,0 +1,65 @@
+<#include "header.htm" parse="true" encoding="UTF-8" > 
+<#include "logheader.htm" parse="true" encoding="UTF-8" >
+<style>
+.nav ul li a { padding-top:0px;}
+</style>
+<div id="perIndexMain">
+	<div class="per_nav">
+		<div class="nav">
+			<div class="top">
+				<ul>
+					<li><a href="<@spring.url '/achievement/myoffice.html'/>">我的办公室</a></li>
+					<li><a href="<@spring.url '/achievement/class/ability.html'/>">班级能力</a></li>
+					<li class="perIndexNavLi">课程表</li>
+					<li><a href="<@spring.url '/achievement/seating.html'/>">座位表</a></li>
+					<li><a href="<@spring.url '/achievement/scoreNotice.html'/>">考试分析</a></li>
+				</ul>
+			</div>
+			<div id="indexNavFirst" class="bottom">
+				<ul>
+					<li class="res_navt">课程表</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="resa_abl">
+				<div class="res_clttp">我的课程表</div>
+				<div class="resc_cm">
+					<div class="resc_xtop">
+						<div class="resc_xtop1"></div>
+						<div class="resc_xtop2">时间</div>
+						<div class="resc_xtop3">周一</div>
+						<div class="resc_xtop3">周二</div>
+						<div class="resc_xtop3">周三</div>
+						<div class="resc_xtop3">周四</div>
+						<div class="resc_xtop3">周五</div>
+						<div class="resc_xtop3">周六</div>
+						<div class="nofl"></div>
+					</div>
+					<ul class="resc_xom">
+						<#if lessons??>
+							<#list lessons as lesson>
+							   <#if lesson_index%2==0>
+								<li class="resc_xomx">
+								<#else>
+								<li>
+								</#if>
+									<div class="resc_xtop1">${lesson_index+1}</div>
+									<div class="resc_xtop2">${lesson.time}</div>
+									<#list 1..6 as week>
+										<div class="resc_xtop3">
+											<#if lesson[week?string]??>
+											<div class="resi_kc3xz">${lesson[week?string].class_name + ' ' + lesson[week?string].lesson_name}</div>
+											</#if>
+										</div>
+									</#list>
+									<div class="nofl"></div>
+								</li>
+							</#list>
+						</#if>
+					</ul>
+				</div>
+			</div>	
+	
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >

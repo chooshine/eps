@@ -1,0 +1,291 @@
+<style>
+#equation_up, #answerspop_LocalhostUp {text-align:center;display:none;}
+#EqnEditor .top {width:760px;}
+#InsertDialogOperates {margin-top:20px;padding-left:297px;}
+#UploadLocalEquOperates {height:32px;margin-top:20px;padding-left:146px;}
+#InsertDialogOperates div, #UploadLocalEquOperates div {float:left;}
+#savePhoto, #UploadLocalEqu {margin-right:20px;}
+.hide {display:none;}
+</style>
+<#-- 公式DIV -->
+<div id="equation_up">
+	<h3>插入公式</h3>
+	<div id="editor"></div>
+	<div><img id="equation" align="middle"/></div>
+ 	<textarea id="latexInput" rows="3" cols="80"></textarea>
+	<div id="InsertDialogOperates">
+		<div id="savePhoto" class="chooshine-btn">插入公式</div>
+		<div id="CloseInsertEqu" class="chooshine-cancel">关闭</div>
+	</div>
+</div>
+
+<#-- 本地上传 -->
+<div id="answerspop_LocalhostUp">
+	<h3>上传图片</h3>
+	<form action="<@spring.url '/File.html'/>" id="saveLocalPhone" method="POST" enctype="multipart/form-data"  target="report_photo_hidden">
+		<div >
+			<input type="file" name="file" id="file"/>
+		</div>
+		<div id="UploadLocalEquOperates">
+			<div id="UploadLocalEqu" class="chooshine-btn">上传图片</div>
+			<div id="CloseUploadEqu" class="chooshine-cancel">关闭</div>
+		</div>
+		<iframe name="report_photo_hidden" id="report_photo_hidden" style="display:none;"></iframe>
+	</form>
+</div>
+<#include "ueditor.htm" parse="true" encoding="UTF-8" >
+<script src="<@spring.url '/javascripts/eq_config.js'/>" ></script>
+<script src="<@spring.url '/javascripts/eq_editor-lite-15.js'/>" ></script>
+<script>
+//显示插入公式
+$('#equation_up').dialog({
+	autoOpen: false,
+	dialogClass:"chooshine-dialog",
+	width: 800,
+	height:550,
+    modal: true
+});
+//本地上传
+$('#answerspop_LocalhostUp').dialog({
+	autoOpen: false,
+	dialogClass:"chooshine-dialog",
+    height: 200,
+    width: 500,
+    modal: true
+});
+
+var divElement='';//插入公式的DIVElement
+var rootPath = "<@spring.url '' />";
+
+/******************************************要插入公式的节点聚焦的事件********************/
+//材料题部分，显示插入公式的链接
+function vacancyShowLink(Node){
+	$(Node).click(function(){
+		if($(Node)[0].className=='markc equ test_box5 test_bg' && $(this).attr("contenteditable")=="true" ){
+			hideLink(this);
+			$(Node).parent().find('.linkClass2').css("visibility", "visible");
+			cleanSty(Node);
+		}
+	});
+}
+//文本框聚焦的处理
+function textboxClick(textbox, str) {
+	$(textbox).click(function() {
+		//只有节点是可编辑的时候才可进行操作
+		if($(this).attr("contenteditable")!="false" && $(this).attr("contenteditable")!=undefined){
+			doWhenClickInput(this);
+			
+			//如果文本框内容为默认内容，则清空内容
+			if($(this).text() == str){
+				$(this).html("");
+			}
+			//文字颜色变黑色
+			$(this).css("color","black");
+			cleanClickStyle();
+			showLink(textbox);
+			//隐藏编辑器
+			hideUE();
+		}
+	});
+}
+
+//隐藏本小题所有的添加公式链接
+function hideLink(Node){
+	$(Node).parents('li').find('.linkClass2').css("visibility", "hidden");
+}
+//显示当前节点对应的添加公式链接
+function showLink(Node){
+	$(Node).parent().parent().find('.linkClass2').css("visibility", "visible");
+ 	cleanSty(Node);
+}
+//去除当前小题下所有文本框的clickTestStyle类，这个类控制聚焦的文本框显示边框，然后给当前操作的文本框添加该类
+function cleanSty(Node){
+	$(Node).parents('li').find('.clickTestStyle').removeClass("clickTestStyle");
+	$(Node).addClass("clickTestStyle");
+}
+//去除当前小题下所有文本框的clickTestStyle类
+function cleanAllClickStyle(node) {
+	$(node).parents('li').find('.clickTestStyle').removeClass("clickTestStyle");
+}
+//删除试卷或者作业中的所有文本框的clickTestStyle类
+function cleanClickStyle(node) {
+	$("body").find('.clickTestStyle').removeClass("clickTestStyle");
+	$("body").find('.linkClass2').css("visibility", "hidden");
+	$(node).addClass("clickTestStyle");
+}
+/**********************************************点击"添加公式"的事件*******************/
+//给“添加公式”增加点击事件
+function addEventClick(Node) {
+	$(Node).click(function() {
+		insertHTML(divElement,'&nbsp;##&nbsp;');	//点击插入公式链接的同时在要插入的DIV中插入&nbsp;##&nbsp;符号,以便进行替换
+		$("#equation_up" ).dialog("open");			//弹出插入公式DIV
+	 	EqEditor.embed('editor','');				//显示所有图片
+	 	var a = new EqTextArea('equation', 'latexInput');	//添加一个textArea
+	 	EqEditor.add(a,false);
+	 	$("#latexInput").mouseenter(function() {
+	 		$("area").unbind("mouseover").unbind("mouseleave");
+	 		$("area").mouseover(function() {
+		 		$(".ui-tooltip").remove();
+		 	}).mouseleave(function() {
+		 		$(".ui-tooltip").remove();
+		 	});
+	 	});
+	});
+}
+//鼠标弹开事件，弹开鼠标时，将当前节点置为divElement
+function findDivEventMouseup(node) {
+	$(node).mouseup(function() {
+		divElement = $(node);
+	});
+}
+(function($){
+	$.fn.extend({
+		insertAtCursor:function(value){
+			var _m = $(this)[0];
+			this.focus();
+			if(document.selection){//IE
+				var range = document.selection.createRange();
+				range.pasteHTML(value);
+				this.focus();
+			}else{
+				if(window.getSelection) {//如果当前有选中区域
+			    	// IE9 and non-IE
+					var sel = window.getSelection();//得到选中区
+					if(sel.getRangeAt && sel.rangeCount) {
+						var range = sel.getRangeAt(0);//得到第一个选中区域
+						range.deleteContents();//删除区域内容
+						var el = document.createElement('div');//创建一个div节点
+						el.innerHTML = value;
+						var frag = document.createDocumentFragment(), node, lastNode;
+						while ((node = el.firstChild)) {
+							lastNode = frag.appendChild(node);
+						}
+					  	range.insertNode(frag);
+				      	if(lastNode) {
+				      		range = range.cloneRange();
+					        range.setStartAfter(lastNode);
+					        range.collapse(true);
+					        sel.removeAllRanges();
+					        sel.addRange(range);
+				    	}
+					}
+			    }
+			}
+			
+		}
+	});
+	
+})(jQuery);
+
+//光标处插入HTML（文字和图片皆可）
+function insertHTML(div,html) {
+	var dthis = $(div)[0];//要插入内容的某个div,在标准浏览器中 无需这句话
+   	dthis.focus();		  //修改此处,找到链接旁边需要插入图片的DIV
+    var sel, range;
+    if(window.getSelection) {//如果当前有选中区域
+    	// IE9 and non-IE
+		sel = window.getSelection();//得到选中区
+		if(sel.getRangeAt && sel.rangeCount) {
+			range = sel.getRangeAt(0);//得到第一个选中区域
+			range.deleteContents();//删除区域内容
+			var el = document.createElement('div');//创建一个div节点
+			el.innerHTML = html;
+			var frag = document.createDocumentFragment(), node, lastNode;
+			while ((node = el.firstChild)) {
+				lastNode = frag.appendChild(node);
+			}
+			
+		  	range.insertNode(frag);
+	      	if(lastNode) {
+	      		range = range.cloneRange();
+		        range.setStartAfter(lastNode);
+		        range.collapse(true);
+		        sel.removeAllRanges();
+		        sel.addRange(range);
+	    	}
+		}
+    } else if (document.selection && document.selection.type !='Control') {
+    	$(dthis).focus(); //在非标准浏览器中 要先让你需要插入html的div 获得焦点
+  		ierange= document.selection.createRange();//获取光标位置
+        ierange.pasteHTML(html);    //在光标位置插入html 如果只是插入text 则就是fus.text="..."
+        $(dthis).focus();
+    }
+}
+//为初始化加载的“添加公式”弹框中的“插入公式”添加点击事件
+$('#savePhoto').click(function(){
+	var img = $(this).parent().prev().prev().children(0);
+	var imgsrc = encodeURIComponent($(img).attr('src'));//获得上传图片的远程地址
+	
+	$.ajax({
+		type:"post",
+		url:"<@spring.url '/netWork/downPhoto.json' />",
+		contentType:"application/x-www-form-urlencoded; charset=utf-8",
+		data:"fileUrl="+imgsrc,
+		success:function(data){
+			//拿到上传到服务器的相对路径
+			var src=data.fileSrc;
+			var path = rootPath+src;
+			var html="<img src='"+path+"'/>";
+			var d=$(divElement).html();
+			$(divElement).html(d.replace(/##/,html));
+			
+			//关闭Demo
+			$("#equation_up" ).dialog("close");
+		},
+		error: function (data) {
+  			$("#equation_up" ).dialog("close");
+		}
+	});
+});
+//关闭demo去除##
+$("#CloseInsertEqu").bind('click', function() {
+	cleanSymbol(divElement);
+	$("#equation_up").dialog("close");
+});
+//如果弹出公式Demo却不进行任何操作，直接点击XX后执行的方法:去除##
+function cleanSymbol(divElement){
+	var d=$(divElement).html();
+	$(divElement).html(d.replace("&nbsp;##&nbsp;",""));
+}
+/***************************************************上传本地公式的操作******************/
+//点击“上传图片”
+function addLocalPhoto(Node){
+	$(Node).click(function(){
+		insertHTML(divElement,'&nbsp;##&nbsp;');
+		$("#answerspop_LocalhostUp" ).dialog("open");
+	});
+}
+//点击弹框中的“上传图片”
+$("#UploadLocalEqu").click(function(){
+	if($("input[name='file']").val() == "") {
+		return;
+	}
+	$("#saveLocalPhone").submit();
+});
+//本地上传成功执行
+function showPhoto(result){
+	var src = result.mathpath;
+	var html = "<img src='"+rootPath+src+"'>";
+	var d = $(divElement).html();
+	$(divElement).html(d.replace("##",html));
+	$("#answerspop_LocalhostUp").dialog("close");
+}
+//点击弹框中的“关闭”
+$("#CloseUploadEqu").click(function() {
+	cleanSymbol(divElement);
+	$("#answerspop_LocalhostUp").dialog("close");
+});
+function editColor(Node){
+	var liNode = $(Node).parents('li')[0];
+	$(liNode).find('.test_box3').addClass('test_bg');
+	$(liNode).find('.test_box4').addClass('test_bg');
+	$(liNode).find('.test_box5').addClass('test_bg');
+}
+/**
+ * 输入框聚焦时要做的一些特殊处理,在需要做特殊处理的页面可以重新定义一个自己的doWhenClickInput方法用于覆盖该默认方法
+ *@param node 点击的输入框
+ */
+function doWhenClickInput(node) {
+	
+}
+</script>

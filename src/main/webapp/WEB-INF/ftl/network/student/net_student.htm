@@ -1,0 +1,152 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+.wrap03_nr ul li span.span01 {width:200px;}
+.wrap03_nr ul li span.span02 {width:120px;}
+em {font-style:normal;}
+.wrap03_nr ul li span.operate {margin-left:120px;}
+.wrap03_nr ul li span.operate a {font-size:16px;color:#00afed;font-weight:bold;}
+.wrap03_nr ul li span.operate a:HOVER {color:#ff9966;}
+.wrap03_title span {width:256px;}
+</style>
+<#if commitedExams??>
+	<#include "network/teacher/weblogos/testHistoryLogo.htm" parse="true" encoding="UTF-8" >
+<#else>
+	<#include "network/teacher/weblogos/currentTestLogo.htm" parse="true" encoding="UTF-8" >
+</#if>
+
+<div class="nr_wrap03">
+	<div class="wrap03_title">
+		<span id="MyTests">当前考试</span>
+		<span id="ViewAnaly">考试历史</span>
+		<span id="ViewFavorites">我的收藏</span>
+		<a href="<@spring.url '/student/viewErrorQuestions.html'/>"><span>错题集</span></a>
+	</div>
+    <div class="wrap03_nr">
+    	<ul>
+    		<#if EXAMINFO??>
+    			<#if EXAMINFO?size&gt;0>
+        		<#list EXAMINFO as exinfo>
+	            	<li class="li_nr">
+	            		<span class="span-objectname">
+							<img alt="考试" src="<@spring.url '/images/examsystem/exam_2.png'/>">
+							<div>
+								<div class="objectname">${exinfo.test_name}</div>
+								<div class="commoninfo">
+									<label>科目：<em class="sortname color-orange">${exinfo.sort_name}</em></label>
+									<label>题数：<em class="sortname color-orange">${exinfo.m_topic_num}</em> 题</label>
+									<label>总分：<em class="sortname color-orange">${exinfo.total}</em> 分</label>
+									<label>考试时长：<em class="sortname color-orange">${exinfo.cost_time}</em> 分钟</label>
+								</div>
+							</div>
+						</span>
+						<span class="span01"><em class="color-orange">${exinfo.start_time}</em> 开考</span>
+						<span class="span01"><em class="color-orange">${exinfo.network_addr}</em> 考场</span>
+						<span class="span02">
+							<#if (exinfo.begin_date?datetime?long &gt; sysdate?datetime?long)>
+								考试未开始
+							</#if>
+							<#if (exinfo.begin_date?datetime?long &lt; sysdate?datetime?long) && (exinfo.end_date?datetime?long &gt; sysdate?datetime?long) && exinfo.COMMIT_FLAG==''>
+								<a href="javascript:void(0);" class="ap_ks jrkc" testId=${exinfo.TEST_ID?c} examId=${exinfo.EXAM_ID?c}  subjectId='${exinfo.subject_no}' classId='${exinfo.class_id?c}' naruser='${exinfo.createUser?c}' studentId='${exinfo.STUDENT_ID?c}' testRecId=-1 style="float:none;font-weight:bold;">进入考试</a>
+							</#if>
+							<#if (exinfo.begin_date?datetime?long &lt; sysdate?datetime?long) && (exinfo.end_date?datetime?long &gt; sysdate?datetime?long) && exinfo.COMMIT_FLAG==0>
+								<a href="javascript:void(0);" class="ap_ks jrkc" userId=${exinfo.USER_ID?c} testId=${exinfo.TEST_ID?c} examId=${exinfo.EXAM_ID?c}  subjectId='${exinfo.subject_no}' classId='${exinfo.class_id}' naruser='${exinfo.createUser}' studentId='${exinfo.STUDENT_ID?c}' testRecId='${exinfo.TEST_REC_ID?c}' style="font-weight: bold;">继续答题</a>
+							</#if>
+							<#if (exinfo.begin_date?datetime?long &lt; sysdate?datetime?long) && (exinfo.end_date?datetime?long &gt; sysdate?datetime?long) && exinfo.COMMIT_FLAG==1>
+								已交卷
+							</#if>
+							<#if (exinfo.end_date?datetime?long &lt; sysdate?datetime?long)>
+								考试已结束
+							</#if>
+						</span>
+	            	</li>
+				</#list>
+				<#else>
+				<li class="li_nr" style="height:49px; line-height:49px; text-align:center; padding-top:15px; padding-bottom:15px; font-size:18px;">当前没有考试</li>
+				</#if>
+    		<#elseif commitedExams??>
+    			<#if commitedExams?size&gt;0>
+				<#list commitedExams as exam>
+		 		<li class="li_nr">
+		 			<span class="span-objectname">
+						<img alt="考试" src="<@spring.url '/images/examsystem/exam_2.png'/>">
+						<div>
+							<div class="objectname">${exam.test_name}</div>
+							<div class="commoninfo">
+								<label>科目：<em class="sortname color-orange">${exam.sort_name}</em></label>
+							</div>
+						</div>
+					</span>
+					<span class='span01'><em class="color-orange">${exam.start_time}</em> 开考</span>
+					<span class='operate span01'>
+						<a href="<@spring.url '/examsystem/viewresult.html?examId=${exam.exam_id?c}&testRecId=${exam.test_rec_id?c}'/>">查看报告</a>
+						<label class="color-gray">&nbsp;&nbsp;|&nbsp;&nbsp;</label>
+						<a href="<@spring.url '/examsystem/viewDetail.html?examId=${exam.exam_id?c}&testRecId=${exam.test_rec_id?c}&viewType=all'/>">查看解析</a>
+					</span>
+				</li>
+			 	</#list>
+			 	<#else>
+			 	<li class="li_nr" style="height:49px; line-height:49px; text-align:center; padding-top:15px; padding-bottom:15px; font-size:18px;">没有考试历史记录</li>
+			 	</#if>
+    		</#if>
+        </ul>
+    </div>
+ </div>
+ <form id="DoExamForm" action="<@spring.url '/net_examView.html'/>" method="post">
+ 	<input type="hidden" name="testId" />
+ 	<input type="hidden" name="examId" />
+ 	<input type="hidden" name="subjectId" />
+ 	<input type="hidden" name="classId" />
+ 	<input type="hidden" name="studentId" />
+ 	<input type="hidden" name="testRecId" />
+ </form>
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<script>
+$(function(){
+
+	<#if commitedExams??>
+		$("#ViewAnaly").addClass("wrap03_current");
+		$(".mytest").removeClass("curNav");
+		$(".viewanaly").addClass("curNav");
+	<#else>
+		$(".mytest").addClass("curNav");
+		$(".viewanaly").removeClass("curNav");
+		$("#MyTests").addClass("wrap03_current");
+		//进入考场判断学生是否已经交卷，如果没有交卷考试时间也没有结束，学生可以继续进入考试
+		$(".jrkc").each(function(){
+			$(this).click(function(){
+				var userId=$(this).attr("testId");
+				var testId=$(this).attr("testId");
+				var examId=$(this).attr("examId");
+				var subjectId=$(this).attr("subjectId");
+				var classId=$(this).attr("classId");
+				var naruser=$(this).attr("naruser");
+				var studentId=$(this).attr('studentId');
+				var testRecId=$(this).attr("testRecId");
+				$("#DoExamForm").find("input[name='testId']").val($(this).attr("testId"));
+				$("#DoExamForm").find("input[name='examId']").val($(this).attr("examId"));
+				$("#DoExamForm").find("input[name='subjectId']").val($(this).attr("subjectId"));
+				$("#DoExamForm").find("input[name='classId']").val($(this).attr("classId"));
+				$("#DoExamForm").find("input[name='studentId']").val($(this).attr('studentId'));
+				$("#DoExamForm").find("input[name='testRecId']").val($(this).attr("testRecId"));
+				$("#DoExamForm").submit();
+			});
+		});
+	</#if>
+	
+	//点击不同的头部，页面进行不同的跳转
+	$("#MyTests").click(function() {
+		if(!$(this).hasClass("wrap03_current")) {
+			location.href = "<@spring.url '/network/paperFactory.html'/>";
+		}
+	});
+	$("#ViewAnaly").click(function() {
+		if(!$(this).hasClass("wrap03_current")) {
+			location.href = "<@spring.url '/student/viewAnaly.html'/>";
+		}
+	});
+	$("#ViewFavorites").click(function() {
+		location.href = "<@spring.url '/homework/viewFavoriteQuestions.html'/>";
+	});
+	
+});
+</script>

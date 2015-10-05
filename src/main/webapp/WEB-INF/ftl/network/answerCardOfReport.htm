@@ -1,0 +1,42 @@
+<div id="Datika" class="answercard-container">
+	<div><h3>答题卡</h3></div>
+   	<div id="CardWrap" class="cardwrap">
+	<#if typesAndQuestionsInfo??>
+   		<#list typesAndQuestionsInfo as type>
+   			<ul class="answercard-answerul" id=${type['type_id']?c}>
+   				<dt class="answercard-typedt" >${type['type_name']}</dt>
+   				<#if type['questionsList']??>
+	    		<dd>
+	    			<#list type['questionsList'] as question>
+    					<#if question.ques_flag==1><#--red, fault-->
+	    					<a id="mtopic${question['m_topic']?c}" quesid="${question['ques_id']?c}" class="answercard-question answercard-red">${question['m_topic']?c}</a>
+		    			<#elseif question.ques_flag==2><#--blue, do-->
+		    				<a id="mtopic${question['m_topic']?c}" quesid="${question['ques_id']?c}" class="answercard-question answercard-blue">${question['m_topic']?c}</a>
+		    			<#elseif question.ques_flag==3><#--green, right-->
+		    				<a id="mtopic${question['m_topic']?c}" quesid="${question['ques_id']?c}" class="answercard-question answercard-green">${question['m_topic']?c}</a>
+		    			<#elseif question.ques_flag==4><#--gray, empty-->
+		    				<a id="mtopic${question['m_topic']?c}" quesid="${question['ques_id']?c}" class="answercard-question answercard-gray">${question['m_topic']?c}</a>
+		    			</#if>
+	    			</#list>
+	    		</dd>
+    			</#if>
+   			</ul>
+   		</#list>
+   	</#if>
+   	</div>
+</div>
+<div id="DivAfterDatika"></div>
+<style>
+.answercard-container {border:none;margin-top:20px;margin-left:20px;}
+.answercard-title {height:0;font-size:16px;text-align:center;position:relative;}
+.answercard-title > div {width:180px;height:30px;line-height:30px;text-align:center;color:#fff;border-radius:4px 4px 0 0;position:absolute;top:-30px;left:410px;background:none repeat scroll 0 0 #f06000;cursor:pointer;}
+.cardborder {height:5px;position:absolute;z-index:2;border-radius:4px 4px 0 0;background:none repeat scroll 0 0 #f06000;}
+.cardwrap {margin-top:20px;}
+.answercard-answerul {padding:10px 0;margin:0 auto;}
+.answercard-typedt {font-size:14px;color:#999;font-weight:bold;margin-bottom:15px;}
+.answercard-question {display:inline-block;width:27px;height:27px;line-height:27px;text-align:center;margin-right:5px;margin-bottom:6px;}
+.answercard-red {background-color:#d80f1a; color:#FFFFFF;}
+.answercard-green {background-color:#156f3b; color:#FFFFFF;}
+.answercard-blue {background-color:#0099ff; color:#FFFFFF;}
+.answercard-gray {background-color:#c6c1c1; color:#000000;}
+</style>

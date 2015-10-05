@@ -1,0 +1,59 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<#include "homework/teacher/correctHomeworkLogo.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eee;}
+.showmarkresult-container {width:1000px; margin-top:30px; padding-top:25px; padding-bottom:25px; border:2px #DDDDDD solid; text-align:center; background-color:#F5F5F5;}
+.showmarkresult-finishedmarktip {width:392px;height:64px;line-height:64px;font-size:18px;color:#589218;text-align:left;background-image:url("<@spring.url '/images/pwdOK.png'/>");padding-left:60px;margin:0 auto 20px;}
+#ClassName {margin-left:10px; margin-right:10px;}
+#StuName {margin-right:10px;}
+#StuScore {height:81px; margin-top:18px;}
+.stuscoreimg {width:48px; height:48px;}
+.showmarkresult-markinfo {margin-bottom:40px; margin-left:299px;}
+.showmarkresult-mark {width:200px; height:30px; line-height:30px; float:left; font-family:微软雅黑; font-size:28px;}
+.showmarkresult-marked {border-right:2px #888888 dashed;}
+.showmarkresult-links {margin-bottom:20px;}
+#NextPaperContainer {padding-right:20px; text-align:right;}
+#NextPaper {display:inline-block; width:130px; height:32px; line-height:32px; padding-left:30px; font-size:32px; font-family:微软雅黑; color:#2C92F7; background:url("<@spring.url '/images/examsystem/enter_nexttype.png'/>") no-repeat;}
+#NextPaper:HOVER {color:#FF0000;}
+</style>
+<div class="content">
+<div class="showmarkresult-container">
+	<div>
+		<div class="showmarkresult-finishedmarktip">您已批改完<span id="ClassName" class="blue">${classInfo.class_name}</span><span id="StuName" class="red">${student.student_name}</span>的作业，得分</div>
+		<div id="StuScore">
+			<img class='stuscoreimg' src="<@spring.url '/images/star-empty.png'/>" />
+			<img class='stuscoreimg' src="<@spring.url '/images/star-empty.png'/>" />
+			<img class='stuscoreimg' src="<@spring.url '/images/star-empty.png'/>" />
+			<img class='stuscoreimg' src="<@spring.url '/images/star-empty.png'/>" />
+			<img class='stuscoreimg' src="<@spring.url '/images/star-empty.png'/>" />
+		</div>
+		<div class="nofl"></div>
+	</div>
+	
+	<div class="showmarkresult-markinfo">
+		<div class="showmarkresult-mark showmarkresult-marked">已阅${classInfo.marked_num}份</div>
+		<div class="showmarkresult-mark">未阅${classInfo.unmarked_num}份</div>
+		<div class="nofl"></div>
+	</div>
+	<div>
+		<div class="showmarkresult-links">
+			<a href="<@spring.url '/homework/teacher/pastHomeworks.html'/>">返回班级选择》</a>
+		</div>
+		<div id="NextPaperContainer">
+			<#if nextHomework??>
+				<a id="NextPaper" href="<@spring.url '/homework/teacher/correctHomework.html?hwId=${nextHomework.hw_id?c}&hwRecId=${nextHomework.hw_rec_id?c}'/>">阅下一张</a>
+			</#if>
+		</div>
+		<div class="nofl"></div>
+	</div>
+</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+$(function() {
+	for(var i=0; i< ${student.star}; i++) {
+		$($(".stuscoreimg").get(i)).attr("src", "<@spring.url '/images/star-full.png' />");
+	}
+	
+});
+</script>

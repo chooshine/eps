@@ -1,0 +1,319 @@
+<style>
+.chooshine-dialog {position:fixed;top:60px;}
+#SetsDialog h3 {margin-bottom:10px;}
+#Sets {height:346px;border:2px solid #000;margin:0 5px;overflow-y:auto;}
+#Sets .box {border-bottom:1px solid #000;background:#D4E7F7;}
+#Sets .title {width:90px;padding:5px 10px 0 0;color:#fff;font-size:14px;font-weight:bold;text-align:right;background:#02579C;}
+#Sets td {height:25px;}
+#Sets .set-area {padding:5px 0;}
+#Sets .radio {border:none;background:none;margin:3px 3px 0 5px;}
+#Sets .text {width:350px;padding:3px 0;margin:2px 0 5px 0;}
+#Sets textarea {height:60px;resize:none;overflow:auto;}
+#Sets .box_current {background:#ffc;}
+#Sets .box_current .title {background:#fc0;color:#000;}
+.hideseal {visibility:hidden;}
+.hide {display:none;}
+</style>
+<div id="SetsDialog">
+	<h3>试卷设置</h3>
+	<div id="Sets">
+		<!-- 装订线开始 -->
+		<div id="Set-Seal" class="struct-box box">
+			<table border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="title">装订线</td>
+					<td class="set-area">
+						<table border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td align="right">&nbsp;是否显示</td>
+								<td>
+									<table>
+										<tr>
+											<td><input type="radio" name="radio-seal" value="1" class="struct-radioshow radio"<#if previewInfo.seal_flag=1> checked="checked"</#if> /></td>
+											<td><a class="struct-show">显示</a></td>
+											<td><input type="radio" name="radio-seal" value="0" class="struct-radiohide radio"<#if previewInfo.seal_flag=0> checked="checked"</#if> /></td>
+											<td><a class="struct-hide">不显示</a></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<!-- 装订线结束 -->
+		<!-- 保密标记开始 -->
+		<div id="Set-Marktag"  class="struct-box box">
+			<table border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="title">保密标记</td>
+					<td class="set-area">
+						<table border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td align="right">&nbsp;是否显示</td>
+								<td>
+									<table>
+										<tr>
+											<td><input type="radio" name="radio-marktag" value="1" class="struct-radioshow radio"<#if previewInfo.marktag_flag=1> checked="checked"</#if> /></td>
+											<td><a class="struct-show">显示</a></td>
+											<td><input type="radio" name="radio-marktag" value="0" class="struct-radiohide radio"<#if previewInfo.marktag_flag=0> checked="checked"</#if> /></td>
+											<td><a class="struct-hide">不显示</a></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td align="right">文本</td>
+								<td>&nbsp;<input name="text-marktag" type="text" class="text" value="${previewInfo.marktag_content}"<#if previewInfo.marktag_flag=0> disabled="disabled"</#if>></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<!-- 保密标记结束 -->
+		<!-- 试卷信息栏开始 -->
+		<div id="Set-ExamInfo"  class="struct-box box">
+			<table border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="title">试卷信息栏</td>
+					<td class="set-area">
+						<table border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td align="right">&nbsp;是否显示</td>
+								<td>
+									<table>
+										<tr>
+											<td><input type="radio" name="radio-examinfo" value="1" class="struct-radioshow radio"<#if previewInfo.examinfo_flag=1> checked="checked"</#if> /></td>
+											<td><a class="struct-show show">显示</a></td>
+											<td><input type="radio" name="radio-examinfo" value="0" class="struct-radiohide radio"<#if previewInfo.examinfo_flag=0> checked="checked"</#if> /></td>
+											<td><a class="struct-hide">不显示</a></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td align="right">文本</td>
+								<td>&nbsp;<input name="text-examinfo" type="text" class="text" value="${previewInfo['examinfo_content']}"<#if previewInfo.examinfo_flag=0> disabled="disabled"</#if>></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<!-- 试卷信息栏结束 -->
+		<!-- 考生输入栏开始 -->
+		<div id="Set-StudentInput"  class="struct-box box">
+			<table border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="title">考生输入栏</td>
+					<td class="set-area">
+						<table border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td align="right">&nbsp;是否显示</td>
+								<td>
+									<table>
+										<tr>
+											<td><input type="radio" name="radio-studentinput" value="1" class="struct-radioshow radio"<#if previewInfo.studentinput_flag=1> checked="checked"</#if> /></td>
+											<td><a class="struct-show">显示</a></td>
+											<td><input type="radio" name="radio-studentinput" value="0" class="struct-radiohide radio"<#if previewInfo.studentinput_flag=0> checked="checked"</#if> /></td>
+											<td><a class="struct-hide">不显示</a></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td align="right">文本</td>
+								<td>&nbsp;<input name="text-studentinput" type="text" class="text" value="${previewInfo.studentinput_content}"<#if previewInfo.studentinput_flag=0> disabled="disabled"</#if>></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<!-- 考生输入栏结束 -->
+		<!-- 誊分栏开始 -->
+		<div id="Set-Score"  class="struct-box box">
+			<table border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="title">誊分栏</td>
+					<td class="set-area">
+						<table border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td align="right">&nbsp;是否显示</td>
+								<td>
+									<table>
+										<tr>
+											<td><input type="radio" name="radio-score" value="1" class="struct-radioshow radio"<#if previewInfo.score_flag=1> checked="checked"</#if> /></td>
+											<td><a class="struct-show">显示</a></td>
+											<td><input type="radio" name="radio-score" value="0" class="struct-radiohide radio"<#if previewInfo.score_flag=0> checked="checked"</#if> /></td>
+											<td><a class="struct-hide">不显示</a></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<!-- 誊分栏结束 -->
+		<!-- 注意事项栏开始 -->
+		<div id="Set-Notice"  class="struct-box box">
+			<table border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="title">注意事项栏</td>
+					<td class="set-area">
+						<table border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td align="right">&nbsp;是否显示</td>
+								<td>
+									<table>
+										<tr>
+											<td><input type="radio" name="radio-notice" value="1" class="struct-radioshow radio"<#if previewInfo.notice_flag=1> checked="checked"</#if> /></td>
+											<td><a class="struct-show">显示</a></td>
+											<td><input type="radio" name="radio-notice" value="0" class="struct-radiohide radio"<#if previewInfo.notice_flag=0> checked="checked"</#if> /></td>
+											<td><a class="struct-hide">不显示</a></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td align="right">文本</td>
+								<td>&nbsp;<textarea name="textarea-notice" class="text"<#if previewInfo.notice_flag=0> disabled="disabled"</#if>>${previewInfo.notice_content}</textarea></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<!-- 注意事项栏结束 -->
+	</div>
+</div>
+<script type="text/javascript">
+//修改试卷信息
+$("#SetsDialog").dialog({
+	dialogClass: "chooshine-dialog",
+	autoOpen: false,
+	width: 580,
+	height:470,
+	modal: true,
+	resizable:false,
+	positon:"center",
+	buttons:[{
+		text:"确定设置",
+		click:function() {
+			//将弹框中的设置反应到页面上
+			saveSets();
+			$(this).dialog("close");
+		}
+	}, {
+		text:"关闭窗口",
+		click:function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+//点击“显示”和“不显示”
+$(".struct-show").click(function() {
+	$($(this).parents("table")[0]).find(".struct-radioshow")[0].checked = true;
+	//当选择显示时，输入文本框要启用
+	$(this).parents(".struct-box").find(".text").removeAttr("disabled");
+});
+$(".struct-hide").click(function() {
+	$($(this).parents("table")[0]).find(".struct-radiohide")[0].checked = true;
+	//当选择不显示时，输入文本框要被禁用
+	$(this).parents(".struct-box").find(".text").attr("disabled", true);
+});
+$(".struct-radioshow").click(function() {
+	//当选择显示时，输入文本框要启用
+	$(this).parents(".struct-box").find(".text").removeAttr("disabled");
+});
+$(".struct-radiohide").click(function() {
+	//当选择不显示时，输入文本框要被禁用
+	$(this).parents(".struct-box").find(".text").attr("disabled", true);
+});
+
+//将弹框中的设置反应到页面上
+function saveSets() {
+	setHideOrShow();
+	setText();
+}
+
+//设置结构的隐藏或显示
+function setHideOrShow() {
+	//装订线
+	if($("input[name='radio-seal']:checked").val() == 1) {
+		$("#Exam-Seal").removeClass("hideseal");
+		$("input[name='checkbox-seal']")[0].checked=true;
+	} else {
+		$("#Exam-Seal").addClass("hideseal");
+		$("input[name='checkbox-seal']")[0].checked=false;
+	}
+	//保密标记
+	if($("input[name='radio-marktag']:checked").val() == 1) {
+		$("#Exam-Marktag").removeClass("hide");
+		$("input[name='checkbox-marktag']")[0].checked=true;
+	} else {
+		$("#Exam-Marktag").addClass("hide");
+		$("input[name='checkbox-marktag']")[0].checked=false;
+	}
+	//试卷信息栏
+	if($("input[name='radio-examinfo']:checked").val() == 1) {
+		$("#Exam-ExamInfo").removeClass("hide");
+		$("input[name='checkbox-examinfo']")[0].checked=true;
+	} else {
+		$("#Exam-ExamInfo").addClass("hide");
+		$("input[name='checkbox-examinfo']")[0].checked=false;
+	}
+	//考生输入栏
+	if($("input[name='radio-studentinput']:checked").val() == 1) {
+		$("#Exam-StudentInput").removeClass("hide");
+		$("input[name='checkbox-studentinput']")[0].checked=true;
+	} else {
+		$("#Exam-StudentInput").addClass("hide");
+		$("input[name='checkbox-studentinput']")[0].checked=false;
+	}
+	//誊分栏
+	if($("input[name='radio-score']:checked").val() == 1) {
+		$("#Exam-Score").removeClass("hide");
+		$("input[name='checkbox-score']")[0].checked=true;
+	} else {
+		$("#Exam-Score").addClass("hide");
+		$("input[name='checkbox-score']")[0].checked=false;
+	}
+	//注意事项栏
+	if($("input[name='radio-notice']:checked").val() == 1) {
+		$("#Exam-Notice").removeClass("hide");
+		$("input[name='checkbox-notice']")[0].checked=true;
+	} else {
+		$("#Exam-Notice").addClass("hide");
+		$("input[name='checkbox-notice']")[0].checked=false;
+	}
+}
+//设置结构的文本内容
+function setText() {
+	//保密标记
+	$("#Exam-Marktag").text($("input[name='text-marktag']").val());
+	//试卷信息栏
+	$("#Exam-ExamInfo").text($("input[name='text-examinfo']").val());
+	//考生输入栏
+	$("#Exam-StudentInput").text($("input[name='text-studentinput']").val());
+	//注意事项栏
+	$("#Notice-text").html($("textarea[name='textarea-notice']").val().replace(/\n/ig, "<br/>"));
+}
+
+//将页面上的内容反映到弹框中
+function showSets() {
+	//保密标记
+	$("input[name='text-marktag']").val($("#Exam-Marktag").text());
+	//试卷信息栏
+	$("input[name='text-examinfo']").val($("#Exam-ExamInfo").text());
+	//考生输入栏
+	$("input[name='text-studentinput']").val($("#Exam-StudentInput").text());
+	//注意事项栏
+	$("textarea[name='textarea-notice']").val($("#Notice-text").html().replace(/<br>/g, "\n"));
+}
+</script>

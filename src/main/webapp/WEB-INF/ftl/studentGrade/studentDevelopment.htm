@@ -1,0 +1,232 @@
+<#include "header.htm" parse="true" encoding="UTF-8" > 
+<#include "logheader.htm" parse="true" encoding="UTF-8" >
+<style>
+.nav ul li a { padding-top:0px;}
+</style>
+<div id="perIndexMain">
+	<div class="per_nav">
+		<div class="nav">
+			<div class="top">
+				<ul>
+					<li><a href="<@spring.url '/studentGrade/myDesk.html'/>">我的课桌</a></li>
+					<li><a href="<@spring.url '/studentGrade/studentAbility.html'/>">我的能力</a></li>
+					<li><a href="<@spring.url '/studentGrade/studentLesson.html'/>">我的课程表</a></li>
+					<li class="perIndexNavLi">发展跟踪</li>
+					<li><a href="<@spring.url '/studentGrade/examAnaly.html'/>">试卷分析</a></li>
+				</ul>
+			</div>
+			<div class="bottom">
+				<ul>
+					<li class="res_navt">发展跟踪</li>
+				</ul>
+			</div>
+
+		</div>
+	</div>
+	<div class="resa_abl">
+	<form>
+		<input type="hidden" name="small_time" />
+		<input type="hidden" name="selected_radio" value="${selected_radio}"/>
+		<input type="hidden" name="subject_id" />
+		<div class="res_anl">
+			<div class="res_anll">科目：</div>
+			<div class="res_anlr">
+					<#if subjects??> 
+						<#list subjects as subject> 
+							<#if subject.selected> 
+								<#assign checked="checked">
+							<#else> 
+								<#assign checked=""> 
+							</#if> 
+							<input type="radio" value="${subject.sort_id}" name="subject" ${checked}>${subject.sort_name} 
+						</#list>
+					</#if>
+				<div class="nofl"></div>
+			</div>
+			<div class="nofl"></div>
+		</div>
+		<div class="res_anl">
+			<div class="res_anlla">比较时间段：</div>
+			<div class="res_anlra">
+				<select name='times'>
+					<#if times??> 
+						<#list times as time> 
+							<#if time.selected> 
+								<#assign selected="selected">
+							<#else> 
+								<#assign selected=""> 
+							</#if> 
+							<option value="${time.time}" ${selected}>${time.time}</option> 
+						</#list>
+					</#if>
+				</select>
+				<label>-至今</label>
+			</div>
+			<div class="nofl"></div>
+		</div>
+
+		<div class="res_anbgz">
+			<div class="res_anbgzr">
+				<span id="tableButton1">表格</span>|<span id="chartButton1">图形</span>
+			</div>
+		</div>
+		<div class="res_anbg">
+			<div class="res_anbgt">
+				<span>${student.studentName}</span>同学<span>${sort_name}</span>数次考试得分分布
+			</div>
+			<div class="res_anbgta1" id="table">
+				<#if subjectInfos??>
+				<table class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<th></th>
+							<th>成绩</th>
+							<th>班名</th>
+							<th>年名</th>
+						</tr>
+					</thead>
+					<tbody>
+						<#list subjectInfos as item>
+						<tr>
+							<td class="rz1">${item.test_name}</td>
+							<td>${item.score}</td>
+							<td>${item.score_cr}</td>
+							<td>${item.score_gr}</td>
+						</tr>
+						</#list>
+					</tbody>
+				</table>
+				</#if>
+				<div class="nofl"></div>
+			</div>
+			<div id="serialChart" style="height:250px;">
+			
+			</div> 
+		</div>
+	</div>
+	</form>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+
+<script src="<@spring.url '/javascripts/amcharts.js'/>" ></script>
+<script>
+	$(function(){
+
+		//科目和时间的点击事件
+		$("input[name='subject']").each(function() {
+			$(this).click(function() {
+				var subject_id = $(this).val();
+				$("input[name='subject_id']").val(subject_id);
+				var small_time = $("select[name='times']").val();
+				$("input[name='small_time']").val(small_time);
+				$("form").submit();
+			});
+		});
+		$("option").each(function() {
+			$(this).click(function() {
+				var small_time = $(this).val();
+				$("input[name='small_time']").val(small_time);
+				var subject_id = $("input[name='subject'][checked]").val();
+				$("input[name='subject_id']").val(subject_id);
+				$("form").submit();
+			});
+		});
+		
+		//绘制本次和上次考试对比折线图
+		 // SERIAL CHART
+         chart = new AmCharts.AmSerialChart();
+                chart.dataProvider = ${subjectInfosChart};
+                chart.categoryField = "test_name";
+                chart.marginTop = 0;
+
+                // AXES
+                // category axis
+                var categoryAxis = chart.categoryAxis;
+                categoryAxis.autoGridCount = false;
+                categoryAxis.gridCount = 50;
+                categoryAxis.gridAlpha = 0;
+                categoryAxis.gridColor = "#000000";
+                categoryAxis.axisColor = "#555555";
+
+                // as we have data of different units, we create two different value axes
+                // Score value axis            
+                var scoreAxis = new AmCharts.ValueAxis();
+                scoreAxis.title = "分数";
+                scoreAxis.gridAlpha = 0.05;
+                scoreAxis.axisAlpha = 0;
+                scoreAxis.inside = true;
+                scoreAxis.unit = "分";
+                chart.addValueAxis(scoreAxis);
+
+                // Rank value axis 
+                var rankAxis = new AmCharts.ValueAxis();
+                rankAxis.title = "班级排名";
+                rankAxis.gridAlpha = 0;
+                rankAxis.position = "right";
+                rankAxis.inside = true;
+                rankAxis.unit = "名";
+                rankAxis.axisAlpha = 0;
+                chart.addValueAxis(rankAxis);
+
+                // GRAPHS
+                // rank graph
+                var rankGraph = new AmCharts.AmGraph();
+                rankGraph.title = "班级排名";
+                rankGraph.valueField = "score_cr";
+                rankGraph.type = "line";
+                rankGraph.valueAxis = rankAxis; // indicate which axis should be used
+                rankGraph.lineColor = "#CC0000";
+                rankGraph.balloonText = "第[[value]]名";
+                rankGraph.lineThickness = 1;
+                rankGraph.legendValueText = "第[[value]]名";
+                rankGraph.bullet = "square";
+                chart.addGraph(rankGraph);
+                
+                // score graph
+                var scoreGraph = new AmCharts.AmGraph();
+                scoreGraph.valueField = "score";
+                scoreGraph.title = "分数";
+                scoreGraph.type = "column";
+                scoreGraph.fillAlphas = 0.1;
+                scoreGraph.valueAxis = scoreAxis; // indicate which axis should be used
+                scoreGraph.balloonText = "[[value]] 分";
+                scoreGraph.legendValueText = "[[value]] 分";
+                scoreGraph.lineColor = "#000000";
+                scoreGraph.lineAlpha = 0;
+                chart.addGraph(scoreGraph);
+                
+                // CURSOR                
+                var chartCursor = new AmCharts.ChartCursor();
+                chartCursor.zoomable = false;
+                chartCursor.cursorAlpha = 0;
+                chart.addChartCursor(chartCursor);
+
+                // LEGEND
+                var legend = new AmCharts.AmLegend();
+                legend.bulletType = "round";
+                legend.equalWidths = false;
+                legend.valueWidth = 120;
+                legend.color = "#000000";
+                chart.addLegend(legend);
+
+
+        //点击本次和上次成绩对比的图表按钮时
+        $("#tableButton1").css("color","#DE5B24");
+        $("#serialChart").hide();
+        $("#tableButton1").click(function(){
+			$(this).css("color","#DE5B24");
+			$("#table").show();
+			$("#serialChart").hide();
+			$("#chartButton1").css("color","black");
+		});
+		$("#chartButton1").click(function() {
+			$(this).css("color","#DE5B24");
+			$("#tableButton1").css("color","black");
+			$("#table").hide();
+			$("#serialChart").show();
+			// WRITE
+			chart.write("serialChart");
+		});
+		
+	});
+</script>

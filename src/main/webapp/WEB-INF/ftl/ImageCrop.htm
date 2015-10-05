@@ -1,0 +1,16 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<form action="<@spring.url '/test/uploadImg.html' />" method="post" target="if" enctype="multipart/form-data">
+	<input type="file" name='myfile' id="_file" >
+	<iframe name='if' style='display:none;'></iframe>
+</form>
+
+<img src="<@spring.url '/images/headImage/default_head.jpg'/>" id="target"/>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<#include "crop.htm" parse="true" encoding="UTF-8" >
+<script type="text/javascript">
+	$("#_file").change(function(){
+		$('#CropDialog').dialog('open');
+		$('form').submit();
+	});
+	$('#target').Jcrop();
+</script>

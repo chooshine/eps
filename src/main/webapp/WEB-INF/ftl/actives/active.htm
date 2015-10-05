@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<#import "spring.ftl" as spring/>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>畅选网|日语语料|在线考试|小学|初中|高中|成绩</title>
+    <meta name="Keywords" content="畅先,畅选,畅选网,日语,语料,日语语料,考试, 在线考试,成绩,成绩分析,小学,初中,高中" />
+    <meta name="Description" content="畅选网是国内首家上线的日语语料库, 能对日语学习及考试提供极大的帮助">
+    <link rel="shortcut icon"  type="image/x-icon" href="<@spring.url '/favicon.ico'/>" >
+    <link rel='stylesheet' href="<@spring.url '/css/style.css' />">
+    <link rel='stylesheet' href="<@spring.url '/css/icons/silk.css'/>">
+    <link rel="stylesheet" href="<@spring.url '/stylesheets/jquery-ui.css'/>">
+    <link rel="stylesheet" href="<@spring.url '/css/header.css'/>" >
+    <link rel="stylesheet" href="<@spring.url '/css/child-page.css'/>" >
+  </head>
+<body>
+
+ <div class="indt_top">
+	<div class="indt_tocm">
+		<div class="indt_tocml">
+			<!--  <div class="indt_tocmlx" ><a href="<@spring.url '/logout.html'/>"></a></div>-->
+			<ul class="indt_tocmlr">
+				<li><a href="<@spring.url '/' />">首页</a></li>
+				<li><a href="#">你问我答</a></li>
+				<li><a href="<@spring.url '/order_index.html'/>">在线考试</a></li>
+				<#if USER_CONTEXT??>
+					<#if USER_CONTEXT.userType == '10'>
+						<li><a href="<@spring.url '/achievement/myoffice.html'/>">成绩管家</a></li>
+					</#if>
+					<#if USER_CONTEXT.userType == '20'>
+						<li><a href="<@spring.url '/studentGrade/myDesk.html'/>">成绩管家</a></li>
+					</#if>
+				</#if>
+				<li><a href="<@spring.url '/corpus/index.html' />">语料搜索</a></li>
+			</ul>
+		</div>
+		<div class="indt_tocmr">
+		   <ul class="indt_tocmlr">
+			
+			<#if USER_CONTEXT??>
+			    <li style="background:none;"><span style="color:#ff3300;'"><span style="color:#5495ff;">欢迎回来！</span>${USER_CONTEXT.userNo}</span></li>
+				<li><a href="<@spring.url '/person/center.html'/>">个人中心</a></li>
+				<li><a href="<@spring.url '/logout.html'/>">注销</a></li>
+			<#elseif cookieName??>
+				<li style="background:none;"><span style="color:#ff3300;'"><span style="color:#5495ff;">欢迎回来！</span>${cookieName}</span></li>
+				<li><a href="<@spring.url '/person/center.html'/>">个人中心</a></li>
+				<li><a href="<@spring.url '/logout.html'/>">注销</a></li>
+			<#else>
+				<li><a href="<@spring.url '/login.html'/>">登陆</a></li>
+				<li><a href="<@spring.url '/regist.html'/>">免费注册</a></li>
+			</#if>
+			<li><a href="<@spring.url '/message/message.html'/>">问题反馈</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="content" style="width:100%;">
+
+<div class="active_body">
+	<div class="active_header"></div>
+		<div class="active_content">
+		<span class="sm_title"></span> 
+		<span class="sm_nr">
+			注册用户通过教师认证，手机认证后手机号码即可成为参加本次活动的推广码。<br />
+			将此号码告诉您的好友，该好友在购买本网站日语语料服务时输入此推广码即可享受8折优惠哦！<br />
+			而您也可以获得本网站的现金奖励！赶快来参加吧！
+		</span>
+		<div class="act_step1">
+			<div class="step1_title">
+				<span class="title_icon"></span><span>有哪些收益？</span>
+			</div>
+			<div class="clear"></div>
+			<div class="step1_nr">
+				<p>（1）好友购买时用你的手机作为推广码，即可享受8折优惠。</p>
+				<p>
+					（2）凡是将你手机作为推广码的交易，你都可获得实际交易额10%的现金奖励<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;奖励满100后即可提现。
+				</p>
+				<span class="step1_icon02"></span> <span class="step1_01"><img
+					src="<@spring.url '/img/active/01.gif'/>" width="320"
+					height="142" title="" />
+				</span><span class="step1_01 step1_02"><img
+					src="<@spring.url '/img/active/02.gif'/>" width="320"
+					height="142" title="" />
+				</span><span class="step1_01"><img
+					src="<@spring.url '/img/active/03.gif'/>" width="320"
+					height="142" title="" />
+				</span>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<div class="act_step1">
+			<div class="step1_title">
+				<span class="title_icon title_icon02"></span><span>如何参加活动？</span>
+			</div>
+			<div class="clear"></div>
+			<div class="step1_nr">
+				<div class="step2_left">
+					<p class="step02_1">Step1.成为注册用户并通过手机认证</p>
+					<div class="step02_iocn02">
+						<img src="<@spring.url '/img/active/step2.png'/>" width="468"
+							height="414" title="" />
+					</div>
+					<p class="step02_1 step02_3">Step3.推荐好友在购买时使用推广码</p>
+				</div>
+				<div class="step2_right">
+					<div class="step02_icon01">
+						<img src="<@spring.url '/img/active/step1.gif'/>" width="448"
+							height="198" title="" />
+					</div>
+					<p class="step02_1 step02_2">Step2.进行教师验证【立即填写申请】</p>
+					<div class="step02_icon03">
+						<img src="<@spring.url '/img/active/step3.png'/>" width="358"
+							height="189" title="" />
+					</div>
+				</div>
+				<div class="clear"></div>
+
+			</div>
+		</div>
+		<div class="act_step1">
+			<div class="step1_title">
+				<span class="title_icon title_icon03"></span><span>领取奖金</span>
+			</div>
+			<div class="clear"></div>
+			<div class="step1_nr">
+				<span class="step3_left"><img
+					src="<@spring.url '/img/active/step02.png'/>" width="279"
+					height="235" />
+				</span> <span class="step3_right">
+					<p>奖金累计到100元后即可申请提现</p>
+					<p>每次可提现金额为100元的整数倍，奖励永不过期。</p>
+					<p class="gonggao">本网站对此活动拥有最终解释权</p> </span>
+				<div class="clear"></div>
+				<a href="<@spring.url '/actives/activeTo.html'/>" class="join"></a>
+			</div>
+		</div>
+		</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >

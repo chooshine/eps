@@ -1,0 +1,327 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eeeeee;}
+.nr_wrap03 {min-height:500px;background-color:#ffffff;box-shadow:0 0 5px #aaaaaa;}
+.nr_wrap03 .wrap03_select {padding-bottom:10px; border-bottom:1px #cccccc solid;}
+.or_rgttconanu {float:left;}
+.or_rgttconanu #searchAll {height:25px;margin-left:20px;margin-top:3px;}
+.or_rgttconanu #searchAll:HOVER {color:#dddddd;}
+.wrap03_nr ul li span.span00 {width:240px;}
+.wrap03_nr ul li span.span01 {width:165px;}
+.wrap03_nr ul li span.span-objectname {width:450px;}
+em {font-style:normal;}
+
+#ArrangeTest-Dialog #ArrangeTest-Container {text-align:center;margin-top:60px;}
+#TestSelect {width:300px;padding-top:4px;padding-bottom:4px;font-size:14px;}
+#ArrangeTest-Dialog #CreateTestContainer {margin-top:20px; margin-left:-70px;font-size:16px;}
+#ArrangeTest-Dialog #CreateTestContainer #CreateTest {color:red;}
+.arragetest-operates {height:32px;margin-top:60px;padding-left:200px;}
+.arragetest-operates div {float:left;}
+.arragetest-operates .chooshine-btn {margin-right:20px;}
+</style>
+
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">在线考场</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"><a href="<@spring.url '/network/paperFactory.html'/>">出卷</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/room.html'/>">考场</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/result.html'/>" style="border-right:none;">阅卷</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<div class="nr_wrap03">
+	<div class="wrap03_title">
+		<span class="wrap03_current">我的试卷</span>
+		<a href="<@spring.url '/teacher/myWharehouse.html'/>"><span>我的题库</span></a>
+		<a href="<@spring.url '/network/net_share.html'/>"><span>他人共享</span></a>
+		<!-- <a href="<@spring.url '/network/myFav.html'/>"><span>我的收藏</span></a> -->
+	</div>
+    <div class="wrap03_select">
+    	<div style="float:left;">
+    		<b class="padd25">时间:</b>
+			<select class="chooshine-select" name="year" >
+				<#if dateList??>
+					<#list dateList as dd>
+						<#if dd?c=.now?string("yyyy-MM-dd HH:mm")?substring(0,4)>
+							<option value=${dd?c} selected="selected">${dd?c}</option>
+						<#else>
+							<option value=${dd?c}>${dd?c}</option>
+						</#if>
+					</#list>
+				</#if>
+			</select>
+			<b>以后</b>
+    	</div>
+		<div class="or_rgttconanu">
+			<button type="submit" id="searchAll" style="" class="testh_problemrbotrjx ckbj" >查找试卷</button>
+		</div>
+		<div class="nofl"></div>
+	</div>
+    
+    <div class="libList">
+    	<#include "network/libList.htm" parse="true" encoding="UTF-8">
+    </div>
+	<form id="getExam" method="POST" action="<@spring.url '/exam/getExamInfo.html'/>" >
+		<input type="hidden" name="examId" />
+	</form>
+
+	<form id="getLibs" method="POST" action="<@spring.url '/network/paperLibrary.html' />" >
+		<input type="hidden" value="20" name="pageSize" />
+		<input type="hidden" value="1" name="pageNo" />
+		<input type="hidden" name="releaseTime" />
+	</form>
+
+	<#include "pagination.htm" parse="true" encoding="UTF-8">
+	<@pagination page=libList/>
+	<div style="clear: both"></div>
+	<input type="hidden" name="pageSize" value="${pageSize}" />
+	<input type="hidden" name="pageNo" value="1" />
+</div>
+
+<input name="arrange-examid" type="hidden" />
+<input name="arrange-subjectno" type="hidden" />
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script src="<@spring.url '/javascripts/jquery-ui-timepicker-addon.js'/>" ></script>
+<div id="ArrangeTest-Dialog" style="display:none;">
+	<h3>安排考试</h3>
+	<div id="ArrangeTest-Container">
+		<select id="TestSelect" name="testId" class="chooshine-select">
+			<option id="other" value="-2">请选择考试</option>
+		</select>
+		<div id="CreateTestContainer">
+			<span>没有您要安排的考试？<a href="javascript:void(0);" id="CreateTest">新建考试 》</a></span>
+		</div>
+		
+		<div class="arragetest-operates">
+			<div id="SaveArrange" class="chooshine-btn">下一步（安排考场）</div>
+			<div id="CloseArrangeDialog" class="chooshine-cancel">关闭</div>
+		</div>
+	</div>
+</div>
+
+<#--引入新建考试弹出框-->
+<#include "network/createNewTestDialog.htm" parse="true" encoding="UTF-8" >
+<#--引入安排考场弹出框-->
+<#include "network/includedArrangeDialogPage.htm" parse="true" encoding="UTF-8" >
+<script>
+$(function() {
+	$("#ArrangeTest-Dialog").dialog({
+		autoOpen:false,
+		resizable:false,
+		dialogClass:"chooshine-dialog",
+		width:698,
+		height:500,
+		modal:true
+	});
+	
+	
+	//分页显示
+	$(".show,.fcenter").each(function(index) {
+		$(this).click(function() {
+			$("input[name='pageNo']").val($(this).attr('url'));
+			$("#getLibs").submit();
+			showBlock();
+		});
+	});
+	
+	
+	//安排考试事件
+	function arrangeTestEvent(node) {
+		var testSelectNode = $("#TestSelect");
+		var examId = $(node).attr("examId");
+		var subjectNo = $(node).attr("subjectNo");
+		$("input[name='arrange-examid']").val(examId);
+		$("input[name='arrange-subjectno']").val(subjectNo);
+		
+		//异步获得考试(获得的安排考试必须是不同的试卷)
+		$.ajax({
+			type:"post",
+			url:"<@spring.url '/network/planTests.json' />",
+			contentType:"application/x-www-form-urlencoded; charset=utf-8",
+			data:{examId:examId,types:'paperLibrary'},
+			success:function(data){
+				//获得考试成功之后,将考试赋予下拉框
+				for(var i=0;i<data.testList.length;i++){
+					$(testSelectNode).append("<option value='"+data.testList[i].test_id+"' existflag='"+data.testList[i].exists_flag+"'>"+data.testList[i].test_name+"</option>");
+				}
+				$("#ArrangeTest-Dialog").dialog("open");
+			}
+		});
+	}
+	$("#CloseArrangeDialog").click(function() {
+		$("#ArrangeTest-Dialog").dialog("close");
+		$("#TestSelect").children().each(function() {
+			if($(this).attr("id") != "other") {
+				$(this).remove();
+			}
+		});
+	});
+	/*****************新建考试*******************************/
+	//点击“新建考试”
+	$("#CreateTest").click(function() {
+		$("#CreatNewTestDialog").dialog("open");
+	});
+	
+	//点击“下一步（安排考场）”
+	$("#SaveArrange").click(function() {
+		//获得安排考试的试卷编号
+		var examId = $("input[name='arrange-examid']").val();
+		var subjectId = $("input[name='arrange-subjectno']").val();
+		var checkedOptionNode = $("#TestSelect").children("option:checked");
+		//得到考试编号
+		var testId = $("#TestSelect").val();
+		var existFlag = $(checkedOptionNode).attr("existflag");
+		if(testId == "-2"){
+			$.chooshine.alert("请选择考试！");
+			return;
+		} else if(existFlag == "1") {
+			$.chooshine.confirm("已经为当前考试安排过试卷，确定覆盖原有试卷？", function() {
+				$.ajax({
+					type:"post",
+					url:"<@spring.url '/network/arrangeTest.json' />",
+					contentType:"application/x-www-form-urlencoded; charset=utf-8",
+					data:{testId:testId,examId:examId, subjectId:subjectId},
+					success:function(data){
+						getPlanClazz(subjectId, testId);
+					}
+				});
+			});
+			
+			return;
+		}
+		
+		$.ajax({
+			type:"post",
+			url:"<@spring.url '/network/arrangeTest.json' />",
+			contentType:"application/x-www-form-urlencoded; charset=utf-8",
+			data:{testId:testId,examId:examId, subjectId:subjectId},
+			success:function(data){
+				getPlanClazz(subjectId, testId);
+			}
+		});
+	});
+	
+	
+	//根据年份搜索试卷
+	$("#searchAll").click(function(){
+		var releaseTime = $("select[name='year']").val();
+		$("input[name='releaseTime']").val(releaseTime);
+		$.ajax({
+			type:"POST",
+			url:"<@spring.url '/network/paperLibrary.html'/>",
+			contentType:"application/x-www-form-urlencoded; charset=utf-8",
+			data:"releaseTime="+releaseTime,
+			dataType:"html",
+			success:function(data){
+				$(".libList").html(data);
+				
+				$(".arrangetest").each(function() {
+					$(this).click(function() {
+						arrangeTestEvent(this);
+					});
+				});
+				$(".upLibr").each(function(){//添加共享事件
+					gx(this);
+				});
+				//取消共享
+				$(".qx_gx").each(function(){//添加取消共享事件
+					qxgx(this);
+				});
+				$('.see').each(function(){
+					seeExam(this);
+				});
+				$(".del").each(function(){
+					delExam(this);
+				});
+			}
+		});
+	});
+	
+	$(".arrangetest").each(function() {
+		$(this).click(function() {
+			arrangeTestEvent(this);
+		});
+	});
+	$('.see').each(function(){
+		seeExam(this);
+	});
+	$(".del").each(function(){
+		delExam(this);
+	});
+	$(".upLibr").each(function(){
+		gx(this);
+	});
+	$(".qx_gx").each(function(){
+		qxgx(this);
+	});
+	
+	function qxgx(Node){
+		$(Node).click(function(){
+			var examId=$(this).attr("examId");
+			 $.ajax({
+				type:"post",
+				url:"<@spring.url '/network/net_cancelShare.json' />",
+				contentType:"application/x-www-form-urlencoded; charset=utf-8",  
+				data:{examId:examId},
+				dataType:"json",
+				success:function(data){	
+					var timeId = new Date().getTime();
+					$($($(Node).parents('li')[0]).find('.qx_gx')[0]).replaceWith("<a href='javascript:void(0);' id='gx"+timeId+"' class='upLibr' examId='"+examId+"'><b class='ap_ks' style='padding-right:32px;'>共享</b></a></span>");
+					gx($('#gx'+timeId));
+				}
+			});
+		});
+	}
+	
+	//共享方法
+	function gx(Node){
+		$(Node).click(function(){
+			 examId=$(this).attr("examId");
+			 $.ajax({
+				type:"post",
+				url:"<@spring.url '/network/upPaperLibrary.json' />",
+				contentType:"application/x-www-form-urlencoded; charset=utf-8",
+				data:{examId:examId},
+				dataType:"Json",
+				success:function(data){
+					var timeId = new Date().getTime();
+					$($($(Node).parents('li')[0]).find('.upLibr')[0]).replaceWith("<a href='javascript:void(0);' id='qx_gx"+timeId+"' class='qx_gx' examId='"+examId+"'><b class='ap_ks'>取消共享</b></a>");
+					qxgx($('#qx_gx'+timeId));
+				}
+			 });
+		});
+	}
+	
+	//查看
+	function seeExam(Node){
+		$(Node).click(function(){
+			var examId=$(this).attr("examid");
+			location.href="<@spring.url '/network/getExamInfo.html?examId="+examId+"&type=see'/>";
+		});
+	}
+	//删除
+	function delExam(Node){
+		$(Node).click(function(){
+			var examId=$(this).attr("examId");
+			var pageType=$(this).attr("pageType");
+			$.chooshine.confirm("确定要删除？",function(){
+				location.href="<@spring.url '/delExam.html?examId="+examId+"&pageType=del'/>"; 
+			});
+		});
+	}
+    
+});
+function afterSaveNewTest(data) {
+	var test = data['testMap'];
+	$("#TestSelect").append("<option value='"+test.testId+"'>"+test.testName+"</option")
+	$("#TestSelect option[value='"+test.testId+"']").attr("selected",true);
+	triggerMouseEvent(document.getElementById("SaveArrange"), "click");//自动触发"下一步"的点击事件
+}
+function closeCreateNewTestEvent() {
+	$("#CreatNewTestDialog").dialog("close");
+};
+</script>

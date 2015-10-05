@@ -1,0 +1,328 @@
+/**axurerp_pagespecificstyles.css */
+body { margin:0px;}
+
+div { background-repeat: no-repeat;}
+
+.raw_image { width: 100%; height: 100%;}
+
+.preload { display: none;}
+
+.form_sketch { border-color: transparent; background-color: transparent;}
+
+.u0 { position:absolute; left:181px; top:71px; width:84px; height:19px; font-family:"Microsoft YaHei"; text-align:left; word-wrap:break-word;}
+.u1 { position:absolute; left:285px; top:242px; width:180px; height:22px; font-family:"Microsoft YaHei"; font-size:13px; color:#000000; font-style:normal; font-weight:normal; text-decoration:none;}
+.u2 { position:absolute; left:285px; top:68px; width:180px; height:25px; text-align: left; font-family:"Microsoft YaHei"; font-size:13px; color:#000000; font-style:normal; font-weight:normal; text-decoration:none;}
+.u3 { position:absolute; left:181px; top:242px; width:84px; height:19px; font-family:"Microsoft YaHei"; text-align:left; word-wrap:break-word; }
+.u4 { position:absolute; left:181px; top:115px; width:84px; height:19px; font-family:"Microsoft YaHei"; text-align:left; word-wrap:break-word; }
+.u5 { position:absolute; left:285px; top:115px; width:180px; height:22px; font-family:"Microsoft YaHei"; font-size:13px; color:#000000; font-style:normal; font-weight:normal; text-decoration:none;}
+.u6 { position:absolute; left:181px; top:157px; width:84px; height:19px; font-family:"Microsoft YaHei"; text-align:left; word-wrap:break-word;}
+
+.u7 {
+    position:absolute;
+    left:285px;
+    top:157px;
+    width:180px;
+    height:22px;
+    font-family:"Microsoft YaHei";
+    font-size: 13px;
+    color:#000000;
+    font-style:normal;
+    font-weight:normal;
+    text-decoration:none;
+    
+}
+
+.u8 {
+    position:absolute;
+    left:285px;
+    top:200px;
+    width:180px;
+    height:22px;
+    font-family:"Microsoft YaHei";
+    font-size: 13px;
+    color:#000000;
+    font-style:normal;
+    font-weight:normal;
+    text-decoration:none;
+}
+
+.u9 {
+    position:absolute;
+    left:181px;
+    top:200px;
+    width:84px;
+    height:19px;
+    font-family:"Microsoft YaHei";
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u10 {
+    position:absolute;
+    left:285px;
+    top:325px;
+    width:180px;
+    height:22px;
+   	font-family:"Microsoft YaHei";
+    font-size: 13px;
+    color:#000000;
+    font-style:normal;
+    font-weight:normal;
+    text-decoration:none;
+}
+
+.u11 {
+    position:absolute;
+    left:181px;
+    top:325px;
+    width:84px;
+    height:19px;
+    font-family:"Microsoft YaHei";
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u12 {
+    position:absolute;
+    left:285px;
+    top:283px;
+    width:180px;
+    height:22px;
+    font-family:"Microsoft YaHei";
+    font-size: 13px;
+    color:#000000;
+    font-style:normal;
+    font-weight:normal;
+    text-decoration:none;
+}
+
+.u13 {
+    position:absolute;
+    left:181px;
+    top:283px;
+    width:84px;
+    height:19px;
+    font-family:"Microsoft YaHei";
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u14 {
+    position:absolute;
+    left:285px;
+    top:374px;
+    width:86px;
+    height:32px;
+    text-align: center;;
+    font-family:"Microsoft YaHei";
+    font-size: 13px;
+    color:#000000;
+    font-style:normal;
+    font-weight:normal;
+    text-decoration:none;
+}
+.font{
+	font-family: "Microsoft YaHei";
+}
+.start{
+	position: absolute;
+	top:280px;
+	left:285px;
+	width: 180px;
+	height: 23px;
+}
+.tTime{
+	position: absolute;
+	top:280px;
+	left:470px;
+	height: 25px;
+	line-height: 25px;
+}
+.tTime2{
+	position: absolute;
+	top:320px;
+	left:470px;
+	height: 25px;
+	line-height: 25px;
+}
+.tTime_h{
+	position: absolute;
+	top:280px;
+	left:535px;
+	height: 25px;
+	line-height: 25px;
+}
+.tTime_h2{
+	position: absolute;
+	top:320px;
+	left:535px;
+	height: 25px;
+	line-height: 25px;
+}
+.tTime_m{
+	position: absolute;
+	top:280px;
+	left:610px;
+	height: 25px;
+	line-height: 25px;
+}
+.tTime_m2{
+	position: absolute;
+	top:320px;
+	left:610px;
+	height: 25px;
+	line-height: 25px;
+}
+
+.end{
+	position: absolute;
+	top:320px;
+	left:285px;
+	width: 180px;
+	height: 23px;
+}
+.s_h{
+	position: absolute;
+	top:282px;
+	left:480px;
+	height: 23px;
+}
+.s_m{
+	position: absolute;
+	top:282px;
+	left:560px;
+	height: 23px;
+}
+.s_h2{
+	position: absolute;
+	top:322px;
+	left:480px;
+	height: 23px;
+}
+.s_m2{
+	position: absolute;
+	top:322px;
+	left:560px;
+	height: 23px;
+}
+.showtestName,.showtestTime,.showtestEndTime{color: red;position: absolute;height: 25px;line-height: 25px;}
+.showtestName{top:70px;left:475px;}
+.showtestTime,.showtestEndTime{left:475px;}
+.showtestTime{top:280px;}
+.showtestEndTime{top:320px;}
+
+.newTestButton {text-align:center; width:73px;border-radius: 3px; height:25px; background:url(../images/examsystem/test_inp6.png) no-repeat -79px 0px; cursor:pointer; border:0px; color:#fff; float: left; margin-left:32px; display:inline;}
+.answerspop_up {font-family:"Microsoft YaHei", Helvetica, sans-serif;overflow:hidden}
+
+/*提示不能发布信息*/
+/* selected text */
+#dialog-message {display:none;}
+
+/*继续出卷*/
+.nr_wrap03 a {color:#00afed;}
+.wrap03_current a {color:#e80d0d;background:url(../img/wrap02_current.gif) no-repeat;}
+.wrap03_nr ul li span.span02 {width:75px;height:59px;text-align:center;line-height:59px;}
+
+.top{border:1px solid #CCC;width:980px;}
+.top_left,.top_right{border: 1px solid #aaaaaa;background:#ffffff url(images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x;width: 49%;height: 35px;line-height:35px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;border-top-right-radius:4px;border-top-left-radius:4px; padding: 10px 0px; text-align: center; }
+.top_left{ float: left;}
+.top_right{ float: right;}
+.netcontent{ width: 980px; margin-top: 100px; }
+.netcontent a{ height: 35px; line-height: 35px; width: 100px; margin-left: 80px;margin-right: 80px;}
+.testDiv{ float: left;border: 1px solid #aaaaaa;width: 980px;height: 35px;line-height:35px; margin-left: 15px; margin-bottom: 3px;}
+.testa{ float:right;}
+.selTest2{width: 120px; }
+
+/*试卷库*/
+.libDiv{ float: left;border: 1px solid #aaaaaa;width: 970px;height: 35px;line-height:35px; margin-left: 15px; margin-bottom: 3px;}
+.wrap03_select{padding-top: 10px;}
+.padd25{padding-left: 25px;}
+
+/*考场安排页面*/
+.nr_wrap03 hr{ width: 100%; margin-left: 25px;}
+.saveAp{ width: 68px; height: 28px;}
+
+.bianji_bk .baocun_btn2 {
+    background: url("../img/baocun.gif") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    cursor: pointer;
+    height: 27px;
+    margin: 3px 0 0 60px;
+    width: 68px;
+}
+.btnDisNone{ display: none;}
+/*学生考试*/
+
+.stu_li{height: 180px; text-align: center; line-height: 180px;}
+.stu_li span{font-size: 35px;}
+
+/*创建试卷补充*/
+
+/*题干*/
+.test_box {width:540px;min-height:23px;line-height:23px;padding:4px 10px;font-size:14px;font-weight:normal;border:1px solid #eff2f9;margin-left:auto;margin-right:auto;position:relative;left:-22px;word-wrap:break-word;}
+/*选项*/
+.test_box2 {width:540px;min-height:23px;line-height:23px;padding:4px 10px;font-size:14px;border:1px solid #fff;word-wrap:break-word;}
+/*知识点/试题分析*/
+.test_box3 {width:505px;min-height:23px;line-height:23px;padding:4px 10px;font-size:14px;word-wrap:break-word;border:1px solid #fff;}
+/*填空**/
+.test_box4 {width:542px;min-height:23px;line-height:23px;padding:4px 10px;float:left;font-size:14px;border:1px solid #fff;word-wrap:break-word;}
+.test_box5 {width:540px;min-height:60px;line-height:23px;padding:4px 10px;margin-left:45px;border:1px solid transparent;font-size:14px;}
+.test_box6 {width:540px;min-height:110px;line-height:23px;padding:4px 10px;float:left;border:1px solid #eff2f9;font-size:14px;word-wrap:break-word;background-color:#eff2f9;margin-bottom:9px;}
+.test_box div, .test_box2 div, .test_box3 div, .test_box4 div, .test_box5 div, .test_box6 div {line-height:23px;font-size:14px;}
+.answer-type5 {width:760px;}
+
+.clickTestStyle{border:1px solid #ff9966;}
+.paperx_tlxr .clickTestStyle{background-color:#fff;}
+
+.test_bg{background-color:white;}
+dd.border-hover:hover .pap_tlt, dd.border-hover:hover .test_box2 {background-color:#eff2f9;}
+dd.border-hover:hover .test_box2 {border-color:#eff2f9;}
+.test_box2_bgc .pap_tlt {width:62px;font-size:14px;line-height:33px;text-align:center;color:#aaa;}
+.paperx_tl span a,.zsd span a,.stfx span a,.linkClass2 span a{ color: #0da0ff; font-weight: bold; text-align: center;height: 30px; line-height: 30px;}
+.paperx_tl span a:visited,.linkClass2 span a:visited{color: #0da0ff;}
+/*本地上传*/
+.backUp{width:350px;margin:0 auto;}
+.backUp input{width:86px;height:35px;cursor:pointer;background: url(../images/nbanner.png) 0px -10px repeat-x;text-align:center;font-size:14px;border-radius:3px;color:#fff;text-align:center;font-weight:bold;border:1px solid #0088ff;}
+.cleanBoth{clear:both;float:left;margin:10px 0;}
+
+.linkClass{line-height:30px; height: 30px;}
+.linkClass2{visibility:hidden;line-height:30px;height:30px;float:left;}
+.linkClass2_postion {width:131px;float:left;margin-left:565px;margin-top:-32px;}
+.linkClass3_postion {float:left;margin-top:-32px;margin-left:630px;}
+.linkClass4_postion {float:left;margin-left:7px;}
+.linkClass5_postion {height:100px;position: relative;left:513px;top:80px;}
+.linkClass6_postion {position: relative;left: 300px;top:-30px;}
+
+.tkNum {width:62px;height:28px;float:left;padding-top:8px;font-size:16px;text-align:center;font-weight:bold;}
+.deleteLine {color:#0DA0FF; font-weight:bold;}
+.tkscore-div {float:left;margin-left:78px;color:#0DA0FF;font-weight:700;}
+.tkscore-div input.tkScore {width:36px;height:30px;line-height:30px;font-size:14px;text-align:right;border:1px solid #fff;background-color:#fff;margin-right:5px;}
+.radio{border:1px solid #4abae1;background-color:#4abae1;color:#fff;}
+.mar5 {margin-top:-30px;margin-left:612px;}
+.mar6 {margin-top:-40px;margin-left:627px;}
+.jiedati-tip {float:left;font-size:16px;margin-top:9px;margin-left:10px;}
+.article_operate{clear:both;}
+
+/*知识点标签的样式*/
+.knowledgepointdiv-delete {height:15px; line-height:15px; float:left; margin-right:10px; padding:1px 2px 1px 15px; background:none no-repeat scroll 0 0 #EEEEEE; color:#173302; border:1px dashed #008000;}
+.knowledgepointdiv-nodelete {height:15px; line-height:15px; float:left;margin-right:10px; padding:1px 2px 1px 15px; background:none no-repeat scroll 0 0 #EEEEEE; color:#173302; border:1px dashed #008000;}
+.knowledgepointdiv-delete:hover {cursor:pointer; background:url("../css/icons/fam/cross.png") no-repeat center left;} 
+.examaddupdate-addkp {height:16px;line-height:16px;float:left;padding-top:3px;text-align:center;cursor:pointer;font-family:"Microsoft YaHei";color:#00afed;}
+.examaddupdate-addkp:HOVER {color:#ff9966;}
+.examaddupdate-addkp > img {width:13px;height:13px;float:left;margin-right:5px;}
+.examaddupdate-addkp > div {float:left;}
+.examaddupdate-addkphide {display:none;}
+/*学生**/
+.linkStudent{display:none;}
+.boxstu{clear:both;float:left;margin-left: 45px;}
+
+/*难度游标样式*/
+.selectwrap {width:200px;height:30px;line-height:30px;font-size:12px;font-family:"microsoft yahei";background:#eee;}
+.fl {float:left;}
+.simplespan {margin-left:14px;margin-right:10px;}
+.diffspan {margin-left:10px;}
+.selectdiv {position:relative;width:100px;height:4px;top:14px;background:url("../images/scroll.gif") no-repeat 0px 0px;cursor:pointer;}
+.selectdot {width:6px;height:22px;position:absolute;top:-8px;cursor:pointer;background:url("../images/dot.gif") no-repeat;}
+.difficulty {width:26px;height:32px;line-height:30px;font-weight:bold;}
+.paperx_jxxq {margin-bottom:20px;}
+.paperxt_stx .paperx_diff {margin-left:30px;}
+.paperx_diff .paperx_zsdl {height:30px;line-height:29px;background:url("../images/examsystem/compass.png") no-repeat scroll 0px 7px transparent}

@@ -1,0 +1,31 @@
+<div style="margin-left:0px;">
+					<p style="font-family:微软雅黑; font-size: 18px;border-bottom: 2px solid #F33909; text-indent: 5px;width:150px;color: #0033FF;margin-top:7px;">己选中下列作者</p>
+					<div class="selectList" id="selectList">
+					
+					</div>
+					<div id="tabs" class="firstName" style="font-family:微软雅黑;">
+						 <#if codes?exists>
+						 <ul>
+							<#list codes as code>
+								<#assign key=code["NAMECODE"]>
+								<li><a href="#tab_${key}"><span style="height: 25px; line-height:25px;">${key}</span></a></li>
+							</#list>
+						</ul> 
+					
+						    <#list codes as code>
+						    	<#assign key=code["NAMECODE"]>
+								<div id="tab_${key}" class="auList" >
+						
+									<#assign authors=code["AUTHORS"]>
+									<#if authors?exists>
+										
+										<#list authors as author>
+											<span><a id="${author.authorId}" class="authorDefault" title="${author.lastNameOr + ' ' + author.firstNameOr}">${author.lastName + '&nbsp;'+ author.firstName}</a></span>
+										</#list>
+										
+									</#if>
+								</div>
+							</#list>
+		</#if>
+	</div>
+</div>

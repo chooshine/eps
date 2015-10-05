@@ -1,0 +1,98 @@
+<style>
+.showtitle-dialog.cameradialog .ui-dialog-buttonpane {border-top:none;}
+</style>
+<div id="CameraDialog">
+	<!-- <div style="width:520px;height:282px" align="center"> -->
+	<div style="width:520px;height:272px" align="center">
+	<div id="Cam">
+		
+	</div>
+	</div>
+</div>
+<script type="text/javascript">
+$('#CameraDialog').dialog({
+	dialogClass:"chooshine-dialog showtitle-dialog cameradialog",
+	title:"摄像头拍摄",
+	autoOpen: false,
+    height: 380,
+    //height: 390,
+    width: 520,
+    modal: true,
+    buttons:[{
+    	text:'确定',
+    	click:function(){
+    		shoot();
+    	}
+    },{
+    	text:"关闭",
+    	click:function() {
+    		$(this).dialog("close");
+    		$('#UploadImgDialog').dialog('open');
+    	}
+    }]
+});
+
+var cameraImgPath = "";
+var flashvars = {"_width":520,"_height":282}; //摄象头大小
+var params = {};
+params.quality = "high";
+params.bgcolor = "#ffffff";
+params.allowscriptaccess = "sameDomain";
+params.allowfullscreen = "true";
+var attributes = {};
+attributes.id = "Cameraer";
+attributes.name = "Cameraer";
+attributes.align = "middle";
+
+function shoot(){
+	var fsobj = document.getElementById("Cameraer")||document.getElementById("recorderApp"); //获取摄象头程序对象
+	try{
+		fsobj.shoot(); //调用程序内部拍照方法
+	}catch(e){
+		alert(e);
+	}
+}
+
+function fs_event_handler(a,b,c){ //摄象头程序处理回调接口
+	if(a=="start") {
+		
+	}
+	if(a=="isValid" && !b){
+		$("#CameraDialog").dialog("close");
+		openUploadDialog();
+	}
+	if(a=="isValid" && b){
+		//显示按钮
+		$("#CameraDialog").next().css("visibility", "visible");
+	}
+	if(a=="imgData"){
+		console.log(b);
+		//上传图片
+		$.ajax({
+			type:"post",
+			url:"<@spring.url '/uploadCameraImg.json'/>",
+			data:"imgData="+encodeURIComponent(b)+"&imgPath="+getSavePath(),
+			contentType:"application/x-www-form-urlencoded;charset=utf-8",
+			success:function(data) {
+				cameraImgPath = data.imgPath;
+				afterChangeImg(cameraImgPath);
+	    		$("#CameraDialog").dialog("close");
+	    		$('#CropDialog').dialog('open');
+			}
+		});
+	}
+}
+
+function startCamera() {
+	$('#UploadImgDialog').dialog('close');
+	$("#CameraDialog").dialog("open");
+	if($("#Cameraer")[0] == undefined) {
+		swfobject.embedSWF(
+        "<@spring.url '/javascripts/Cameraer.swf' />", "Cam",
+        "100%", "100%",
+        "11.0.0", "",
+        flashvars, params, attributes);
+		$("#CameraDialog").next().css("visibility", "hidden");
+	}
+}
+</script>

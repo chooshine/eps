@@ -1,0 +1,282 @@
+<#import "spring.ftl" as spring/>
+<style>
+.module {display:none;}
+.tip {width:130px;height:<#if studentsNumOfOptions?? && studentsNumOfOptions?size&gt;0>283<#else>567</#if>px;border-bottom:1px dashed #aaa;text-align:center;}
+.tipimg {width:80px;height:80px;margin-top:20px;}
+a.tipname {display:block;color:#08c;}
+a.tipname:HOVER {text-decoration:underline;}
+.imgstip {font-size:16px;font-weight:bold;color:#00afed;margin-top:10px;margin-bottom:20px;}
+.optimgstip {cursor:pointer;}
+.errorimgstip .shuoming {width:60px;float:left;}
+.optimgstip-left {float:left;margin-right:10px;}
+.dialog-starimgs {width:64px;}
+.dialog-starimgs img {width:12px;height:12px;float:left;}
+.starimgs-progressbar {width:100px;border:1px solid #aaa;border-radius:5px;float:left;margin-right:10px;}
+
+.stuphotos {text-align:center;}
+.stuphoto {float:left;margin-right:20px;margin-bottom:25px;}
+.stuphoto img {width:42px;height:42px;border:1px solid #ddd;cursor:pointer;background-color:#fdfaee;}
+.stuphoto .stuname {width:52px;text-align:center;}
+
+.stuimgs > .imgswrap {height:172px;}
+.stunumofstar {font-size:16px;margin-bottom:20px;}
+.stunumofstar img {width:12px;height:12px;float:left;}
+.stunum {float:right;}
+.starimgs {float:left;margin-right:10px;}
+.nostu {font-size:20px;font-weight:bold;color:#ee0000;margin-bottom:20px;}
+.pageul {width:648px;text-align:center;}
+.pageul li {display:inline-block;margin-top:-10px;margin-bottom:20px;}
+.pageul li img {width:20px;height:20px;cursor:pointer;}
+</style>
+
+	<div style="background-color:#FFFAEF;float:left;">
+		<div id="DuiCuoTip" class="tip">
+			<img src="<@spring.url '/images/star-empty.png'/>" class="tipimg"/>
+			<a class="tipname">对错情况</a>
+		</div>
+		<#if studentsNumOfOptions?? && studentsNumOfOptions?size&gt;0>
+		<div id="OptDistributeTip" class="tip">
+			<img src="<@spring.url '/images/star-empty.png'/>" class="tipimg"/>
+			<a class="tipname">选项分布</a>
+		</div>
+		</#if>
+	</div>
+	
+	<div style="float:left;padding-left:30px;">
+		<div style="width:670px;height:460px;padding:10px 0;overflow:auto;margin-bottom:20px;">
+			<div id="DuiCuoInfo" class="module">
+				<div>
+					<div class="imgstip correctimgstip-left"><span>答对的学生</span></div>
+					<div id="CorrectStusInDialog">
+						<div class="stuimgs">
+							<div <#if correctStudents??&&correctStudents?size&gt;18>class="imgswrap"</#if>>
+								<#--上面的学生头像-->
+								<#if correctStudents?size&gt;0>
+									<#list correctStudents as stu>
+										<#if stu_index==0>
+										<div id="CorrectImgs0" class="stuphotos">
+											<div class="stuphoto">
+												<img src="<@spring.url '/${stu.photo}'/>">
+												<div class="stuname"><span>${stu.student_name}</span></div>	
+											</div>
+										<#elseif stu_index%18==0>
+										</div>
+										<div id="CorrectImgs${stu_index/18}" class="stuphotos" style="display:none;">
+											<div class="stuphoto">
+												<img src="<@spring.url '/${stu.photo}'/>">
+												<div class="stuname"><span>${stu.student_name}</span></div>	
+											</div>
+										<#else>
+											<div class="stuphoto">
+												<img src="<@spring.url '/${stu.photo}'/>">
+												<div class="stuname"><span>${stu.student_name}</span></div>
+											</div>
+											<#if ((stu_index+1)%9)==0>
+												<div class="nofl"></div>
+											</#if>
+										</#if>
+										
+										<#if stu_index==(correctStudents?size-1)>
+											</div>
+										</#if>
+									</#list>
+								<#else>
+									<div class="nostu"><span>无学生正确</span></div>
+								</#if>
+								<div class="nofl"></div>
+							</div>
+							
+							<#--下面的换页按钮-->
+							<#if correctStudents??&&correctStudents?size&gt;18>
+							<ul class="pageul">
+								<#list correctStudents as stu>
+									<#if stu_index%18==0>
+									<#if stu_index==0>
+									<li id="CorrectPage${key}${stu_index/18}" class="correctpages"><img src="<@spring.url '/images/bullet_blue.png'/>"></li>
+									<#else>
+									<li id="CorrectPage${key}${stu_index/18}" class="correctpages"><img src="<@spring.url '/images/bullet-grey.png'/>"></li>
+									</#if>
+									</#if>
+								</#list>
+								<div class="nofl"></div>
+							</ul>
+							</#if>
+						</div>
+					</div>
+				</div>
+				
+				<div style="float:left;">
+					<div class="imgstip"><span>答错的学生</span></div>
+					<div id="errorStudents">
+						<div class="stuimgs">
+							<div <#if errorStudents??&&errorStudents?size&gt;18>class="imgswrap"</#if>>
+								<#--上面的学生头像-->
+								<#if errorStudents?size&gt;0>
+									<#list errorStudents as stu>
+										<#if stu_index==0>
+										<div id="ErrorImgs0" class="stuphotos">
+											<div class="stuphoto">
+												<img src="<@spring.url '/${stu.photo}'/>">
+												<div class="stuname"><span>${stu.student_name}</span></div>
+											</div>
+										<#elseif stu_index%18==0>
+										</div>
+										<div id="ErrorImgs${stu_index/18}" class="stuphotos" style="display:none;">
+											<div class="stuphoto">
+												<img src="<@spring.url '/${stu.photo}'/>">
+												<div class="stuname"><span>${stu.student_name}</span></div>
+											</div>
+										<#else>
+											<div class="stuphoto">
+												<img src="<@spring.url '/${stu.photo}'/>">
+												<div class="stuname"><span>${stu.student_name}</span></div>
+											</div>
+											<#if ((stu_index+1)%9)==0>
+											<div class="nofl"></div>
+											</#if>
+										</#if>
+										
+										<#if stu_index==(errorStudents?size-1)>
+										</div>
+										</#if>
+									</#list>
+								<#else>
+									<div class="nostu"><span>无学生错误</span></div>
+								</#if>
+								<div class="nofl"></div>
+							</div>
+						
+							<#--下面的换页按钮-->
+							<#if errorStudents??&&errorStudents?size&gt;18>
+							<ul class="pageul">
+								<#list errorStudents as stu>
+									<#if stu_index%18==0>
+									<#if stu_index==0>
+									<li id="ErrorPage${stu_index/18}" class="errorpages"><img src="<@spring.url '/images/bullet_blue.png'/>"></li>
+									<#else>
+									<li id="ErrorPage${stu_index/18}" class="errorpages"><img src="<@spring.url '/images/bullet-grey.png'/>"></li>
+									</#if>
+									</#if>
+								</#list>
+								<div class="nofl"></div>
+							</ul>
+							</#if>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="OptDistributeInfo" class="module">
+			<#if studentsNumOfOptions?? && studentsNumOfOptions?size&gt;0>
+			<#list studentsNumOfOptions as opt>
+				<div>
+					<div class="imgstip optimgstip">
+						<div class="shuoming optimgstip-left"><span>${opt.opt_no}</span></div>
+						<#assign width=(opt.stu_num/classNum)*100>
+						<div style="width:100px;border:1px solid #aaa;border-radius:5px;float:left;margin-right:10px;"><div style="width:${width}%;background-color:#ff9966;border-radius:4px;">&nbsp;</div></div>
+						<div style="float:left;"><span>${opt.stu_num} 人错误 / ${classNum}人</span></div>
+						<div class="nofl"></div>
+					</div>
+					
+					<div class="stuimgs" <#if opt_index!=0>style="display:none;"</#if>>
+						<div <#if studentsOfOptions[opt.opt_no]??&&studentsOfOptions[opt.opt_no]?size&gt;18>class="imgswrap"</#if>>
+						<#--上面的学生头像-->
+						<#if studentsOfOptions[opt.opt_no]??&&studentsOfOptions[opt.opt_no]?size&gt;0>
+							<#list studentsOfOptions[opt.opt_no] as stu>
+								<#if stu_index==0>
+								<div id="OptImgs${opt.opt_no}0" class="stuphotos">
+									<div class="stuphoto">
+										<img src="<@spring.url '/${stu.photo}'/>">
+										<div class="stuname"><span>${stu.student_name}</span></div>
+									</div>
+								<#elseif stu_index%18==0>
+								</div>
+								<div id="OptImgs${opt.opt_no}${stu_index/18}" class="stuphotos" style="display:none;">
+									<div class="stuphoto">
+										<img src="<@spring.url '/${stu.photo}'/>">
+										<div class="stuname"><span>${stu.student_name}</span></div>
+									</div>
+								<#else>
+									<div class="stuphoto">
+										<img src="<@spring.url '/${stu.photo}'/>">
+										<div class="stuname"><span>${stu.student_name}</span></div>
+									</div>
+									<#if ((stu_index+1)%9)==0>
+									<div class="nofl"></div>
+									</#if>
+								</#if>
+								<#if stu_index==(studentsOfOptions[opt.opt_no]?size-1)>
+								</div>
+								</#if>
+							</#list>
+						<#else>
+							<div class="nostu"><span>没有选${opt.opt_no}的学生</span></div>
+						</#if>
+							<div class="nofl"></div>
+						</div>
+						
+						<#--下面的换页按钮-->
+						<#if studentsOfOptions[opt.opt_no]??&&studentsOfOptions[opt.opt_no]?size&gt;18>
+						<ul class="pageul">
+						<#list studentsOfOptions[opt.opt_no] as stu>
+							<#if stu_index%18==0>
+							<#if stu_index==0>
+							<li id="OptPage${opt.opt_no}${stu_index/18}" class="optpages"><img src="<@spring.url '/images/bullet_blue.png'/>"></li>
+							<#else>
+							<li id="OptPage${opt.opt_no}${stu_index/18}" class="optpages"><img src="<@spring.url '/images/bullet-grey.png'/>"></li>
+							</#if>
+							</#if>
+						</#list>
+							<div class="nofl"></div>
+						</ul>
+						</#if>
+						
+					</div>
+					<div class="nofl"></div>
+				</div>
+			</#list>
+			</#if>
+			</div>
+		</div>
+		<div class="nofl"></div>
+		<div>
+			<div id="Quit" class="chooshine-btn" style="margin-left:175px;">关闭</div>
+		</div>
+	</div>
+<script>
+$("#Quit").click(function() {
+	$("#DetailDialog").dialog("close");
+});
+
+//点击弹框左侧对错信息的标题
+$("#DuiCuoTip").click(function() {
+	$(".module").hide();
+	$("#DuiCuoInfo").show();
+	$(".tipimg").attr("src", "<@spring.url '/images/star-empty.png'/>");
+	$(this).find(".tipimg").attr("src", "<@spring.url '/images/star-full.png'/>");
+});
+//点击弹框左侧选项分布的标题
+$("#OptDistributeTip").click(function() {
+	$(".module").hide();
+	$("#OptDistributeInfo").show();
+	$(".tipimg").attr("src", "<@spring.url '/images/star-empty.png'/>");
+	$(this).find(".tipimg").attr("src", "<@spring.url '/images/star-full.png'/>");
+});
+
+//点击弹框中的某选项的标题
+$(".optimgstip").click(function() {
+	$("#OptDistributeInfo").find(".stuimgs").hide();
+	$(this).parent().find(".stuimgs").show();
+});
+//点击正确学生的分页按钮
+$(".correctpages").click(function() {
+	pageChange(this, $("#CorrectImgs"+$(this).attr("id").substr(11)));
+});
+//点击错误学生的分页按钮
+$(".errorpages").click(function() {
+	pageChange(this, $("#ErrorImgs"+$(this).attr("id").substr(9)));
+});
+//点击选项对错情况的分页按钮
+$(".optpages").click(function() {
+	pageChange(this, $("#OptImgs"+$(this).attr("id").substr(7)));
+});
+</script>

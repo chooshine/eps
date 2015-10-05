@@ -1,0 +1,153 @@
+<#include "header.htm" parse="true" encoding="UTF-8" > 
+<#include "logheader.htm" parse="true" encoding="UTF-8" >
+<style>
+.nav ul li a { padding-top:0px;}
+</style>
+<div id="perIndexMain">
+	<div class="per_nav">
+		<div class="nav">
+			<div class="top">
+				<ul>
+					<li><a href="<@spring.url '/achievement/myoffice.html'/>">我的办公室</a></li>
+					<li><a href="<@spring.url '/achievement/class/ability.html'/>">班级能力</a></li>
+					<li><a href="<@spring.url '/achievement/lesson.html'/>">课程表</a></li>
+					<li><a href="<@spring.url '/achievement/seating.html'/>">座位表</a></li>
+					<li class="perIndexNavLi">考试分析</li>
+				</ul>
+			</div>
+			<div id="indexNavFirst" class="bottom">
+				<ul>
+					<li><a href="<@spring.url '/achievement/scoreNotice.html' />">考分榜</a></li>
+					<li class="res_navt">得分分布分析</li>
+					<li><a>分数段分析</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+<form action="<@spring.url '/achievement/distribution.html'/>">
+	<input type="hidden" name="classId" value="${classid}">
+	<input type="hidden" name="testId" value="${testid}">
+	<input type="hidden" name="subject" value="${subjectid}">
+<div class="resa_abl">
+		<div>
+			    <div class="res_anl">
+					<div class="res_anll">考试：</div>
+					<div class="res_anlr">
+						<#if maps??>
+							<#assign tests = maps["test"]>
+							<#list tests as test>
+								<#if test.selected>
+									<a id="${test.id}" class="testClass res_sel">${test.name}</a>
+								<#else>
+									<a id="${test.id}" class="testClass">${test.name}</a>
+								</#if>
+								
+							</#list>
+						</#if>
+						<div class="nofl"></div>
+					</div>
+					<div class="nofl"></div>
+				</div>
+			    <div class="res_anl">
+					<div class="res_anll">班级：</div>
+					<div class="res_anlr">
+						<#if maps??>
+							<#assign classes = maps["clazz"]>
+							<#list classes as clazz>
+								<#if clazz.selected>
+									<a id="${clazz.id}" class="clazzClass res_sel" >${clazz.name}</a>
+								<#else>
+									<a id="${clazz.id}" class="clazzClass">${clazz.name}</a>
+								</#if>
+								
+							</#list>
+						</#if>
+						<div class="nofl"></div>
+					</div>
+					<div class="nofl"></div>
+				</div>
+			    <div class="res_anl">
+					<div class="res_anll">科目：</div>
+					<div class="res_anlr">
+						<#if maps??>
+							<#assign subjects = maps["subject"]>
+							<#list subjects as subject>
+								<#if subject.selected>
+									<a id="${subject.id}" class="subjectClass res_sel" >${subject.name}</a>
+								<#else>
+									<a id="${subject.id}" class="subjectClass" >${subject.name}</a>
+								</#if>
+								
+							</#list>
+						</#if>
+						<div class="nofl"></div>
+					</div>
+					<div class="nofl"></div>
+				</div>
+	</div>
+	<div class="res_anbg">
+	 	    <div class="res_anbgt">${className + testName} <span>${subjectName }</span>得分分布</div>
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>班级</th>
+						<th>班主任</th>
+						<th>最高分</th>
+						<th>最低分</th>
+						<th>平均分</th>
+						<th>高分组平均分</th>
+						<th>高分组人数</th>
+						<th>低分组平均分</th>
+						<th>低分组人数</th>
+					</tr>
+				</thead>
+				<tbody>
+					<#if page??>
+				  		<#list page as item>
+				  			<tr class="res_anbgt1">
+								<td>${item.class_name}</td>
+								<td>${item.teacher_name}</td>
+								<td>${item.score_max}</td>
+								<td>${item.score_min}</td>
+								<td>${item.score_avg}</td>
+								<td>${item.high_avg}</td>
+								<td>${item.high_num}</td>
+								<td>${item.low_avg}</td>
+								<td>${item.low_num}</td>
+				  			</tr>
+				  		</#list>
+					</#if>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</form>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+	$(function(){
+		$(".testClass").each(function(index){
+			$(this).click(function(){
+				var testId = $(this).attr("id");
+				$("input[name='testId']").val(testId);
+				$("form").submit();
+			});
+		});
+		$(".clazzClass").each(function(index){
+			$(this).click(function(){
+				var classId = $(this).attr("id");
+				$("input[name='classId']").val(classId);
+				$("form").submit();
+			});
+		});
+		$(".subjectClass").each(function(){
+			$(this).click(function(){
+				var subjectId = $(this).attr("id");
+				$("input[name='subject']").val(subjectId);
+				$("form").submit();
+			});
+			
+		});
+	})
+</script>

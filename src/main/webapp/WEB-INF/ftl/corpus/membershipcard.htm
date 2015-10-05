@@ -1,0 +1,93 @@
+<#include "header.htm" parse="true" encoding="UTF-8" > 
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">会员服务</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+<form action="<@spring.url '/corpus/open_searchservice_success.html'/>">
+	<input type="hidden" name="remark" />
+	<div class="step_icon" style="margin-top:80px;">
+		<span class="step01 step02"></span>
+	    <p>
+	    	<span class="blue02">进入VIP通道</span>
+	    	<span class="has_margin blue" style="padding-left:310px;padding-right:362px;">输入VIP卡号和密码</span>
+	    	<span>完成</span>
+	    </p>
+	</div>
+	<div style="margin-top:40px;">
+		<div id="error_notice" style="text-align:center;margin-bottom:5px;color:red;">
+			<span>&nbsp;</span>
+		</div>
+		<div>
+			<div style="float:left;width:420px;text-align:right;padding-top:8px;"><span>VIP卡号：</span></div>
+			<input type="text" name="card_id" style="width:200px;height:30px;margin-right:5px;line-height:30px;"/>
+			<span style="color:red;display:none;">卡号不能为空</span>
+		</div>
+		<div class="clear"></div>
+		<div style="margin-top:20px;">
+			<div style="float:left;width:420px;text-align:right;padding-top:8px;"><span>密码：</span></div>
+			<input type="text" name="card_password" style="width:200px;height:30px;margin-right:5px;line-height:30px;"/>
+			<span style="color:red;display:none;">密码不能为空</span>
+		</div>
+	</div>
+	<div class="clear"></div>
+	<input type="button" class="member_sureBtn" value="确定" class="member_sureBtn" style="margin-left:420px;width:200px;margin-top:20px;"/>
+</form>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+	$(function(){
+		$("input[type='text']").each(function(){
+			$($(this).next()).hide();
+			
+			$(this).click(function(){
+				$($($("#error_notice").children()).get(0)).html("&nbsp;");
+				$($(this).next()).hide();
+			});
+		});
+		
+		$("input[type='button']").click(function(){
+			var flag=true;
+			var cardId=$("input[name='card_id']").val();
+			var cardPass=$("input[name='card_password']").val();
+			if(cardId=="") {
+				flag=false;
+				$($("input[name='card_id']").next()).show();
+			}
+			if(cardPass=="") {
+				flag=false;
+				$($("input[name='card_password']").next()).show();
+			}
+			
+			if(flag==false) return;
+			else{
+				$.get(
+					"<@spring.url '/check_search_service.json'/>",
+					{card_id:cardId,card_password:cardPass},
+					function(data){
+						var result=data['flag'];
+						var errorNotice=$($("#error_notice").children()).get(0);
+						if(result==0) {
+							$("input[name='remark']").val(data['remark']);
+							$("form").submit();
+						}
+						if(result==1)
+							$(errorNotice).html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;卡号或密码不正确");
+						if(result==2) 
+							$(errorNotice).html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;您没有使用该卡的权限");
+						if(result==3)
+							$(errorNotice).html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;您的卡是锁定状态，解锁请联系网站客服");
+						if(result==4)
+							$(errorNotice).html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;该卡当前没有可开启的语料服务");
+					}
+				);
+			}
+		});
+	});
+</script>

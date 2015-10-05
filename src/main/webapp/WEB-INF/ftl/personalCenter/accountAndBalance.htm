@@ -1,0 +1,236 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">个人中心</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+
+<div class="center" style="margin-top:30px;">
+	<div class="left">
+		<div class="pic">
+			<#if USER_CONTEXT.photo!="">
+				<div class="pic"><img class="left_img" src="<@spring.url '/${USER_CONTEXT.photo}'/>"  width="120" height="120"  title="头像"/></div>
+			<#else>
+				<div class="pic"><img class="left_img" src="<@spring.url '/images/headImage/default_head.jpg'/>"  width="120" height="120"  title="头像"/></div>
+  			</#if>
+		</div>
+		<h3>账号管理</h3>
+		<ul>
+			<li><a href="<@spring.url '/person/center.html'/>">安全设置</a></li>
+<!--		<li><a href="">个人资料</a></li>
+			<li><a href="">隐私设置</a></li>-->
+			<li><a href="javascript:void(0)" class="left_current">个人账户</a></li>
+		</ul>
+	</div>
+	<div class="right">
+		<div class="base03">
+			<h4>您的账户余额：</h4>
+			<p class="yue" style="line-height:31px;">
+				<span>${accountBalance.cash?c}</span>元
+			</p>
+			<p class="btn">
+				<!-- <a href="javascript:void(0)">充 值</a> -->
+				<a class="tixian" id="txButton">提现</a>
+				<!-- <a href="javascript:void(0)" class="zhuanqian">赚 钱</a> -->
+			</p>
+			<div class="clear"></div>
+		</div>
+		<div class="base04">
+			<p><span id="traderecordBtn" class="tradeTxBtn">收支明细</span><span class="partingline">|</span><span class="tradeTxBtn" id="txrecordButton">提现记录</span></p>
+			<ul id="tradeRecord">
+				<li class="tx_title">
+				<span class="trade01">交易时间</span>
+				<span class="trade05">名称</span>
+				<span class="trade02">交易类型</span>
+				<span class="trade03">金额(元)</span>
+				<span class="trade04">状态</span>
+				</li>
+				<div class="clear"></div>
+				<#if allTrade??>
+				<#list allTrade.data as trade>
+				<li>
+					<span class="trade01">${trade.trade_time?string("yyyy.MM.dd")}</span>
+					<span class="trade05">${trade.trade_name}</span>
+					<#if trade.trade_type==1>
+					<span class="trade02 red">支出</span>
+					<#else>
+					<span class="trade02 green">收入</span>
+					</#if>
+					<span class="trade03">
+						<#if trade.money??>
+						<b class="red">${trade.money?string("0.00")}</b>
+						</#if>
+					</span>
+					<#if trade.trade_status==1>
+						<span class="trade04 blue">正在交易</span>
+					<#elseif trade.trade_status==2>
+						<span class="trade04 blue">交易成功</span>
+					<#elseif trade.trades_tatus==3>
+						<span class="trade04 blue">交易失败</span>
+					</#if>
+				</li>
+				<div class="clear"></div>
+				</#list>
+				</#if>
+			</ul>
+			
+			<ul id="txrecord">
+				<li class="tx_title">
+				<span class="tx01">提现时间</span>
+				<span class="tx02"></span>
+				<span class="tx03">金额（元）</span>
+				<span class="tx04">状态</span>
+				<span class="tx05">详情</span>
+				</li>
+				<div class="clear"></div>
+				<#if allDrawRecord??>
+				<#list allDrawRecord.data as DrawRecord>
+				<li class="tx">
+					<span class="tx01">${DrawRecord.drawmoney_time}</span>
+					<span class="tx02" style="display: none;">${DrawRecord.drawmoney_id}</span>
+					<span class="tx03"><b class="red">${DrawRecord.amount}</b></span>
+					<#if DrawRecord.state==0>
+						<span class="tx04 blue">正在审核</span>
+					<#elseif DrawRecord.state==1>
+						<span class="tx04 blue">提现成功</span>
+					<#elseif DrawRecord.state==2>
+						<span class="tx04 blue">提现失败</span>
+					</#if>
+					<span class="tx05 tx06">
+						<a href="<@spring.url '/actives/drawMoneyStep2.html?drawmoney_id=${DrawRecord.drawmoney_id}'/>">查看</a>
+					</span>
+				</li>
+				<div class="clear"></div>
+				</#list>
+				</#if>
+			</ul>
+		</div>
+		<div class="nofl"></div>
+			<div id="pageview_trade" style="width:1000px; height:30px; margin-top:12px; font-size: 15px;">
+				<#include "pagination.htm" parse="true" encoding="UTF-8">
+				<@pagination page=allTrade/>
+			</div>
+			<div class="nofl"></div>
+			<div id="pageview_record" style="width:1000px; height:30px; margin-top:12px; font-size: 15px;">
+				<#include "pagination.htm" parse="true" encoding="UTF-8">
+				<@pagination page=allDrawRecord/>
+		</div>
+	</div>
+	<div class="clear"></div>
+</div>
+<div class="clear"></div>
+<form action="<@spring.url '/person/accountAndBalance.html'/>">
+	<input type="hidden" name="tradePageNo" value="${tradePageNo}"/>
+	<input type="hidden" name="recordPageNo" value="${recordPageNo}"/>
+	<input type="hidden" name="tradeOrRecord" value="${tradeOrRecord}"/>
+</form>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+	$(function(){
+		
+		$(".fcenter,.show").each(function() {
+			$(this).click(function() {
+				var url = $(this).attr("url");
+				if($("input[name='tradeOrRecord']").val()=="trade"){
+					$("input[name='tradePageNo']").val(url);
+				} else {
+					$("input[name='recordPageNo']").val(url);
+				}
+				
+				$("form").submit();
+				showBlock();
+			});
+		});
+	
+		if($("input[name='tradeOrRecord']").val()=="trade"){
+			$("#txrecord").hide();
+			$("#pageview_record").hide();
+			$("#traderecordBtn").removeClass("tradeTxBtn");
+			$("#traderecordBtn").addClass("tradeTxClicked");
+		}else{
+			$("#tradeRecord").hide();
+			$("#pageview_trade").hide();
+			
+			$("#txrecordButton").removeClass("tradeTxBtn");
+			$("#txrecordButton").addClass("tradeTxClicked");
+		}
+		
+		$("#txrecordButton").click(function(){
+			$(this).removeClass("tradeTxUnderline");
+			$(this).css("cursor","auto");
+			$(this).removeClass("tradeTxBtn");
+			$(this).addClass("tradeTxClicked");
+			$(this).hover(
+				function(){
+					$(this).removeClass("tradeTxUnderline");
+				},function(){
+					$(this).removeClass("tradeTxUnderline");
+				}
+			);
+			
+			$("#traderecordBtn").removeClass("tradeTxClicked");
+			$("#traderecordBtn").addClass("tradeTxBtn");
+			$("#traderecordBtn").css("cursor","pointer");
+			$("#traderecordBtn").hover(
+				function(){
+					$(this).addClass("tradeTxUnderline");
+				},function(){
+					$(this).removeClass("tradeTxUnderline");
+				}
+			);
+			
+			$("#tradeRecord").hide();
+			$("#txrecord").show();
+			$("#pageview_trade").hide();
+			$("#pageview_record").show();
+			$("input[name='tradeOrRecord']").val("record");
+		});
+		$("#traderecordBtn").click(function(){
+			$(this).removeClass("tradeTxUnderline");
+			$(this).css("cursor","auto");
+			$(this).removeClass("tradeTxBtn");
+			$(this).addClass("tradeTxClicked");
+			$(this).hover(
+				function(){
+					$(this).removeClass("tradeTxUnderline");
+				},function(){
+					$(this).removeClass("tradeTxUnderline");
+				}
+			);
+			
+			$("#txrecordButton").removeClass("tradeTxClicked");
+			$("#txrecordButton").addClass("tradeTxBtn");
+			$("#txrecordButton").css("cursor","pointer");
+			$("#txrecordButton").hover(
+				function(){
+					$(this).addClass("tradeTxUnderline");
+				},
+				function(){
+					$(this).removeClass("tradeTxUnderline");
+				}
+			);
+			
+			$("#txrecord").hide();
+			$("#tradeRecord").show();
+			$("#pageview_record").hide();
+			$("#pageview_trade").show();
+			$("input[name='tradeOrRecord']").val("trade");
+		});
+		
+		$("#txButton").click(function() {
+			if(${accountBalance.cash?c}>=100) {
+				$(this).attr("href","<@spring.url '/actives/drawMoneyStep1.html'/>");
+			} else {
+				alert("您的余额不足100元，不能提现！！！");
+			}
+		});
+		
+	});
+</script>

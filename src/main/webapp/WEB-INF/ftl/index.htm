@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<#import "spring.ftl" as spring/>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>畅选网|日语语料|在线考试|小学|初中|高中|成绩</title>
+    <meta name="Keywords" content="畅先,畅选,畅选网,日语,语料,日语语料,考试, 在线考试,成绩,成绩分析,小学,初中,高中" />
+    <meta name="Description" content="畅选网是国内首家上线的日语语料库, 能对日语学习及考试提供极大的帮助">
+    <link rel="shortcut icon"  type="image/x-icon" href="<@spring.url '/favicon.ico'/>" >
+    <link rel="stylesheet" href="<@spring.url '/css/header.css'/>" >
+    <style type="text/css">
+div {background-repeat: no-repeat;}
+.nofl{ clear:both; width:0px; height:0px; overflow:hidden;}
+.indt_top{ width:100%; height:25px; background:#000;border-bottom:1px solid #CCCCCC;}
+.indt_tocm{ width:1024px;; margin:0 auto;}
+.indt_tocml{ float:left; height:25px;margin-left:12px; display:inline;}
+.indt_tocmlx{ width:200px; height:25px; padding-right:12px; float:left;background:url("<@spring.url '/images/indexbg1n.png'/>") no-repeat left center;}
+.indt_tocmlx a{width:200px; height:25px;display:block;}
+.indt_tocmlr{  height:25px; float:left; line-height:25px; }
+.indt_tocmlr li{text-align:center; float:left; height:25px; line-height:25px;font-size:12px; color:#666;padding:0 10px}
+.indt_tocmlr li:hover{ background:#eee;}
+.indt_tocmlr li:hover a{ color:#000; }
+.indt_tocmlr li a{font-size:12px; color:#e9e7ef;text-decoration:none;}
+.indt_tocmr{ float:right; text-align:right; line-height:25px;}
+.indt_tocmr a{ padding:0 8px; font-size:12px; color:#666; text-decoration:none;}
+.weblog-wrap {background:none repeat scroll 0 0 #f8f8f8;box-shadow:0 1px 3px #ccc;}
+.weblog-subwrap {width:1000px; margin:0 auto;}
+.weblog-wrap .weblog-subwrap h1 {width:115px;height:80px;margin-right:15px;}
+.weblog-wrap .weblog-subwrap h1 a {display:inline-block;width:100%;height:50px;margin-top:14px;background:url('../img/bk.gif') no-repeat scroll 0 0;}
+.weblog-f {display:inline;float:left;}
+.weblog-wrap .weblog-subwrap li {padding:25px 0 20px;list-style:none outside none;}
+.weblog-wrap .weblog-subwrap li a {display:inline-block;width:64px;height:36px;line-height:36px;padding:0 15px;font-size:16px;color:#000000;text-align:center;border-right:1px solid #d4d6d8;}
+.weblog-wrap .weblog-subwrap .curNav a, .weblog-wrap .weblog-subwrap li a:HOVER {color:#FF9933;}
+.weblog-wrap .weblog-subwrap h2 {height:36px;line-height:36px;margin:25px 487px 20px 0;padding:0 15px;font-size:16px;border-left:1px solid #d4d6d8;font-weight:normal;}
+body {background-color:#fff;}
+.footer {margin-top:0px;}
+.weblog-wrap .weblog-subwrap h1 {width:262px;}
+.weblog-wrap .weblog-subwrap h1 a {background:url("<@spring.url '/images/sprtes.png'/>") no-repeat scroll 0 0;}
+.weblog-wrap .weblog-subwrap h2 {visibility:hidden;margin-right:387px;}
+.banner{width:100%;height:400px;margin:0 0 30px 0;}
+.flexslider{position:relative;height:400px;overflow:hidden;background:url("<@spring.url '/images/loading.gif'/>") 50% no-repeat;}
+.slides{position:relative;z-index:1;}
+.slides li{height:400px;}
+.slides li a{display:block;height:400px;}
+.flex-control-nav{position:absolute;bottom:10px;z-index:2;width:100%;text-align:center;}
+.flex-control-nav li{display:inline-block;width:14px;height:14px;margin:0 5px;*display:inline;zoom:1;}
+.flex-control-nav a{display:inline-block;width:14px;height:14px;line-height:40px;overflow:hidden;background:url("<@spring.url '/images/dot.png'/>") right 0 no-repeat;cursor:pointer;}
+.flex-control-nav .flex-active{background-position:0 0;}
+.flex-direction-nav{position:absolute;z-index:3;width:100%;top:45%;}
+.flex-direction-nav li a{display:block;width:50px;height:50px;overflow:hidden;cursor:pointer;position:absolute;}
+.flex-direction-nav li a.flex-prev{left:40px;background:url("<@spring.url '/images/prev.png'/>") center center no-repeat;}
+.flex-direction-nav li a.flex-next{right:40px;background:url("<@spring.url '/images/next.png'/>") center center no-repeat;}
+.icon-block{width:980px;height:220px;margin:0 auto;}
+.icon{float:left;width:310px;height:220px;text-align:center;}
+.icon02{margin:0 20px;}
+.icon-icon{display:block;width:120px;height:120px;background:url("<@spring.url '/images/sprtes.png'/>") no-repeat 0 -150px;margin-left:95px;}
+.icon-icon:hover{background-position:0 -300px;}
+.icon-icon02{background-position:-150px -150px;}
+.icon-icon02:hover{background-position:-150px -300px;}
+.icon-icon03{background-position:-300px -150px;}
+.icon-icon03:hover{background-position:-300px -300px;}
+.icon h4{width:310px;font-weight:normal;padding:15px 0;text-align:center;*margin-left:50px;}
+.name{font-size:16px;}
+.name:hover{color:#999;}
+.icon p{width:310px;color:#999;text-align:center;*margin-left:50px;}
+.our-position{width:100%;height:320px;background-color:#f1f1f1;margin-top:20px;padding:50px 0 0 0;}
+.our-position h1{text-align:center;font-size:24px;font-weight:normal;}
+.four-icon{width:980px;height:210px;margin:20px auto 0 auto;}
+.four-icon ul{font-size:14px;line-height:20px;color:#999;}
+.four-icon ul li{float:left;width:420px;height:75px;margin:30px 0 0 30px;}
+.four-icon ul li span{display:block;float:left;margin:30px 0 0 30px;}
+.four-icon ul li span.num01{width:65px;height:75px;background:url("<@spring.url '/images/sprtes.png'/>") no-repeat 0 -50px;margin-top:0;}
+.four-icon ul li span.num02{background:url("<@spring.url '/images/sprtes.png'/>") no-repeat -75px -50px;}
+.four-icon ul li span.num03{background:url("<@spring.url '/images/sprtes.png'/>") no-repeat -150px -50px;}
+.four-icon ul li span.num04{background:url("<@spring.url '/images/sprtes.png'/>") no-repeat -225px -50px;}
+    </style>
+ </head>
+ <body>
+	<div class="indt_top">
+		<div class="indt_tocm">
+			<div class="indt_tocml">
+				<ul class="indt_tocmlr">
+					<li><a href="<@spring.url '/index.html' />">首页</a></li>
+					<li><a href="<@spring.url'/homework/entrance.html'/>">课后作业</a></li>
+					<li><a href="<@spring.url'/network/paperFactory.html'/>">在线考场</a></li>
+				</ul>
+			</div>
+			<div class="indt_tocmr">
+			   	<ul class="indt_tocmlr">
+				<#if USER_CONTEXT??>
+				    <li style="background:none;"><span style="color:#589ef9;'"><span style="color:#16a951;">欢迎回来！</span>${USER_CONTEXT.userNo}</span></li>
+				    <#if USER_CONTEXT.isEnterpriseUser == 0>
+					<li><a href="<@spring.url '/person/center.html'/>">个人中心</a></li>
+					</#if>
+					<li><a href="<@spring.url '/logout.html'/>">注销</a></li>
+				<#elseif cookieName??>
+					<li style="background:none;"><span style="color:#589ef9;'"><span style="color:#16a951;">欢迎回来！</span>${cookieName}</span></li>
+					<li><a href="<@spring.url '/person/center.html'/>">个人中心</a></li>
+					<li><a href="<@spring.url '/logout.html'/>">注销</a></li>
+				<#else>
+					<li><a href="<@spring.url '/login.html'/>">登陆</a></li>
+					<li><a href="<@spring.url '/regist.html'/>">免费注册</a></li>
+				</#if>
+					<li><a href="<@spring.url '/message/message.html'/>">问题反馈</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f"></h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"><a href="<@spring.url '/index.html'/>">首页</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/homework/entrance.html'/>">课后作业</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/network/paperFactory.html'/>" style="border-right:none;">在线考场</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="banner">
+	<div class="flexslider">
+		<ul class="slides">
+			<li style="background:url(<@spring.url '/images/img1.jpg'/>) 50% 0 no-repeat;"><a href="<@spring.url '/homework/entrance.html'/>"></a></li>
+			<li style="background:url(<@spring.url '/images/img2.jpg'/>) 50% 0 no-repeat;"><a href="<@spring.url '/homework/entrance.html'/>"></a></li>
+			<li style="background:url(<@spring.url '/images/img3.jpg'/>) 50% 0 no-repeat;"></li>
+		</ul>
+	</div>
+</div>
+<div>
+	<div class="icon-block">
+    	<div class="icon">
+        	<a href="<@spring.url '/homework/entrance.html'/>" class="icon-icon"></a>
+            <h4><a href="<@spring.url '/homework/entrance.html'/>" class="name">课后作业</a></h4>
+            <p>课后作业，巩固学习内容，加深印象</p>
+        </div>
+        <div class="icon icon02">
+        	<a href="<@spring.url '/network/paperFactory.html'/>" class="icon-icon icon-icon02"></a>
+            <h4><a href="<@spring.url '/network/paperFactory.html'/>" class="name">在线考场</a></h4>
+            <p>在线考场，即时检测学习程度</p>
+        </div>
+        <div class="icon icon03">
+        	<a href="<@spring.url '/android/downLoadApk.json'/>" class="icon-icon icon-icon03"></a>
+            <h4><a href="<@spring.url '/android/downLoadApk.json'/>" class="name">客户端下载</a></h4>
+            <p>安卓客户端下载，把学习掌握手中</p>
+        </div>
+		<div class="clear"></div>
+    </div>
+	<div class="our-position">
+    	<h1>我们的定位</h1>
+        <div class="four-icon">
+        	<ul>
+            	<li><span class="num01"></span><span>一个精益化教学和学习的云端工具</span></li>
+                <li><span class="num01 num02"></span><span>一个教育资源分享交流的公众平台</span></li>
+                <li><span class="num01 num03"></span><span>一个家长学校协同教育的联系纽带</span></li>
+                <li><span class="num01 num04"></span><span>随时随地为客户提供最优质的服务</span></li>
+            </ul>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+<!-- </div> -->
+<div class="clear"></div>
+<!----footer  code------>
+<div class="footer">
+	<p><a href="<@spring.url'/corpus/index.html'/>" style="color:#fff;text-decoration:underline;">在线日语语料库入口</a></p>
+	<p><span>畅先版权所有ChooShine © 2011-2015浙ICP备12005730号</span><p>
+    <div class="clear"></div>
+	<p>客服电话：18658190803 18767186581 QQ：386456103 （周一至周日 9:00～22:00）</p>
+</div>
+</body>
+<script src="<@spring.url '/javascripts/jquery.js'/>"></script>
+<script src="<@spring.url '/javascripts/jquery.flexslider-min.js'/>"></script>
+<script>
+ 	$(function(){
+ 		$('.flexslider').flexslider({
+ 			directionNav: true,
+ 			pauseOnAction: false
+ 		});
+	}) 
+</script>

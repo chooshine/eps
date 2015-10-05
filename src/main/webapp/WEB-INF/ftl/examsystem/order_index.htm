@@ -1,0 +1,99 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<#include "logheader.htm" parse="true" encoding="UTF-8" >
+<style type="text/css">
+body{ background:#f5f5f5;}
+
+</style>
+
+<div class="testl_con" style=" padding-top:12px;">
+	<div class="ori_li" id="myExam">
+		<div class="ori_lilt ori_lilt1"></div>
+		<div class="ori_lirt">
+			<div class="ori_lirt1">我的试卷</div>
+			<div class="ori_lirt2">我们拥有强大的题库资源，各种风格，各种阶段的试卷。</div>
+			<div class="ori_lirt3">点击进入</div>
+		</div>
+		<div class="nofl"></div>
+	</div>
+	<div class="ori_li" id="myTeacher">
+		<div class="ori_lilt ori_lilt2"></div>
+		<div class="ori_lirt">
+			<div class="ori_lirt1">我的老师</div>
+			<div class="ori_lirt2">我们的老师来自五湖四海，让我们来感受不同省份不同的老师的教学方式</div>
+			<div class="ori_lirt3">点击进入</div>
+		</div>
+		<div class="nofl"></div>
+	</div>
+	<div class="ori_li" id="finishExam">
+		<div class="ori_lilt ori_lilt3"></div>
+		<div class="ori_lirt">
+			<div class="ori_lirt1">做过的试卷</div>
+			<div class="ori_lirt2">相较于传统上对订阅的理解，由于网络技术的发展，新闻订阅博客订的最新更新。</div>
+			<div class="ori_lirt3">点击进入</div>
+		</div>
+		<div class="nofl"></div>
+	</div>
+	<div class="ori_li" id="myRelease">
+		<div class="ori_lilt ori_lilt4"></div>
+		<div class="ori_lirt">
+			<div class="ori_lirt1">我的发布</div>
+			<div class="ori_lirt2">相较于传统上对订阅的理解，由于网络技术的发展，新闻订阅博客订的最新更新。</div>
+			<div class="ori_lirt3">点击进入</div>
+		</div>
+		<div class="nofl"></div>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+	<form id="getExamForm" method="GET" action="<@spring.url '/exam_orderExam.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo">
+			<input type="hidden" value="-1" name="sortNo">
+			<input type="hidden" value="-1" name="commitFlag">
+	</form>
+	
+	<form id="getTeacherForm" method="GET" action="<@spring.url '/exam_orderTeacher.html' />" />
+			<input type="hidden" value="12" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="isLose" id="isLose">
+			<input type="hidden" value="-1" name="subjectNo" id="subjectNo">
+	</form>
+
+	<form id="getReleaseForm" method="GET" action="<@spring.url '/exam_orderRelease.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="release" id="release">
+	</form>
+
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+
+<script>
+	$(function(){
+		
+		$("#myExam").click(function(){
+			$("#getExamForm").submit();
+		});
+		
+		$("#myTeacher").click(function(){
+			$("#getTeacherForm").submit();	
+		});
+				
+		$("#finishExam").click(function(){
+			$("input:hidden[name='commitFlag']").val("1");
+			$("#getExamForm").submit();
+		});
+		
+		$("#myRelease").click(function(){
+			$("#getReleaseForm").submit();
+		});
+		
+	});
+</script>
+
+
+
+
+
+
+
+

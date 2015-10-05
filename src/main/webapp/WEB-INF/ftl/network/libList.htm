@@ -1,0 +1,38 @@
+<#import "spring.ftl" as spring/>
+<div class="wrap03_nr" >
+	<ul>
+		<#if libList?? && (libList.data?size&gt;0)>
+		<#list libList.data as item>
+		<li class="li_nr">
+			<span class="span-objectname">
+				<img alt="考试" src="<@spring.url '/images/examsystem/exam_2.png'/>">
+				<div>
+					<div class="objectname">${item.exam_name}</div>
+					<div class="commoninfo">
+						<label>科目：<em class="sortname color-orange">${item.sort_name}</em></label>
+						<label>总分：<em class="color-orange">${item.total}</em> 分</label>
+						<label>发布时间：<em class="releasetime color-orange">${item.release_time?string("yyyy-MM-dd")}</em></label>
+					</div>
+				</div>
+			</span>
+			<span class="span01"><em class="color-orange">${item.b_topic_num}</em> 大题 / <em class="color-orange">${item.m_topic_num}</em> 小题</span>
+			<span class="span01">已安排 <em class="color-orange"><#if item.use_times??>${item.use_times}<#else>0</#if></em> 次考试</span>
+			<span class="span00">
+				<a href="javascript:void(0);" class="see" examId=${item.EXAM_ID?c} types='see'><b class="ap_ks">查看</b></a>
+		   		| <a href="javascript:void(0);" class="del" examId="${item.exam_id?c}" pageType='del'><b class="ap_ks">删除</b></a>
+		   		| <a href="javascript:void(0);" class="arrangetest" examId="${item.exam_id?c}" subjectNo="${item.subject_no}"><b class="ap_ks">安排考试</b></a>
+		   		| <#if item.e_status=0>
+		   		  	<a href="javascript:void(0);" class="upLibr" examId="${item.exam_id?c}" style="padding-right:32px;"><b class="ap_ks">共享</b></a>
+		   		  <#else>
+		   		  	<a href="javascript:void(0);" class="qx_gx" examId="${item.exam_id?c}"><b class="ap_ks">取消共享</b></a>
+		   		  </#if>	
+		    </span>
+	  		<input type="hidden" name="status" value="${item.e_status}">
+			<input type="hidden" name="eId" value="${item.exam_id?c}">
+		</li>
+		</#list>
+		<#else>
+		<li class="li_nr" style='height:49px;line-height:49px;text-align:center;'><span style='width:100%;'>当前条件下未搜索到试卷</span></li>
+		</#if>
+	</ul>
+</div>

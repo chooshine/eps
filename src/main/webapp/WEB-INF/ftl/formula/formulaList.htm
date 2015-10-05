@@ -1,0 +1,10 @@
+<#import "spring.ftl" as spring/>
+<#if formulaList?? && formulaList?size&gt;0>
+<#list formulaList as formula>
+<div class="struct-histroywrap histroywrap">
+	<div class="struct-histimgdiv histimgdiv<#if formula_index=0> currhistory</#if>">
+		<img src="<@spring.url '${formula.url}' />" imgid="${formula.id?c}" latex="${formula.latex}" class="struct-historyimg historyimg">
+	</div>
+</div>
+</#list>
+</#if>

@@ -1,0 +1,3198 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+/*头部一直显示在最上面*/
+body {background-color:#eee;}
+.content {padding-top:0px;}
+.fixed {position:fixed;top:0;width:1000px;}
+.largermargin {margin-top:57px;}
+/*头部*/
+.paper_tpct div {display:inline-block;line-height:40px;font-size:20px;margin-right:20px;}
+.paper_tpcmr {padding-top:5px;}
+.paper_tpcmr label {float:left;}
+.paper_tpcmr .chooshine-cancel {width:86px;font-size:15px;background-color:#f5f5f5;}
+
+/*小题*/
+.moveup, .movedown { width:75px; height:25px; cursor:pointer; color:#0088FF; font-size:12px;}
+.paperx_tj {display:none;}
+.paperxt_tjxb2 {width:1000px;}
+.paperx_fxk .paperx_zsdr, .paperx_fxk .paperx_jxxqr {width:663px;}
+.paperx_fxk .linkClass2 {float:left;margin-top:-32px;margin-left:532px;}
+.paperx_jxxqr .fftxt {min-height:50px;}
+
+/*添加非材料题小题*/
+.paperx_ksx {height:53px;border-top:1px dashed #FFD9B8;border-bottom:1px dashed #FFD9B8;background-color:#eff2f9;}
+.paperx_boot4 {cursor:default;}
+.paperx_boot4 select {width:100px;float:left;margin:10px 20px auto 10px;}
+.paperx_boot4 .chooshine-btn {width:120px;height:32px;line-height:32px;float:left;margin-top:9px;}
+
+/*小题编辑部分*/
+.pep_bj {margin-left:888px;z-index:2;}
+.pep_bj a.toolbar, .pep_bj a.toolbar:LINK, .pep_bj a.toolbar:VISITED, .pep_bj a.toolbar:HOVER, .pep_bj a.toolbar:ACTIVE {padding-left:60px; padding-bottom:30px; font-size:12px; font-weight:700; font-family:"微软雅黑"; color:#5FB708;}
+.pep_bj div.tools {display:none;width:65px;border:1px #888888 solid;background-color:#FCF5F5;margin-top:10px;margin-left:30px;}
+.pep_bjb, .pep_bjc, .moveques div, .copyques {width:65px;line-height:25px;text-align:center;color:#0000CC;cursor:pointer;}
+.pep_bjb:hover, .pep_bjc:hover, .moveques div:hover, .copyques:hover {background-color:#ECE9D8;}
+.pep_bj:hover .tools {display:block;}
+
+/* 材料题的操作*/
+.paperxt_botbx2 .chooshine-select {width:100px;}
+.hide {display:none;}
+
+/*添加公式按钮部分*/
+.linkClass2_postion {width:131px;}
+.deleteLine {margin-right:5px;cursor:pointer;}
+
+.topchoose {display:inline-block;height:35px;line-height:35px;font-size:15px;font-weight:bold;color:#00afed;}
+.topchoose:hover {color:#ff9966;}
+
+/*录音样式*/
+.quesrec {display:inline-block;width:16px;height:24px;cursor:pointer;background:url("<@spring.url '/images/uploadimgs.png' />") no-repeat scroll -165px -3px transparent;}
+.recorderwrap {margin-top:5px;margin-left:87px;}
+
+/*选择题类型选择*/
+.choosetypewrap {position:relative;top:42px;left:-121px;width:0px;height:0px;text-align:center;float:left;}
+.choosetype {width:120px;padding:10px 0;background:#ccc;cursor:pointer;}
+.choosetype:hover {background:#f96;color:#fff;}
+</style>
+<!--[if IE 6]>
+<style type="text/css">
+html{overflow:hidden;}
+body{height:100%;overflow:auto;}
+.fixed{position:absolute;top:expression(eval(document.body.scrollTop + 25));}
+</style>
+<![endif]-->
+<div class="content">
+	<div class="paper_tpct">
+		<div id="HwName" hwid="${hwInfo.hw_id?c}" style="min-width:200px;"><#if hwInfo??>${hwInfo.hw_name}</#if></div>
+		<#if type!="see"><div class="chooshine-cancel"><a id="ChangeHwInfo">修改</a></div></#if>
+		<div class="nofl"></div>
+	</div>
+	<div class="paper_top">
+		<div class="paper_tpcm">
+			<div class="paper_tpcml">
+				<div class="paper_tpcmlx2">
+					<div class="examinfo-container">
+						<div class="examinfo">
+							科目： <span id="SubjectNo" subjectid="${hwInfo.subject_id?c}" style="color:#000;margin-right:1px;">${hwInfo.sort_name}</span>
+						</div>
+					</div>
+					<div class="examinfo-container">
+						<div class="examinfo">
+							年级： <span id="GradeLevel" style="color:#000;" gradelevel="${hwInfo.grade_level}"><#if hwInfo.name??>${hwInfo.name}<#else>无年级限制</#if></span>
+						</div>
+					</div>
+					<div class="examinfo-container">
+						<div class="examinfo">
+							共  <span id="TotalNumber" style="font-weight:bold;color:#ff9966;" gradelevel="${hwInfo.grade_level}">${hwInfo.topic_num}</span> 题
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="paper_tpcmr">
+				<#if type!="see">
+					<label><button id="Release" type="button" class="paper_tpcmr3">发布</button></label>
+					<label id="TopChooseQues" style="cursor:pointer;margin-left:20px;">
+						<img src="<@spring.url '/images/search.png' />" style="height:32px;float:left;">
+						<a class="topchoose">智能选题</a>
+					</label>
+					<label><button type="button" id="Quit" class="chooshine-cancel" style="line-height:34px;">退出</button></label>
+					<label style="margin-right:20px;"><a id="AutoCreate" class="chooshine-cancel" href="<@spring.url '/homework/autoCreate.html?' />hwId=${hwInfo.hw_id?c}&subjectId=${hwInfo.subject_id?c}">自动选题</a></label>
+				<#else>
+					<label style="float:right;margin-right:8px;"><button type="button" id="Quit" class="chooshine-cancel" style="width:50px;">退出</button></label>
+				</#if>
+				<div class="nofl"></div>
+			</div>
+		</div>
+	</div>
+	<#-- 下面的div用于消除滚动时闪屏问题 -->
+	<div style="height:20px;"></div>
+	
+	<div class="text_sju">
+		<div class="paperx_comx">
+			<ul id="QuestionsUl">
+				<#if qiMap??>
+					<#list qiMap?keys as oneKey>
+						<#assign qi=qiMap[oneKey]>
+						<#if oneKey?starts_with("normal")>
+							<li id="${qi.ques_id?c}">
+								<div class="paperx_tl" tsid="${qi.ts_id?c}">
+									<#if type!="see">
+										<div class="pep_bjd">
+											<div class="pep_bj">
+												<a class="toolbar">操作▼</a>
+												<div class="tools">
+													<#if qi.release_flag==0>
+													<div class="pep_bjb editOne">编辑</div>
+													<#else>
+													<div class="copyques struct-copyques">复制</div>
+													</#if>
+													<div class="pep_bjc deleteOne">删除</div>
+													<div class="moveques">
+														<#if oneKey_index==0>
+															<div class="moveup struct-quesmoveup" style="display:none;">上移</div>
+														<#else>
+															<div class="moveup struct-quesmoveup">上移</div>
+														</#if>
+														<#if oneKey_index==qiMap?size-1>
+															<div class="moveup struct-quesmovedown" style="display:none;">下移</div>
+														<#else>
+															<div class="moveup struct-quesmovedown">下移</div>
+														</#if>
+													</div>
+												</div>
+												<div class="nofl"></div>
+											</div>
+										</div>
+									</#if>
+									<dl>
+										<dt>
+											<div class="allNum" mTopic=${qi.M_TOPIC}>${qi.M_TOPIC}</div>
+											<div class="paperx_tlxr" quesid="${qi.QUES_ID?c}" quesType="${qi.QUES_TYPE?c}">
+												<div class='ttxt test_box equ' >
+													${qi.QUES_CONTENT}
+												</div>
+												<div class='linkClass2 linkClass2_postion'>
+													<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+													<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+													<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+													<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+													<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+												</div>
+											</div>
+											<input class="onequesscore" type="hidden" value="${qi.SCORE}">
+											<div class="nofl"></div>
+										</dt>
+										<#if qi.QUES_TYPE=='1' || qi.QUES_TYPE=='2'>
+											<#list qi.OPT_CONTENT as optContent>
+												<#list qi.OPT_ID as optId>
+												    <#if optContent_index==optId_index>
+														<dd class="test_box2_bgc border-hover">
+															<div class="pap_tlt">${qi.OPT_NO[optId_index]+"."}</div>
+															<div class="pap_tct">
+																<div class='ttxt test_box2 equ'>${optContent}</div>
+															</div>
+															<div class='linkClass2 linkClass3_postion'>
+																<span><img title="删除选项" class="pap_trt deleteTxt" src="<@spring.url '/images/examsystem/delete_grey.png'/>"></span>
+																<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+																<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+																<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+																<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+																<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+															</div>
+															<div class="nofl"></div>
+														</dd>
+													</#if>
+												</#list>
+											</#list>
+										</#if>
+									</dl>
+									<#if type!="see" && (qi.QUES_TYPE=='1' || qi.QUES_TYPE=='2')>
+										<div class="paperx_tj"><img alt="添加选项" src="<@spring.url '/images/examsystem/plus.png'/>"><div>添加选项</div></div>
+									</#if>
+									<div class="paperx_btda">
+										<#if qi.QUES_TYPE=='4'>
+										<div class="paperx_tjx paperx_line_tjx">
+										<#else>
+										<div class="paperx_tjx">
+										</#if>
+											<input type="hidden" value=${qi.QUES_TYPE}>
+											<#assign ascArr2=["对","错"] >
+											<#assign index2=-1 > <#-- 选项索引，即A、B、C等的索引 -->
+											<#assign index3=-1 > <#--填空题的选项号索引-->
+											<#list qi.OPT_REFER as l>
+												<#assign index2=index2+1 >
+												<#if qi.QUES_TYPE=='1'>
+													<#if l=='0'>
+														<label class="paperx_tjxb2 radc">
+														 	<input class='markc' type="radio" name=${"rad"+qi.QUES_ID?c} value="0">
+														 	<span>${qi.OPT_NO[l_index]}</span>
+														</label>
+													<#else>
+														<label class="paperx_tjxb2 radc radio">
+														 	<input class='markc' type="radio" name=${"rad"+qi.QUES_ID?c} value="1" checked="checked" />
+														 	<span>${qi.OPT_NO[l_index]}</span> 
+														</label>
+													</#if>
+												<#elseif qi.QUES_TYPE=='2'>
+													<#if l=='0'>
+														<label class="paperx_tjxb2 chkc">
+															<input class='markc' type="checkbox" name=${"rad"+qi.QUES_ID?c} value="0"/>
+															<span>${qi.OPT_NO[l_index]}</span>
+														</label>
+													<#else>
+													 	<label class="paperx_tjxb2 chkc radio">
+															<input class='markc' type="checkbox" name=${"rad"+qi.QUES_ID?c} value="1" checked="checked"/>
+															<span>${qi.OPT_NO[l_index]}</span>
+														</label>
+													</#if>
+												<#elseif qi.QUES_TYPE=='3'>
+													<#if l=='0'>
+														<label class="paperx_tjxb2 radc">
+															<input class='markc' type="radio" name=${"rad"+qi.QUES_ID?c} value="0"/>
+															<span>${ascArr2[index2]}</span> 
+														</label>
+													<#else>
+														<label class="paperx_tjxb2 radc radio">
+															<input class='markc' type="radio" name=${"rad"+qi.QUES_ID?c} value="1" checked="checked"/>
+															<span>${ascArr2[index2]}</span>
+														</label>
+													</#if>
+												<#elseif qi.QUES_TYPE=='4'>
+													<#assign index3=index3+1>
+													<div class="paperxt_tjxb2">
+														<div class="cleanBoth">
+															<span class="tkNum">${qi.OPT_NO[index3]}</span>
+															<div class='markc test_box4 equ'>${l}</div>
+															<div class='linkClass2 mar linkClass4_postion'>
+																<span><img title="删除空格" class="deleteLine" src="<@spring.url '/images/examsystem/delete_grey.png'/>"></span>
+																<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+																<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+																<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+																<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+																<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+															</div>
+															<input type='hidden' value='1' class='tkScore' />
+														</div>
+													</div>
+												<#elseif qi.QUES_TYPE=='5'>
+													<div class="jiedati-tip">答：</div>
+													<div class="paperxt_tjxb2 answer-type5">
+														<div class='markc equ test_box5'>${l!}</div>
+														<div class='linkClass2 mar5'>
+															<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+															<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+															<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+															<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+															<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+														</div>
+													</div>
+												</#if>
+											</#list>
+											<div class="nofl"></div>
+										</div>
+										<#if type!="see" && qi.QUES_TYPE=='4'>
+											<div class="nofl"></div>
+											<div class='paperx_tj paperx_line_tj'><img alt='添加空格' src="<@spring.url '/images/examsystem/plus.png'/>"><button>添加空格</button></div>
+										</#if>
+										<div class="paperx_fxkck">
+											<span>展开解析▼</span>
+										</div>
+										<div class="nofl"></div>
+										<div class="paperx_fxky">
+											<div class="paperx_zsd">
+												<div class="paperx_zsdl">考点</div>
+												<div class="paperx_zsdr">
+												<#if qi.knowledge_point??>
+												<#list qi.knowledge_point as kp>
+													<div class="knowledgepointdiv-nodelete" kpid="${kp.kpId}" title="${kp.kpPath}">${kp.kpName}</div>
+												</#list>
+												</#if>
+													<div class="examaddupdate-addkp examaddupdate-addkphide"><img alt='添加考点' src="<@spring.url '/images/examsystem/plus.png'/>">添加考点</div>
+												</div>
+												<div class="nofl"></div>
+											</div>
+											<div class="paperx_jxxq">
+												<div class="paperx_zsdl" >解析：</div>
+												<div class="paperx_jxxqr">
+													<div class='fftxt test_box3 equ'>${qi.keyword}</div>
+													<div class='linkClass2'>
+														<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+														<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+														<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+														<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+														<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+														<span title="录音" class="quesrec struct-quesrec">&nbsp;</span>
+													</div>
+												</div>
+												<div class="nofl"></div>
+												<div class="recorderwrap" recpath="${qi.ques_rec}"></div>
+												<div class="nofl"></div>
+											</div>
+											<div class="paperx_diff">
+												<div class="paperx_zsdl">难度：</div>
+												<div class="difficultywrap">
+													<div class="difficulty fl"><#if qi.difficulty??>${qi.difficulty}<#else>1.0</#if></div>
+											    	<div class="selectwrap fl">
+											        	<span class="simplespan fl">简单</span>
+											            <div class="fl">
+											            	<div class="selectdiv">
+											                	<div class="selectdot" style="left:<#if qi.difficulty??>${(qi.difficulty-1)*96/4}<#else>0</#if>px"></div>
+											                </div>
+											            </div>
+											            <span class="diffspan fl">困难</span>
+											        </div>
+											        <div class="nofl"></div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class='pep_bcyc'>
+									<div class='pep_bcx save'>保 存</div>
+									<div class='pep_scx deleteOne chooshine-cancel'>删  除</div>
+								</div>
+							</li>
+						<#else>
+							<#if qi?size&gt;0>
+								<li>
+									<div class='paperxt_stx'>
+									<#assign tsId=0>
+									<#list qi as tkl>
+										<#if tkl.QUES_TYPE==6>
+											<#assign articleUlId=tkl.QUES_ID?c>
+											<#assign tsId=tkl.ts_id?c>
+											
+											<#--材料内容部分-->
+											<div class="article-above-operatewrap">
+												<div class="article-above-tip"><a>操作▼</a></div>
+												<div class="article-above-operates">
+													<#if tkl.release_flag==0>
+													<div class="article-above-operate article_edit">编辑材料</div>
+													<#else>
+													<div class="article-above-operate struct-copyques">复&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;制</div>
+													</#if>
+													<div class="article_ques_delete article-above-operate">删除材料</div>
+													<div class="article-above-operate struct-pulloutart">弹出材料</div>
+												</div>
+											</div>
+											<div class="article_area">
+												<div class='articletip'>（材料）</div>
+												<div class="struct-artcontent test_box6 equ" artid="${tkl.QUES_ID?c}">${tkl.QUES_CONTENT}</div>
+												<div class='linkClass2 mar6'>
+													<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+													<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+													<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+													<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+													<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+												</div>
+												<div class="showarticlekp"><span>显示考点▼</span></div>
+												<div class="nofl"></div>
+											</div>
+											<div class="paperx_zsd article_paperx_zsd hide">
+												<div class="paperx_zsdl">考点</div>
+												<div class="paperx_zsdr">
+												<#if tkl.knowledge_point??>
+												<#list tkl.knowledge_point as kp>
+													<div class="knowledgepointdiv-nodelete" kpid="${kp.kpId}" title="${kp.kpPath}">${kp.kpName}</div>
+												</#list>
+												</#if>
+													<div class="examaddupdate-addkp examaddupdate-addkphide"><img alt='添加考点' src="<@spring.url '/images/examsystem/plus.png'/>">添加考点</div>
+												</div>
+												<div class="nofl"></div>
+											</div>
+											<div class="paperx_diff">
+												<div class="paperx_zsdl">难度：</div>
+												<div class="difficultywrap">
+													<div class="difficulty fl"><#if tkl.difficulty??>${tkl.difficulty}<#else>1.0</#if></div>
+											    	<div class="selectwrap fl">
+											        	<span class="simplespan fl">简单</span>
+											            <div class="fl">
+											            	<div class="selectdiv">
+											                	<div class="selectdot" style="left:<#if tkl.difficulty??>${(tkl.difficulty-1)*96/4}<#else>0</#if>px"></div>
+											                </div>
+											            </div>
+											            <span class="diffspan fl">困难</span>
+											        </div>
+											        <div class="nofl"></div>
+												</div>
+											</div>
+											<#--对材料的操作-->
+											<#if type!="see">
+												<div class="article-under-operate">
+													<div class="savArticle pep_bcx">保存材料</div>
+													<div class="article_ques_delete chooshine-cancel">删除材料</div>
+													<span class="nofl"></span>
+												</div>
+											</#if>
+											<div class="nofl"></div>
+											<#break>
+										</#if>
+									</#list>
+									</div>
+									<div class='paperxt_bot' tsid="${tsId}">
+										<ul id=${"ul"+articleUlId+"a"}>
+											<#list qi as tkl>
+												<#if tkl.QUES_TYPE!=6>
+													<li id=${tkl.QUES_ID?c}>
+														<div class="paperx_tl" tsid=${tkl.ts_id?c}>
+															<#if type!="see">
+																<div class="pep_bjd <#if tkl.release_flag!=0>hide</#if>">
+																	<div class="pep_bj">
+																		<a class="toolbar">操作▼</a>
+																		<div class="tools">
+																			<div class="pep_bjb editOne">编辑</div>
+																			<div class="pep_bjc deleteOne">删除</div>
+																			<div class="moveques">
+																				<#if tkl_index==1>
+																					<div class="moveup struct-quesmoveup" style="display:none;">上移</div>
+																				<#else>
+																					<div class="moveup struct-quesmoveup">上移</div>
+																				</#if>
+																				<#if tkl_index==qi?size-1>
+																					<div class="moveup struct-quesmovedown" style="display:none;">下移</div>
+																				<#else>
+																					<div class="moveup struct-quesmovedown">下移</div>
+																				</#if>
+																			</div>
+																			
+																		</div>
+																	</div>
+																</div>
+															</#if>
+															<dl>
+																<dt>
+																	<div class="allNum" mTopic="${tkl.M_TOPIC}">${tkl.M_TOPIC}</div>
+																	<div class="paperx_tlxr" quesid="${tkl.QUES_ID?c}" quesType="${tkl.QUES_TYPE?c}">
+																		<div class='ttxt test_box equ' >
+																			${tkl.QUES_CONTENT}
+																		</div>
+																		<div class='linkClass2 linkClass2_postion'>
+																			<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+																			<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+																			<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+																			<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+																			<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+																		</div>
+																	</div>
+																	<input class="onequesscore" type="hidden" value="${tkl.SCORE}" >
+																	<div class="nofl"></div>
+																</dt>
+																<#if tkl.QUES_TYPE=='1' || tkl.QUES_TYPE=='2'>
+																	<#list tkl.OPT_CONTENT as optContent>
+																		<#list tkl.OPT_ID as optId>
+																			<#if optContent_index==optId_index>
+																				<dd class='test_box2_bgc border-hover'>
+																					<div class="pap_tlt">${tkl.OPT_NO[optId_index]+"."}</div>
+																					<!-- 初始化状态下选项插入公式 -->
+																					<div class="pap_tct">
+																						<div class='ttxt test_box2 equ'>${optContent}</div>
+																					</div>
+																					<div class='linkClass2 linkClass3_postion'>
+																						<span><img title="删除选项" class="pap_trt deleteTxt" src="<@spring.url '/images/examsystem/delete_grey.png'/>"></span>
+																						<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+																						<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+																						<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+																						<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+																						<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+																					</div>
+																					<div class="nofl"></div>
+																				</dd>
+																			</#if>
+																		</#list>
+																	</#list>
+																</#if>
+															</dl>
+															<#if type!="see" && (tkl.QUES_TYPE=='1' || tkl.QUES_TYPE=='2')>
+																<div class="paperx_tj"><img alt="添加选项" src="<@spring.url '/images/examsystem/plus.png'/>"><div>添加选项</div></div>
+															</#if>
+															<div class="paperx_btda">
+																<#if tkl.QUES_TYPE=='4'>
+																<div class="paperx_tjx paperx_line_tjx">
+																<#else>
+																<div class="paperx_tjx">
+																</#if>
+																	<input type="hidden" value=${tkl.QUES_TYPE}>
+																	<#assign ascArr2=["对","错"] > 
+																	<#assign index2=-1> 
+																	<#assign index3=-1>
+																	<#list tkl.OPT_REFER as l> 
+																		<#assign index2=index2+1 > 
+																		<#if tkl.QUES_TYPE=='1'>
+																				<#if l=='0'>
+																					<label class="paperx_tjxb2 radc">
+																					 	<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID?c} value="0"/>
+																					 	<span>${tkl.OPT_NO[l_index]}</span>
+																					</label>
+																				<#else>
+																					<label class="paperx_tjxb2 radc radio">
+																					 	<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID?c} value="1" checked="checked"/>
+																					 	<span>${tkl.OPT_NO[l_index]}</span>
+																					</label>
+																				</#if>
+																		<#elseif tkl.QUES_TYPE=='2'>
+																				<#if l=='0'> 
+																					<label class="paperx_tjxb2 chkc">
+																						<input class='markc' type="checkbox" name=${"rad"+tkl.QUES_ID?c} value="0"/>
+																						<span>${tkl.OPT_NO[l_index]}</span>
+																					</label>
+																				<#else> 
+																					<label class="paperx_tjxb2 chkc radio">
+																						<input class='markc' type="checkbox" name=${"rad"+tkl.QUES_ID?c} value="1" checked="checked"/>
+																						<span>${tkl.OPT_NO[l_index]}</span>
+																					</label>
+																				</#if>
+																			
+																		<#elseif tkl.QUES_TYPE=='3'>
+																				<#if l=='0'> 
+																					<label class="paperx_tjxb2 radc">
+																						<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID?c} value="0"/>
+																						<span>${ascArr2[index2]}</span>
+																					</label>
+																				<#else>
+																					<label class="paperx_tjxb2 radc radio">
+																						<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID?c} value="1" checked="checked"/>
+																						<span>${ascArr2[index2]}</span>
+																					</label>
+																				</#if>
+																		<#elseif tkl.QUES_TYPE=='4'>
+																			<#assign index3=index3+1>
+																			<div class="paperxt_tjxb2">
+																				<div class="cleanBoth">
+																					<span class="tkNum">${tkl.OPT_NO[index3]}</span>
+																					<div class='markc test_box4'>${l} </div>
+																					<div class='linkClass2 linkClass4_postion'>
+																						<span><img title="删除选项" class="pap_trt deleteTxt" src="<@spring.url '/images/examsystem/delete_grey.png'/>"></span>
+																						<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+																						<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+																						<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+																						<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+																						<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+																					</div>
+																					<input type='hidden' value='1' class='tkScore' />
+																				</div>
+																				<div class="nofl"></div>
+																			</div>
+																		<#elseif tkl.QUES_TYPE=='5'>
+																			<div class="jiedati-tip">答：</div>
+																			<div class="paperxt_tjxb2 answer-type5">
+																				<div class='markc equ test_box5'>${l!}</div>
+																				<div class='linkClass2 mar5'>
+																					<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+																					<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+																					<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+																					<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+																					<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+																				</div>
+																			</div>
+																		</#if> 
+																	</#list>
+																	<div class="nofl"></div>
+																</div>
+																<#if type!="see" && tkl.QUES_TYPE=='4'>
+																	<div class="nofl"></div>
+																	<div class='paperx_tj paperx_line_tj'><img alt='添加空格' src="<@spring.url '/images/examsystem/plus.png'/>"><button>添加空格</button></div>
+																</#if>
+																<div class="paperx_fxkck">
+																	<span>展开解析▼</span>
+																</div>
+																<div class="nofl"></div>
+																<div class="paperx_fxky">
+																	<div class="paperx_zsd">
+																		<div class="paperx_zsdl">考点</div>
+																		<div class="paperx_zsdr">
+																			<#if tkl.knowledge_point??>
+																			<#list tkl.knowledge_point as kp>
+																				<div class="knowledgepointdiv-nodelete" kpid="${kp.kpId}" title="${kp.kpPath}">${kp.kpName}</div>
+																			</#list>
+																			</#if>
+																			<div class="examaddupdate-addkp examaddupdate-addkphide"><img alt='添加考点' src="<@spring.url '/images/examsystem/plus.png'/>"><div>添加考点</div></div>
+																		</div>
+																		<div class="nofl"></div>
+																	</div>
+																	<div class="paperx_jxxq">
+																		<div class="paperx_zsdl">解析：</div>
+																		<div class="paperx_jxxqr">
+																			<div class='fftxt test_box3 equ'>${tkl.keyword}</div>
+																			<div class='linkClass2'>
+																				<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+																				<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+																				<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+																				<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+																				<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+																				<span title="录音" class="quesrec struct-quesrec">&nbsp;</span>
+																			</div>
+																		</div>
+																		<div class="nofl"></div>
+																		<div class="recorderwrap" recpath="${tkl.ques_rec}"></div>
+																		<div class="nofl"></div>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class='pep_bcyc'>
+															<div class='pep_bcx save'>保 存</div>
+															<div class='pep_scx deleteOne chooshine-cancel'>删  除</div>
+														</div>
+													</li>
+												</#if>
+											</#list>
+										</ul>
+										<#if type!="see">
+											<div class="paperxt_botbx <#if qi[0].release_flag!=0>hide</#if>">
+												<div class='paperxt_botbx2'>
+													<select class='chooshine-select'>
+														<option value='1'>选择题</option>
+														<option value='2'>多选题</option>
+														<option value='3'>判断题</option>
+														<option value='4'>填空题</option>
+														<option value='5'>解答题</option>
+													</select>
+												</div>
+												<div class='paperxt_botbx3'>添加材料小题</div>
+											</div>
+										</#if>
+									</div>
+								</li>
+							</#if>
+						</#if>
+					</#list>
+				</#if>
+			</ul>
+		</div>
+		<#if type!="see">
+			<div class="paperx_ksx">
+				<div class="paperx_boot4">
+					<img alt="添加小题" src="<@spring.url '/images/examsystem/add.png' />">
+					<select name="questype-level1" class="chooshine-select">
+						<#list quesTypes as type>
+							<option defaulttype='${type.type}' value='${type.ts_id?c}'>${type.ts_name}</option>
+						</#list>
+					</select>
+					<select name="questype-level2" class="chooshine-select" style="margin-left:0px;">
+						<option value='1'>选择题</option>
+						<option value='2'>多选题</option>
+						<option value='3'>判断题</option>
+						<option value='4'>填空题</option>
+						<option value='5'>解答题</option>
+						<option value='6'>材料题</option>
+					</select>
+					<div class="chooshine-btn" id="AddNormarlQuestion">添加一题</div>
+				</div>
+				<div class="paperx_boot4" style="border-right:none;padding-right:0px;">
+					<img alt="智能选题" src="<@spring.url '/images/search.png'/>">
+					<div class="intelligentlychoose" id="IntelligentChoose">智能选题</div>
+				</div>
+			</div>
+		</#if>
+	</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script src="<@spring.url '/javascripts/jquery-ui-timepicker-addon.js'/>" ></script>
+<#-- 如果是出题，才会有下面的内容 -->
+<#if type!="see">
+<div class="answerspop_up" id="answerspop_up" style="display:none;">
+	<#if sortList??>
+		<#list sortList?keys as key>
+			<dl>
+				<dt>${key}</dt>
+				<dd>
+					<#list sortList[key] as sort>
+						<div class="answerspop_upcem" parentTitle='${key}' data-value='${sort.sort_id}'>${sort.sort_name}</div>
+					</#list>
+					<div class="nofl"></div>
+				</dd>
+			</dl>
+		</#list>
+	</#if>
+	<div class="nofl"></div>
+</div>
+
+<#--添加考点-->
+<#include "homework/teacher/knowledgePoints/knowledgePointsDialog.htm" parse="true" encoding="UTF-8" >
+<#include "homework/teacher/knowledgePoints/knowledgePointsDialogJs.htm" parse="true" encoding="UTF-8" >
+<#--布置作业-->
+<#include "homework/teacher/settle/settleHwToClassDialog.htm" parse="true" encoding="UTF-8" >
+</#if>
+<#-- 插入公式 -->
+<#include "insertFormulaDialog.htm" parse="true" encoding="UTF-8" >
+<#include "formulaDialog.htm" parse="true" encoding="UTF-8" >
+<#include "formula/formulaHistoryDialog.htm" parse="true" encoding="UTF-8" >
+<#include "recorder.htm" parse="true" encoding="UTF-8" >
+<div id="ArtDialog">
+	<h3></h3>
+	<div class="struct-artcontent" style="min-height:200px;line-height:27px;font-size:14px;padding:0px 10px;"></div>
+</div>
+<script>
+var saveOneQuesJson={},	//存放一小题
+	titleStr="点击添加小题题干",
+	optStr="点击添加小题选项",
+	artStr="点击输入材料",
+	keyf='请输入试题分析',
+	keylinestring='',
+	isOutFlag = false,	//用来判断鼠标是否移除了当前div，用于新增和编辑小题时使用
+	editFlag = false,
+	articleEditingFlag = false,//当材料处于编辑状态，该标记为true
+	tkNumArr = ["①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩"],	//用来为填空题的空格加编号
+	savingFlag = false,	//为true表示正在保存一个小题，为false表示没有小题在保存状态
+	nowAddKpNode,	//记录当前在操作的"添加考点"节点
+	isMove = false,	//移动标记，当鼠标在某个难度游标上按下的时候，该值为true
+	startX = 0,
+	startLevel = 0,
+	nowSelectDot;
+
+$(function() {
+	//作业科目
+	$('#answerspop_up').dialog({
+		title:"选择科目",
+		autoOpen: false,
+	    height: 280,
+	    width: 1023,
+	    modal: true
+	});
+	
+	$("#ArtDialog").dialog({
+		dialogClass:"chooshine-dialog",
+		autoOpen: false,
+	    modal: true,
+	    width:700,
+	    height:400,
+	    resizable:false,
+	    buttons: [{
+	  		text: "关闭",
+	  		click: function() {
+	  			$(this).dialog("close");
+	  		}
+	    }]
+	});
+	//弹出材料的点击事件
+	$(".struct-pulloutart").each(function(){
+		$(this).click(function() {
+			$("#ArtDialog").find("h3").html("材料");
+			$("#ArtDialog").find(".struct-artcontent").html($(this).parents('.paperxt_stx').find('.struct-artcontent').html());
+			$("#ArtDialog").dialog("open");
+		})
+	});
+	
+	<#if type!="see">openKnowledgePointsDialog($("#SubjectNo").attr("subjectid"));</#if>
+	//*****************************页面初始加载操作***********************
+	//如果当前正在编辑一个小题，就不允许对除了当前小题之外的页面其他位置的点击
+	$(".content").mousedown(function(){
+		if(isOutFlag){
+			$.chooshine.alert("请先完成当前小题的编辑！");
+	      	return;
+		}
+		if(articleEditingFlag) {
+			$.chooshine.alert("请先保存正在编辑的材料。");
+	      	return;
+		}
+	});
+	
+	//滚动条滚动时，让div一直显示在页面顶部
+	var paperTop = $(".paper_top")[0];
+	var startPos = $(paperTop).offset().top;
+	$(window).scroll(function() {
+		fixDiv(paperTop, startPos, "fixed", "largermargin");
+	});
+	
+	
+	//*****************************作业操作****************************
+	//切换科目
+	$("select[name='homeworksort']").change(function(){
+		if($(this).val()==-1){
+			$("#answerspop_up" ).dialog("open");
+		}
+	});
+	$('.answerspop_upcem').each(function(e){
+		$(this).click(function(){
+			var selectNode = $("select[name='homeworksort']");
+			$("select[name='homeworksort'] option[status='temp']").remove();
+			var str=$(this).attr('parentTitle')+"·"+$(this).html();
+			var value = $(this).attr("data-value");
+			$(selectNode).append("<option status='temp' value='"+value+"'>"+str+"</option");
+			$("select[name='homeworksort'] option[status='temp']").attr("selected",true);
+			$("#answerspop_up" ).dialog("close");
+		});
+	});
+	//点击“修改”或“保存”
+	$("#ChangeHwInfo").click(function() {
+		if($("#ChangeHwInfo").html() == "修改") {
+			$("#HwName").attr("contenteditable", true).css("background-color", "#fff");
+			$("#ChangeHwInfo").html("保存");
+		} else {
+			var hwInfo = getHwInfo();
+			if(!hwInfo) {
+				return;
+			}
+			$.ajax({
+				type:"post",
+				url:"<@spring.url '/homework/operateHomework.json'/>",
+				data:"hwId="+hwInfo["hwId"]+"&hwName="+hwInfo["hwName"],
+				contentType:"application/x-www-form-urlencoded;charset=utf-8",
+				success:function(data) {
+					$("#HwName").attr("contenteditable", false).css("background-color", "#f5f5f5");
+					$("#ChangeHwInfo").html("修改");
+				}
+			});
+		}
+	});
+	//***************************小题操作***************************
+	//为初始化加载的“添加公式”添加点击事件
+  	$(".addequation").each(function(){
+		addEventClick(this);
+  	});
+  	//为“上传图片”添加点击事件
+	$(".addequation_local").each(function(){
+		addLocalPhoto(this);
+  	});
+	$(".struct-kf").each(function() {
+		$(this).click(function() {
+			openKity();
+		});
+	});
+	$(".struct-ue").each(function() {
+		addClickEventToUeditorBtn(this);
+	});
+	$(".struct-hist").each(function() {
+		$(this).click(function() {
+			openFormulaHistory();
+		});
+	});
+	
+	$(".equ").each(function(){
+		//将页面加载的转换后的img标签转换回来
+		$(this).html(changeImgToNormal($(this).html(), "<@spring.url ''/>"));
+		findDivEventMouseup(this);
+		
+		//公式图片添加双击事件
+		$(this).find("img").each(function() {
+			if(!($(this).attr("data-latex") == undefined)) {
+				$(this).dblclick(function() {
+					formulaDbClickEvent(this);
+				});
+			}
+		});
+  	});
+	//为文本框绑定聚焦事件，包括题干、选项、填空和解答的答案、材料题的材料
+	bindClickEvent();
+	function bindClickEvent() {
+		var rootNode = $(".text_sju")[0];
+		//题干
+		var dtNodes = $(rootNode).find("dt");
+		$(dtNodes).each(function() {
+			var quesContentNode = $($(this).find(".paperx_tlxr")[0]).find(".ttxt")[0];
+			if(quesContentNode != undefined) {
+				textboxClick(quesContentNode, titleStr);
+			}
+		});
+		//选项
+		var ddNodes = $(rootNode).find("dd");
+		$(ddNodes).each(function() {
+			var optNode = $($(this).find(".pap_tct")[0]).find(".ttxt")[0];
+			if(optNode != undefined) {
+				textboxClick(optNode, optStr);
+			}
+		});
+		//填空题
+		var tkScore=$(rootNode).find('.tkNum');
+		$(tkScore).each(function(){
+			var tkNode=$(this).parent().find('.test_box4')[0];
+			if(tkNode!=undefined){
+				textboxClick(tkNode,keylinestring);
+			}
+		});
+		//解析
+		var analyNodes = $(".paperx_jxxqr");
+		$(analyNodes).each(function() {
+			textboxClick($(this).find(".fftxt")[0], keyf);
+		});
+		//材料
+		var articleNodes = $(".struct-artcontent");
+		$(articleNodes).each(function() {
+			textboxClick(this, artStr);
+		});
+		//解答题的显示隐藏
+	 	$(".test_box5").each(function(){
+			textboxClick(this);
+	 	});
+	}
+	
+	//题目类型选择下拉框改变选择时的处理
+	$("select[name='questype-level1']").change(function() {
+		var selectedOpt = $(this).find("option:selected"),
+			tsId = selectedOpt.val(),
+			type = selectedOpt.attr("defaulttype");
+		$(this).attr("tsid", tsId);//设置select的tsis属性值
+		$("select[name='questype-level2']").find("option[value='"+type+"']")[0].selected = true;
+	});
+	//点击“添加一题”
+	//添加小题，鼠标移上时显示选择单选题和多选题的区域，移开时，隐藏单选题和多选题的区域
+	$("#AddNormarlQuestion").click(function() {
+		addNormalQuesEvent();
+	});
+	/*
+	* 添加普通题目按钮鼠标点击事件
+	*/
+	function addNormalQuesEvent() {
+		//判断作业名称是否保存，如果未保存，就不允许添加
+		if($("#ChangeHwInfo").html() == "保存") {
+			$.chooshine.alert("请先保存作业信息。");
+			return;
+		}
+		
+		var flag = true;//false代表有未添加小题的材料
+		$(".paperxt_bot").each(function() {
+			if($(this).find(".allNum").length == 0) {
+				flag = false;
+				return false;
+			}
+		});
+		if(!flag) {
+			$.chooshine.alert("您有材料题未添加小题。");
+			return;
+		}
+		
+		var selectNode1 = $("select[name='questype-level1']"),
+			selectNode2 = $("select[name='questype-level2']"),
+			tsId = selectNode1.val(),
+			quesType = selectNode2.val();
+		if(quesType != 6) {//如果是普通小题，就按普通小题的做法
+			addExamQues($("#QuestionsUl"), quesType, tsId);
+		} else {//如果是材料题，就按原来材料题的做法
+			addReadingQues(tsId);
+		}
+	}
+	
+	//智能选题
+	$("#IntelligentChoose").click(function() {
+		intelliChoose();
+	});
+	
+	//智能选题
+	function intelliChoose() {
+		var flag = true;//false代表有未添加小题的材料
+		$(".paperxt_bot").each(function() {
+			if($(this).find(".allNum").length == 0) {
+				flag = false;
+				return false;
+			}
+		});
+		if(!flag) {
+			$.chooshine.alert("您有材料题未添加小题。");
+			return;
+		}
+		var lastMtopic = $(".allNum:last").attr("mtopic");
+		if(lastMtopic == undefined){
+			lastMtopic = 0;
+		}
+		location.href = "<@spring.url '/homework/chooseQuestions.html?hwId="+${hwInfo.hw_id?c}+"&subjectId="+${hwInfo.subject_id?c}+"&lastMtopic="+lastMtopic+"'/>";
+	}
+	
+	//给每个小题的“编辑”添加事件
+	$(".editOne").each(function() {
+		editQuesEvent(this);
+	});
+	//给每个小题的“复制”添加事件
+	$(".struct-copyques").each(function() {
+		$(this).click(function() {
+			copyQues(this);
+		});
+	});
+	//点击"复制"
+	function copyQues(copyNode) {
+		//判断是否材料题
+		if($(copyNode).parents(".paperx_tl")[0] == undefined) {//材料题
+			copyArticleQues(copyNode);
+		} else {//普通小题
+			copyNormalQues(copyNode);
+		}
+	}
+	
+	//为每个初始加载的“查看解析”添加点击事件
+	$(".paperx_fxkck").each(function() {
+		viewAnaly(this);
+	});
+	//保存一个小题，为每个小题的“保存”添加事件
+	$(".save").each(function(){
+		saveQuesEvent(this);
+	});
+	
+	//为初始加载的小题的删除添加点击事件
+	$(".deleteOne").each(function() {
+		deleteQuesEvent(this);
+	});
+	
+	$(".struct-quesmoveup").each(function() {
+		$(this).click(function() {
+			questionMoveEvent(this, "up");
+		});
+	});
+	$(".struct-quesmovedown").each(function() {
+		$(this).click(function() {
+			questionMoveEvent(this, "down");
+		});
+	});
+	
+	//复制普通小题
+	function copyNormalQues(copyNode) {
+		var ulNode = $(copyNode).parents("ul")[0];
+		//在ul的最后增加一个小题，该小题复制自当前小题
+		$(ulNode).append("<li>"+$($(copyNode).parents("li")[0]).html()+"</li>");
+		//得到新增的小题
+		var liNode = $(ulNode).find("li:last");
+		//去除新增小题的quesid
+		liNode.find(".paperx_tlxr").removeAttr("quesid");
+		//更改小题号
+		resetMTopics();
+		//将小题的复制改为编辑
+		$(liNode).find(".struct-copyques").remove();
+		$(liNode).find(".tools").prepend("<div class='pep_bjb editOne'>编辑</div>");
+		//显示上移，隐藏下移，并设置小题之前的小题的下移
+		$(liNode).find(".struct-quesmovedown").hide();
+		$(liNode).find(".struct-quesmoveup").show();
+		//小题上面的小题显示下移
+		$(liNode).prev().find(".struct-quesmovedown").show();
+		//为小题添加各种事件
+		addEventToQues(liNode, $(copyNode).parents("li")[0]);
+		//自动调用小题的编辑事件
+		triggerMouseEvent($(liNode).find(".editOne")[0], "click");
+		//设置小题在视野中
+		$(document).scrollTop($(liNode).offset().top-64);//让小题显示在页面最上面
+		addMouseOutOver(liNode);//添加鼠标离开和放在当前小题的li的事件，并添加点击当前小题之外的其他位置的事件
+	}
+	
+	//复制材料题
+	function copyArticleQues(copyNode) {
+		//复制材料题目到最后，显示在最上面，隐藏；
+		var ulNode = $(copyNode).parents("ul")[0];
+		//在ul的最后增加材料题目
+		$(ulNode).append("<li>"+$($(copyNode).parents("li")[0]).html()+"</li>");
+		//得到新增的材料题目
+		var artLiNode = $(ulNode).children("li:last");
+		var artNode = $(artLiNode).find(".paperxt_stx");//材料部分
+		var copyArtLiNode = $(copyNode).parents(".paperxt_stx").parent();
+		//去除新增小题的quesid及材料的编号
+		artLiNode.find(".struct-artcontent").removeAttr("artid");
+		artLiNode.find(".paperxt_bot").find("ul").removeAttr("id");
+		artLiNode.find(".paperxt_bot").find("ul > li").removeAttr("id");
+		artLiNode.find(".paperx_tlxr").removeAttr("quesid");
+		//设置页面小题号，并发送json请求，将所有小题的信息组合；
+		resetMTopics();
+		
+		var mTopics = {};//存储小题号的数组
+		var quesTypes = {};
+		var quesContents = {};
+		var quesRefers = {};
+		var optNos = {};
+		var optContents = {};
+		var optRefers = {};
+		var optionNums = {};
+		var oScores = {};
+		var scores = {};
+		var knowledgePoints = {};
+		var keywords = {};
+		//获取各个小题的数据
+		artLiNode.find(".paperxt_bot").find("ul > li").each(function(index) {
+			var tempLiNode = this;
+			mTopics[index+1] = $(tempLiNode).find(".allNum").attr("mtopic");
+			
+			collectData($(tempLiNode).find(".save"));//使用保存小题的获取数据的方法获取数据
+			quesTypes[index+1] = saveOneQuesJson.quesType;
+			quesContents[index+1] = saveOneQuesJson.quesContent;
+			quesRefers[index+1] = saveOneQuesJson.quesRefer;
+			optNos[index+1] = saveOneQuesJson.optNo;
+			optContents[index+1] = saveOneQuesJson.optContent;
+			optRefers[index+1] = saveOneQuesJson.optRefer;
+			optionNums[index+1] = saveOneQuesJson.optionNum;
+			oScores[index+1] = saveOneQuesJson.oScore;
+			scores[index+1] = saveOneQuesJson.score;
+			knowledgePoints[index+1] = saveOneQuesJson.knowledgePoint;
+			keywords[index+1] = saveOneQuesJson.keyword;
+		});
+		//获取材料的数据
+		mTopics[0] = mTopics[1];
+		quesTypes[0] = 6;
+		quesContents[0] = $(artNode).find(".struct-artcontent").html().trim();
+		//材料考点
+		var kpNodes = $(artNode).find(".knowledgepointdiv-nodelete");
+		var klp = "";
+		kpNodes.each(function() {
+			klp = klp+$(this).attr("kpid")+",";
+		});
+		knowledgePoints[0] = klp;
+		
+		var questionsJson = {
+			hwId:$("#HwName").attr("hwid"),
+			mTopics:JSON.stringify(mTopics),
+			quesContents:JSON.stringify(quesContents),
+			optNos:JSON.stringify(optNos),
+			quesRefers:JSON.stringify(quesRefers),
+			optContents:JSON.stringify(optContents),
+			optRefers:JSON.stringify(optRefers),
+			optionNums:JSON.stringify(optionNums),
+			quesTypes:JSON.stringify(quesTypes),
+			oScores:JSON.stringify(oScores),
+			scores:JSON.stringify(scores),
+			knowledgePoints:JSON.stringify(knowledgePoints),
+			keywords:JSON.stringify(keywords),
+			subjectNo:$("#SubjectNo").attr("subjectid"),
+			resource:$("#HwName").html(),
+			gradeLevel:$("#GradeLevel").attr("gradelevel")
+		}
+		
+		//java中分解json数据，新增小题，并建立小题和文章的联系；
+		$.ajax({
+			url:"<@spring.url '/homework/edithomework/copyArticle.json'/>",
+			type:"POST",
+			data:questionsJson,
+			contentType:"application/x-www-form-urlencoded;charset=utf-8",
+			success:function(data) {
+				//设置文章编号和小题编号
+				$(artLiNode).find(".struct-artcontent").attr("artid", data["Ids"][0])
+				artLiNode.find(".paperxt_bot").find("ul > li").each(function(index) {
+					$(this).attr("id", data["Ids"][index+1]);
+					$(this).find(".paperx_tlxr").attr("quesid", data["Ids"][index+1]);
+				});
+				//将材料的复制改为编辑
+				$(artLiNode).find(".struct-copyques").remove();
+				$(artLiNode).find(".article-above-operates").prepend("<div class='article-above-operate article_edit'>编辑材料</div>");
+				//材料上面如果还有小题，就显示该小题的下移
+				$(artLiNode).prev().find(".struct-quesmovedown").show();
+				//显示小题的操作
+				$(artLiNode).find(".pep_bjd").removeClass("hide");
+				
+				//给材料和小题添加事件；
+				//为材料添加鼠标移入、移出材料的事件
+				addMouseMoveEventToArticle(artNode);
+				//点击编辑材料
+				$(artNode).find(".article_edit").click(function() {
+					editArticleEvent(this);
+				});
+				//点击“删除材料”
+				$(artNode).find(".article_ques_delete").each(function() {
+					$(this).click(function() {
+						deleteArtilceQuesEvent(this);
+					});
+				});
+				//点击“保存材料”
+				$(artNode).find(".savArticle").each(function(index) {
+					$(this).click(function(e){
+						saveArticle($(this));
+					});
+				});
+				//“添加考点”增加点击事件
+				$(artNode).find(".examaddupdate-addkphide").click(function() {
+					if($(this).parents(".paperxt_stx")[0] != undefined) {
+						nowAddKpNode = this;
+					}
+					$("#AddKnowledgePoint-Dialog").dialog("open");
+				});
+				//考点标签增加点击删除的事件
+				$(artNode).find(".knowledgepointdiv-nodelete").each(function() {
+					addClickEventToKpNode(this);
+				});
+				//为“查看考点”添加事件
+				$(artNode).find(".showarticlekp").click(function() {
+					var articleZsdNode = $(artNode).find(".article_paperx_zsd");
+					if(articleZsdNode.hasClass("hide")) {
+						$(this).find("span").html("隐藏考点▲");
+						articleZsdNode.removeClass("hide")
+					} else {
+						$(this).find("span").html("显示考点▼");
+						articleZsdNode.addClass("hide")
+					}
+				});
+				//添加公式
+				//为可输入文本框添加点击事件
+				findDivEventMouseup($(artNode).find(".equ"));
+				addEventClick($(artNode).find(".addequation"));
+				addLocalPhoto($(artNode).find(".addequation_local"));
+				textboxClick(artLiNode.find(".struct-artcontent"), artStr);
+				//点击“添加材料小题”
+				$(artLiNode).find(".paperxt_botbx3").click(function() {
+					sureAddQuesOfArticleEvent(this);
+				});
+				//材料显示在最上面
+				$(document).scrollTop($(artNode).offset().top-64);//让小题显示在页面最上面
+				//自动触发材料的编辑事件。
+				triggerMouseEvent($(artNode).find(".article_edit")[0], "click");
+				//小题添加事件
+				artLiNode.find(".paperxt_bot").find("ul > li").each(function(index){
+					addEventToQues(this, $(copyArtLiNode).find("ul > li")[index]);
+				});
+				editFlag = false;
+				
+				//头部小题数量增加
+				$("#TotalNumber").text($(".allNum").length);
+			}
+		});
+	}
+	
+	//为一个小题添加各种事件
+	function addEventToQues(liNode, copyLiNode) {
+		//如果是单选、多选、判断题，要更改新增小题radio或checkbox的name
+		var quesType = $(liNode).find(".paperx_tlxr").attr("questype");
+		if(quesType=="1" || quesType=="2" || quesType=="3"){
+			var time = new Date().getTime();
+			$(liNode).find(".markc").attr("name", "temp"+time);
+			//设置原有小题选中的题目仍为选中的
+			$(copyLiNode).find(".radio > .markc")[0].checked = "checked";
+		}
+		
+		//为小题添加事件
+		//为可输入文本框添加点击事件
+		$(liNode).find(".equ").each(function(){
+			findDivEventMouseup(this);
+	  	});
+		$(liNode).find(".addequation").each(function(){
+			addEventClick(this);
+	  	});
+		$(liNode).find(".addequation_local").each(function(){
+			addLocalPhoto(this);
+	  	});
+		//为不同的可输入文本框添加事件
+		textboxClick($(liNode).find(".paperx_tlxr").find(".ttxt"), titleStr);//题干
+		$(liNode).find(".pap_tct").each(function() {//选项
+			textboxClick($(this).find(".ttxt"), optStr);
+		});
+		$(liNode).find('.tkNum').each(function(){//空格
+			textboxClick($(this).next(),keylinestring);
+		});
+		textboxClick($(liNode).find(".fftxt")[0], keyf);//解析
+		//给小题的“编辑”添加事件
+		editQuesEvent($(liNode).find(".editOne"));
+		//为小题的删除添加点击事件
+		deleteQuesEvent($(liNode).find(".deleteOne"));
+		//为小题的上移下移添加事件
+		$(liNode).find(".struct-quesmoveup").click(function() {
+			questionMoveEvent(this, "up");
+		});
+		$(liNode).find(".struct-quesmovedown").click(function() {
+			questionMoveEvent(this, "down");
+		});
+		//保存一个小题，为每个小题的“保存”添加事件
+		saveQuesEvent($(liNode).find(".save"));
+		
+		//为小题的选项添加事件
+		//选项的“删除”
+		$(liNode).find(".deleteTxt").each(function(index){
+			$(this).click(function(){
+				deleteOptEvent(this);
+			});
+		});
+		//空格的“删除”
+		$(liNode).find('.deleteLine').each(function(){
+			deleteTKInputEvent(this);
+		});
+		//点击“点击添加试题选项”或者是“点击添加空格”
+		$(liNode).find(".paperx_tj").click(function(){
+			if($($(this).find("img")[0]).attr("alt")=="添加空格"){
+				addTkQues(this);
+			}else{
+				addOptionEvent(this);
+			}
+		});
+		//为“查看解析”添加点击事件
+		viewAnaly($(liNode).find(".paperx_fxkck"));
+		//初始加载的“添加考点”增加点击事件
+		$(liNode).find(".examaddupdate-addkphide").click(function() {
+			if($(this).parents(".paperxt_stx")[0] != undefined) {
+				nowAddKpNode = this;
+			}
+			$("#AddKnowledgePoint-Dialog").dialog("open");
+		});
+		//考点标签增加点击删除的事件
+		$(liNode).find(".knowledgepointdiv-nodelete").each(function() {
+			addClickEventToKpNode(this);
+		});
+	}
+	
+	//考点的点击事件
+	function addClickEventToKpNode(node) {
+		$(node).click(function() {
+			if(editFlag) {
+				$(node).remove();
+			} else if($(node).parents(".paperxt_stx")[0] != undefined) {
+				if($(node).parent().find(".examaddupdate-addkphide")[0] == undefined) {
+					$(node).remove();
+				}
+			}
+		});
+	}
+	
+	//小题上移、下移小题事件，下移当做上移来处理，只是改变小题号变化的正负
+	//moveUpNode“上移”按钮
+	function questionMoveEvent(moveUpNode, moveDirection) {
+		//1、发送数据到后台，修改后台数据
+		//获得小题编号，获得上一个节点，判断上一个节点是是不材料题，得到小题号变化的大小
+		var hwId = $("#HwName").attr("hwid");
+		var liNode = $(moveUpNode).parents("li")[0];
+		var quesId = $(liNode).attr("id");
+		var prevNode = $(liNode).prev();
+		if(moveDirection == "down") {
+			prevNode = $(liNode).next();
+		}
+		var readingFlag = false;//readingFlag代表是与材料题交换位置
+		var moveNum = 1;
+		if(prevNode.find(".paperxt_stx")[0] != undefined) {
+			readingFlag = true;
+			moveNum = $(prevNode).find("li").length;
+		}
+		if(moveDirection == "down") {
+			moveNum = -moveNum;
+		}
+		$.ajax({
+			type:"post",
+			url:"<@spring.url '/homework/moveQuestion.json'/>",
+			contentType:"application/x-www-form-urlencoded;charset=utf-8",
+			data:"hwId="+hwId+"&quesId="+quesId+"&moveNum="+moveNum,
+			success:function() {
+				//2、修改小题号
+				swapNodesMTopic(liNode, moveNum);
+				//3、交换页面节点位置
+				swapNodes(liNode, prevNode);
+				//4、修改小题的上移下移显示和隐藏
+				changeMoveShowOrHide(liNode, prevNode, readingFlag);
+			}
+		});
+	}
+	//交换小题后，设置小题的上移和下移的显示或隐藏
+	function changeMoveShowOrHide(node1, node2, readingFlag) {
+		//设置node1的上移下移
+		if($(node1).prev()[0] == undefined){
+			$(node1).find(".struct-quesmoveup").hide();
+		} else {
+			$(node1).find(".struct-quesmoveup").show();
+		}
+		if($(node1).next()[0] == undefined){
+			$(node1).find(".struct-quesmovedown").hide();
+		} else {
+			$(node1).find(".struct-quesmovedown").show();
+		}
+		//判断readingFlag，为true说明node2是材料题，否则，是普通小题
+		if(!readingFlag) {
+			if($(node2).prev()[0] == undefined){
+				$(node2).find(".struct-quesmoveup").hide();
+			} else {
+				$(node2).find(".struct-quesmoveup").show();
+			}
+			if($(node2).next()[0] == undefined){
+				$(node2).find(".struct-quesmovedown").hide();
+			} else {
+				$(node2).find(".struct-quesmovedown").show();
+			}
+		}
+		//如果是材料题，则设置node
+	}
+	//交换小题小题号
+	function swapNodesMTopic(node, moveNum) {
+		//得到当前的小题号mtopic和所有的allNum节点
+		var mtopic = parseInt($($(node).find(".allNum")[0]).attr("mtopic"));
+		var allNumNodes = $(".allNum");
+		//如果moveNum>0，说明是上移，否则是下移
+		//上移，则修改小题号<mtopic且小题号>=mtopic-moveNum的小题号为“小题号”+1
+		if(moveNum > 0) {
+			$(allNumNodes).each(function() {
+				var currentMTopic = parseInt($(this).attr("mtopic"));
+				if(currentMTopic<mtopic && currentMTopic>=(mtopic-moveNum)) {
+					currentMTopic = currentMTopic+1;
+					$(this).html(currentMTopic).attr("mtopic", currentMTopic);
+				}
+			});
+			mtopic = mtopic-moveNum;
+			$($(node).find(".allNum")[0]).html(mtopic).attr("mtopic", mtopic);
+		}
+		//下移，则修改小题号<=mtopic-moveNum且小题号>mtopic的小题号
+		if(moveNum < 0) {
+			$(allNumNodes).each(function() {
+				var currentMTopic = parseInt($(this).attr("mtopic"));
+				if(currentMTopic>mtopic && currentMTopic<=(mtopic-moveNum)) {
+					currentMTopic = currentMTopic-1;
+					$(this).html(currentMTopic).attr("mtopic", currentMTopic);
+				}
+			});
+			mtopic = mtopic-moveNum;
+			$($(node).find(".allNum")[0]).html(mtopic).attr("mtopic", mtopic);
+		}
+	}
+	//交换两个节点的位置，用于交换同一大题下，两个小题的小题号
+	function swapNodes(node1, node2){
+		//判断node1是在node2的前面还是后面，如果是前面，则调到后面，反之，调到前面
+		if($(node2).prev()[0] == $(node1)[0]) {
+			$(node2).after($(node1));
+		} else {
+			$(node2).before($(node1));
+		}
+	}
+	//删除小题事件
+	function deleteQuesEvent(deleteNode){
+		$(deleteNode).click(function(){
+			var liNode = $(deleteNode).parents("li")[0],	//获得小题li标签
+			prevQuesNode = $(liNode).prev()[0],			//小题前一题
+			nextQuesNode = $(liNode).next()[0],			//小题后一题
+			isQuesIdExist = $(liNode).attr("id")!=undefined,//小题是否存在id，true为存在，false为不存在
+			isQuesOfArt = $(liNode).parents('.paperxt_bot')[0]!=undefined;//小题是否材料下小题，true为是，false为不是
+			//如果小题存在id、而且是材料下小题，且小题前后都没有其他题目（表示材料下只有一个小题），则弹出提示
+			if(isQuesIdExist && isQuesOfArt && prevQuesNode==undefined && nextQuesNode==undefined) {
+				$.chooshine.alert('材料下不能没有小题。');
+				return;
+			}
+			$.chooshine.confirm("确定删除当前小题？", function(){
+				deleteOneQuestion(deleteNode);
+			});
+		});
+	}
+	
+	/*
+	*通用小题删除按钮事件。传入删除按钮，删除对应的小题
+	*1、设置页面小题小题号
+	*2、如果小题是已经存在的，则更新数据库中其后每个小题的小题号
+	*3、删除页面的小题本身
+	*4、当前小题如果是第一题，则它下面的小题要删除上移;如果是最后一题，则它上面的小题要删除下移
+	*/
+	function deleteOneQuestion(deleteNode) {
+		var liNode = $(deleteNode).parents("li")[0],	//获得小题li标签
+			allNumNode = $(liNode).find(".allNum")[0],	//获得小题的allNum所在标签，即小题的小题号
+			prevQuesNode = $(liNode).prev()[0],			//小题前一题
+			nextQuesNode = $(liNode).next()[0],			//小题后一题
+			isQuesIdExist = $(liNode).attr("id")!=undefined,//小题是否存在id，true为存在，false为不存在
+			isQuesOfArt = $(liNode).parents('.paperxt_bot')[0]!=undefined;//小题是否材料下小题，true为是，false为不是
+		
+		//小题存在id
+		if(isQuesIdExist) {
+			var mTopic =$(allNumNode).attr("mtopic");
+			var quesId = $(liNode).find(".paperx_tlxr").attr("quesid");
+			updateQuestionsMTopic(mTopic, "delete", quesId);
+			
+			
+			/**
+			 *1.小题是普通小题。
+			 *	（1）小题是作业第一小题，且小题后面一题nextQuesNode存在且是普通小题，则nextQuesNode隐藏上移
+			 *	（2）小题是作业最后一题，且小题前面一题prevQuesNode存在且是普通小题，则prevQuesNode隐藏下移
+			 *2.小题是材料小题。
+			 *	（1）小题是材料最后一题，则小题前一题隐藏下移。
+			 *	（2）小题是材料第一题，则小题后一小题隐藏上移
+			 */
+			if(!isQuesOfArt) {//是普通小题
+				if(mTopic==1 && nextQuesNode!=undefined && $(nextQuesNode).parents('.paperxt_bot')==undefined)
+					$(nextQuesNode).find('.struct-quesmoveup').hide();
+				if(nextQuesNode==undefined && prevQuesNode!=undefined && $(prevQuesNode).parents('.paperxt_bot')==undefined)
+					$(prevQuesNode).find('.struct-quesmovedown').hide();
+			} else {//材料小题
+				if(nextQuesNode==undefined)
+					$(prevQuesNode).find('.struct-quesmovedown').hide();
+				if(prevQuesNode==undefined)
+					$(nextQuesNode).find('.struct-quesmoveup').hide();
+			}
+		}
+		
+		//如果当前小题中有编辑器，就将编辑器移动到指定位置
+		if($(liNode).find("#container")[0] != undefined) moveUE();
+		
+		deleteOneQues(liNode);	//删除页面上的当前小题
+		resetMTopics();	//设置页面每个小题的题号resetMTopics();	//设置页面每个小题的题号
+	}
+	//删除本题
+	function deleteOneQues(liNode){
+		var hwInfo = getHwInfo();
+		var quesId = $(liNode).find(".paperx_tlxr").attr("quesid");
+		var delOneQuesJson = {
+				quesId:quesId,
+				subType:"delete",
+				hwId:hwInfo["hwId"],
+				hwName:hwInfo["hwName"],
+				subjectId:hwInfo["subjectId"],
+				homeworkType:hwInfo["homeworkType"]
+			}
+		if($(liNode).parents(".paperxt_bot")[0] != undefined) {
+			delOneQuesJson['artId'] = $($(liNode).parents(".paperxt_bot")[0]).parent().find(".test_box6").attr("artid");
+		}
+		if(quesId != undefined){
+			$.ajax({
+				type:"post",
+				url:"<@spring.url '/homework/edithomework/operateQustion.json'/>",
+				contentType:"application/x-www-form-urlencoded;charset=utf-8",
+				data:delOneQuesJson
+			});
+		}
+		$(liNode).remove();
+		$("#TotalNumber").html(getQuesNum("allNum"));//设置页面小题数量
+		
+		//设置鼠标移除标记及小题编辑的标记
+		isOutFlag = false;
+		editFlag = false;
+	}
+	
+	//**************************选项的操作***************************
+	//选项的“删除”，为初始化加载的小题的选项添加事件
+	$('.deleteTxt').each(function(index){
+		$(this).click(function(){
+			deleteOptEvent(this);
+		});
+	});
+	//空格的“删除”，为初始化加载的填空题的空格的“删除”添加事件
+	$('.deleteLine').each(function(){
+		deleteTKInputEvent(this);
+	});
+	//点击“点击添加试题选项”或者是“点击添加空格”
+	$(".paperx_tj").each(function(){
+		$(this).click(function(){
+			if($($(this).find("img")[0]).attr("alt")=="添加空格"){
+				addTkQues(this);
+			}else{
+				addOptionEvent(this)
+			}
+		});
+	});
+	//添加选项的事件
+	function addOptionEvent(node) {
+		//判断选项的个数，如果当前选项个数已有26个，则给出提示，不允许新增选项
+		var dlNode = $($(node).parent()).find("dl")[0];	//找到dl节点
+		var ddNodes = $(dlNode).find("dd");				//找到dl节点下的所有dd节点
+
+		//判断小题选项个数是否等于26
+		if(ddNodes.length == 26) {
+			$.chooshine.alert("每个小题最多可有26个选项，当前小题已有26个选项！");
+			return;
+		} else {
+			//选择题[初始化下添加选项]
+			var timeId = new Date().getTime();
+			//获得其上一个兄弟节点
+			//此处新加入选项和空格插入图片
+			$(dlNode).append(
+					"<dd id='Opt"+timeId+"' class='test_box2_bgc'>"+
+						"<div class='pap_tlt'></div>"+
+						"<div class='pap_tct'>"+
+							"<div class='ttxt test_box2 equ struct-optcontent' contenteditable='true'></div>"+
+						"</div>"+
+						"<div class='linkClass2 linkClass3_postion'>"+
+							"<span><img title='删除选项' class='pap_trt deleteTxt struct-deleteopt' src='<@spring.url '/images/examsystem/delete_grey.png'/>'></span>"+
+							/* "<span><img title='添加公式' class='addequation struct-addequ' src='<@spring.url '/images/examsystem/sigma_grey.png'/>'></span>"+
+							"<span><img title='上传图片' class='addequation_local struct-uploadimg' src='<@spring.url '/images/examsystem/image_grey.png'/>'></span>"+ */
+							"<span><img title='创建公式' class='addequation_local struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>"+
+							"<span><img title='使用编辑器' class='addequation_local struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>"+
+							"<span><img title='公式历史' class='addequation_local struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>"+
+						"</div>"+
+						"<div class='nofl'></div>"+
+					"</dd>");
+			
+			var ddNode = $('#Opt'+timeId)[0];//dd节点
+			var optContentNode = $(ddNode).find(".struct-optcontent")[0];//选项内容节点
+			createOpt(optContentNode,'add');				//创建“本题答案”部分的内容
+			
+			textboxClick(optContentNode, optStr);			//选项内容添加点击事件
+			findDivEventMouseup(optContentNode);			//选项内容添加鼠标弹起时的事件
+			addEventClick($(ddNode).find(".struct-addequ"));//“添加公式”添加点击事件
+			addLocalPhoto($(ddNode).find(".struct-uploadimg"));//“上传图片”添加点击事件
+			
+			divElement = optContentNode;					//设置当前选项内容节点为divElement节点，即光标所在节点
+			divElement.focus();
+			triggerMouseEvent(optContentNode, 'click');		//自动触发选项内容的点击事件
+			changeOpNum($(node).prev());
+			
+			//"删除选项"的点击事件
+			$(ddNode).find(".struct-deleteopt").click(function() {
+				deleteOptEvent(this);
+			});
+			
+			$(ddNode).find(".struct-kf").each(function() {
+				$(this).click(function() {
+					openKity();
+				});
+			});
+			$(ddNode).find(".struct-ue").each(function() {
+				addClickEventToUeditorBtn(this);
+			});
+			$(ddNode).find(".struct-hist").click(function() {
+				openFormulaHistory();
+			});
+			
+		}
+	}
+	
+	/**
+	* 选择题删除选项的事件
+	* @param deleteNode 被点击的“删除选项”节点
+	*/
+	function deleteOptEvent(deleteNode) {
+		$.chooshine.confirm("确定删除该选项？", function() {
+			//判断当前选项下是否有编辑器，如果有，就先把编辑器移动到特定位置
+			if($($(deleteNode).parents("dd")[0]).find("#container")[0] != undefined) moveUE();
+			
+			var dlNode=$(deleteNode).parents("dl")[0];		//得到dl节点
+			createOpt($(deleteNode),'del');					//重新显示答案部分的选项
+			$($(deleteNode).parents("dd")[0]).remove();		//删除页面上的选项
+			changeOpNum(dlNode);							//给剩下的选项重新编号
+		});
+	}
+	//为单选框添加事件
+	$(".radc").each(function(){
+		$(this).children("input").attr("disabled",true);	//初始化禁用单选框
+		//为单选框添加点击事件
+		$(this).click(function(){
+			if(!$(this).children(0).attr("disabled")){		//如果单选框当前未被禁用
+				 radioOpt($(this));
+			}
+		});
+	});
+	
+	//为多选框添加事件
+	$(".chkc").each(function(){
+		$(this).children("input").attr("disabled",true);	//初始化禁用多选框
+		
+		//为多选框添加点击事件
+		$($(this).find(".markc")[0]).click(function(){
+			if(!$(this).attr("disabled")){					//如果多选框未被禁用
+				checkOpt($(this));
+			}
+		});
+	});
+	//为填空题添加空格
+	function addTkQues(tkNode) {
+		//计算当前小题空格的个数，如果当前已有10个空格，则不允许再添加空格
+		var liNode = $(tkNode).parents("li")[0];
+		var lineNodes = $(liNode).find(".paperxt_tjxb2");
+		if(lineNodes.length == 10) {
+			$.chooshine.alert("每个小题最多可有10个空格，当前小题已有10个空格！");
+			return;
+		}
+		
+		//添加一个空格  添加空格[新建空格(新建)]
+		var timeId = new Date().getTime(),
+			titleNode = $(liNode).find('.paperx_tlxr').find('.ttxt');
+		$($(liNode).find('.paperx_tjx')[0]).append(
+				"<div id='LineWrap"+timeId+"' class='paperxt_tjxb2'>"+
+					"<div class='cleanBoth'>"+
+						"<span class='tkNum'></span>"+
+						"<div class='markc test_box4 test_bg struct-equ' contenteditable='true'></div>"+
+						"<div class='linkClass2 linkClass4_postion'>"+
+							"<span><img title='删除空格' class='deleteLine struct-deleteline' src='<@spring.url '/images/examsystem/delete_grey.png'/>'></span>"+
+							/* "<span><img title='添加公式' class='addequation struct-addequ' src='<@spring.url '/images/examsystem/sigma_grey.png'/>'></span>"+
+							"<span><img title='上传图片' class='addequation_local struct-uploadimg' src='<@spring.url '/images/examsystem/image_grey.png'/>'></span>"+ */
+							"<span><img title='创建公式' class='addequation_local struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>"+
+							"<span><img title='使用编辑器' class='addequation_local struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>"+
+							"<span><img title='公式历史' class='addequation_local struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>"+
+						"</div>"+
+						"<input type='hidden' value='1' class='tkScore' />"+
+					"</div>"+
+				"</div>");
+				
+		var lineWrapNode = $('#LineWrap'+timeId),
+			lineNode = lineWrapNode.find('.struct-equ');	//得到空格节点
+		
+		insertHTML(titleNode,'&nbsp;<span style="font-family:arial;font-weight:bold;text-decoration:underline;">&nbsp;&nbsp;'+tkNumArr[lineNodes.length]+'&nbsp;&nbsp;</span>&nbsp;');
+		//为填空题添加插入图片的事件
+		textboxClick(lineNode,keylinestring);
+		findDivEventMouseup(lineNode);
+		divElement = $(lineNode);
+		divElement.focus();
+		triggerMouseEvent(lineNode[0], 'click');
+		
+	    addEventClick(lineWrapNode.find('.struct-addequ'));
+		addLocalPhoto(lineWrapNode.find('.struct-uploadimg'));//本地上传
+		lineWrapNode.find(".struct-kf").each(function() {
+			$(this).click(function() {
+				openKity();
+			});
+		});
+		lineWrapNode.find(".struct-ue").each(function() {
+			addClickEventToUeditorBtn(this);
+		});
+		lineWrapNode.find(".struct-hist").click(function() {
+			openFormulaHistory();
+		});
+		
+		//为新增空格的“删除”添加事件
+		deleteTKInputEvent(lineWrapNode.find('.struct-deleteline'));
+		computeTKQuesScore(liNode);		//计算小题得分
+		//找到父亲里面的tkNum进行设置
+		$(lineWrapNode).find(".tkNum").text(tkNumArr[lineNodes.length]);
+	}
+	//点击填空题空格后的“删除”，删除当前空格
+	function deleteTKInputEvent(deleteNode){
+		$(deleteNode).click(function(){
+			$.chooshine.confirm("确定删除当前空格？", function() {
+				if($($(deleteNode).parents(".paperxt_tjxb2")[0]).find('#container')[0] != undefined){
+					moveUE();
+				}
+				var liNode = $(deleteNode).parents("li")[0];
+				$($(deleteNode).parents(".paperxt_tjxb2")[0]).remove();//删除页面上的一个空格
+				changeTKNum(liNode);		//改变剩余空格的编号
+				computeTKQuesScore(liNode);	//计算小题的得分，并设置小题得分
+			});
+		});
+	}
+	//填空题删除一个空格后，当前填空题的空格之前的所有编号都要重新排列
+	function changeTKNum(quesAnswerNode){
+		$(quesAnswerNode).find(".tkNum").each(function(index) {
+			$(this).text(tkNumArr[index]);
+		});
+	}
+	//计算某个填空题的得分，并设置该填空题的“本题得分”处的得分
+	function computeTKQuesScore(liNode){
+		var quesScoreNode = $(liNode).find(".onequesscore");	//获得小题得分节点
+		var tkScoreNodes = $(liNode).find(".tkScore");			//得到小题所有空格的得分节点
+		var quesScore = 0;										//标示小题得分
+		
+		$(tkScoreNodes).each(function() {
+			if($(this).val() == "") {
+				$(quesScoreNode).val("");
+				quesScore = "false";
+				return false;
+			}
+			quesScore = quesScore+parseInt($(this).val());
+		});
+		
+		$(quesScoreNode).val(quesScore);
+	}
+	//编辑小题事件
+	function editQuesEvent(editNode){
+		$(editNode).click(function(){
+			//判断作业是否保存，未保存就提示，并不允许保存
+			if($("#ChangeHwInfo").html() == "保存") {
+				$.chooshine.alert("请先保存作业信息。");
+				return;
+			}
+			var liNode = $(this).parents("li")[0];
+			editFlag = true;			//设置编辑标志，表示当前是在编辑小题状态下
+			addMouseOutOver(liNode);	//为当前小题添加鼠标移上或离开的事件
+			showTjNodes(liNode);		//显示小题的添加选项或者添加空格的按钮
+			editOneQuestion(this);		//对小题进行详细的设置
+			//找到li下的考点和试题分析
+			editColor(this);
+		});
+	}
+	//设置鼠标移入移除事件，使得编辑当前小题时不允许做别的点击操作
+	function addMouseOutOver(liNode) {
+		$(liNode).mouseout(function() {
+			isOutFlag = true;
+		});
+		$(liNode).mouseover(function() {
+			isOutFlag = false;
+		});
+	}
+	//解除鼠标移入移除事件，当编辑完成一个小题时，解除鼠标事件，使得可以做别的点击操作
+	function removeMouseOutOver(liNode){
+		$(liNode).unbind("mouseout").unbind("mouseover");
+	}
+	
+	//编辑一个小题
+	function editOneQuestion(editBtn){
+		var liNode = $(editBtn).parents("li")[0];						//得到该小题的最外层标签，即li标签
+		var type = $($(liNode).find(".paperx_tlxr")).attr("questype");	//得到小题类型
+		var dlNode = $($(liNode).find(".paperx_tl")[0]).find("dl")[0];	//得到包含题干和选项的dl标签
+		var quesContentNode = $(liNode).find(".paperx_tlxr").find(".ttxt")[0];
+		//隐藏本小题的“编辑”和“删除”
+		$($(liNode).find(".pep_bjd")[0]).removeClass("pep_bjd").addClass("pep_bjdyc");
+		//设置题干可编辑
+		$(quesContentNode).attr("contenteditable", true);
+		divElement = quesContentNode;
+		triggerMouseEvent(divElement, 'click');
+		divElement.focus();
+		
+		//如果不是填空题，就设置本题得分可修改
+		if(type == 5) {
+			$($(liNode).find(".markc")[0]).attr("contenteditable", true);
+		} else {
+			//设置填空题的空格可编辑
+			$(liNode).find(".markc").each(function() {
+				$(this).attr("contenteditable", true);
+			});
+		}
+		
+		//设置选项可编辑并显示选项的删除
+		var ddNodes = $(dlNode).find("dd");
+		$(ddNodes).each(function() {
+			$(this).removeClass("border-hover");
+			$($($(this).find(".pap_tct")[0]).find(".ttxt")[0]).attr("contenteditable", true);
+			$($(this).find(".pap_trtyc")[0]).removeClass("pap_trtyc").addClass("pap_trt");
+		});
+		
+		//设置解析可编辑，考点可删除，并显示“添加考点”按钮
+		$($($(liNode).find(".paperx_jxxqr")[0]).find(".fftxt")[0]).attr("contenteditable", true);		//设置考点可编辑
+		$(liNode).find(".knowledgepointdiv-nodelete").each(function() {
+			$(this).removeClass("knowledgepointdiv-nodelete").addClass("knowledgepointdiv-delete");
+		});
+		$(liNode).find(".examaddupdate-addkp").removeClass("examaddupdate-addkphide");
+		
+		//显示本小题的“保存”和“删除”（此处的“删除”是指小题最底部的那个）
+		var saveBtnParent = $(liNode).find(".pep_bcyc")[0];	//得到“保存”和“删除”的父标签
+		$(saveBtnParent).removeClass("pep_bcyc").addClass("pep_bc");//显示该父标签
+		
+		//设置本题答案的选项，如果原本是"disabled''，现在则禁用disabled，允许选择答案
+		var markcNode = $(liNode).find("input[class='markc']");
+		if(markcNode != undefined){
+			$(markcNode).attr("disabled",false);
+		}
+		
+		//如果当前是播放状态，则去除删除录音按钮的hide
+		if(!$(liNode).find(".chooshinejp").hasClass("hide")) {
+			$(liNode).find(".deletewav").removeClass("hide");
+		}
+	}
+	
+	//创建试题
+	function addExamQues(ulNode, quesType, tsId){
+		var timeId = new Date().getTime(),
+			addOptDiv="",
+			tkDiv="",
+			tjxDiv = "<div class='paperx_tjx'>",
+			diffHtml = "";//难度html
+		
+		if(quesType=='1' || quesType=='2'){
+			addOptDiv="<div class='paperx_tj' id='ptj"+timeId+"'><img alt='添加选项' src='<@spring.url '/images/examsystem/plus.png'/>'><div>添加选项</div></div>";
+		}
+		if(quesType=='4'){
+			tkDiv="<div class='nofl'></div><div class='paperx_tj paperx_line_tj' id='pptj"+timeId+"'><img alt='添加空格' src='<@spring.url '/images/examsystem/plus.png'/>'><button>添加空格</button></div>";
+			tjxDiv = "<div class='paperx_tjx paperx_line_tjx'>";
+		}
+		if($(ulNode).closest(".paperxt_bot")[0] == undefined)
+			diffHtml = "<div class='paperx_diff'>"+
+							"<div class='paperx_zsdl'>难度：</div>"+
+							"<div class='difficultywrap'>"+
+								"<div class='difficulty fl'>3.0</div>"+
+						    	"<div class='selectwrap fl'>"+
+						        	"<span class='simplespan fl'>简单</span>"+
+						            "<div class='fl'>"+
+						            	"<div class='selectdiv'>"+
+						                	"<div class='selectdot' style='left:47px'></div>"+
+						                "</div>"+
+						            "</div>"+
+						            "<span class='diffspan fl'>困难</span>"+
+						        "</div>"+
+						        "<div class='nofl'></div>"+
+							"</div>"+
+						"</div>";
+		
+		//如果是填空题
+		$(ulNode).append("<li>"+
+				"<div class='paperx_tl' tsId="+tsId+">"+
+					"<div class='pep_bjdyc'>"+
+						"<div class='pep_bj'>"+
+							"<a class='toolbar'>操作▼</a>"+
+							"<div class='tools'>"+
+								"<div class='pep_bjb editOne' id='prte"+timeId+"'>编辑</div>"+
+								"<div class='pep_bjc deleteOne'>删除</div>"+
+								"<div class='moveques'>"+
+									"<div class='moveup struct-quesmoveup' style='display:none;'>上移</div>"+
+									"<div class='moveup struct-quesmovedown' style='display:none;'>下移</div>"+
+								"</div>"+
+							"</div>"+
+						"</div>"+
+					"</div>"+
+					"<dl>"+
+						"<dt>"+
+							"<div class='allNum'></div>"+
+							"<div class='paperx_tlxr' id='ptl"+timeId+"' quesType='"+quesType+"'>"+
+								"<div id='equ1"+timeId+"' class='ttxt test_box equ' contenteditable='true'></div>"+
+								"<div class='linkClass2 linkClass2_postion'>"+
+									/* "<span><img id='addequation1"+timeId+"' title='添加公式' class='addequation' src='<@spring.url '/images/examsystem/sigma_grey.png'/>'></span>"+
+									"<span><img id='addequation_local1"+timeId+"' title='上传图片' class='addequation_local' src='<@spring.url '/images/examsystem/image_grey.png'/>'></span>"+ */
+									"<span><img title='创建公式' class='addequation_local struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>"+
+									"<span><img title='使用编辑器' class='addequation_local struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>"+
+									"<span><img title='公式历史' class='addequation_local struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>"+
+								"</div>"+
+							"</div >"+
+							"<input class='onequesscore' type='hidden' value='1'>"+
+							"<div class='nofl'></div>"+
+						"</dt>"+
+					"</dl>"+addOptDiv+
+					"<div class='paperx_btda'>"+
+						tjxDiv+
+							"<input type='hidden' value='"+quesType+"'>"+
+						"</div>"+tkDiv+
+						"<div class='paperx_fxkck'><span>收起解析▲</span></div>"+
+						"<div class='nofl'></div>"+
+						"<div class='paperx_fxk'>"+
+							"<div class='paperx_zsd'>"+
+								"<div class='paperx_zsdl'>考点</div>"+
+								"<div class='paperx_zsdr'>"+
+									"<div class='examaddupdate-addkp'><img alt='添加考点' src='<@spring.url '/images/examsystem/plus.png'/>'><div>添加考点</div></div>"+
+								"</div>"+
+								"<div class='nofl'></div>"+
+							"</div>"+
+							"<div class='paperx_jxxq'>"+
+								"<div class='paperx_zsdl'>解析：</div>"+
+								"<div class='paperx_jxxqr'>"+
+									"<div id='equ3"+timeId+"' class='fftxt test_box3 equ' contenteditable='true' style='color:#B4B2A7;'>请输入试题分析</div>"+
+									"<div class='linkClass2'>"+
+										/* "<span><img id='addequation3"+timeId+"' title='添加公式' class='addequation' src='<@spring.url '/images/examsystem/sigma_grey.png'/>'></span>"+
+										"<span><img id='addequation_local3"+timeId+"' title='上传图片' class='addequation_local' src='<@spring.url '/images/examsystem/image_grey.png'/>'></span>"+ */
+										"<span><img title='创建公式' class='addequation_local struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>"+
+										"<span><img title='使用编辑器' class='addequation_local struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>"+
+										"<span><img title='公式历史' class='addequation_local struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>"+
+										"<span title='录音' class='quesrec struct-quesrec'>&nbsp;</span>"+
+									"</div>"+
+								"</div>"+
+								"<div class='nofl'></div>"+
+								"<div class='recorderwrap'></div>"+
+								"<div class='nofl'></div>"+
+							"</div>"+diffHtml+
+						"</div>"+
+					"</div>"+
+				"</div>"+
+				"<div class='pep_bc'><div class='pep_bcx save' id='prto"+timeId+"'>保 存</div><div class='pep_scx deleteOne chooshine-cancel' id='prtt"+timeId+"'>删  除</div></div>"+
+			"</li>");
+		
+		//得到新增的小题的最外层标签，即li标签
+		var liNode = $("#prto"+timeId).parents('li')[0];
+		$(document).scrollTop($(liNode).offset().top-64);//让小题显示在页面最上面
+		addMouseOutOver(liNode);//添加鼠标离开和放在当前小题的li的事件，并添加点击当前小题之外的其他位置的事件
+		editFlag = true;
+		
+		//判断是否是材料题的小题，如果是，就将考点的内容换为材料的考点
+		if($(ulNode).parent().hasClass("paperxt_bot")) {//如果ul的父级节点含有paperx
+			//得到材料的考点
+			var articleKpHtml = $($(ulNode).parents("li")[0]).find(".paperxt_stx").find(".paperx_zsdr").html();
+			$(liNode).find(".paperx_zsdr").html(articleKpHtml);
+			$(liNode).find(".paperx_zsdr").find(".knowledgepointdiv-nodelete").each(function() {
+				$(this).removeClass("knowledgepointdiv-nodelete").addClass("knowledgepointdiv-delete");
+			});
+		}
+		
+		
+		//设置小题信息的显示或隐藏***********************
+		resetMTopics();		//显示小题号
+		showTjNodes(liNode);//显示“添加选项”或者“添加空格”
+		
+		/*为节点添加事件********************************/
+		saveQuesEvent($("#prto"+timeId));//保存事件
+		$(liNode).find(".deleteOne").each(function() {//为当前小题的两个“删除”（是删除小题）添加事件
+			deleteQuesEvent(this);
+		});
+		//为题干及解析添加点击事件
+		var quesContentNode = $($(liNode).find(".paperx_tlxr")[0]).find(".ttxt")[0];
+		var analyNode = $($(liNode).find(".paperx_jxxqr")[0]).find(".fftxt")[0];
+		textboxClick(quesContentNode, titleStr);
+		textboxClick(analyNode, keyf);
+		triggerMouseEvent($("#equ1"+timeId)[0], 'click');
+		divElement = $("#equ1"+timeId);
+		divElement.focus();//题干聚焦
+		//为题干和解析的“添加公式”添加点击事件
+		findDivEventMouseup($("#equ1"+timeId));
+		findDivEventMouseup($("#equ3"+timeId));
+		addEventClick($("#addequation1"+timeId));
+		addEventClick($("#addequation3"+timeId));
+		//为题干和解析的“本地上传”添加点击事件
+		addLocalPhoto($("#addequation_local1"+timeId));
+		addLocalPhoto($("#addequation_local3"+timeId));
+		//题干和解析的kityformula按钮点击事件
+		$(liNode).find(".struct-kf").each(function() {
+			$(this).click(function() {
+				openKity();
+			});
+		});
+		//题干和解析的ueditor按钮点击事件
+		$(liNode).find(".struct-ue").each(function() {
+			addClickEventToUeditorBtn(this);
+		});
+		//公式历史
+		$(liNode).find(".struct-hist").each(function() {
+			$(this).click(function() {
+				openFormulaHistory();
+			});
+		});
+		
+		//如果是判断题和解答题，就创建本题答案部分的内容，创建试题选项，显示出本题答案处的“对”、“错”或者是一个文本框
+		if(quesType=="3" || quesType=="5") createOpt($($("#ptl"+timeId).children()[0]),"add");
+		
+		//添加选项事件，如果小题是选择题，为“添加选项”，添加事件
+		$('#ptj'+timeId).click(function() {
+			addOptionEvent(this);
+		});
+		//如果小题是填空题，就为小题的“点击添加空格”添加事件
+		$("#pptj"+timeId).find("button").click(function(){
+			addTkQues($(this));
+		});
+		//查看解析事件
+		viewAnaly($(liNode).find(".paperx_fxkck")[0]);
+		//编辑事件
+		editQuesEvent($("#prte"+timeId));//编辑
+		//上移下移小题
+		$($(liNode).find(".struct-quesmoveup")[0]).click(function() {
+			questionMoveEvent(this, "up");
+		});
+		$($(liNode).find(".struct-quesmovedown")).click(function() {
+			questionMoveEvent(this, "down");
+		});
+		//添加考点
+		$(liNode).find(".examaddupdate-addkp").each(function() {
+			$(this).click(function() {
+				$("#AddKnowledgePoint-Dialog").dialog("open");
+			});
+		});
+		
+		addRecorder(liNode, new Date().getTime());
+		$(liNode).find(".struct-quesrec").click(function() {
+			enterRecorderEvent(this);
+		});
+		
+		addDiffMouseEvent($(liNode).find(".selectdot"));
+		addClickEventToSelectDiv($(liNode).find(".selectdiv"));
+	}
+	//传入一个“查看解析”节点，添加点击事件
+	function viewAnaly(viewAnalyNode){
+		$(viewAnalyNode).click(function(){
+			var node = $(viewAnalyNode).parent().find(".paperx_fxky");
+			if(node[0] != undefined){
+				$(node).removeClass("paperx_fxky");
+				$(node).addClass("paperx_fxk");
+				$(viewAnalyNode).html("<span>收起解析▲</span>");
+			} else {
+				node = $(viewAnalyNode).parent().find(".paperx_fxk");
+				$(node).removeClass("paperx_fxk");
+				$(node).addClass("paperx_fxky");
+				$(viewAnalyNode).html("<span>展开解析▼</span>");
+			}
+		});
+	}
+	//重新计算每个小题的小题号，只是改变页面小题号，后台暂时不做更新，当点击保存当前小题的时候，才进行更新小题
+	function resetMTopics(){
+		$(".allNum").each(function(index){	//遍历所有小题号
+			$(this).attr("mtopic", index+1).text(index+1);	//修改mtopic属性值
+		});
+		
+		//6、设置试卷小题总个数
+		$("#TotalNumber").html(getQuesNum("allNum"));
+	}
+	
+	/**
+	* 设置本题答案部分的内容
+	* @param tNode
+	* @param ststr
+	*/
+	function createOpt(tNode,ststr) {
+		var liNode = $(tNode).parents("li")[0];//得到小题的li节点
+		var count=0;
+		if(ststr=='add'){				//如果是新增选项
+			tNode = $(tNode).parent();	//得到dd节点
+		}else{							//如果是删除选项
+			count=-1;
+		}
+		
+		//得到“本题答案”部分的根节点的孩子节点
+		var nodes = $($(liNode).find(".paperx_tjx")[0]);
+		
+		//设置nowQuesType为当前小题的小题类型
+		nowQuesType = $($(nodes).find("input[type='hidden']")[0]).val();
+		if(nowQuesType=='3'){		//如果是判断题
+			count=2;
+		}else if(nowQuesType=='5'){	//如果是解答题
+			count=1;
+		}else if(nowQuesType=='4'){	//如果是填空题
+			return;
+		}else{						//如果是选择题或者是多选题
+			//得到选项的总个数
+			var sibNode = $(tNode).parents("dl")[0];	//得到当前小题的dl标签
+			
+			if(count != -1) {//count==-1说明是删除
+				count = $($(sibNode).find("dd")).length;
+			} else {
+				count = $($(sibNode).find("dd")).length-1;	//此时选项尚未从页面删除
+			}
+			
+		}
+		
+		//重新添加“本题答案”部分的选项内容
+		$(nodes).html("");	//将本题答案最上层父标签的第一个子标签的内容清空
+		$(nodes).append("<input type='hidden' value="+nowQuesType+">");	//重新填充内容到nodes
+		
+		var timeId4 = new Date().getTime();
+		var timeId3 = new Date().getTime();
+		var timeId = new Date().getTime();
+		//重新添加本题答案部分的选项
+		for ( var i = 0; i < count; i++) {
+			if(nowQuesType=='1'){		//如果是单选题
+				$(nodes).append(
+						"<label class='paperx_tjxb2 radc' id='ad"+timeId3+i+"'>"+
+							"<input class='markc' type='radio' name='att"+timeId4+" value='0'/>"+
+							"<span>"+String.fromCharCode(65+i)+"</span>"+
+						"</label>");
+				
+				$("#ad"+timeId3+i).bind("click",function(){
+					if(!$($(this).find(".markc")[0]).attr("disabled")){
+						radioOpt($(this));
+					}
+				});
+			}else if(nowQuesType=='2'){	//如果是多选
+				$(nodes).append(
+						"<label class='paperx_tjxb2 chkc' id='ad"+timeId3+i+"'>"+
+							"<input class='markc' type='checkbox' id='ch"+timeId3+i+"' name='att"+timeId4+" value='0' />"+
+							"<span>"+String.fromCharCode(65+i)+"</span>"+
+						"</label>");
+					
+				$("#ch"+timeId3+i).bind("click",function(){
+					checkOpt($(this).parent());
+				});
+			}else if(nowQuesType=='3'){	//如果是判断题
+				var strArr=["对","错"];
+				$(nodes).append(
+						"<label class='paperx_tjxb2 radc' id='ad"+timeId3+i+"'>"+
+							"<input class='markc' type='radio' name='att"+timeId4+" value='0' />"+
+							"<span>"+strArr[i]+"</span>"+
+						"</label>");
+				$("#ad"+timeId3+i).bind("click",function(){
+					if(!$($(this).find(".markc")[0]).attr("disabled")){
+						radioOpt($(this));
+					}
+				});
+			}else if(nowQuesType=='5'){	//如果是解答题
+				$(nodes).append(
+					"<div class='jiedati-tip'>答：</div>"+
+					"<div class='paperxt_tjxb2 answer-type5' id='JieDaWrap"+timeId+"'>"+
+						"<div class='markc equ test_box5 struct-equ' contenteditable='true' style='color:#B4B2A7;'>点击输入</div>"+
+						"<div class='stfx linkClass2 mar5'>"+
+							/* "<span><img title='添加公式' class='addequation struct-addequ' src='<@spring.url '/images/examsystem/sigma_grey.png'/>'></span>"+
+							"<span><img title='上传图片' class='addequation_local struct-uploadimg' src='<@spring.url '/images/examsystem/image_grey.png'/>'></span>"+ */
+							"<span><img title='创建公式' class='addequation_local struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>"+
+							"<span><img title='使用编辑器' class='addequation_local struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>"+
+							"<span><img title='公式历史' class='addequation_local struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>"+
+						"</div>"+
+					"</div>");
+				var jiedaWrapNode = $('#JieDaWrap'+timeId);				//解答题答案根节点
+				textboxClick(jiedaWrapNode.find(".struct-equ"),"点击输入");	//答案内容添加点击事件
+				findDivEventMouseup(jiedaWrapNode.find(".struct-equ"));	//答案内容添加鼠标弹起事件
+				addEventClick(jiedaWrapNode.find(".struct-addequ"));	//“添加公式”添加点击事件
+				addLocalPhoto(jiedaWrapNode.find(".struct-uploadimg"));	//“上传图片”添加点击事件
+				jiedaWrapNode.find(".struct-kf").each(function() {
+					$(this).click(function() {
+						openKity();
+					});
+				});
+				//题干和解析的ueditor按钮点击事件
+				jiedaWrapNode.find(".struct-ue").each(function() {
+					addClickEventToUeditorBtn(this);
+				});
+				jiedaWrapNode.find(".struct-hist").each(function() {
+					$(this).click(function() {
+						openFormulaHistory();
+					});
+				});
+			}
+		}
+		$(nodes).append("<div class='nofl'></div>");
+	}
+	function checkOpt(dNode){
+		var child=$(dNode).children()[0];
+		var textbox=$(child).parent();
+		if($(textbox).hasClass('radio')){
+			$(textbox).removeClass('radio');
+		}else{
+			$(textbox).addClass('radio');
+		}
+		if(dNode.children()[0]!=undefined){
+			if(dNode.children()[0].checked){
+				dNode.children()[0].value=0;
+			}else{
+				dNode.children()[0].value=1;
+			}
+		}
+	}
+	function radioOpt(dNode){
+		dNode.children()[0].checked=true;
+		var child=$(dNode).children()[0];
+		$($($(child).parents('.paperx_tjx')[0]).find('.radio')[0]).removeClass("radio");
+		if($(dNode).hasClass('radc')){
+			$(child).parent().addClass('radio');
+		}
+		dNode.children()[0].value=1;
+	}
+	//产生选项编号
+	function changeOpNum(node){
+		var dtAndDdNodes = $(node).children();
+		
+		//遍历选项，给所有的选项重新编号
+		var count=0;
+		for ( var i = 1; i < $(dtAndDdNodes).length; i++) {
+			if(dtAndDdNodes[i].tagName=='DD'){
+				$($(dtAndDdNodes[i]).find(".pap_tlt")[0]).text(String.fromCharCode(65+count)+".");
+				count++;
+			}
+		}
+	}
+	//获得试卷当前大题或小题数
+	function getQuesNum(str){
+		var count=0;
+		$("."+str).each(function(){
+			count++;
+		});
+		return count;
+	}
+	
+	
+	//保存小题事件
+	function saveQuesEvent(saveNode){
+		$(saveNode).click(function(){
+			//如果当前正在保存小题，则不允许多次保存
+			if(savingFlag) {
+				$.chooshine.alert("正在保存小题！");
+				return;
+			}
+			savingFlag = true;
+			if($(saveNode).html()=="保 存"){
+				$(saveNode).html("正在保存..");
+				saveOneQues($(saveNode));
+			}
+		});
+	}
+	function getHwInfo() {
+		//获取作业信息
+		var hwName = $("#HwName").html();
+		var subjectId = $("#SubjectNo").html();
+		if(hwName == "") {
+			$.chooshine.alert("作业名称不能为空。");
+			return false;
+		}
+		var hwId = $("#HwName").attr("hwid");//hwId代表家庭作业的编号，hw是homework的简写
+		return {hwId:hwId, hwName:hwName, subjectId:subjectId};
+	}
+	//收集数据
+	function collectData(btnNode) {
+		var optionJson={};
+		var answerJson={};
+		var optIdJson={};
+		var optNoJson={}
+		var quesReferJson={};
+		
+		var answerExistFlag = false;	//标志答案是否存在，当有答案的时候，为true
+		var answerFlag = true;			//标志答案是否为空，答案为空，为true
+		var titleFlag = false;			//标志题干，题干为空则为true
+		var optFlag = false;			//标志选项内容，选项为空，则为true
+		
+		var liNode = $(btnNode).parents("li")[0];		//得到小题的li标签
+		//如果当前是播放状态，则停止录音
+		if(!$(liNode).find(".chooshinejp").hasClass("hide")) {
+			$(liNode).find(".struct-jp-jplayer").jPlayer("stop");
+		}
+		
+		
+		//得到题干、选项、本题答案的节点，用于下面拿到对应的内容
+		var allNode = $(liNode).find(".paperx_tl")[0];	//得到查看解析的前一个节点，即包含题干、选项和答案的部分
+		var txtNode = $(allNode).find("dl")[0];			//拿到小题题干和选项
+		
+		//得到本题答案的父标签
+		var anNode = $(allNode).find(".paperx_btda")[0];
+		if(anNode == undefined){
+			anNode = $(allNode).find(".paperx_btda")[0];
+		}
+		
+		//得到小题类型、题干内容及小题编号
+		var type = $(liNode).find(".paperx_tlxr").attr("questype");
+		
+		//得到小题题干内容，如果题干内容为默认提示信息，则给出提示信息
+		var title="";//题干内容，为html，包含标签
+		title = $(txtNode).find(".paperx_tlxr").find(".ttxt").html().trim();
+		
+		title = cleanBr(title);
+		if(title==titleStr || title=="") { 
+			titleFlag = true; 
+		}
+		
+		//得到小题编号，如果该编号存在，说明当前小题已经存在，那么这次操作是编辑小题
+		var quesId = $(liNode).find(".paperx_tlxr").attr("quesid");
+		
+		//得到该小题的选项的内容及编号
+		if(type=='1' || type=='2' ){
+			//获得所有选项节点
+			var ddNodes = $(txtNode).find("dd");
+			
+			//遍历选项
+			$(ddNodes).each(function(index) {
+				var optContentParentNode = $(this).find(".pap_tct")[0];			//获得选项内容节点的父节点
+				var optContentNode = $(optContentParentNode).find(".ttxt")[0];	//获得选项内容节点
+				var optContent = cleanBr($(optContentNode).html().trim());
+				//判断选项内容是否为空
+				if(optContent==optStr || optContent==""){ 
+					optFlag = true;
+					return false;
+				}
+				
+				//设置选项内容及编号
+				optionJson[index+1] = optContent;
+			});
+		}
+		
+		var tkOScore = "";
+		var count=0;			//count标示选项个数
+		var quesReferIndex = 1;	//用于标示小题正确答案的索引
+		
+		//得到该题的答案
+		if(type=='1' || type=='2' || type=='3'){	//如果是选择题、多选题或者判断题
+			var inputcol = $(anNode).find(".markc");//得到本题答案中的隐藏域和选项
+			
+			//判断选择题和判断题答案是否存在
+			if(inputcol.length >= 1) { answerExistFlag = true; }
+			
+			//遍历选择题和判断题的答案，得到正确答案
+			for (var i=0; i<inputcol.length; i++) {
+				var nowIndex = i+1;
+				if(inputcol[i].checked){	//如果该选项是选中的
+					answerFlag = false;		//有选中的答案，则标志为false
+					answerJson[nowIndex] = "1";	//设置它的值为1
+					quesReferJson[quesReferIndex] = $($(inputcol[i]).next()).text();	//得到小题的正确答案，如A或者ABC或者对、错
+					quesReferIndex++;		//索引增加
+				}else{
+					answerJson[nowIndex] = "0";
+				}
+				
+				//得到选项编号，如A、B、C或者对、错
+				var optNo = $($(inputcol[i]).next()).text();
+				optNoJson[nowIndex] = optNo;
+				count++;	//选项个数增加
+			}
+		} else {						//如果是填空或者是解答题
+			if(type == '4') {			//如果是填空题
+				answerFlag = false;		//如果是填空题，则先设答案存在
+				var lineNodes = $(anNode).find(".markc");				//获得所有的空格节点
+				count = lineNodes.length;	//得到选项数
+				if(lineNodes.length > 0) { answerExistFlag = true; }	//判断答案是否存在
+				
+				//遍历所有空格节点
+				$(lineNodes).each(function(i) {
+					//得到当前空格的父标签
+					var lineParentNode = $(this).parent();
+					//判断填空题答案是否为空
+					var lineHtml = cleanBr($(this).html().trim());
+					if(lineHtml == "") {
+						answerFlag = true;
+						return false;
+					}
+					
+					//得到填空题的正确答案
+					//得到当前空格的编号和内容，以“编号”##“内容”的形式存储
+					var referAnswer = $($(lineParentNode).find(".tkNum")[0]).text()+"##"+lineHtml;
+					answerJson[i+1] = lineHtml;
+					quesReferJson[i+1] = referAnswer;
+					optNoJson[i+1] = $($(lineParentNode).find(".tkNum")[0]).text();			//获得当前空格的前一个标签，即空格的选项号
+					tkOScore = tkOScore+$($(lineParentNode).find(".tkScore")[0]).val()+",";	//填空选项得分增加
+				});
+			} else if(type == '5') {
+				answerExistFlag = true;
+				count++;
+				
+				var answerNode = $(anNode).find(".markc")[0];			//获得答案节点
+				var answerHtml = cleanBr($(answerNode).html().trim());
+				if(answerHtml != "") { answerFlag = false; }	//判断解答题的答案是否为空
+				
+				//得到解答题的正确答案
+				answerJson[1] = answerHtml;
+				quesReferJson[1] = answerHtml;
+				optNoJson[1] = 1;	//设置选项号
+			}
+		}
+		
+		//判断各种标记
+		if(!titleFlag ||  $(liNode).parents(".paperxt_bot")[0]!=undefined) {//题干不为空
+			if(!answerExistFlag) {	//答案不存在
+				$.chooshine.alert("答案不存在，请创建答案！");
+				return false;
+			} else {				//答案存在
+				if(optFlag) {		//选项为空
+					$.chooshine.alert("选项不能为空，请输入选项！");
+					return false;
+				} else {			//选项不为空
+					if(answerFlag) {//答案内容为空
+						$.chooshine.alert("答案不能为空，请输入答案！");
+						return false;
+					}
+				}
+			}
+		} else {					//题干为空
+			$.chooshine.alert("题干不能为空，请输入题干！");
+			return false;
+		}
+		
+		//得到考点和解析，如果解析的内容等于默认提示信息，则设为空字符串，如果考点标签个数为0，则给出提示
+		var kyd = cleanBr($($($(liNode).find(".paperx_jxxqr")[0]).find(".fftxt")[0]).html().trim());
+		if(kyd == keyf) { kyd = ""; }
+		if($(liNode).find(".examaddupdate-addkp").prev()[0] == undefined) {
+			$.chooshine.alert("小题没有考点，请为小题添加考点。");
+			return false;
+		}
+		var kpNodes = $(liNode).find(".knowledgepointdiv-delete");
+		if(kpNodes[0] == undefined) {
+			kpNodes = $(liNode).find(".knowledgepointdiv-nodelete");
+		}
+		var klp = "";
+		kpNodes.each(function() {
+			klp = klp+$(this).attr("kpid")+",";
+		});
+
+		//判断小题的录音当前是否是录音状态，若是，不允许保存
+		if($(liNode).find(".stop-recording").is(":visible")) {
+			$.chooshine.alert("请先完成录音再保存");
+			return false;
+		}
+		
+		var score = $($(liNode).find(".onequesscore")[0]).val();
+		//得到选项得分，填空题和非填空题的选项得分有不同的处理
+		if(type!="4"){
+			var oscore = score;//得分和选项得分不显示，默认为1分
+		}else{		//填空题的选项得分是以“,”结尾的，所以要先去结尾
+			var oscore = tkOScore.substring(0, tkOScore.length-1);
+		}
+		
+		saveOneQuesJson={
+				hwId:$("#HwName").attr("hwid"),
+				quesContent:title,
+				optNo:JSON.stringify(optNoJson),
+				quesRefer:JSON.stringify(quesReferJson),
+				optContent:JSON.stringify(optionJson),
+				optRefer:JSON.stringify(answerJson),
+				optionNum:count,
+				quesType:type,
+				oScore:oscore,
+				score:score,
+				subjectNo:$("#SubjectNo").attr("subjectid"),
+				knowledgePoint:klp,
+				keyword:kyd,
+				subType:"add",
+				mTopic:$(liNode).find(".allNum").attr("mTopic"),
+				resource:$("#HwName").html(),
+				gradeLevel:$("#GradeLevel").attr("gradelevel"),
+				quesRec:$(liNode).find(".recorderwrap").attr("recpath"),
+				difficulty:$(liNode).find(".difficulty").text(),
+				tsId:$(liNode).find(".paperx_tl").attr("tsid")
+			};
+		
+		//如果quesId>0，则说明是编辑已存在的小题后进行保存
+		if(quesId>0){
+			saveOneQuesJson['quesId']=quesId;
+			saveOneQuesJson['subType']='update';
+		}
+		return true;
+	}
+	//保存小题的方法
+	function saveOneQues(btnNode){
+		//收集要保存的小题数据
+		if(!collectData(btnNode)){
+			$(btnNode).html("保 存");
+			savingFlag = false;
+			return;
+		}
+		
+		//判断小题是不是材料题下的小题，如果是，则要得到材料题的材料编号；如果不是，则不作处理
+		var botNode = $(btnNode).closest(".paperxt_bot");
+		if(botNode[0] != undefined) {
+			saveOneQuesJson['artId'] = botNode.parent().find(".test_box6").eq(0).attr("artid");
+			saveOneQuesJson['difficulty'] = botNode.prev().find(".difficulty").text();
+		}
+		
+		//发送操作小题的请求，保存或更新
+		$.ajax({
+			url:"<@spring.url '/homework/edithomework/operateQustion.json'/>",
+			type:"POST",
+			data:saveOneQuesJson,
+			contentType:"application/x-www-form-urlencoded;charset=utf-8",
+			success:function(msg) {
+				var liNode = $(btnNode).parents("li")[0];
+				
+				//如果是保存新增小题，则要设置当前小题和上一小题的上移及下移
+				if(saveOneQuesJson['subType'] == 'add') {
+					/*
+					*新增小题是普通小题，判断小题是否有前一题目，如果有，小题显示上移；判断小题前一题目是否普通小题，如果是，前一小题显示下移；
+					*小题如果是材料小题，判断小题前面是否有小题，如果有，则新增小题显示上移，之前小题显示下移；
+					*否则，判断小题所属材料之前是否有题目，如果没有，则不做任何操作；
+					*否则，判断材料之前题目（prevLi）是否是普通小题，如果是，显示prevLi的下移
+					*/
+					if(botNode==undefined && $(liNode).prev()!=undefined) {
+						$(liNode).find('.struct-quesmoveup').show();
+						if($(liNode).prev().find('.paperxt_bot')[0] == undefined)
+						$(liNode).prev().find('.struct-quesmovedown').show();
+					} else if((botNode!=undefined) && ($(liNode).prev()[0]!=undefined)) {
+						$(liNode).find('.struct-quesmoveup').show();
+						$(liNode).prev().find('.struct-quesmovedown').show();
+					} else if((botNode!=undefined) && ($(liNode).prev()[0]==undefined) && ($($(botNode).parents('li')[0]).prev()[0]!=undefined) && ($($(botNode).parents('li')[0]).prev().find('.paperxt_bot')[0]==undefined)) {
+						$($(botNode).parents('li')[0]).prev().find('.struct-quesmovedown').show();
+					}
+				}
+				
+				followOperation(liNode,msg);
+				packOneQuesion(btnNode);
+				
+				//如果是新增小题，就需要更新该小题之后的所有小题的小题号
+				if(saveOneQuesJson['subType']=='add') {
+					//更新数据库中该小题之后的所有小题的小题号
+					var quesId = $(liNode).find(".paperx_tlxr").attr("quesid");
+					var mTopic = $(liNode).find(".allNum").attr("mtopic");
+					updateQuestionsMTopic(mTopic, "add", quesId);
+				}
+			}
+		});
+	}
+	//保存或编辑完成后根据返回的结果进行设置小题编号及选项编号
+	function followOperation(liNode,msg){
+		var allNode = $(liNode).find(".paperx_tl")[0],	//获取题干、选项及答案部分的祖宗节点
+			txtNode = $(allNode).find("dl")[0],			//获取dl节点，即题干与选项部分
+			anNode = $(allNode).find(".paperx_btda").eq(0).find(".paperx_tjx")[0],//获取本题答案节点的孩子节点
+			type = $(anNode).find("input[type='hidden']").eq(0).val();//判断小题的类型，如果是选择题，则设置选项的编号
+		
+		//设置小题的小题编号
+		$(liNode).attr("id", msg.idList[0]);
+		$(txtNode).find(".paperx_tlxr:first").attr("quesid",msg.idList[0]);
+	}
+	//保存或编辑完成后，设置页面上小题的展现形式
+	function packOneQuesion(btnNode){
+		var liNode = $(btnNode).parents("li")[0];	//得到小题的li标签
+		var dlNode = $($(liNode).find(".paperx_tl")[0]).find("dl")[0];	//获得dl标签
+	 	var dtNode = $(dlNode).find("dt")[0];							//获得题干部分
+	 	var markcNodes = $(liNode).find(".markc");	//得到小题的本题答案部分的选项借点
+	 	
+	 	hideTjNodes(liNode);//隐藏小题的添加选项或者添加空格按钮
+	 	$(dtNode).find(".onequesscore").attr("disabled",true);//设置小题得分不可更改
+	 	$(liNode).find(".paperx_tlxr").find(".ttxt").attr("contenteditable", false);//设置题干为不可编辑状态
+	 	
+	 	//判断小题类型，如果是选择题，则要设置选项
+		var type = $(liNode).find(".paperx_tlxr").attr("questype");
+		if(type=='1' || type=='2') {
+			//获得选项
+		 	var ddNodes = $(dlNode).find("dd");
+			$(ddNodes).each(function(index) {
+				$(this).find(".test_box2").removeClass("clickTestStyle");
+				$(this).addClass("border-hover");
+				//设置选项内容为不可编辑状态
+				$($($(this).find(".pap_tct")[0]).find(".ttxt")[0]).attr("contenteditable", false);
+				//隐藏选项的删除
+				var optDeletNode = $(this).find(".pap_trt")[0];
+				$(optDeletNode).removeClass("pap_trt").addClass("pap_trtyc");
+			});
+			//设置本题答案部分的选项不可编辑
+			$(markcNodes).attr("disabled",true);
+		} else if(type == '3') {
+			$(markcNodes).attr("disabled",true);
+		} else if(type == "4") {
+			var tkScoreNodes = $(liNode).find("input[class='tkScore']");
+			var tkDeleteNodes = $(liNode).find(".deleteLine");
+			$(markcNodes).attr("contenteditable", false);//设置空格不可编辑
+			$(tkScoreNodes).attr("disabled",true);//禁用空格得分文本框
+		} else if(type == "5") {
+			$(markcNodes).attr("contenteditable", false);
+		}
+		
+		//设置考点和解析不可编辑，并且如果内容为默认提示信息，则显示为空
+		//得到考点和解析的父节点
+		$(liNode).find(".paperx_fxkck").find("span").html("展开解析▼");
+		var knowledgeParentNode = $(liNode).find(".paperx_fxk")[0];
+		if(knowledgeParentNode == undefined) {
+			knowledgeParentNode = $(liNode).find(".paperx_fxky")[0];
+		}
+		//设置考点
+		$(liNode).find(".knowledgepointdiv-delete").each(function() {
+			$(this).removeClass("knowledgepointdiv-delete").addClass("knowledgepointdiv-nodelete");
+		});
+		$(liNode).find(".examaddupdate-addkp").addClass("examaddupdate-addkphide");
+		//设置解析
+		var analyNode = $($(knowledgeParentNode).find(".paperx_jxxqr")[0]).find(".fftxt")[0];
+		if($(analyNode).html() == "请输入解析内容") { $(analyNode).html(""); }
+		$(analyNode).attr("contenteditable",false);
+		//隐藏解析和考点
+		if($(knowledgeParentNode).hasClass("paperx_fxk")) {
+			$(knowledgeParentNode).removeClass("paperx_fxk").addClass("paperx_fxky");
+		}
+		
+		//隐藏 保存 删除
+		$($(liNode).find(".pep_bc")[0]).removeClass("pep_bc").addClass("pep_bcyc");
+		//显示 编辑 删除
+		$($(liNode).find(".pep_bjdyc")[0]).removeClass("pep_bjdyc").addClass("pep_bjd");
+		
+		//去除编辑状态下的设置，允许点击页面其他位置
+		editFlag = false;
+		removeMouseOutOver(liNode);
+		isOutFlag = false;
+		
+		$(btnNode).html("保 存");
+		savingFlag = false;
+		//保存成功之后隐藏小题链接
+		cleanBg($(btnNode));
+		hideLink($(btnNode));
+		cleanAllClickStyle(btnNode);
+		//隐藏编辑器
+		hideUE();
+		
+		//隐藏录音的删除按钮
+		$(liNode).find(".deletewav").addClass("hide");
+	}
+	function cleanBg(Node){
+  		var liNode=$(Node).parents('li');
+  		$(liNode).find('.test_box3').removeClass('test_bg');
+  		$(liNode).find('.test_box4').removeClass('test_bg');
+  		$(liNode).find('.test_box5').removeClass('test_bg');
+  	}
+	//隐藏或显示添加选项或者是添加空格
+	function showTjNodes(liNode){
+		var tjNodes = $(liNode).find(".paperx_tj");
+		$(tjNodes).show();
+	}
+	function hideTjNodes(liNode){
+		var tjNodes = $(liNode).find(".paperx_tj");
+		$(tjNodes).hide();
+	}
+	/**
+	 *当新增小题或者是删除已有小题时，更新该小题之后所有小题的题号，包括材料
+	 *myMTopic表示删除的小题的小题号，str可以是add和delete，用于标示是增加还是删除，quesId表示删除的小题的编号
+	 */
+	function updateQuestionsMTopic(myMTopic, str, quesId){
+		$.ajax({
+			type:"POST",
+			url:"<@spring.url '/updateHwQuestionsMTopic.json'/>",
+			contentType:"application/x-www-form-urlencoded",
+			data:"mTopic="+myMTopic+"&operate="+str+"&quesId="+quesId+"&hwId="+$("#HwName").attr("hwid")
+		});
+	}
+	
+	/****材料题的处理*************************************************/
+	/****初始化加载的材料题的处理**************/
+	//为材料添加鼠标移入、移出材料的事件
+	function addMouseMoveEventToArticle(node) {
+		$(node).mouseover(function() {//鼠标移入事件,如果当前节点下的添加考点链接未隐藏，说明当前材料节点是可编辑的
+			if($(this).find(".examaddupdate-addkphide")[0] == undefined) {
+				articleEditingFlag = false;
+			}
+		}).mouseout(function() {//鼠标移出事件
+			if($(this).find(".examaddupdate-addkphide")[0] == undefined) {
+				articleEditingFlag = true;
+			}
+		});
+	}
+	addMouseMoveEventToArticle($(".paperxt_stx"));
+	//点击编辑材料
+	$(".article_edit").click(function() {
+		editArticleEvent(this);
+	});
+	//点击“确定添加”
+	$(".paperxt_botbx3").each(function() {
+		$(this).click(function() {
+			sureAddQuesOfArticleEvent(this);
+		});
+	});
+	//初始化加载的材料题题，点击“保存材料”
+	$(".savArticle").each(function(index) {
+		$(this).click(function(e){
+			saveArticle($(this));
+		});
+	});
+	//点击“删除本题”
+	$(".article_ques_delete").each(function() {
+		$(this).click(function() {
+			deleteArtilceQuesEvent(this);
+		});
+	});
+	//点击“编辑材料”的事件
+	function editArticleEvent(editArticleNode) {
+		
+		articleEditingFlag = true;//设置材料为编辑状态的标记
+		var rootNode = $(editArticleNode).parents(".paperxt_stx")[0];//得到材料部分根节点
+		var articleParentNode = $(rootNode).find(".article_area")[0];//得到材料部分的父节点
+		var articlecontentNode = $(articleParentNode).find(".struct-artcontent")[0];//得到材料内容节点
+		var saveArticleNode = $(articleParentNode).parent().find(".savArticle")[0];	//得到保存材料节点
+		var deleteArticleNode = $(saveArticleNode).next();//得到下面的“删除材料”节点
+		
+		//设置材料内容节点可编辑及聚焦
+		$(articlecontentNode).attr("contenteditable", true).css("background-color", "#FFFFFF");
+		$(articleParentNode).find(".linkClass2").css("visibility", "visible");
+		divElement = articlecontentNode;
+		divElement.focus();
+		triggerMouseEvent(divElement, 'click');
+		
+		//隐藏“操作”显示“保存材料”、“删除材料”
+		$(rootNode).find(".article-above-operatewrap").hide();
+		$(saveArticleNode).show();
+		$(deleteArticleNode).show();
+		$(rootNode).parent().find(".paperxt_botbx").hide();//隐藏“添加材料小题”
+		$(rootNode).find(".knowledgepointdiv-nodelete").each(function() {//使考点可编辑
+			$(this).removeClass("knowledgepointdiv-nodelete").addClass("knowledgepointdiv-delete");
+		});
+		$(rootNode).find(".examaddupdate-addkp").removeClass("examaddupdate-addkphide");
+		$(rootNode).find(".article_paperx_zsd").removeClass("hide");//显示考点
+		//隐藏“显示考点”按钮,并设置文字为“隐藏考点”
+		$(rootNode).find(".showarticlekp").addClass("hide");
+		$(rootNode).find(".showarticlekp").find("span").html("隐藏考点▲");
+	}
+	//隐藏材料题的材料的链接
+  	function TitleHideLink(Node){
+		$(Node).parents(".paperxt_stx").find('.linkClass2').css("visibility", "hidden");
+  	}
+	
+	function addReadingQues(tsId){
+		var timeId = new Date().getTime();
+		
+		//新增材料
+		$("#QuestionsUl").append(
+			"<li>"+
+				"<div class='paperxtc_com' id='article_"+timeId+"'>"+
+					"<div class='paperxt_stx'>"+
+						"<div class='article-above-operatewrap' style='display:none;'>"+
+							"<div class='article-above-tip'><a>操作▼</a></div>"+
+							"<div class='article-above-operates'>"+
+								"<div class='article-above-operate article_edit'>编辑材料</div>"+
+								"<div class='article_ques_delete article-above-operate'>删除材料</div>"+
+								"<div class='article-above-operate struct-pulloutart'>弹出材料</div>"+
+							"</div>"+
+						"</div>"+
+						"<div class='article_area'>"+
+							"<div class='articletip'>（材料）</div>"+
+							"<div id='equ6"+timeId+"' remark='article' class='struct-artcontent test_box6 clickTestStyle' contenteditable='true' style='background-color:#FFFFFF;'></div>"+
+							"<div class='linkClass2 mar6' style='display:block;'>"+
+								/* "<span><img id='addequation6"+timeId+"' title='添加公式' class='addequation' src='<@spring.url '/images/examsystem/sigma_grey.png'/>'></span>"+
+								"<span><img id='addequation_local6"+timeId+"' title='上传图片' class='addequation_local' src='<@spring.url '/images/examsystem/image_grey.png'/>'></span>"+ */
+								"<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>"+
+								"<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>"+
+								"<span><img title='公式历史' class='addequation_local struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>"+
+							"</div>"+
+							"<div class='showarticlekp' style='display:none;'><span>隐藏考点▲</span></div>"+
+							"<div class='nofl'></div>"+
+						"</div>"+
+						"<div class='paperx_zsd article_paperx_zsd'>"+
+							"<div class='paperx_zsdl'>考点</div>"+
+							"<div class='paperx_zsdr'>"+
+								"<div class='examaddupdate-addkp'><img alt='添加考点' src='<@spring.url '/images/examsystem/plus.png'/>'><div>添加考点</div></div>"+
+							"</div>"+
+							"<div class='nofl'></div>"+
+						"</div>"+
+						"<div class='paperx_diff'>"+
+							"<div class='paperx_zsdl'>难度</div>"+
+							"<div class='difficultywrap'>"+
+								"<div class='difficulty fl'>3.0</div>"+
+						    	"<div class='selectwrap fl'>"+
+						        	"<span class='simplespan fl'>简单</span>"+
+						            "<div class='fl'>"+
+						            	"<div class='selectdiv'>"+
+						                	"<div class='selectdot' style='left:47px'></div>"+
+						                "</div>"+
+						            "</div>"+
+						            "<span class='diffspan fl'>困难</span>"+
+						        "</div>"+
+						        "<div class='nofl'></div>"+
+							"</div>"+
+						"</div>"+
+						"<div class='article-under-operate'>"+
+							"<div class='savArticle pep_bcx' style='display:block;'>保存材料</div>"+
+							"<div class='article_ques_delete chooshine-cancel' style='display:block;'>删除材料</div>"+
+						"</div>"+
+						"<div class='nofl'></div>"+
+					"</div>"+
+					"<div class='paperxt_bot' tsid="+tsId+">"+
+						"<ul>"+
+						
+						"</ul>"+
+						"<div class='paperxt_botbx' style='display:none;'>"+
+							"<div class='paperxt_botbx2'>"+
+								"<select class='chooshine-select'>"+
+								 "<option value='1'>选择题</option>"+
+								 "<option value='2'>多选题</option>"+
+								 "<option value='3'>判断题</option>"+
+								 "<option value='4'>填空题</option>"+
+								 "<option value='5'>解答题</option>"+
+								"</select>"+
+							"</div>"+
+							"<div class='paperxt_botbx3'>添加材料小题</div>"+
+						"</div>"+
+					"</div>"+
+			"</div>"+
+		"</li>");
+		
+		articleEditingFlag = true;
+		//得到需要用到的节点
+		//当前材料内容的祖宗节点
+		var articleRootNode = $("#article_"+timeId);
+		//材料内容节点
+		var articleContentNode = articleRootNode.find(".struct-artcontent")[0];
+		//编辑材料节点
+		var editArticleNode = articleRootNode.find(".article_edit")[0];
+		//保存材料节点
+		var saveArticleNode = articleRootNode.find(".savArticle")[0];
+		//确定添加节点
+		var sureAddNode = articleRootNode.find(".paperxt_botbx3")[0];
+		//删除材料节点
+		var deleteQuesNode = articleRootNode.find(".article_ques_delete");
+		//增加公式节点
+		var addEquationNode = $("#addequation6"+timeId);
+		var addLocalEquationNode = $("#addequation_local6"+timeId);
+		//为新增材料添加鼠标移入移出事件
+		addMouseMoveEventToArticle(articleRootNode.find(".paperxt_stx"));
+		
+		//给材料文本框添加点击事件
+		textboxClick(articleContentNode, artStr);
+		findDivEventMouseup(articleContentNode);
+		divElement = articleContentNode;
+		divElement.focus();
+		triggerMouseEvent(divElement, 'click');
+		addEventClick(addEquationNode);
+		addLocalPhoto(addLocalEquationNode);
+		
+		$(articleRootNode).find(".struct-kf").each(function() {
+			$(this).click(function() {
+				openKity();
+			});
+		});
+		$(articleRootNode).find(".struct-ue").each(function() {
+			addClickEventToUeditorBtn(this);
+		});
+		$(articleRootNode).find(".struct-hist").click(function() {
+			openFormulaHistory();
+		});
+		
+		//添加考点
+		var articleZsdNode = $(articleRootNode).find(".article_paperx_zsd");
+		articleZsdNode.find(".examaddupdate-addkp").each(function() {
+			$(this).click(function() {
+				nowAddKpNode = this;
+				$("#AddKnowledgePoint-Dialog").dialog("open");
+			});
+		});
+		
+		//为“查看考点”添加事件
+		$(articleRootNode).find(".showarticlekp").click(function() {
+			if(articleZsdNode.hasClass("hide")) {
+				$(this).find("span").html("隐藏考点▲");
+				articleZsdNode.removeClass("hide")
+			} else {
+				$(this).find("span").html("显示考点▼");
+				articleZsdNode.addClass("hide")
+			}
+		});
+		
+		//点击“保存材料”
+		$(saveArticleNode).click(function() {
+			saveArticle($(this));
+		});
+		//点击“删除材料”
+		$(deleteQuesNode).each(function() {
+			$(this).click(function() {
+				deleteArtilceQuesEvent(this);
+			});
+		});
+		//点击“编辑材料”
+		$(editArticleNode).click(function() {
+			editArticleEvent(this);
+		});
+		//点击“确定添加”
+		$(sureAddNode).click(function() {
+			sureAddQuesOfArticleEvent(this);
+		});
+		//弹出材料
+		articleRootNode.find(".struct-pulloutart").each(function(){
+			$(this).click(function() {
+				$("#ArtDialog").find("h3").html("材料");
+				$("#ArtDialog").find(".struct-artcontent").html($(this).parents('.paperxt_stx').find('.struct-artcontent').html());
+				$("#ArtDialog").dialog("open");
+			})
+		});
+		
+		addDiffMouseEvent($(articleRootNode).find(".selectdot"));
+		addClickEventToSelectDiv($(articleRootNode).find(".selectdiv"));
+	}
+	
+	//为初始化加载的“查看考点”添加事件
+	$(".showarticlekp").click(function() {
+		var articleZsdNode = $(this).parents(".paperxt_stx").find(".article_paperx_zsd");
+		if(articleZsdNode.hasClass("hide")) {
+			$(this).find("span").html("隐藏考点▲");
+			articleZsdNode.removeClass("hide")
+		} else {
+			$(this).find("span").html("显示考点▼");
+			articleZsdNode.addClass("hide")
+		}
+	});
+	
+	/*
+	*材料题的“删除材料”事件
+	*1、材料不存在数据库，则只删除页面材料，不操作数据库；
+	*2、材料下有小题，则得到材料下所有小题的小题号的字符串组合；
+	*3、删除数据库中的小题及材料，并更新当前材料最后一个小题之后的小题的小题号以及其余材料的材料小题号
+	*/
+	function deleteArtilceQuesEvent(deleteQuesNode) {
+		$.chooshine.confirm("确定删除当前材料及材料下的所有小题?", function() {
+			//如果编辑器在材料中，则要移动编辑器
+			if($($(deleteQuesNode).parents(".paperxt_stx")[0]).find('#container')[0] != undefined){
+				moveUE();
+			}
+			
+			var rootContainer = $(deleteQuesNode).parents("li")[0];	//获得当前材料的根容器
+			var articleContentNode = $(rootContainer).find(".struct-artcontent")[0];	//获得材料内容节点
+			
+			//如果材料不存在artid，说明是材料还未保存，可直接删除材料，否则，要更新数据库
+			if($(articleContentNode).attr("artid") == undefined) {
+				$(rootContainer).remove();	//删除页面上的当前材料部分
+			} else {
+				var hwId = $("#HwName").attr("hwid");
+				/**删除数据库中的材料及小题**/
+				var quesIds = $(articleContentNode).attr("artid");	//quesIds用于记录当前材料的材料编号及所有小题编号
+				var mTopicNodes = $(rootContainer).find(".allNum");	//获得所有题号节点
+				
+				//如果当前材料下有小题
+				if(mTopicNodes.length > 0) {
+					//记录小题编号
+					$(mTopicNodes).each(function() {
+						quesIds = quesIds+","+$($(this).parent().find(".paperx_tlxr")[0]).attr("quesid");
+					});
+					var lastMTopic = $(mTopicNodes[$(mTopicNodes).length-1]).attr("mtopic");//获得当前材料最后一个小题号
+					var mTopicNum = $(mTopicNodes).length;	//获得当前材料总共的小题个数
+					
+					//发送ajax请求，删除数据库中的小题及材料，并更新当前材料最后一个小题之后的小题的小题号以及其余材料的材料小题号
+					$.ajax({
+						type:"POST",
+						url:"<@spring.url '/homework/deleteArticle.json'/>",
+						contentType:"application/x-www-form-urlencoded; charset=utf-8",
+						data:"hwId="+hwId+"&quesIds="+quesIds+"&mTopic="+lastMTopic+"&mTopicNum="+mTopicNum,
+						success: function(msg) {
+							var prevLi = $(rootContainer).prev()[0],
+								nextLi = $(rootContainer).next()[0];
+							
+							//如果材料题是作业的最后一题，判断材料之前一题是否是普通小题，如果是，则该普通小题删除下移
+							if(nextLi==undefined && prevLi!=undefined && $(prevLi).find('.paperxt_bot')[0]==undefined) {
+								$(prevLi).find('.struct-quesmovedown').hide();
+							}
+							//如果材料题是作业的第一题，判断材料之后一题是否是普通小题，如果是，则该普通小题删除上移
+							if(prevLi==undefined && nextLi!=undefined && $(nextLi).find('.paperxt_bot')[0]==undefined) {
+								$(nextLi).find('.struct-quesmoveup').hide();
+							}
+							
+							$(rootContainer).remove();	//删除页面上当前材料的部分
+							resetMTopics();//更新页面小题号
+						}
+					});
+				} else {//当前材料下无小题
+					//小题号和小题个数设为-1，说明当前材料下无小题
+					$.ajax({
+						type:"POST",
+						url:"<@spring.url '/homework/deleteArticle.json'/>",
+						contentType:"application/x-www-form-urlencoded; charset=utf-8",
+						data:"hwId="+hwId+"&quesIds="+quesIds+"&mTopic=none&mTopicNum=none",
+						success: function(msg){
+							$(rootContainer).remove();	//删除页面上当前材料的部分
+						}
+					});
+				}
+			}
+			
+			articleEditingFlag = false;
+		});
+	}
+	//点击“保存材料”
+	function saveArticle(saveNode) {
+		var rootNode = $(saveNode).parents(".paperxt_stx")[0],//得到材料部分根节点
+			articleContentNode = $(rootNode).find(".struct-artcontent")[0],//得到材料内容节点
+			txt = cleanBr($(articleContentNode).html());//得到材料内容
+		if(txt==artStr || txt=="") {
+			$.chooshine.alert("材料内容不允许为空！");
+			return;
+		}
+		
+		//考点判断
+		var kpNodes = $(rootNode).find(".knowledgepointdiv-delete");
+		if(kpNodes.length == 0) {
+			$.chooshine.alert("材料没有考点，请为材料添加考点。");
+			return;
+		}
+		var klp = "";
+		kpNodes.each(function() {
+			klp = klp+$(this).attr("kpid")+",";
+		});
+		
+		if($(articleContentNode).attr("artid") != undefined) {	//如果材料已经保存过，则是更新
+			var saveArtJson = {
+				quesContent:txt,
+				subType:"articleUpdate",
+				quesId:$(articleContentNode).attr("artid"),
+				knowledgePoint:klp,
+				difficulty:$(rootNode).find(".difficulty").text()
+			};
+		} else {//如果材料尚未保存过
+			var hwId = $("#HwName").attr("hwid"),
+				subjectId = $("#SubjectNo").attr("subjectid");
+			//将材料作为一个小题存到数据库中，并且设“材料小题”的小题类型是6，用于与普通小题区分，设“材料小题”的选项个数为0
+			var saveArtJson = {
+				hwId:hwId,
+				quesContent:txt,
+				quesType:"6",
+				subType:"articleAdd",
+				optionNum:0,
+				subjectNo:subjectId,
+				mTopic:$(".allNum").length+1,
+				resource:$("#HwName").html(),
+				gradeLevel:$("#GradeLevel").attr("gradelevel"),
+				knowledgePoint:klp,
+				tsId:$(rootNode).next().attr("tsid"),
+				difficulty:$(rootNode).find(".difficulty").text()
+			};
+		}
+		$.ajax({
+			type:"post",
+			url:"<@spring.url '/homework/edithomework/operateQustion.json'/>",
+			contentType:"application/x-www-form-urlencoded;charset=utf-8",
+			data:saveArtJson,
+			success:function(msg) {
+				$(articleContentNode).attr("artid",msg.artId);
+				$(articleContentNode).attr("contenteditable", false);//设置材料内容不可编辑
+				//设置“保存材料”、“删除材料”隐藏，显示“操作”
+				$(saveNode).hide();
+				$(saveNode).next().hide();
+				$(rootNode).find(".article-above-operatewrap").show();
+				//设置材料边框为背景色
+				$(articleContentNode).removeClass("clickTestStyle").css("background-color","#eff2f9");
+				TitleHideLink(saveNode);//隐藏链接
+				$(rootNode).parent().find(".paperxt_botbx").show();//显示“添加材料小题”
+
+				//考点的操作
+				//设置考点
+				$(rootNode).find(".knowledgepointdiv-delete").each(function() {
+					$(this).removeClass("knowledgepointdiv-delete").addClass("knowledgepointdiv-nodelete");
+				});
+				$(rootNode).find(".examaddupdate-addkp").addClass("examaddupdate-addkphide");
+				
+				//更新页面上材料下各个小题的考点
+				var articleKpHtml = $(rootNode).find(".paperx_zsdr").html();
+				$(rootNode).parent().find(".paperxt_bot").find(".paperx_zsdr").html(articleKpHtml);
+				$(rootNode).find(".showarticlekp").removeClass("hide");//显示“查看考点”链接
+				
+				articleEditingFlag = false;
+			}
+		});
+	}
+	//材料题增加小题的事件
+	function sureAddQuesOfArticleEvent(sureAddNode) {
+		var rootNode = $(sureAddNode).parents("li")[0],//得到材料的祖宗节点
+			articleContentNode = $(rootNode).find(".test_box6")[0],//得到材料内容节点
+			ulParentNode = $(rootNode).find(".paperxt_bot")[0];//得到材料的放置小题和添加小题部分的父节点
+		//判断材料是否已保存，当材料有编号的时候，说明材料存在，允许增加小题
+		if($(articleContentNode).attr("artid") != undefined) {
+			//设置当前小题类型
+			nowQuesType = $($($(ulParentNode).find(".paperxt_botbx2")[0]).find("option:selected")[0]).val();
+			//增加一个普通小题
+			addExamQues($(ulParentNode).find("ul")[0], nowQuesType, $(ulParentNode).attr("tsid"));
+		} else {
+			$.chooshine.alert("请先保存材料。");
+			return;
+		}
+	}
+	//****************************添加考点*************************
+	//初始加载的“添加考点”增加点击事件
+	$(".examaddupdate-addkphide").each(function() {
+		$(this).click(function() {
+			if($(this).parents(".paperxt_stx")[0] != undefined) nowAddKpNode = this;
+			$("#AddKnowledgePoint-Dialog").dialog("open");
+		});
+	});
+	//初始加载的考点标签增加点击删除的事件
+	$(".knowledgepointdiv-nodelete").each(function() {
+		addClickEventToKpNode(this);
+	});
+	$(".paperxt_stx").each(function(){//材料题增加游标拖动事件
+		addDiffMouseEvent($(this).find(".selectdot"));
+		addClickEventToSelectDiv($(this).find(".selectdiv"));
+	});
+	//****************************发布、退出*******************************
+	//点击顶部智能选题
+	$('#TopChooseQues').click(function() {
+		intelliChoose();
+	});
+	$("#Release").click(function() {
+		var hwId = $("#HwName").attr("hwid");
+		var subjectId = $("#SubjectNo").attr("subjectid");
+		openSettleHwDialog(hwId, subjectId);
+	});
+	
+	$("#Quit").click(function() {
+		<#if type!="see">
+		location.href = "<@spring.url '/homework/teacher/unSettleHomeworks.html'/>";
+		<#else>
+		location.href = "<@spring.url '/homework/teacher/homeworkLibrary.html'/>";
+		</#if>
+	});
+	/**
+	 * 选择难度时，鼠标移动的事件处理
+	 */
+	$(document).mousemove(function(e) {
+		if(isMove) {
+			var t = e.clientX-startX,
+				n = startLevel+t,
+				n = n>100-6?100-6:n,
+				n = 0>n?0:n;
+			$(nowSelectDot).css({"left":n+"px"});
+			//显示难度系数
+			var diffNum = (n/(100-6))*4+1;
+			diffNum = diffNum*10>Math.floor(diffNum*10)?(diffNum*10+1)/10:diffNum;
+			diffNum = (Math.floor(diffNum*10)/10).toFixed(1);
+			$(nowSelectDot).parents(".difficultywrap").find(".difficulty").text(diffNum);
+		}
+	}).mouseup(function() {
+		isMove = false;
+		nowSelectDot = undefined;
+	});
+	
+});
+
+//****************************录音部分********************************
+//给每个小题添加录音功能
+$(".paperx_tl").each(function(index) {
+	addRecorder(this, index);
+	addDiffMouseEvent($(this).find(".selectdot"));
+	addClickEventToSelectDiv($(this).find(".selectdiv"));
+});
+/**
+ * 难度游标mousedown事件
+ * @param node 难度游标节点
+ */
+function addDiffMouseEvent(node) {
+	$(node).mousedown(function(e) {
+		var normalQues = $(node).parents(".paperx_tl"),
+			artArea = $(node).closest(".paperxt_stx");
+		if((normalQues[0]!=undefined && normalQues.next().is(".pep_bc")) || (artArea[0]!=undefined && artArea.find(".savArticle").is(":visible"))) {
+			isMove = true;
+			nowSelectDot = this;
+			startX = e.clientX,	startLevel = e.target.offsetLeft;
+		}
+	}).mouseup(function (e) {
+        isMove = false;
+        nowSelectDot = undefined;
+    });
+}
+//标尺点击事件
+function addClickEventToSelectDiv(node) {
+	$(node).click(function(e) {
+		//如果是普通小题，则需要小题在编辑状态，如果是材料，则需要材料在编辑状态
+		var paperxtStx = $(this).closest(".paperxt_stx"),
+			canOperate = false;
+		if(paperxtStx[0]==undefined && $(this).closest(".paperx_tl").find(".paperx_tlxr").find(".ttxt").attr("contenteditable")=="true") canOperate = true;
+		else if(paperxtStx.find(".struct-artcontent").attr("contenteditable") == "true") canOperate = true;
+		if(canOperate) {
+			var eX = e.clientX,
+			divX = $(this).offset().left,
+			n = eX>divX+100-6?divX+100-6:eX,
+			n = n<0?0:n,
+			selectDot = $(this).find(".selectdot"),
+			diffSpan = $(this).closest(".difficultywrap").find(".difficulty");
+			
+			selectDot.offset({left:n});
+			n = selectDot.position().left;
+			//显示难度系数
+			var diffNum = (n/(100-6))*4+1,
+				diffNum = diffNum*10>Math.floor(diffNum*10)?(diffNum*10+1)/10:diffNum,
+				diffNum = (Math.floor(diffNum*10)/10).toFixed(1);
+			diffSpan.text(diffNum);
+		}
+	});
+}
+//默认隐藏所有的删除录音按钮
+$(".deletewav").addClass("hide");
+$(".struct-quesrec").click(function() {
+	enterRecorderEvent(this);
+});
+/**
+ * 小题的录音入口点击事件
+ * @param node 录音入口节点
+ */
+function enterRecorderEvent(node) {
+	var quesNode = $(node).parents(".paperx_tl"),
+		startRecordNode = quesNode.find(".start-recording")[0],
+		pauseRecordNode = quesNode.find(".pause")[0];
+	
+	triggerMouseEvent(startRecordNode, "click");//自动触发录音按钮点击事件
+	//如果停止录音图标是显示状态，说明当前进入了录音状态，要隐藏录音入口图标;否则，说明当前刚选择了允许flash，不隐藏录音入口图标
+	if(!quesNode.find(".stop-recording").is(":hidden")) {
+		$(node).addClass("hide");
+		triggerMouseEvent(pauseRecordNode, "click");//自动触发暂停按钮点击事件
+	}
+}
+//上传录音并显示播放器之后要做的事情
+function doAfterUploadWav(recorderWrap, path) {
+	//设置小题的录音路径
+	$(recorderWrap).attr("recpath", path.substring(1));
+}
+//删除录音之后做的处理
+function doAfterDeleteWav(recorderWrap) {
+	var quesNode = $(recorderWrap).parents(".paperx_tl");
+	quesNode.find(".struct-quesrec").removeClass("hide");//显示录音入口
+	$(recorderWrap).removeAttr("recpath");
+}
+//点击输入框时要做的特殊处理
+function doWhenClickInput(node) {
+	//只有输入框是解析的输入框才做特殊处理
+	if($(node).parents(".paperx_jxxqr")[0] == undefined) return;
+	//判断当前是否是录音状态或者播放状态，若是，则不显示录音入口，否则显示录音入口
+	var quesNode = $(node).parents(".paperx_tl");
+	if((quesNode.find(".stop-recording").is(":visible")) || (!quesNode.find(".chooshinejp").hasClass("hide"))) {
+		quesNode.find(".struct-quesrec").addClass("hide");
+	}
+}
+</script>

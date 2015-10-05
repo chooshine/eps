@@ -1,0 +1,49 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">语料订购</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+<div class="testl_con" style=" padding-top:12px;">
+	<div class="or_fkc">
+		<div class="or_fkclu1"><span><img src="<@spring.url '/images/order/fk2.png'/>" width="826" height="92"/></span></div>
+		<div class="or_fudd">
+			<div class="or_fuddl" style="padding-top:30px;"><img src="<@spring.url '/images/order/zfb.png'/>" width="300" height="94"/></div>
+			<div class="or_fuddr" style="margin-top:30px;">
+				<div class="or_fkclu2t">付款金额：<span>${total_fee}元</span></div>
+				<div  class="or_fkclu2b" style="height:45px;line-height:45px; font-size:18px;">订单编号：<span>${tradeNo}</span></div>
+			</div>
+			<div class="nofl"></div>
+		</div>
+		<form action="<@spring.url '/corpus/isError.html'/>" method="POST">
+			<input type="hidden" name="total_fee" value="${total_fee}"> 
+			<input type="hidden" name="subject" value="${subject}">
+			<input type="hidden" name="body" value="${body}">
+			<input type="hidden" name="tradeNo" value="${tradeNo}"/>
+		</form>
+		<div class="or_fkan">
+			<div class="or_fkanl">付款成功</div>
+			<div class="or_fkanr">付款失败</div>
+			<div class="nofl"></div>	
+		</div>
+	</div>
+</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<script>
+	$(function(){
+		$(".or_fkanl").click(function(){
+			location.href="<@spring.url '/corpus/advanced.html'/>";
+		});
+		$(".or_fkanr").click(function(){
+			$("form").submit();
+			//location.href="<@spring.url '/corpus/payOrder.html?total_fee=${total_fee}&subject=${subject}&body=${body}&tradeNo=${tradeNo}'/>"
+		});
+	})
+</script>

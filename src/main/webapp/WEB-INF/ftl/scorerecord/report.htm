@@ -1,0 +1,196 @@
+<#include "header.htm" parse="true" encoding="UTF-8" > 
+<#include "logheader.htm" parse="true" encoding="UTF-8" >
+<!-- <div class="report_report" style="margin:20px auto">
+	<span class="report_left"><p>${className}${testName}${subjectName}成绩录入</p></span>
+	<span class="report_right"></span>
+</div> -->
+<div style="font-weight:600; margin-top:20px; margin-bottom:10px;">${className} -> ${testName} -> ${subjectName}</div>
+<div style="border:1px solid #DDDDDD;padding-top:20px;  background-color: #EEF1F8;">
+<div class="report_form_container">
+	<form action="<@spring.url '/read.html'/>" method="post" id="report_form" enctype="multipart/form-data" target="report_xls_hidden">
+		<div id="button_div">
+			<div style="margin-bottom:10px;">
+				选择要上传的成绩单：<input type="file" name="file" id="file" class="report_file" />
+			</div>
+			<input type="button" value="导入成绩单" name="report_importxls" class="report_button"/>
+			<span id="report_import_info" class="report_import_info" ></span>
+			<input type="button" name="exportTable_up" value="导出成绩单"  class="report_button"/>
+			<input type="button" name="savereport_up" value="保存成绩单"  class="savereport report_button"/><span class="red"></span>
+		</div>
+		<div id="resultInfo" style="margin-top:5px;color:red;"></div>
+		<div class="clear"></div>
+		<iframe name="report_xls_hidden" id="report_xls_hidden" style="display: none;"></iframe>
+	</form>
+</div>
+<div class="student_report">学生成绩单</div>
+<div class="ui-tabs-panel ui-widget-content ui-corner-bottom report_container" style="margin: 0 auto; text-align: center;" >
+	<table id="report_students_report" 	class="table table-bordered table-hover table-condensed report_table">
+		<tr id="report_header">
+			<th>学号</th>
+			<th>姓名</th>
+			<th>性别</th>
+			<th>得分</th>
+			<th>否参加考试</th>
+		</tr>
+		<#list students as student>
+		<tr>
+			<td studentId=${student.student_id} userId=${student.user_id}>${student.student_no}</td>
+			<td>${student.student_name}</td>
+			<td>
+				<#if student.gender ==0>女<#else>男</#if>
+			</td>
+			<td class="report_score"><input type="text" value="${student.score}"  class="score_input"/></td>
+			<td class="report_status">
+			<select name="exam_status">
+				<#if student.exam_status==1>
+				<option value="0">是</option>
+				<option value="1" selected="selected">否</option>
+				<#else> 
+				<option value="0"selected="selected">是</option>
+				<option value="1" >否</option>
+				</#if>
+			</select>
+			</td>
+		</tr>
+		</#list>
+	</table>
+</div>
+<div class="report_export" style="margin: 0 auto; text-align: center; margin-top: 20px;">
+	<!-- <a href="<@spring.url '/export.html?classId=${classId}&testId=${testId}&subjectId=${subjectId}' />" style="margin-right:20px;">导出报表</a> -->
+	<form action="<@spring.url '/export.html'/>" id="export_form">
+		<input type="hidden" name="classId" value='${classId}' />
+		<input type="hidden" name="testId" value='${testId}'/>
+		<input type="hidden" name="subjectId" value='${subjectId}'/>
+	</form>
+</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+	$(function(){
+		//导入成绩单
+		$("input[name='report_importxls']").click(function(){
+			if($("input[name='file']").val() == "") {
+				return;
+			}
+			$("#report_form").submit();
+		});
+		
+		//上面的导出成绩单按钮点击事件
+		$("input[name='exportTable_up']").click(function(){
+			$("#export_form").submit();
+		});
+		
+		//保存成绩单
+		$(".savereport").each(function(){
+			$(this).click(function(){
+				var flag = true;		//flag用于判断是否有无效得分
+				var invalidStudents = "下列学生的得分无效：\n\n";
+				var studentName = "";
+				var records = new Array(); 
+				var trNodes = $($("#report_students_report").children()).children();
+				
+				for(var i=1; i<trNodes.length; i++){
+					var tdNodes = $($(trNodes).get(i)).children();
+					var record = new TestRecord();
+					
+					for(var j=0; j<5; j++){
+						var tdNode = $(tdNodes).get(j);
+						if(j==0){
+							var user_id = $(tdNode).attr("userId");
+							var student_id = $(tdNode).attr("studentId");
+							record.user_id = user_id;
+							record.student_id = student_id;
+						} else if(j==1){
+							studentName = $(tdNode).text();
+						} else if(j==3){
+							var inputNode = $($(tdNode).children()).get(0);
+							var score = $(inputNode).val();
+							if(isNaN(score)) {
+								invalidStudents = invalidStudents+studentName+"、";
+								flag = false;
+							}
+							record.score = $(inputNode).val();
+						} else if(j==4){
+							var selectNode = $($(tdNode).children()).get(0);
+							record.exam_status = $(selectNode).val();
+						} 
+					}
+					records.push(record);
+				}
+				if(flag == false) {
+					invalidStudents = invalidStudents.substring(0,invalidStudents.length-1); 
+					alert(invalidStudents+"\n\n请更正后再保存！");
+					return;
+				}
+				var testId = $("input[name='testId']").val();
+				var classId = $("input[name='classId']").val();
+				var subjectId = $("input[name='subjectId']").val();
+				var jsonData = JSON.stringify(records);
+				$.ajax({
+					type:"POST",
+					url:"<@spring.url '/savereport.json'/>",
+					contentType:"application/x-www-form-urlencoded",
+					data:"students="+jsonData+"&testId="+testId+"&classId="+classId+"&subjectId="+subjectId,
+					success:function(data){
+						var count = data['count'];
+						$("#resultInfo").text("成功保存"+count+"条成绩记录");
+					}
+				});
+			});
+		});
+			
+		//考试记录类
+		function TestRecord(user_id, student_id, score, exam_status){
+			this.user_id = user_id;
+			this.student_id = student_id;
+			this.score = score;
+			this.exam_status = exam_status;
+		}
+		
+            $(".score_input").blur(function(){
+            	var value = $(this).val();
+            	if(isNaN(value) && value!="") {
+            		alert("得分输入无效，请输入有效得分或者保留为空");
+            		$(this).val("");
+            	}
+            });
+	});
+	
+	//导入成绩表
+	function showReport(result){
+		if(result.errorinfo && result.errorinfo == "success"){
+			$.ajax({
+				type:"GET",
+				url:"<@spring.url '/parserXls.json'/>",
+				data:"path="+result.xlspath,
+				success:function(data){
+					$($("#report_header").siblings()).each(function(){
+						var tdNodes = $(this).children();
+						var noTd = $(tdNodes).get(0);
+						var nameTd = $(tdNodes).get(1);
+						var scoreTd = $(tdNodes).get(3);
+						var flagTd = $(tdNodes).get(4);
+						
+						var studentData = data.data;
+						for(var i=0; i<studentData.length; i++){
+						var student=studentData[i];
+						var student_no=student['student_no'];
+						var student_name=student['student_name'];
+						var score=student['score'];
+						var exam_status=student['exam_status'];
+						
+						if($(noTd).text()==student_no && $(nameTd).text()==student_name){
+							$($($(scoreTd).children()).get(0)).val(score);
+						}
+					}
+					});
+					$("input[name='report_importxls']").val("重新导入");
+					$("#resultInfo").text("导入成功");
+				}
+			});
+		}else{
+			$("input[name='report_importxls']").val("重新导入");
+			$("#resultInfo").text("导入失败");
+		}
+	}
+</script>

@@ -1,0 +1,197 @@
+<#include "header.htm" parse="true" encoding="UTF-8" > 
+<#include "logheader.htm" parse="true" encoding="UTF-8" >
+<style>
+.nav ul li a { padding-top:0px;}
+</style>
+<div id="perIndexMain">
+	<div class="per_nav">
+		<div class="nav">
+			<div class="top">
+				<ul>
+					<li><a href="<@spring.url '/achievement/myoffice.html'/>">我的办公室</a></li>
+					<li><a href="<@spring.url '/achievement/class/ability.html'/>">班级能力</a></li>
+					<li><a href="<@spring.url '/achievement/lesson.html'/>">课程表</a></li>
+					<li><a href="<@spring.url '/achievement/seating.html'/>">座位表</a></li>
+					<li class="perIndexNavLi">考试分析</li>
+				</ul>
+			</div>
+			<div id="indexNavFirst" class="bottom">
+				<ul>
+					<li class="res_navt">考分榜</li>
+					<li><a href="<@spring.url '/achievement/distribution.html'/>">得分分布分析</a></li>
+					<li><a>分数段分析</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+<form action="<@spring.url '/achievement/scoreNotice.html'/>">
+	<input type="hidden" name="classId" value="${classid}">
+	<input type="hidden" name="testId" value="${testid}">
+	<input type="hidden" name="subject">
+<div class="resa_abl">
+	<div class="row-fluid">
+		<div class="span12">
+			    <div class="res_anl">
+					<div class="res_anll">考试：</div>
+					<div class="res_anlr">
+						<#if maps??>
+							<#assign tests = maps["test"]>
+							<#list tests as test>
+								<#if test.selected>
+									<a id="${test.id}" class="testClass res_sel">${test.name}</a>
+								<#else>
+									<a id="${test.id}" class="testClass">${test.name}</a>
+								</#if>
+								
+							</#list>
+						</#if>
+						<div class="nofl"></div>
+					</div>
+					<div class="nofl"></div>
+				</div>
+		</div>
+	</div>
+	
+	<div class="row-fluid">
+		<div class="span12">
+			    <div class="res_anl">
+					<div class="res_anll">班级：</div>
+					<div class="res_anlr">
+						<#if maps??>
+							<#assign classes = maps["clazz"]>
+							<#list classes as clazz>
+								<#if clazz.selected>
+								<a id="${clazz.id}" class="clazzClass res_sel">${clazz.name}</a>
+								<#else>
+								<a id="${clazz.id}" class="clazzClass">${clazz.name}</a>
+								</#if>
+								
+							</#list>
+						</#if>
+						<div class="nofl"></div>
+					</div>
+					<div class="nofl"></div>
+				</div>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span12">
+			    <div class="res_anl">
+					<div class="res_anll">科目：</div>
+					<div class="res_anlr">
+						<#if maps??>
+							<#assign subjects = maps["subject"]>
+							<#list subjects as subject>
+								<#if subject.selected>
+									<#assign checked="checked">
+								<#else>
+									<#assign checked="">
+								</#if>
+								<input type="checkbox" value="${subject.id}" ${checked}>${subject.name}
+							</#list>
+						</#if>
+						<div class="nofl"></div>
+					</div>
+					<div class="nofl"></div>
+				</div>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="res_anl">
+		<#if page??>
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>学号</th>
+						<th>姓名</th>
+						<th>考试名称</th>
+						<#if maps["subject"]??>
+							<#list maps["subject"] as subject>
+								<#if subject.selected>
+									<th>${subject.name} (班/年)</th>
+								</#if>
+							</#list>
+						</#if>
+						<th>总分</th>
+						<th>班名</th>
+						<th>年名</th>
+					</tr>
+				</thead>
+				<tbody>
+		  		<#list page as item>
+		  			<tr>
+		  				<td class="rz1">${item.studentNo}</td>
+						<td>${item.studentName}</td>
+						<td>${item.testName}</td>
+						<#if maps["subject"]??>
+							<#list maps["subject"] as subject>
+								<#if subject.selected>
+									<td>${item[subject.id]}</td>
+								</#if>
+							</#list>
+						</#if>
+						<td>${item.total}</td>
+						<td>${item.scoreCr}</td>
+						<td>${item.scoreGr}</td>
+		  			</tr>
+		  		</#list>
+				</tbody>
+			</table>
+	        </#if>
+			</div>
+		</div>
+	</div>
+</form>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+	$(function(){
+		$(".testClass").each(function(index){
+			$(this).click(function(){
+				getSubject();
+				if($("input[name='subject']").val() == ""){
+					showError("必须选择一个科目");
+					return ;
+				}
+				var testId = $(this).attr("id");
+				$("input[name='testId']").val(testId);
+				$("form").submit();
+			});
+		});
+		$(".clazzClass").each(function(index){
+			$(this).click(function(){
+				getSubject();
+				if($("input[name='subject']").val() == ""){
+					showError("必须选择一个科目");
+					return ;
+				}
+				var classId = $(this).attr("id");
+				$("input[name='classId']").val(classId);
+				$("form").submit();
+			});
+		});
+		$("input[type=checkbox]").each(function(){
+			$(this).click(function(){
+				if($(this).attr("checked")){
+					$(this).removeAttr("checked");
+				}else{
+					$(this).attr("checked",true);
+				}
+				getSubject();
+				if($("input[name='subject']").val() == ""){
+					showError("必须选择一个科目");
+					return ;
+				}
+				$("form").submit();
+			});
+		});
+		function getSubject(){
+			var subject = [];
+			$("input[type=checkbox][checked]").each(function(){
+				subject.push($(this).val());
+			});
+			$("input[name='subject']").val(subject.join());
+		}
+	})
+</script>

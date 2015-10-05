@@ -1,0 +1,169 @@
+<#include "header.htm" parse="true" encoding="UTF-8" > 
+<#include "logheader.htm" parse="true" encoding="UTF-8" >
+<style>
+.nav ul li a { padding-top:0px;}
+</style>
+<div id="perIndexMain">
+	<div class="per_nav">
+		<div class="nav">
+			<div class="top">
+				<ul>
+					<li><a href="<@spring.url '/studentGrade/myDesk.html'/>">我的课桌</a>
+					</li>
+					<li><a
+						href="<@spring.url '/studentGrade/studentAbility.html'/>">我的能力</a>
+					</li>
+					<li><a
+						href="<@spring.url '/studentGrade/studentLesson.html'/>">我的课程表</a>
+					</li>
+					<li><a
+						href="<@spring.url '/studentGrade/studentDevelopment.html'/>">发展跟踪</a>
+					</li>
+					<li class="perIndexNavLi">试卷分析</li>
+				</ul>
+			</div>
+			<div class="bottom">
+				<ul>
+					<li class="res_navt">试卷分析</li>
+				</ul>
+			</div>
+
+		</div>
+	</div>
+		<div class="resa_abl">
+			<div class="res_anl">
+				<div class="res_anll">本次考试：</div>
+				<div class="res_anlr">
+					<#if testnameids??>
+						<#assign x=0> 
+						<#list testnameids as test>
+							<#assign x=x+1>
+							<#if x==1>
+								<a testid="${test.test_id}" class="testClass1 testClass res_sel">${test.test_name}</a>
+							<#else> 
+								<a testid="${test.test_id}" class="testClass1 testClass">${test.test_name}</a>
+							</#if> 
+						</#list> 
+					</#if>
+					<div class="nofl"></div>
+				</div>
+				<div class="nofl"></div>
+			</div>
+			<div class="res_anl">
+				<div class="res_anll">参照考试：</div>
+				<div class="res_anlr">
+					<#if testnameids??>
+						<#assign x=0> 
+						<#list testnameids as test>
+							<#assign x=x+1>
+							<#if x==2>
+								<a testid="${test.test_id}" class="testClass2 testClass res_sel">${test.test_name}</a>
+							<#else> 
+								<a testid="${test.test_id}" class="testClass2 testClass">${test.test_name}</a>
+							</#if> 
+						</#list> 
+					</#if>
+					<div class="nofl"></div>
+				</div>
+				<div class="nofl"></div>
+			</div>
+			<div class="res_anl">
+				<div class="res_anll">科目：</div>
+				<div class="res_anlr">
+					<#if allsubjects??>
+						<#assign x=0> 
+						<#list allsubjects as subject>
+							<#assign x=x+1> 
+							<#if x==1> 
+								<input type="checkbox" value="${subject.subject_id}" checked="checked">${subject.subject_name}
+							<#else> 
+								<input type="checkbox" value="${subject.subject_id}">${subject.subject_name}
+							</#if> 
+						</#list>
+					</#if>
+					<div class="nofl"></div>
+				</div>
+				<div class="nofl"></div>
+			</div>
+			<input type="hidden" name="subject"/>
+			<input type="hidden" name="test_id1"/>
+			<input type="hidden" name="test_id2"/>
+			<input type="button" name="查看结果" value="查看结果" />
+			<div class="res_anbg" id="developtable">
+				
+			</div>
+		</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+	$(function() {
+		
+		$("input[name='查看结果']").click(function(){
+			$(".testClass1").each(function() {
+				if($(this).hasClass("res_sel")){
+					var testId = $(this).attr("testid");
+					$("input[name='test_id1']").val(testId);
+				}
+			});
+			$(".testClass2").each(function() {
+				if($(this).hasClass("res_sel")){
+					var testId = $(this).attr("testid");
+					$("input[name='test_id2']").val(testId);
+				}
+			});
+			getSubject();
+			if ($("input[name='subject']").val() == "") {
+					showError("必须选择一个科目");
+					return;
+			}
+			var test_id1 = $("input[name='test_id1']").val();
+			var test_id2 = $("input[name='test_id2']").val();
+			var subject = $("input[name='subject']").val();
+			$.get(
+				"<@spring.url '/developTable.html'/>",
+				{test_id1:test_id1,test_id2:test_id2,subject_ids:subject},
+				function(data){
+					$("#developtable").html(data);},"html");
+		});
+	
+		$(".testClass1").each(function() {
+			$(this).click(function() {
+				$(".testClass1").each(function(){
+					$(this).removeClass("res_sel");
+				});
+				$(this).addClass("res_sel");
+			});
+		});
+		$(".testClass2").each(function() {
+			$(this).click(function() {
+				$(".testClass2").each(function(){
+					$(this).removeClass("res_sel");
+				});
+				$(this).addClass("res_sel");
+			});
+		});
+		
+		$("input[type=checkbox]").each(function() {
+			$(this).click(function() {
+				if ($(this).attr("checked")) {
+					$(this).removeAttr("checked");
+				} else {
+					$(this).attr("checked", true);
+				}
+				getSubject();
+				if ($("input[name='subject']").val() == "") {
+					showError("必须选择一个科目");
+					return;
+				}
+			});
+		});
+		function getSubject() {
+			var subject = [];
+			$("input[type=checkbox][checked]").each(function() {
+				subject.push($(this).val());
+			});
+			$("input[name='subject']").val(subject.join());
+		}
+		
+	})
+</script>

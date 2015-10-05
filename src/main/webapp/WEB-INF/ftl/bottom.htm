@@ -1,0 +1,102 @@
+<!-- </div> -->
+<div class="clear"></div>
+<!----footer  code------>
+<div class="footer">
+	<p><a href="<@spring.url'/corpus/index.html'/>" style="color:#fff;text-decoration:underline;">在线日语语料库入口</a></p>
+	<p><span>畅先版权所有ChooShine © 2011-2015 浙ICP备12005730号</span><p>
+    <div class="clear"></div>
+	<p>客服电话：18658190803 18767186581 QQ：386456103 （周一至周日 9:00～22:00）</p>
+</div>
+</body>
+<script src="<@spring.url '/javascripts/json2.js'/>"></script>
+<script src="<@spring.url '/javascripts/jquery.js'/>"></script>
+<!-- <script src="<@spring.url '/javascripts/browserDetect.js'/>"></script> -->
+<script src="<@spring.url '/javascripts/jquery-ui-min.js'/>"></script>
+<script src="<@spring.url '/javascripts/jquery.blockUI.js'/>"></script>
+<!-- <script src="<@spring.url '/javascripts/amcharts.js'/>" ></script>
+<script src="<@spring.url '/javascripts/jquery-ui-timepicker-addon.js'/>" ></script>
+<script src="<@spring.url '/javascripts/eq_config.js'/>" ></script>
+<script src="<@spring.url '/javascripts/eq_editor-lite-15.js'/>" ></script>-->
+<script src="<@spring.url '/javascripts/ourself.js'/>"></script>
+<!-- <script src="<@spring.url '/javascripts/jquery.flexslider-min.js'/>"></script> --> 
+<!-- <script src="<@spring.url '/javascripts/bootstrap.js'/>"></script> -->
+<script type="text/javascript">
+	$(document).tooltip();
+	var appPath = '<@spring.url "/"/>';
+	$.ajaxSetup({
+		accepts : {
+			"Content-Type" : "application/json"
+		},
+		contentType : 'application/json;charset=UTF-8',
+		dataType : 'json'
+	});
+	var colors = ["#FF0F00","#FF6600","#FF9E01","#FCD202", "#F8FF01", "#B0DE09", "#04D215","#0D8ECF","#0D52D1","#2A0CD0"];
+	function isEmail(email) {
+		var mail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$/;
+		return mail.test(email);
+	}
+	function isMPhone(phone) {
+		var reg = /^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$/;
+		return reg.test(phone);
+	}
+	function createAlert(msg,modal,title){
+		$("<DIV></DIV>", {
+			//"class" : "ui-widget-content ui-corner-all",
+			"title" : title,
+			html : "<p>" + msg + "</p>"
+		}).dialog({
+			modal : modal,
+			position : 'top',
+			show : 'blind',
+			hide: "blind",
+			buttons : {
+				Ok : function() {
+					$(this).dialog("close");
+				}
+			},
+			create : function(e,ui) {
+				var me = $(this);
+				setTimeout(function(){
+					me.dialog("close");
+				},3000);
+			}
+		});
+	}
+	function showMsg(msg) {
+		createAlert(msg,false,'Info');
+	}
+	function showError(msg){
+		createAlert(msg,true,'Error');
+	}
+	function showBlock(){
+		if ($.blockUI)
+			$.blockUI({
+				message : '<div><br /><img src="<@spring.url "/images/loading.gif"/>" />正在查询，请稍后…<br /><br /></div>'
+			});
+	}
+	function hiddenBlock(){
+		if($.unblockUI)
+			$.unblockUI();
+	}
+	Array.prototype.deleteElement = function(element) {
+		var delIndex = -1;
+		for (var i = 0; i < this.length; i++) {
+			if (this[i] === element) {
+				this.splice(i, 1);
+				delIndex = i;
+				break;
+			}
+		}
+		return delIndex;
+	};
+	String.prototype.trim = function() {
+		var str = this,
+		str = str.replace(/^\s\s*/, ''),
+		ws = /\s/,
+		i = str.length;
+		while (ws.test(str.charAt(--i)));
+		return str.slice(0, i + 1);
+	}
+	
+</script>
+</html>

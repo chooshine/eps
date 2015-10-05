@@ -1,0 +1,55 @@
+<#import "spring.ftl" as spring/>
+<style>
+.bs-docs-example .n_b2 {text-align:left;padding-left:30px;background: url("../images/arrow_medium_right.png") no-repeat scroll 3px 3px;}
+</style>
+<#if page??>
+	<div class="index_btm" style="text-align: left;padding: 6px 8px;">在
+	<#if searchLimit??>
+		<select name="s_limit" style="font-family:'微软雅黑';BORDER-LEFT-WIDTH: 1px; FONT-SIZE: 14px; BORDER-RIGHT-WIDTH: 1px; BORDER-BOTTOM-WIDTH: 1px; BORDER-TOP-WIDTH: 1px; BACKGROUND-COLOR: #fcfcfc; border-color: #000;">
+			 <#list searchLimit as type>
+					<#if comm??>
+					 <#if type.code == comm.searchLimit?c>
+					 	<option value="${type.code}" selected>${type.name}</option></span>
+					 		<#else>
+					 	<option value="${type.code}">${type.name}</option></span>
+					</#if>
+				</#if>
+			</#list>
+		</select>
+	</#if>
+	 样本中，本次共检索到 <span id="countRecord" style="color:red;font-size:14px;font-weight:bold;">${page.totalCount}</span> 例
+		<a href="javascript:;" class="newQuery" style="margin-left:20px;margin-right:30px;"><img style="width:16px;" src="<@spring.url '/images/examsystem/reload_alt_24x28.png'/>">更换样本，再检索一次</a><#if page.totalCount &gt; 0 ><a href="javascript:;" class="exportExcel" ><img alt="下载" src="<@spring.url'/images/examsystem/download_24.png'/>" style="width:16px;">下载结果</a></#if>
+	</div>
+	
+	<div class="middle" style="padding-top:0px;padding-bottom:0px;">
+       	<div id="content" style="padding-bottom:10px; padding-top:10px;">
+       	<#if page.totalCount &gt; 0 >
+        	<#list page.data as item>
+        		<div class="search-item">
+        		 <div class="rsLeft">
+        		 <span>${item.CONTENT}</span></div>
+        		 <div class="rsRight">
+        		     <ul style="list-style-type: none;">
+        		     	<li><b>出处：<b><font color="blue">${item.ARTICLE_NAME}</font></b></b></li><li><b>作者：${item.AUTHOR}</b></li><li><b>发表于：${item.PUBLICATION_DATE}</b></li></ul></div><div class="nofl"></div></div>
+        	</#list>
+       	<#elseif error??>
+       		<h2><font color="red">${error}</font></h2>
+       	<#else>
+        	<div class="bs-docs-example" style="border: 0px;">
+        	<ul style="height:200px;padding-left:200px;padding-bottom:30px;background:url('<@spring.url '/images/not_founded.png'/>') no-repeat scroll 0 0;">
+        		<li style="margin-left:-100px;font-size:18px;font-weight:300px;">您检索的关键词本次没有找到符合条件的语料，可能的原因如下：</li>
+        		<li></li><li></li><li></li>
+        		<li class="n_b2">该关键词出现频率较低，再试试手气<a href="javascript:;" class="newQuery">&gt;&gt; 更换样本，再检索一次</a></li>
+        		<li class="n_b2">样本太多不好找，我要精确检索 <a href="<@spring.url '/corpus/advanced.html' />">&gt;&gt; 高级搜索</a></li>
+        		<li class="n_b2">关键词过于生僻或输入有错误，请更换关键词再进行搜索</li>
+        	</ul>
+        	</div>
+       	</#if>
+       	</div>
+       	<div style="width:1000px; height:30px; margin-top:12px;">
+       	<#include "pagination.htm" parse="true" encoding="UTF-8">
+       	<@pagination page=page/>
+       	</div>
+	</div>
+	
+</#if>

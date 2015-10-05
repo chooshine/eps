@@ -1,0 +1,69 @@
+<#include "header.htm" parse="true" encoding="UTF-8" > 
+<#include "logheader.htm" parse="true" encoding="UTF-8" >
+	<div class="center">
+		<div class="left">
+			<h3>教师认证</h3>
+			<ul>
+				<li><a href="<@spring.url '/authenBack.html?status=1'/>">已认证</a></li>
+				<li><a href="<@spring.url '/authenBack.html?status=0'/>">待审核</a></li>
+				<li><a href="<@spring.url '/authenBack.html?status=2'/>">审核未通过</a></li>
+				<li><a href="<@spring.url '/authenBack.html?status=-1'/>">查看全部</a></li>
+			</ul>
+		</div>
+		
+		<div class="right">
+			<table class="table">
+				<th>教师名</th>
+				<th>用户名</th>
+				<th>申请时间</th>
+				<th>认证状态</th>
+				<th>审核</th>
+				<#if authenInfos??>
+				<#list authenInfos as info>
+				<tr>
+					<td>${info.teacher_name}</td>
+					<td>${info.user_no}</td>
+					<td>${info.authen_time}</td>
+					<#if info.authen_status==0>
+					<td>待审核</td>
+					<#elseif info.authen_status==1>
+					<td>已认证</td>
+					<#else>
+					<td>认证失败</td>
+					</#if>
+					<#if info.authen_status==0>
+					<td id="investigate" ctid="${info.teacher_id?c}" style="cursor: pointer;"><span status="1" class="pass">通过</span><span>|</span><span status="2" class="pass">不通过</span></td>
+					<#else>
+					<td ctid="${info.teacher_id}">已审核</td>
+					</#if>
+				</tr>
+				</#list>
+				</#if>
+			</table>
+		</div>
+		<div class="clear"></div>
+	</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+
+<script type="text/javascript">
+	$(function(){
+		$(".pass").each(function(){
+		
+			$(this).click(function(){
+				var teacherId=$(this).parent().attr("ctid");
+				var status=$(this).attr("status");
+				var authentd=$("#investigate").prev();
+				$.ajax({
+					type: "GET",
+					url:"<@spring.url '/investigate.json'/>",
+					data:"teacher_id="+teacherId+"&status="+status,
+					success:function(data){
+						$("#investigate").text("已审核");
+						$(authentd).text(data['result']);
+					}
+				})
+			});
+			
+		});
+	})
+</script>

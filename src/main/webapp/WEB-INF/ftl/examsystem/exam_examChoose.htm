@@ -1,0 +1,190 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+
+
+        <div style="text-align:left;width:900px;margin:15px 10px 20px 30px;">
+                <div style="float:left;" id="searchText1" >
+                	<input type="text" class="t3log textfont" id="searchText" />
+                </div>
+                <div style="padding-left: 5px;float:left;" class="btn_1">
+                	<input type="button" style="height:31px;" class="b1 buttonfont" value="搜索" id="btn_search">
+					<input type="button" class="b1 buttonfont b3" value="我要提问" id="btn_askw">
+                </div>
+                <div  style="width:58px; height:30px; line-height:15px;  display:inline; text-align:left; float:left;">
+                	<span style="margin-left:5px;"><a href="advancedSearch.html">高级</a></span><br/>
+                	<span style="margin-left:5px;"><a href="help/instructions.html">帮助</a></span>
+                </div>
+                <div style=" clear:both;"></div>
+        </div>
+</div>
+<div class="test_benner">
+<img src="<@spring.url '/images/examsystem/test_banner.jpg'/>" width="1024" height="170"/>
+</div>
+<div class="test_cem">
+	<div class="test_cleft">
+		<div class="test_cleftop">
+			<div class="test_cleftbt">我们的服务</div>
+			<div class="test_cleftopcm1">
+				<dl>
+					<dt class="test_clx1"></dt>
+					<dd>在线考试</dd>
+				</dl>
+				<dl>
+					<dt class="test_clx2"></dt>
+					<dd>你问我答</dd>
+				</dl>
+				<dl>
+					<dt class="test_clx3"></dt>
+					<dd>预料搜索</dd>
+				</dl>
+				<dl>
+					<dt class="test_clx4"></dt>
+					<dd>网络考场</dd>
+				</dl>
+				<dl>
+					<dt class="test_clx5"></dt>
+					<dd>素材市场</dd>
+				</dl>
+				<dl>
+					<dt class="test_clx6"></dt>
+					<dd>成绩管家</dd>
+				</dl>
+				<dl>
+					<dt class="test_clx7"></dt>
+					<dd>个人中心</dd>
+				</dl>
+				<div class="nofl"></div>
+			</div>
+		</div>
+	</div>
+	<div class="test_cright">
+		<div class="testh_crightopt">
+			<div class="testh_crightoptl">${sortName} <span><a href="<@spring.url '/exam_index.html'/>">[切换考试]</a></span></div>
+			<div class="testh_crightoptr">发布试卷</div>
+		</div>
+		<div class="testh_crightoptx">
+			<div class="testh_crightoptx_top">
+				<ul>
+				<li><a class="examChoose">全部</a></li>
+				<#if examType??>
+				<#list examType as etList>
+					<li><a class="examChoose">${etList.NAME}（${etList.COUNT_TYPE}）</a></li>
+				</#list>
+				</#if>
+				
+				</ul>
+			</div>
+			<div  class="testh_crightoptx_cem">
+				<div  class="testh_crightoptx_ceml">科目：</div>
+				<div  class="testh_crightoptx_cemr">
+					<a class="examChoose">全部</a>   
+					<#if subjectNo??>
+					<#list subjectNo as snList>
+						<a class="examChoose">${snList.SORT_NAME}（${snList.COUNT_SUBJECT_NO}）</a>
+					</#list>
+					</#if>
+					<div class="nofl"></div>
+				</div>
+				<div class="nofl"></div>
+			
+			</div>
+			<div  class="testh_crightoptx_cem">
+				<div  class="testh_crightoptx_ceml">地区：</div>
+				<div  class="testh_crightoptx_cemr">
+					<a class="examChoose">全部</a>   
+					<#if examArea??>
+					<#list examArea as eaList>
+						<a class="examChoose">${eaList.NAME}（${eaList.COUNT_AREA}）</a>
+					</#list>
+					</#if>
+					<div class="nofl"></div>
+				</div>
+				<div class="nofl"></div>
+			</div>
+			<div  class="testh_crightoptx_cem" style=" border-bottom:0px; margin:0px;">
+				<div  class="testh_crightoptx_ceml">热门：</div>
+				<div  class="testh_crightoptx_cemr">
+					<span>畅选推荐</span>
+					<span>名师出题专区</span>				
+					<div class="nofl"></div>
+				</div>
+				<div class="nofl"></div>
+			</div>
+		
+		</div>
+		<div class="testh_crighcem">
+			<div class="testh_crighceml">
+				<span>排序：</span>
+				 <a> 默认 </a> | <a> 最新 </a> | <a> 人气 </a> | <a> 评论数 </a> | <a> 最高分 </a>
+			
+			</div>
+			<div class="testh_crighcemr">
+				共<span>1108</span>条  <span>1</span>/74
+				<button class="testh_crighcemrup">上一页</button>
+				<button class="testh_crighcemrsdw">下一页</button>
+			</div>
+			<div class="nofl"></div>
+		</div>
+		<div class="testh_problem">
+			<ul>
+	
+				
+				<#if examInfo??>
+					<#list examInfo as eiList>
+				<li>
+					<div class="testh_probleml3"></div>
+					<div class="testh_problemr">
+						<div class="testh_problemrtop">${eiList.EXAM_NAME}</div>
+						<div class="testh_problemrcm">本卷共有${eiList.M_TOPIC_NUM}题，作答时间为${eiList.COST_TIME}分钟。总分${eiList.TOTAL}，通过分数${eiList.PASS_SCORE}<br/>
+						</div>
+						<div class="testh_problemrbot">
+							<div class="testh_problemrbotl">
+								<div class="testh_problemrbotlx1">做题人数：<span>8</span></div>
+								<div class="testh_problemrbotlx2">评论：<span>15</span></div>
+								<div class="testh_problemrbotlx4"></div>
+							</div>
+							<div class="testh_problemrbotr">
+								
+								<button class="testh_problemrbotrjx" examId=${eiList.EXAM_ID}><a href="" >进入考场</a></button>
+							</div>
+							<div class="nofl"></div>
+							
+						</div>
+					
+					
+					</div>
+					<div class="nofl"></div>
+				</li>
+				</#list>
+				</#if>
+				
+			
+			
+			</ul>
+		</div>
+		
+		
+		
+	</div>
+	<div class="nofl"></div>
+</div>
+
+
+
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<script>
+	$(function(){
+		$('.testh_problemrbotrjx').each(function(){
+			$(this).click(function(){
+				var examId=$(this).attr('examId');
+				location.href="<@spring.url '/exam_examView.html?examId="+examId+"'/>";
+			});
+		});
+		
+		$(".examChoose").each(function(){
+			$(this).click(function(){
+				
+			});
+		});
+		
+	});
+</script>

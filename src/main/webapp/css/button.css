@@ -1,0 +1,22 @@
+
+.btn-edit {
+	background-image:url(../image/operation/edit_only_16.gif) !important
+}
+.btn-delete {
+	background-image:url(../image/operation/trash_16.gif) !important
+}
+.btn-submit {
+	
+}
+.btn-cancel {
+	
+}
+.btn-excel {
+
+}
+.btn-query {
+/*	background-image:url(../image/operation/findreplace.gif) !important */
+}
+.btn-add {
+	background-image:url(../image/operation/add_page_16.gif) !important
+}

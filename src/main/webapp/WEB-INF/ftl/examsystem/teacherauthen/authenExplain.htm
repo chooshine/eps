@@ -1,0 +1,68 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eee;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">教师认证</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+<div style="background:<@spring.url '/images/order/bannerbg.jpg'/> repeat-y center;  height:187px;padding-top:13px; text-align:center;">
+	<span><img src="<@spring.url '/images/order/bannerjs.png'/>" width="1013" height="173"/></span> 
+</div>
+<div class="testl_con" style=" padding-top:12px; padding-bottom:30px;">
+	<div class="sq_c">
+		<div class="test_paper_kmenlxf">
+			教师认证简介
+		</div>
+		<div class="tch_cnx">
+			<div class="tch_cnx1">1. 什么是畅选网认证教师？</div>
+			
+			拥有某领域下的专业资质或证书，有时间、有精力，乐于将自己的专业知识同广大考试大用户分享。以己之长，帮助他人。认证教师不依托于单位或机构，属于个人行为。<br/> 
+			认证教师将在畅选网平台中可获得普通用户所没有的权限，例如开设网上课堂、参与推广收益活动和问答优先采用等特权。
+			
+			<div class="tch_cnx1">2. 如何申请成为认证教师？</div>
+			<span>1）自我评估</span> 
+			首先进行资质和能力的自我评估，如能达到畅选网的要求，即可点击页面下方“立即申请”，进行在线申请；<br/>  
+			<span>2）在线申请</span> 
+			逐步填写申请资料：专业领域，专家简介，联系方式等，并提供专精领域权威性证明材料，如从业资格证，领域证书等；<br/> 
+			请注意表单中规格要求，如简介字数、扫描件尺寸等； 
+			<span>3）申请审核</span> 
+			申请将于7个工作日内收到网站短消息反馈，分为通过、补充申请材料再审、暂不通过审核； 
+			<span>4）积极贡献</span> 
+			成功成为畅选网认证教师后，即可在业余时间开设自己的网上课堂，将自己的考题分析、教学素材分享给广大网友，从中获取高额收益。
+			
+			<div class="tch_cnx1">3. 认证教师有哪些特权和展示？</div>
+			
+			<span>认证特权</span> 
+			1）可开设专人所有的网上课堂，分享自己的考题给全国各地的师生，并从中获取高额收益；
+			2）高质量回答将优先推荐为精华知识，获取问答报酬，为更多畅选网网友提供帮助和参考；<br/>
+			2）可参加网站推广活动，更多推广，更多奖励； 
+			
+			
+			<div class="tch_cnx1">4. 认证教师的考核与管理</div>
+			
+			认证教师在其专业领域下，为广大网友提供专业、可靠的教学素材和资料；畅选网会接受用户投诉，给与及时处理。如发现提供劣质内容并未能及时修改的，本网站将取消其认证教师资格。
+		</div>
+		<div class="test_paper_kbot" style=" padding-top:20px; padding-bottom:20px;">
+			<div id="but" class="nxbtn_1">
+				<button>立即申请</button>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+	$(function(){
+		$("button").click(function(){
+			location.href="<@spring.url '/inputAuthenInfo.html'/>";
+		});
+	});
+</script>

@@ -1,0 +1,13 @@
+/*教师课后作业，首页下方的三个大方框的样式*/
+.hw-moduleentrances-wrap {width:800px;min-height:500px;margin:70px auto 0;}
+.hw-moduleentrances-wrap .hw-moduleentrances-subwrap a {box-shadow: 1px 4px 6px #aaa;}
+.hw-moduleentrance-left { display:inline-block; width:430px; height:175px; float:left; background-color:#45B014;}
+.hw-moduleentrance-right { display:inline-block; width:360px; height:175px; float:left; margin-left:10px; background-color:#3376CD;}
+.hw-moduleentrance-bottom { display:inline-block; width:800px; height:175px; float:left; margin-top:10px; background-color:#FF7007;}
+.hw-moduleentrance-leftimg { display:inline-block; width:74px; height:74px; float:left; margin:45px 0 0 50px; background:url("../img/bk03.png") no-repeat scroll -119px 0;}
+.hw-moduleentrance-rightimg { display:inline-block; width:71px; height:82px; float:left; margin:45px 0 0 50px; background:url("../img/bk03.png") no-repeat scroll -123px -80px;}
+.hw-moduleentrance-bottomimg { display:inline-block; width:73px; height:76px; float:left; margin:45px 0 0 50px; background:url("../img/bk03.png") no-repeat scroll -121px -166px;}
+.hw-moduleentrance-content { display:inline-block; float:left; margin:55px 0 0 25px; font-size:14px; color:#FFFFFF;}
+.hw-moduleentrance-content h2 { line-height:26px; font-size:24px;}
+.hw-moduleentrance-content p { padding-top:20px;}
+

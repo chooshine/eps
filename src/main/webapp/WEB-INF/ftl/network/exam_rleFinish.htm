@@ -1,0 +1,52 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eee;}
+.test_bennerx {width:700px;height:63px;margin:-25px auto 10px 350px;text-align:center;}
+.test_bennerx img {width:600px;height:34px;}
+.test_bennerx p {margin-top:10px;text-align:left;}
+.test_bennerx p span {font-size:16px;}
+.testl_con, .test_paper_kfb, .or_fkclu2cgfb, .or_fkclu2cg {width:1000px;}
+.or_fkclu2cg {text-align:center;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">在线考场</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"><a href="<@spring.url '/network/paperFactory.html'/>">出卷</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/room.html'/>">考场</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/result.html'/>" style="border-right:none;">阅卷</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+<div class="test_bennerx">
+	<img src="<@spring.url '/images/step3.png'/>"/>
+	<p>
+		<span style="margin-left:20px">填写试卷说明</span>
+		<span style="margin-left:185px;">编辑试卷内容</span>
+		<span style="margin-left:213px;">完成</span>
+	</p>
+</div>
+<div class="testl_con">
+	<div class="test_paper_kfb">
+		<div class="or_fkclu2cg">
+			<div class="or_fkclu2cg1">恭喜您！发布成功</div>
+			<div class="textw_con">
+				<label style="margin-right:40px;">返回试卷首页进行其他操作，<a href="<@spring.url '/network/paperFactory.html'/>">点击返回》</a></label>
+				<#if testarragedflag??>
+					<#if testarragedflag==1>
+						<label>已安排的考试过期，我要重新进行考试安排，<a href="<@spring.url '/network/paperLibrary.html'/>">点击前往考试安排》</a></label>
+					<#else>
+						<label>已经安排过考试，我要进行考场安排，<a href="<@spring.url '/netWork/net_plan.html'/>">点击前往考场安排》</a></label>
+					</#if>
+				<#else>
+					<label>还未进行考试安排，我要进行考试安排，<a href="<@spring.url '/network/paperLibrary.html'/>">点击前往考试安排》</a></label>
+				</#if>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8">

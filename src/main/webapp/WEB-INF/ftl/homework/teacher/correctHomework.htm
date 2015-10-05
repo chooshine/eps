@@ -1,0 +1,1121 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eee;}
+/*头部一直显示在最上面*/
+.content { padding-top:0px;}
+.fixed {position:fixed;top:0;width:1000px;}
+.largermargin {padding-top:57px;}
+
+.paper_tpcmr label button {margin-right:10px;float:left;}
+.paper_tpcmr label button.gradepaper-submit {width:86px;height:32px;background-color:#dc0000;color:#FFFFFF;font-size:15px;font-weight:bold;border-radius:3px;}
+.paper_tpcmr label button.chooshine-cancel {height:32px;line-height:27px;font-size:15px;background:none;}
+
+#QuestionsUl > li {border-bottom:1px solid #aaa;}
+
+/*小题*/
+.paperx_btda {min-height:32px;padding:10px 0;}
+.gradepaper-duicuoimg {float:left;margin-left:35px;}
+.gradepaper-answers {height:32px; float:left; line-height:32px; padding-left:10px;}
+.gradepaper-stuanswers {padding-bottom:20px;border-bottom:1px dashed #DDD;}
+.gradepaper-title {margin-left:30px;margin-bottom:20px;font-size:14px;font-weight:bold;}
+.cleanBoth {clear:none;}
+.gradepaper-stuanswers .cleanBoth {margin-left:-50px;}
+.gradepaper-commentcontainer .gradepaper-title {float:left;margin-top:10px;margin-bottom:12px;}
+.cleanBoth .gradepaper-title {margin-top:10px;margin-bottom:12px;}
+.gradepaper-gradecontainer {float:left;margin-top:10px;margin-left:25px;}
+.gradepaper-gradecontainer .hideimgs {display:none;position:relative;border:1px solid #00afed;background-color:#fff;}
+.gradepaper-gradecontainer .showdiv {position:relative;border:1px solid #fff;margin-right:36px;}
+.hoverwrap:hover .hideimgs {display:block;}
+.hoverwrap:hover .showdiv {display:none;}
+.gradepaper-gradecontainer .struct-grade-correct, .gradepaper-gradecontainer .struct-grade-false {cursor:pointer;}
+.gradepaper-gradecontainer .struct-grade-score {width:35px; height:20px; line-height:20px; margin-top:2px; float:left; text-align:center;}
+.gradepaper-openrefer {margin-left:900px;margin-right:20px;text-align:right;color:#0099FF;cursor:pointer;}
+.gradepaper-referanswer {display:none;padding-top:10px;border-bottom:1px dashed #DDD;}
+.test_box5 {float:left;margin-left:14px;}
+.gradepaper-referanswer .test_box5 {margin-left:68px;}
+.gradepaper-commentcontainer .gradepaper-commentwrap {float:left;}
+.gradepaper-commentcontainer {padding-top:10px;}
+.gradepaper-comment {min-height:30px;word-wrap:break-word;}
+
+/*阅读理解*/
+.paperxt_stx { margin-left:0px;}
+.paperxt_botbx { width:996px; border-bottom:0px;}
+.paperxt_com {width:700px; float:left; margin-right:20px;}
+.article_area {margin-left:10px; margin-bottom:100px;}
+
+/*添加公式按钮部分*/
+.linkClass2_postion { width:122px;}
+.correcthw-hwcommentwrap {padding:20px 0 20px 20px;}
+.correcthw-hwcommentwrap .recorderwrap section {margin-top:2px;}
+.correcthw-hwcommentwrap .recorderwrap .chooshinejp {margin-top:1px;}
+.correcthw-starwrap { margin-bottom:20px;}
+.correcthw-tip {font-size:16px;font-weight:bold;padding-top:10px;float:left;margin-right:20px;}
+.correcthw-stars { padding-left:40px;}
+.stuscoreimg {width:32px;height:32px;cursor:pointer;}
+.correcthw-hwcomment {width:512px;min-height:50px;border:1px solid #ff9966;}
+#GradeDialogOperates .chooshine-btn, #GradeDialogOperates .chooshine-cancel {float:left;}
+#GradeDialogOperates .chooshine-btn {margin-left:250px;margin-right:20px;margin-bottom:20px;}
+.questype5 .paperxt_tjxb2 {padding:0 10px;}
+.paperx_tl:hover .quesoperates {display:block;}
+.quesoperates {display:none;float:right;margin-right:20px;margin-top:-30px;}
+.nextques {display:inline-block;padding-left:18px;background:url("<@spring.url '/images/examsystem/arrow_next.png'/>") no-repeat;color:#888;}
+.nextques:hover {color:#ff9900;}
+/*录音样式*/
+.commentrec {display:inline-block;width:16px;height:24px;cursor:pointer;background:url("<@spring.url '/images/uploadimgs.png' />") no-repeat scroll -165px -3px transparent;}
+.recorderwrap {margin-top:10px;margin-left:78px;}
+.kf-editor {Z-index:101;}
+
+#ViewAll:hover {color:#f96;}
+</style>
+<!--[if IE 6]>
+<style type="text/css">
+html{overflow:hidden;}
+body{height:100%;overflow:auto;}
+.fixed{position:absolute;top:expression(eval(document.body.scrollTop + 25));}
+</style>
+<![endif]-->
+<div class="content">
+<div class="paper_tpct">
+	<label>${hwInfo.hw_name}</label>
+</div>
+<div class="paper_top">
+	<div class="paper_tpcm">
+		<div class="paper_tpcml">
+			<div class="paper_tpcmlx2">
+				<div class="examinfo-container">
+					<img src="<@spring.url '/images/examsystem/list_nested_28.png'/>">
+					<div class="examinfo">
+						共有 <span style="font-size:15px;color:#ff9966;font-weight:700;margin-right:1px;">${hwInfo.topic_num}</span> 题<em> | </em>
+						<span style="font-weight:700;color:#ff9966;" id="struct-subjectivenum"><#if correctInfo["subjective_num"]??>${correctInfo["subjective_num"]}<#else>0</#if></span> 个主观题
+					</div>
+				</div>
+				<div class="examinfo-container">
+					<img src="<@spring.url '/images/examsystem/target.png'/>">
+					<div class="examinfo">
+						已批改 <span style="font-weight:700;color:#ff9966;" id="struct-markednum"><#if correctInfo["marked_num"]??>${correctInfo["marked_num"]}<#else>0</#if></span> 个主观题
+					</div>
+				</div>
+				<div class="examinfo-container">
+					<img src="<@spring.url '/images/examsystem/user_24_blue.png'/>">
+					<div class="examinfo">
+						<span style="font-weight:700;color:#ff9966;">${correctInfo.student_name}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="paper_tpcmr">
+			<label><button type="button" id="View" class="gradepaper-submit" style="background-color:#00afed;">${view}</button></label>
+			<#if correctInfo["correct_flag"]!=2>
+			<label><button type="button" id="Save" class="chooshine-btn" style="width:86px;height:32px;line-height:27px;">保存</button></label>
+			</#if>
+			<label><button type="button" id="SubmitResult" class="gradepaper-submit">提交结果</button></label>
+			<label><button type="button" id="Quit" class="chooshine-cancel">退出</button></label>
+		</div>
+	</div>
+	<div class="nofl"></div>
+</div>
+<#-- 下面的div用于消除滚动时闪屏问题 -->
+<div style="margin-top:20px;"></div>
+
+<div class="text_sju">
+	<div class="paperx_comx">
+		<ul id="QuestionsUl">
+			<#if qiMap??>
+				<#list qiMap?keys as oneKey>
+					<#assign qi=qiMap[oneKey]>
+					<#if oneKey?starts_with("normal")>
+						<li id="ques${qi.ques_id?c}" usetime="<#if qi.answer_time?? && qi.answer_time!=''>${qi.answer_time}<#else>0</#if>" questype="${qi.QUES_TYPE?c}">
+							<div class="paperx_tl">
+								<dl>
+									<dt>
+										<div class="allNum" mTopic=${qi.M_TOPIC}>${qi.M_TOPIC}</div>
+										<div type="title" class="paperx_tlxr" quesid=${qi.QUES_ID?c}>
+											<div type='title' class='ttxt test_box' >
+												${qi.QUES_CONTENT}
+											</div>
+										</div>
+										<div class="paperx_tr1_fs">
+											<#if qi.STU_SCORE==-1>
+												<#assign student_score="">
+											<#else>
+												<#assign student_score=qi.STU_SCORE>
+											</#if>
+											<input style="display:none;" class="onequesscore" type="text" value="${qi.SCORE}">
+											<input style="display:none;" class="struct-stuscore" type="text" value="<#if qi.stu_score!=-1>${qi.stu_score}</#if>">
+										</div>
+										<div class="nofl"></div>
+									</dt>
+									<#if qi.QUES_TYPE=='1' || qi.QUES_TYPE=='2'>
+										<#list qi.OPT_CONTENT as optContent>
+											<#list qi.OPT_ID as optId>
+											    <#if optContent_index==optId_index>
+													<dd class="test_box2_bgc">
+														<div class="pap_tlt">${qi.OPT_NO[optId_index]}</div>
+														<div type="option" class="pap_tct questionItme" optid=${optId?c}>
+															<div class='ttxt test_box2'>${optContent}</div>
+														</div>
+														<div class="nofl"></div>
+													</dd>
+												</#if>
+											</#list>
+										</#list>
+									</#if>
+								</dl>
+								<div class="paperx_btda">
+									<#-- 普通小题 -->
+									<#if qi.QUES_TYPE!='4' && qi.QUES_TYPE!='5'>
+										<#if qi.STUDENT_ANSWER=="@#@#">
+											<img class="gradepaper-duicuoimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>"/>
+											<div class="gradepaper-answers">
+												<span>回答正确，正确答案是：</span>
+												<span>${qi.QUES_REFER ?replace("@@", "、")}</span>
+											</div>
+										<#else>
+											<img class="gradepaper-duicuoimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+											<div class="gradepaper-answers">
+												<#if qi.STUDENT_ANSWER??>
+												<span>回答是：</span>
+												<span>${qi.STUDENT_ANSWER ?replace("@@", "、")}，</span>
+												<#else>
+												<span>考生没有回答该题，</span>
+												</#if>
+												<!-- 正确答案部分 -->
+												<span>正确答案是：</span>
+												<span>${qi.QUES_REFER ?replace("@@", "、")}</span>
+											</div>
+										</#if>
+									<#elseif qi.QUES_TYPE=='4'>
+										<div class="gradepaper-stuanswers">
+											<div class="gradepaper-title">学生答案：</div>
+											<div class="paperx_tjx paperx_line_tjx">
+												<#assign index3=0 > <#--填空题的选项号索引-->
+												<#if qi.STU_OSCORE??>
+													<#assign stuOScoreArr=qi.STU_OSCORE ?split(",")>
+												</#if>
+												<#list qi.OPT_NO as l>
+												<div class="paperxt_tjxb2">
+													<div class="gradepaper-gradecontainer struct-gradecontainer">
+														<#if stuOScoreArr??>
+															<#if stuOScoreArr[l_index]==qi.O_SCORE[l_index]>
+																<div class="showdiv"><img alt="对" class="struct-grade-correct struct-showimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" /></div>
+																<div class="hideimgs">
+																	<img alt="对" class="struct-grade-correct firsthideimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+																	<img alt="错" class="struct-grade-false secondhideimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+																</div>
+															<#elseif stuOScoreArr[l_index]!="">
+																<div class="showdiv"><img alt="错" class="struct-grade-false struct-showimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" /></div>
+																<div class="hideimgs">
+																	<img alt="错" class="struct-grade-false firsthideimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+																	<img alt="对" class="struct-grade-correct secondhideimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+																</div>
+															<#else>
+																<div class="showdiv"><img alt="对" class="struct-grade-false struct-showimg" src="<@spring.url '/images/examsystem/gradePaper_right_gray.png'/>" /></div>
+																<div class="hideimgs">
+																	<img alt="对" class="struct-grade-correct firsthideimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+																	<img alt="错" class="struct-grade-false secondhideimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+																</div>
+															</#if>
+															<input class="struct-grade-score" type="text" value="${stuOScoreArr[l_index]}" style="display:none;"/>
+														<#else>
+															<div class="showdiv"><img alt="对" class="struct-grade-false struct-showimg" src="<@spring.url '/images/examsystem/gradePaper_right_gray.png'/>" /></div>
+															<div class="hideimgs">
+																<img alt="对" class="struct-grade-correct firsthideimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+																<img alt="错" class="struct-grade-false secondhideimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+															</div>
+															<input class="struct-grade-score" type="text" style="display:none;"/>
+														</#if>
+													</div>
+													<div class="cleanBoth">
+														<span class="tkNum">${l}</span>
+														<#assign lineContent="">
+														<#if qi.STUDENT_ANSWER??>
+															<#list qi.STUDENT_ANSWER?split("@@") as sa>
+																<#if sa?starts_with(l+"##")>
+																	<#assign lineContent=sa?substring(sa?index_of("##")+2)>
+																</#if>
+															</#list>
+														</#if>
+														<div class='test_box4 test_bg equlabel' optId="${qi.OPT_ID[l_index]?c}">${lineContent}</div>
+														<input type='text' value='${qi.O_SCORE[index3]}' class='tkScore' style="display:none;"/>
+													</div>
+													<div class="nofl"></div>
+													
+												</div>
+												<#assign index3=index3+1>
+												</#list>
+											</div>
+											<div class="nofl"></div>
+											<div class="gradepaper-openrefer"><span class="struct-opencmd">展开答案▼</span></div>
+										</div>
+										
+										<div class="gradepaper-referanswer">
+											<div class="gradepaper-title">参考答案：</div>
+											<div class="paperx_tjx paperx_line_tjx">
+												<#assign index3=-1 > <#--填空题的选项号索引-->
+												<#list qi.OPT_REFER as l>
+												<#assign index3=index3+1>
+												<div class="paperxt_tjxb2">
+													<div class="cleanBoth">
+														<span class="tkNum">${qi.OPT_NO[index3]}</span>
+														<div class='test_box4 equlabel'>${l}</div>
+													</div>
+												</div>
+												</#list>
+											</div>
+											<div class="nofl"></div>
+										</div>
+										<div class="gradepaper-commentcontainer">
+											<div class="gradepaper-title">评语：</div>
+											<div class='gradepaper-commentwrap'>
+												<div class="gradepaper-comment struct-comment equ test_box4 test_bg" contenteditable="true">${qi.teacher_comment}</div>
+												<div class='linkClass2 linkClass4_postion'>
+													<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+													<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+													<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+													<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+													<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+													<span title="录音" class="commentrec struct-commentrec">&nbsp;</span>
+												</div>
+											</div>
+											<div class="nofl"></div>
+										</div>
+										<div class="recorderwrap" recpath="${qi.comment_rec}"></div>
+										<div class="nofl"></div>
+									<#elseif qi.QUES_TYPE=='5'>
+										<div class="gradepaper-stuanswers">
+											<div class="gradepaper-title">学生答案：</div>
+											<div class="questype5">
+												<div class="paperxt_tjxb2">
+													<div class="gradepaper-gradecontainer struct-gradecontainer">
+														<#if qi.STU_SCORE=-1>
+															<div class="showdiv"><img alt="对" class="struct-grade-false struct-showimg" src="<@spring.url '/images/examsystem/gradePaper_right_gray.png'/>" /></div>
+															<div class="hideimgs">
+																<img alt="对" class="struct-grade-correct firsthideimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+																<img alt="错" class="struct-grade-false secondhideimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+															</div>
+															<input class="struct-grade-score" type="text" style="display:none;"/>
+														<#elseif qi.STU_SCORE=qi.SCORE>
+															<div class="showdiv"><img alt="对" class="struct-grade-correct struct-showimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" /></div>
+															<div class="hideimgs">
+																<img alt="对" class="struct-grade-correct firsthideimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+																<img alt="错" class="struct-grade-false secondhideimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+															</div>
+															<input class="struct-grade-score" type="text" value="${qi.STU_SCORE}" style="display:none;"/>
+														<#else>
+															<div class="showdiv"><img alt="错" class="struct-grade-false struct-showimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" /></div>
+															<div class="hideimgs">
+																<img alt="错" class="struct-grade-false firsthideimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+																<img alt="对" class="struct-grade-correct secondhideimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+															</div>
+															<input class="struct-grade-score" type="text" value="${qi.STU_SCORE}" style="display:none;"/>
+														</#if>
+													</div>
+													<div class="cleanBoth">
+														<div class='test_box5 test_bg equlabel'>${qi.STUDENT_ANSWER}</div>
+													</div>
+												</div>
+											</div>
+											<div class="nofl"></div>
+											<div class="gradepaper-openrefer"><span class="struct-opencmd">展开答案▼</span></div>
+										</div>
+										<div class="gradepaper-referanswer">
+											<div class="gradepaper-title">参考答案：</div>
+											<div>
+												<div class="paperxt_tjxb2">
+													<div class="cleanBoth">
+														<div class='test_box5 gradepaper-refer-type5 equlabel'>${qi.QUES_REFER}</div>
+													</div>
+												</div>
+											</div>
+											<div class="nofl"></div>
+										</div>
+										<div class="gradepaper-commentcontainer">
+											<div class="gradepaper-title">评语：</div>
+											<div class='gradepaper-commentwrap'>
+												<div class="struct-comment gradepaper-comment equ test_box4 test_bg" contenteditable="true">${qi.teacher_comment}</div>
+												<div class='linkClass2 linkClass4_postion'>
+													<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+													<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+													<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+													<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+													<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+													<span title="录音" class="commentrec struct-commentrec">&nbsp;</span>
+												</div>
+											</div>
+											<div class="nofl"></div>
+										</div>
+										<div class="recorderwrap" recpath="${qi.comment_rec}"></div>
+										<div class="nofl"></div>
+									</#if>
+								</div>
+								
+								<!-- 下一题 -->
+								<div class="quesoperates">
+									<div class="quesoperate"><a class="nextques struct-nq">下一题</a></div>
+								</div>
+							</div>
+							<div class="nofl"></div>
+						</li>
+					<#else>
+						<#if qi?size&gt;0>
+							<li>
+								<div class='paperxt_stx'>
+								<#list qi as tkl>
+									<#if tkl.QUES_TYPE==6>
+										<#assign articleUlId=tkl.QUES_ID?c>
+										<#--文章内容部分-->
+										<div class="article_area">
+											<div class='articletip'>（材料）</div>
+											<div remark='article' class="questionItme paperxt_com test_box6"  type="artlic" artid=${tkl.QUES_ID?c}>${tkl.QUES_CONTENT}</div>
+										</div>
+										<div class="nofl"></div>
+									</#if>
+								</#list>
+								</div>
+								<div class='paperxt_bot'>
+									<ul id=${"ul"+articleUlId+"a"}>
+										<#list qi as tkl>
+											<#if tkl.QUES_TYPE!=6>
+												<li id="ques${tkl.QUES_ID?c}" usetime="<#if tkl.answer_time?? && tkl.answer_time!=''>${tkl.answer_time}<#else>0</#if>" questype="${tkl.QUES_TYPE?c}">
+													<div class="paperx_tl">
+														<dl>
+															<dt>
+																<div class="allNum" mTopic="${tkl.M_TOPIC}">${tkl.M_TOPIC}</div>
+																<div type="title" class="paperx_tlxr" quesid=${tkl.QUES_ID?c}>
+																	<div  type='title' class='ttxt test_box' >
+																		${tkl.QUES_CONTENT}
+																	</div>
+																</div>
+																<div class="paperx_tr1_fs">
+																	<#if tkl.STU_SCORE==-1>
+																		<#assign studentScore="">
+																	<#else>
+																		<#assign studentScore=tkl.STU_SCORE>
+																	</#if>
+																	<input style="display:none;" class="onequesscore" type="text" value="${tkl.SCORE}" >
+																	<input style="display:none;" class="struct-stuscore" type="text" value="<#if tkl.stu_score!=-1>${tkl.stu_score}</#if>">
+																</div>
+																<div class="nofl"></div>
+															</dt>
+															<#if tkl.QUES_TYPE=='1' || tkl.QUES_TYPE=='2'>
+																<#list tkl.OPT_CONTENT as optContent>
+																	<#list tkl.OPT_ID as optId>
+																		<#if optContent_index==optId_index>
+																			<dd class='test_box2_bgc'>
+																				<div class="pap_tlt">${tkl.OPT_NO[optId_index]}</div>
+																				<!-- 初始化状态下选项插入公式 -->
+																				<div type="option" class="pap_tct questionItme" optid=${optId?c}>
+																					<div class='ttxt test_box2'>${optContent}</div>
+																				</div>
+																				<div class="nofl"></div>
+																			</dd>
+																		</#if>
+																	</#list> 
+																</#list> 
+															</#if>
+														</dl>
+														<div class="paperx_btda">
+															<#-- 普通小题 -->
+															<#if tkl.QUES_TYPE!='4' && tkl.QUES_TYPE!='5'>
+																<#if tkl.STUDENT_ANSWER=="@#@#">
+																	<img class="gradepaper-duicuoimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>"/>
+																	<div class="gradepaper-answers">
+																		<span>回答正确，正确答案是：</span>
+																		<span>${tkl.QUES_REFER ?replace("@@", "、")}</span>
+																	</div>
+																<#else>
+																	<img class="gradepaper-duicuoimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+																	<div class="gradepaper-answers">
+																		<#if tkl.STUDENT_ANSWER??>
+																		<span>回答是：</span>
+																		<span>${tkl.STUDENT_ANSWER ?replace("@@", "、")}，</span>
+																		<#else>
+																		<span>考生没有回答该题，</span>
+																		</#if>
+																		<!-- 正确答案部分 -->
+																		<span>正确答案是：</span>
+																		<span>${tkl.QUES_REFER ?replace("@@", "、")}</span>
+																	</div>
+																</#if>
+															<#elseif tkl.QUES_TYPE=='4'>
+															<div class="gradepaper-stuanswers">
+																<div class="gradepaper-title">学生答案：</div>
+																<div class="paperx_tjx paperx_line_tjx">
+																	<#assign index3=0 > <#--填空题的选项号索引-->
+																	<#if tkl.STU_OSCORE??>
+																		<#assign stuOScoreArr=tkl.STU_OSCORE ?split(",")>
+																	</#if>
+																	<#list tkl.OPT_NO as l>
+																	<div class="paperxt_tjxb2">
+																		<div class="gradepaper-gradecontainer struct-gradecontainer">
+																			<#if stuOScoreArr??>
+																				<#if stuOScoreArr[l_index]==tkl.O_SCORE[l_index]>
+																					<div class="showdiv"><img alt="对" class="struct-grade-correct struct-showimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" /></div>
+																					<div class="hideimgs">
+																						<img alt="对" class="struct-grade-correct firsthideimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+																						<img alt="错" class="struct-grade-false secondhideimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+																					</div>
+																				<#elseif stuOScoreArr[l_index]!="">
+																					<div class="showdiv"><img alt="错" class="struct-grade-false struct-showimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" /></div>
+																					<div class="hideimgs">
+																						<img alt="错" class="struct-grade-false firsthideimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+																						<img alt="对" class="struct-grade-correct secondhideimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+																					</div>
+																				<#else>
+																					<div class="showdiv"><img alt="对" class="struct-grade-false struct-showimg" src="<@spring.url '/images/examsystem/gradePaper_right_gray.png'/>" /></div>
+																					<div class="hideimgs">
+																						<img alt="对" class="struct-grade-correct firsthideimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+																						<img alt="错" class="struct-grade-false secondhideimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+																					</div>
+																				</#if>
+																				<input class="struct-grade-score" type="text" value="${stuOScoreArr[l_index]}" style="display:none;"/>
+																			<#else>
+																				<div class="showdiv"><img alt="对" class="struct-grade-false struct-showimg" src="<@spring.url '/images/examsystem/gradePaper_right_gray.png'/>" /></div>
+																				<div class="hideimgs">
+																					<img alt="对" class="struct-grade-correct firsthideimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+																					<img alt="错" class="struct-grade-false secondhideimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+																				</div>
+																				<input class="struct-grade-score" type="text" style="display:none;"/>
+																			</#if>
+																		</div>
+																		<div class="cleanBoth">
+																			<span class="tkNum">${l}</span>
+																			<#assign lineContent="">
+																			<#if tkl.STUDENT_ANSWER??>
+																				<#list tkl.STUDENT_ANSWER?split("@@") as sa>
+																					<#if sa?starts_with(l+"##")>
+																						<#assign lineContent=sa?substring(sa?index_of("##")+2)>
+																					</#if>
+																				</#list>
+																			</#if>
+																			<div class='test_box4 test_bg equlabel' optId="${tkl.OPT_ID[l_index]?c}">${lineContent}</div>
+																			<input type='text' value='${tkl.O_SCORE[index3]}' class='tkScore' style="display:none;"/>
+																		</div>
+																		<div class="nofl"></div>
+																	</div>
+																	<#assign index3=index3+1>
+																	</#list>
+																</div>
+																<div class="nofl"></div>
+																<div class="gradepaper-openrefer"><span class="struct-opencmd">展开答案▼</span></div>
+															</div>
+															
+															<div class="gradepaper-referanswer">
+																<div class="gradepaper-title">参考答案：</div>
+																<div class="paperx_tjx paperx_line_tjx">
+																	<#assign index3=-1 > <#--填空题的选项号索引-->
+																	<#list tkl.OPT_REFER as l>
+																	<#assign index3=index3+1>
+																	<div class="paperxt_tjxb2">
+																		<div class="cleanBoth">
+																			<span class="tkNum">${tkl.OPT_NO[index3]}</span>
+																			<div class='test_box4 equlabel'>${l}</div>
+																		</div>
+																	</div>
+																	</#list>
+																</div>
+																<div class="nofl"></div>
+															</div>
+															<div class="gradepaper-commentcontainer">
+																<div class="gradepaper-title">评语：</div>
+																<div class='gradepaper-commentwrap'>
+																	<div class="gradepaper-comment struct-comment equ test_box4 test_bg" contenteditable="true">${tkl.teacher_comment}</div>
+																	<div class='linkClass2 linkClass4_postion'>
+																		<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+																		<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+																		<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+																		<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+																		<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+																		<span title="录音" class="commentrec struct-commentrec">&nbsp;</span>
+																	</div>
+																</div>
+																<div class="nofl"></div>
+															</div>
+															<div class="recorderwrap" recpath="${tkl.comment_rec}"></div>
+															<div class="nofl"></div>
+															<#elseif tkl.QUES_TYPE=='5'>
+															<div class="gradepaper-stuanswers">
+																<div class="questype5">
+																	<div class="paperxt_tjxb2">
+																		<div class="gradepaper-gradecontainer struct-gradecontainer">
+																			<#if tkl.STU_SCORE=-1>
+																				<div class="showdiv"><img alt="对" class="struct-grade-false struct-showimg" src="<@spring.url '/images/examsystem/gradePaper_right_gray.png'/>" /></div>
+																				<div class="hideimgs">
+																					<img alt="对" class="struct-grade-correct firsthideimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+																					<img alt="错" class="struct-grade-false secondhideimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+																				</div>
+																				<input class="struct-grade-score" type="text" style="display:none;"/>
+																			<#elseif tkl.STU_SCORE=tkl.SCORE>
+																				<div class="showdiv"><img alt="对" class="struct-grade-correct struct-showimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" /></div>
+																				<div class="hideimgs">
+																					<img alt="对" class="struct-grade-correct firsthideimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+																					<img alt="错" class="struct-grade-false secondhideimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+																				</div>
+																				<input class="struct-grade-score" type="text" value="${tkl.STU_SCORE}" style="display:none;"/>
+																			<#else>
+																				<div class="showdiv"><img alt="错" class="struct-grade-false struct-showimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" /></div>
+																				<div class="hideimgs">
+																					<img alt="错" class="struct-grade-false firsthideimg" src="<@spring.url '/images/examsystem/gradePaper_fault.png'/>" />
+																					<img alt="对" class="struct-grade-correct secondhideimg" src="<@spring.url '/images/examsystem/gradePaper_right.png'/>" />
+																				</div>
+																				<input class="struct-grade-score" type="text" value="${tkl.STU_SCORE}" style="display:none;"/>
+																			</#if>
+																		</div>
+																		<div class="cleanBoth">
+																			<div class='test_box5 test_bg equlabel'>${tkl.STUDENT_ANSWER}</div>
+																		</div>
+																	</div>
+																</div>
+																<div class="nofl"></div>
+																<div class="gradepaper-openrefer"><span class="struct-opencmd">展开答案▼</span></div>
+															</div>
+															<div class="gradepaper-referanswer">
+																<div>
+																	<div class="paperxt_tjxb2">
+																		<div class="cleanBoth">
+																			<div class="gradepaper-title">参考答案：</div>
+																			<div class='test_box5 gradepaper-refer-type5 equlabel'>${tkl.QUES_REFER}</div>
+																		</div>
+																	</div>
+																</div>
+																<div class="nofl"></div>
+															</div>
+															<div class="gradepaper-commentcontainer">
+																<div class="gradepaper-title">评语：</div>
+																<div class='gradepaper-commentwrap'>
+																	<div class="struct-comment gradepaper-comment equ test_box4 test_bg" contenteditable="true">${tkl.teacher_comment}</div>
+																	<div class='linkClass2 linkClass4_postion'>
+																		<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+																		<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+																		<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+																		<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+																		<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+																		<span title="录音" class="commentrec struct-commentrec">&nbsp;</span>
+																	</div>
+																</div>
+																<div class="nofl"></div>
+															</div>
+															<div class="recorderwrap" recpath="${tkl.comment_rec}"></div>
+															<div class="nofl"></div>
+															</#if>
+														</div>
+														
+														<!-- 下一题 -->
+														<div class="quesoperates">
+															<div class="quesoperate"><a class="nextques struct-nq">下一题</a></div>
+														</div>
+													</div>
+													<div class="nofl"></div>
+												</li>
+											</#if>
+										</#list>
+									</ul>
+								</div>
+							</li>
+						</#if>
+					</#if>
+				</#list>
+			</#if>
+		</ul>
+	</div>
+</div>
+
+<#if view=="查看全部" && (hwInfo.topic_num>correctInfo["subjective_num"])>
+<div style="height:40px;line-height:40px;border:1px solid #FFE9BD;text-align:center;background:#fffadd;margin-top:10px;">
+本次作业另有${hwInfo.topic_num-correctInfo["subjective_num"]}道客观题。<a id="ViewAll" class="color-blue">查看全部请点这里</a>
+</div>
+</#if>
+<div id="GradeScoreDialog" style="display:none;">
+	<h3>作业评语及打分</h3>
+	<div class="correcthw-hwcommentwrap">
+		<div class="correcthw-starwrap">
+			<div class="correcthw-tip">评分</div>
+			<div class="correcthw-stars" star="${correctInfo.star}">
+				<img class='stuscoreimg' src="<@spring.url '/images/star-empty.png'/>" />
+				<img class='stuscoreimg' src="<@spring.url '/images/star-empty.png'/>" />
+				<img class='stuscoreimg' src="<@spring.url '/images/star-empty.png'/>" />
+				<img class='stuscoreimg' src="<@spring.url '/images/star-empty.png'/>" />
+				<img class='stuscoreimg' src="<@spring.url '/images/star-empty.png'/>" />
+			</div>
+		</div>
+		<div class="correcthw-starwrap">
+			<div class="correcthw-tip">评语</div>
+			<div style='float:left;'>
+				<div contenteditable="true" class="equ test_box4 test_bg correcthw-hwcomment">${correctInfo.remark}</div>
+				<div class='linkClass2 linkClass4_postion' style="visibility:visible;">
+					<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+					<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+					<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+					<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+					<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+					<span title="录音" class="commentrec struct-commentrec">&nbsp;</span>
+				</div>
+			</div>
+			<div class="nofl"></div>
+		</div>
+		<div class="recorderwrap" recpath="${correctInfo.comment_rec}" style="margin-top:-15px;margin-left:60px;"></div>
+		<div class="nofl"></div>
+	</div>
+	<div id="GradeDialogOperates">
+		<div id="SureSubmit" class="chooshine-btn">确定</div>
+		<div id="CancelSubmit" class="chooshine-cancel">取消</div>
+		<div class="nofl"></div>
+	</div>
+</div>
+<form id="SubmitCorrectResult" action="<@spring.url '/homework/teacher/correctHomeworkSuccess.html'/>" method="post">
+	<input type="hidden" name="hwId" value="${hwInfo['hw_id']?c}" />
+	<input type="hidden" name="hwRecId" value="${hwRecId?c}" />
+</form>
+<form id="QuitToBefore" action="<@spring.url '/homework/teacher/correctInfoOfOneClass.html'/>" method="post">
+	<input type="hidden" name="hwId" value="${hwInfo['hw_id']?c}">
+	<input type="hidden" name="classId" value="${correctInfo.class_id?c}">
+</form>
+<#include "homework/answerCard.htm" parse="true" encoding="UTF-8">
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<#-- 插入公式 -->
+<#include "insertFormulaDialog.htm" parse="true" encoding="UTF-8" >
+<#include "formulaDialog.htm" parse="true" encoding="UTF-8" >
+<#include "formula/formulaHistoryDialog.htm" parse="true" encoding="UTF-8" >
+<#include "recorder.htm" parse="true" encoding="UTF-8" >
+<script>
+$(function(){
+	var hwId = ${hwInfo["hw_id"]?c};
+	var quesScoreArr = {};
+	var oScoreArr = {};
+	var commentArr = {};
+	//查看全部题目的url
+	var urlConstant = "<@spring.url '/homework/teacher/correctHomework.html' />"+"?hwId="+${hwInfo['hw_id']?c}+"&hwRecId="+${hwRecId?c};
+
+	$("#GradeScoreDialog").dialog({
+		autoOpen: false,
+		dialogClass:"chooshine-dialog",
+	    height: 400,
+	    width: 780,
+	    modal: true,
+	    resizable:false
+	});
+	
+	//************************页面整体显示效果的设置****************************
+	//滚动条滚动时，让div一直显示在页面顶部
+	var paperTopNode = $(".paper_top")[0];
+	var startPos = $(paperTopNode).offset().top;
+	$(window).scroll(function() {
+		fixDiv(paperTopNode, startPos, "fixed", "largermargin");
+		fixAnswerCard();
+	});
+	
+	//显示星星
+	var star = $($(".correcthw-stars")[0]).attr("star");
+	
+	for(var i=0; i< parseInt(star); i++) {
+		$($(".stuscoreimg").get(i)).attr("src", "<@spring.url '/images/star-full.png' />");
+	}
+	//******************************************************************
+	//判断小题是否评阅过，如果是，返回true，否则返回false
+	function isMarked(liNode) {
+		var flag = false;
+		if($($(liNode).find(".struct-stuscore")[0]).val() != "") {
+			flag = true;
+		}
+		return flag;
+	}
+	
+	//计算小题得分
+	function computeQuesScore(liNode, isMarkedFlag) {
+		var flag = false;
+		//判断当前小题是否有未评阅的选项，如果有，就跳出方法
+		$(liNode).find(".struct-grade-score").each(function() {
+			if($(this).val() == "") {
+				flag = true;
+				//设置小题得分为空
+				$($(liNode).find(".struct-stuscore")[0]).val("");
+				return false;
+			}
+		});
+		if(flag) return;
+		
+		//如果小题之前是未被评阅过的（即没有小题得分），则需要将已评阅小题数量增加
+		if(!isMarkedFlag) {
+			if(parseInt($("#struct-markednum").html()) < parseInt($("#struct-subjectivenum").html())) {
+				$("#struct-markednum").html(parseInt($("#struct-markednum").html())+1);
+				$("#mtopic"+$($(liNode).find(".allNum")[0]).attr("mtopic")).removeClass("answercard-gray");
+				$("#mtopic"+$($(liNode).find(".allNum")[0]).attr("mtopic")).addClass("answercard-blue");
+			}
+		}
+		
+		//计算小题得分
+		var quesScore = 0;
+		var stuScoreNode = $(liNode).find(".struct-stuscore")[0];
+		$(liNode).find(".struct-grade-score").each(function() {
+			quesScore = quesScore+parseInt($(this).val());
+		});
+		$(stuScoreNode).val(quesScore);
+	}
+	
+	//星星的操作，包括点击、停留、离开的事件
+	$(".stuscoreimg").each(function(index) {
+		$(this).click(function() {
+			$(".stuscoreimg").attr("src", "<@spring.url '/images/star-empty.png'/>");
+			for(var i=0; i<=index; i++) {
+				$($(".stuscoreimg").get(i)).attr("src", "<@spring.url '/images/star-full.png'/>");
+				$(".correcthw-stars").attr("star", index+1);
+			}
+		}).mouseover(function() {
+			$(".stuscoreimg").attr("src", "<@spring.url '/images/star-empty.png'/>");
+			for(var i=0; i<=index; i++) {
+				$($(".stuscoreimg").get(i)).attr("src", "<@spring.url '/images/star-full.png'/>");
+			}
+		}).mouseleave(function() {
+			$(".stuscoreimg").attr("src", "<@spring.url '/images/star-empty.png'/>");
+			var star = $($(".correcthw-stars")[0]).attr("star");
+			for(var i=0; i<parseInt(star); i++) {
+				$($(".stuscoreimg").get(i)).attr("src", "<@spring.url '/images/star-full.png'/>");
+			}
+		});
+	});
+	
+	
+	//评分
+	$('.struct-gradecontainer').each(function() {
+		$(this).mouseenter(function() { $(this).addClass('hoverwrap') });
+	});
+	//对号或错号点击事件
+	$(".hideimgs").find("img").click(function() {
+		//判断点击的是什么标记，如果是对，则把显示img的改为对，并且把第一个隐藏的img改为对，第二个隐藏的img改为叉号；
+		//如果是错，则相反
+		var container = $(this).parents(".struct-gradecontainer");
+		var scoreInput = $(container).find(".struct-grade-score")[0];
+		var showImg = container.find(".struct-showimg");
+		var firstHideImg = container.find(".firsthideimg");
+		var secondHideImg = container.find(".secondhideimg");
+		
+		if($(this).attr("alt") == "对") {//如果点击了对号
+			showImg.attr({src:"<@spring.url '/images/examsystem/gradePaper_right.png'/>", alt:"对"});
+			firstHideImg.attr({src:"<@spring.url '/images/examsystem/gradePaper_right.png'/>", alt:"对"});
+			secondHideImg.attr({src:"<@spring.url '/images/examsystem/gradePaper_fault.png'/>", alt:"错"});
+			$(scoreInput).val(1);
+		} else {//如果点击了错号
+			showImg.attr({src:"<@spring.url '/images/examsystem/gradePaper_fault.png'/>", alt:"错"});
+			firstHideImg.attr({src:"<@spring.url '/images/examsystem/gradePaper_fault.png'/>", alt:"错"});
+			secondHideImg.attr({src:"<@spring.url '/images/examsystem/gradePaper_right.png'/>", alt:"对"});
+			$(scoreInput).val(0);
+		}
+		
+		var liNode = $(this).parents("li")[0];
+		$(this).parents('.struct-gradecontainer').removeClass('hoverwrap');
+		computeQuesScore(liNode, isMarked(liNode));
+		
+		container.removeClass("gradepaper-gradecontainer").addClass("gradepaper-gradecontainer");
+	});
+	/**********************************查看答案*******************************/
+	//点击“查看答案”或“收起答案”
+	$(".gradepaper-openrefer").click(function() {
+		var cmdNode = $(this).find(".struct-opencmd")[0];
+		var imgNode = $(this).find(".struct-openimg")[0];
+		if($(cmdNode).html() == "展开答案▼") {
+			$(cmdNode).html("收起答案▲");
+			$($(this).parents("li")[0]).find(".gradepaper-referanswer").show();
+		} else {
+			$(cmdNode).html("展开答案▼");
+			$($(this).parents("li")[0]).find(".gradepaper-referanswer").hide();
+		}
+	});
+	
+	
+	/**********************************保存、提交******************************/
+	//点击打分弹框中的“取消”
+	$("#CancelSubmit").click(function() {
+		$("#GradeScoreDialog").dialog("close");
+	});
+	//点击打分弹框中的“确定”
+	$("#SureSubmit").click(function() {
+		var dialogNode = $("#GradeScoreDialog");
+		//如果当前是播放状态，则停止录音
+		if(!dialogNode.find(".chooshinejp").hasClass("hide")) {
+			dialogNode.find(".struct-jp-jplayer").jPlayer("stop");
+		}
+		
+		//判断是否有未评阅的小题，如果有，不允许提交
+		var subjectiveNum = $("#struct-subjectivenum").html();
+		var markedNum = $("#struct-markednum").html();
+		if(markedNum != subjectiveNum) {
+			$.chooshine.alert("您当前还有"+(subjectiveNum-markedNum)+"道主观题未批改，\n 请全部批改后提交。");
+			return;
+		}
+		
+		//判断小题的录音当前是否是录音状态，若是，不允许保存
+		if(dialogNode.find(".stop-recording").is(":visible")) {
+			$.chooshine.alert("请先完成录音再保存");
+			return false;
+		}
+		
+		if($($(".correcthw-stars")[0]).attr("star") == "0") {
+			$.chooshine.confirm("您没有给该学生评分，确定提交？",function(){
+				//取消自动保存
+				<#if correctInfo["correct_flag"]!=2>
+				window.clearInterval(saveInterval);
+				</#if>
+				//提交信息
+				submitOperateInfo("submit");
+			});
+		} else {
+			//取消自动保存
+			<#if correctInfo["correct_flag"]!=2>
+			window.clearInterval(saveInterval);
+			</#if>
+			//提交信息
+			submitOperateInfo("submit");
+		}
+	});
+	
+	//收集主观题的信息并提交
+	function submitOperateInfo(operateType) {
+		$(".struct-comment").each(function() {
+			var liNode = $(this).parents("li")[0];
+			var quesId = $(liNode).attr("id").substring(4,$(liNode).attr("id").length);
+			
+			//以小题的编号为键名保存小题的得分
+			quesScoreArr[quesId] = $($(liNode).find(".struct-stuscore")[0]).val();
+			//得到填空题的选项得分，以，分隔，以小题编号为键名保存
+			if($(liNode).attr("questype") == "4") {
+				var oScoreStr = "";
+				$(liNode).find(".struct-grade-score").each(function() {
+					oScoreStr = oScoreStr+$(this).val()+",";
+				});
+				if(oScoreStr.length > 1) {
+					oScoreArr[quesId] = oScoreStr.substring(0, oScoreStr.length-1);
+				}
+			}
+			
+			//得到小题的评语
+			commentArr[quesId] = encodeURIComponent(encodeURIComponent(cleanBr($(this).html().trim())));
+		});
+		
+		//将小题的信息存到数据库
+		$.ajax({
+			url:"<@spring.url '/homework/teacher/correctHomework.json'/>",
+			type:"POST",
+			contentType:"application/x-www-form-urlencoded;charset=UTF-8",
+			data:"hwRecId="+${hwRecId?c}+
+			 "&quesScoreJson="+JSON.stringify(quesScoreArr)+
+			 "&oScoreJson="+JSON.stringify(oScoreArr)+
+			 "&commentJson="+JSON.stringify(commentArr)+
+			 "&operateType="+operateType+
+			 "&star="+$($(".correcthw-stars")[0]).attr("star")+
+			 "&comment="+encodeURIComponent(encodeURIComponent(cleanBr($($(".correcthw-hwcomment")[0]).html().trim()))),
+			success:function(data) {
+				if(operateType == "submit") {
+					$("#SubmitCorrectResult").submit();
+				} else if(operateType == "view") {
+					changeView();
+				}
+			}
+		});
+	}
+	
+	
+	//点击保存，保存试卷信息
+	$("#Save").click(function() {
+		if($("#Save").attr("autoflag") != "auto") {
+			$.chooshine.alert("保存成功！");
+			$("#Save").attr("autoflag", "");
+		}
+		submitOperateInfo("save");
+	});
+	
+	//调用自动触发点击保存事件的方法
+	function autoSave() {
+		$("#Save").attr("autoflag", "auto");
+		triggerMouseEvent(document.getElementById("Save"), "click");
+	}
+	<#if correctInfo["correct_flag"]!=2>
+	//自动保存
+	saveInterval = window.setInterval(autoSave,300000);
+	</#if>
+	//点击提交
+	$("#SubmitResult").click(function() {
+		//设置插入公式的div为评语文本框
+		divElement = $(".correcthw-hwcomment")[0];
+		triggerMouseEvent($("#GradeScoreDialog").find(".correcthw-hwcomment")[0], "click");
+		$("#GradeScoreDialog").dialog("open");
+	});
+	
+	//点击退出
+	$("#Quit").click(function() {
+		$.chooshine.confirm("您未保存的批改记录将丢失，是否退出？", function() {
+			$("#QuitToBefore").submit();
+		});
+	});
+	
+	$("#ViewAll").click(function() {
+		$("#View").trigger("click");
+	});
+	//点击查看全部或批主观题
+	$('#View').click(function() {
+		submitOperateInfo("view");
+	});
+	//切换查看种类
+	function changeView() {
+		if($("#View").text() == '查看全部') window.location.href = urlConstant;
+		else window.location.href = urlConstant+"&questype=subjective";
+	}
+	
+	//*********************************答题卡的操作************************************
+	$(".struct-nq").each(function(index) {
+		//删除最后一题的“下一题”
+		if(index == $(".struct-nq").length-1){
+			$(this).parent().remove();
+		}
+		//点击小题的“下一题”
+		$(this).click(function() {
+			//得到当前小题的大题的id和下一小题的大题id
+			var liNode = $(this).parents("li")[0];
+			var mTopic = $($(liNode).find(".allNum")[0]).attr("mtopic");
+			var currentIndex = $(liNode).find(".allNum").index('.allNum');
+			var nextLiNode = $($(".allNum")[currentIndex+1]).parents("li")[0];
+			
+			var typeId = $(".paperx_comxp").attr("id");
+			var nextLiTypeId = $(nextLiNode).parents(".paperx_com").attr("id");
+			
+			//如果根据paperx_com这个类找到的下一个节点不是undefined，则说明下一小题和当前小题不是同一大题
+			if(nextLiTypeId != undefined) {
+				oldId=nowId;	//将点击前显示的大题的编号变成oldId
+				nowId=nextLiTypeId.substr(4);	//将点击后显示的大题的编号变成nowId
+				initChange();	//设置当前选中大题下的基本信息
+			}
+			
+			var x = $(nextLiNode).offset().left;
+			var y = $(nextLiNode).offset().top-120;
+			//将滚动条滚动到制定位置
+			window.scrollTo(x, y);
+		});
+	});
+	//点击答题卡中的小题号
+	$(".answercard-question").each(function(){
+		$(this).click(function(){
+			//得到小题的位置
+			var liNode = $("#ques"+$(this).attr("quesid"));
+			if(liNode[0] != undefined) {	//如果页面存在当前小题（批主观题页面会出现不存在客观小题的情况）
+				var x = $(liNode).offset().left;
+				var y = $(liNode).offset().top-54;
+				//将滚动条滚动到制定位置
+				window.scrollTo(x, y);
+			} else {
+				var mtopicId = $(this).attr("id");
+				location.href = urlConstant+"&mtopicId="+mtopicId;
+			}
+		});
+	});
+	<#if mtopicId??>
+		triggerMouseEvent($('#${mtopicId}')[0], "click");
+	</#if>
+	/****************************添加公式*********************************/
+	//对题干、选项、答案及解析的公式进行处理
+	$(".equlabel").each(function() {
+		//将页面加载的转换后的img标签转换回来
+		$(this).html(changeImgToNormal($(this).html(), rootPath));
+	});
+	//解答题和填空题评语的点击事件
+	$(".equ").each(function() {
+		//解码内容
+		var html = $(this).html();
+		//将页面加载的转换后的img标签转换回来
+		$(this).html(changeImgToNormal(html, rootPath));
+		findDivEventMouseup(this);	//将当前文本框设置为要插入公式的节点
+		textboxClick(this);			//为当前文本框添加点击事件
+		
+		//公式图片添加双击事件
+		$(this).find("img").each(function() {
+			if(!($(this).attr("data-latex") == undefined)) {
+				$(this).dblclick(function() {
+					formulaDbClickEvent(this);
+				});
+			}
+		});
+	});
+	
+	//点击插入公式和上传图片
+	//初始化的时候加载添加图片方法
+	$(".addequation").each(function(){
+		addEventClick(this);
+	});
+	$(".addequation_local").each(function(){
+		addLocalPhoto(this);
+	});
+	$(".struct-kf").each(function() {
+		$(this).click(function() {
+			openKity();
+		});
+	});
+	$(".struct-ue").each(function() {
+		addClickEventToUeditorBtn(this);
+	});
+	$(".struct-hist").each(function() {
+		$(this).click(function() {
+			openFormulaHistory();
+		});
+	});
+});
+
+//****************************录音部分********************************
+//给每个小题添加录音功能
+$(".paperx_tl").each(function(index) {
+	addRecorder(this, index);
+});
+addRecorder($("#GradeScoreDialog"), new Date().getTime());//给整体作业添加录音功能
+$(".struct-commentrec").click(function() {
+	enterRecorderEvent(this);
+});
+/**
+ * 小题的录音入口点击事件
+ * @param node 录音入口节点
+ */
+function enterRecorderEvent(node) {
+	var quesNode = $(node).parents(".paperx_tl");
+	if(quesNode[0] == undefined) quesNode = $("#GradeScoreDialog");
+	var	startRecordNode = quesNode.find(".start-recording")[0],
+		pauseRecordNode = quesNode.find(".pause")[0];
+	
+	triggerMouseEvent(startRecordNode, "click");//自动触发录音按钮点击事件
+	//如果停止录音图标是显示状态，说明当前进入了录音状态，要隐藏录音入口图标;否则，说明当前刚选择了允许flash，不隐藏录音入口图标
+	if(!quesNode.find(".stop-recording").is(":hidden")) {
+		$(node).addClass("hide");
+		triggerMouseEvent(pauseRecordNode, "click");//自动触发暂停按钮点击事件
+	}
+}
+//上传录音并显示播放器之后要做的事情
+function doAfterUploadWav(recorderWrap, path) {
+	//如果是小题的录音，则要设置小题的评语录音，否则，设置作业记录的评语录音
+	if($(recorderWrap).parents(".paperx_tl")[0] != undefined) {
+		//设置小题的评语录音
+		$.get("<@spring.url '/setHomeworkCommentRecord.json' />", {hwRecId:${hwRecId?c}, quesId:$(recorderWrap).parents(".paperx_tl").parent().attr("id").substring(4), path:path.substring(1)});
+	} else {
+		//设置作业记录的评语录音
+		$.get("<@spring.url '/setHomeworkRecordWav.json' />", {hwRecId:${hwRecId?c}, path:path.substring(1)});
+	}
+}
+//删除录音之后做的处理
+function doAfterDeleteWav(recorderWrap) {
+	var quesNode = $(recorderWrap).parents(".paperx_tl");
+	if(quesNode[0] == undefined) quesNode = $("#GradeScoreDialog");
+	if($(recorderWrap).parents(".paperx_tl")[0] != undefined) {
+		//设置小题对应的评语录音为空字符串
+		$.get("<@spring.url '/setHomeworkCommentRecord.json' />", {hwRecId:${hwRecId?c}, quesId:quesNode.parent().attr("id").substring(4), path:null});
+	} else {
+		//设置作业记录的评语录音为空字符串
+		$.get("<@spring.url '/setHomeworkRecordWav.json' />", {hwRecId:${hwRecId?c}, path:null});
+	}
+	//显示录音按钮
+	quesNode.find(".struct-commentrec").removeClass("hide");
+}
+//点击输入框时要做的特殊处理
+function doWhenClickInput(node) {
+	//判断当前是否是录音状态或者播放状态，若是，则不显示录音入口，否则显示录音入口
+	var quesNode = $(node).parents(".paperx_tl");
+	if(quesNode[0] == undefined) quesNode = $("#GradeScoreDialog");//如果是作业录音的处理
+	if(quesNode.find(".stop-recording").is(":visible") || !quesNode.find(".chooshinejp").hasClass("hide")) {
+		quesNode.find(".struct-commentrec").addClass("hide");
+	}
+}
+</script>

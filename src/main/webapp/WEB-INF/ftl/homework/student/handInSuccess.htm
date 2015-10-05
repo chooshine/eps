@@ -1,0 +1,53 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eee;}
+.testl_con, .test_paper_kfb, .or_fkclu2cgfb, .or_fkclu2cg {width:1000px;}
+.testl_con {margin-top:50px;}
+.or_fkclu2cg {text-align:center;}
+.or_fkclu2cg1 {width:240px;margin-left:410px;}
+#submitexamsuccess-score {margin-top:18px;}
+.textw_con label.submitexamsuccess-gobackindex {margin-right:40px;}
+.stuscoreimg {width:48px;height:48px;}
+</style>
+<#include "homework/student/weblogos/viewHomeworksLogo.htm" parse="true" encoding="UTF-8" >
+<div class="content">
+<div class="testl_con">
+	<div class="test_paper_kfb">
+		<div class="or_fkclu2cg">
+			<div>
+				<div class="or_fkclu2cg1">交作业成功！</div>
+			</div>
+			
+			<div id="submitexamsuccess-score">
+			<#if hwRecordMap?? && hwRecordMap["star"]??>
+				<img class='stuscoreimg' src="<@spring.url '/images/star-empty.png'/>" />
+				<img class='stuscoreimg' src="<@spring.url '/images/star-empty.png'/>" />
+				<img class='stuscoreimg' src="<@spring.url '/images/star-empty.png'/>" />
+				<img class='stuscoreimg' src="<@spring.url '/images/star-empty.png'/>" />
+				<img class='stuscoreimg' src="<@spring.url '/images/star-empty.png'/>" />
+			</#if>
+			</div>
+			
+			<div class="textw_con">
+				<label class="submitexamsuccess-gobackindex">返回作业首页进行其他操作，<a href="<@spring.url '/homework/entrance.html'/>">点击返回》</a></label>
+				<#if scoreMap?? && scoreMap["score"]??><label>查看做题详情及解析，<a href="<@spring.url '/examsystem/viewDetail.html?examId=${scoreMap.exam_id}&testRecId=${scoreMap.test_rec_id?c}&viewType=all'/>">点击查看》</a></label></#if>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<script>
+$(function() {
+	<#if hwRecordMap?? && hwRecordMap["star"]??>
+	scoreToImg(${hwRecordMap["star"]});
+	function scoreToImg(star) {
+		$(".stuscoreimg").each(function(index) {
+			if(index < star) {
+				$(this).attr("src", "<@spring.url '/images/star-full.png'/>");
+			}
+		});
+	}
+	</#if>
+});
+</script>

@@ -1,0 +1,248 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">余额提现</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<!-------content code------------>
+<div class="content">
+    <div class="tx_step">
+    <form action="<@spring.url '/actives/drawMoneyStep2.html'/>" method="post">
+    	<p>
+    		<span class="yue_tx">提取余额到银行卡</span>
+    		<span class="yue_tishi">
+    			账户余额：<b class="blue" id="tx1_balance">${cash?c}</b> 元&nbsp;&nbsp;   
+    			最高可提取金额：<b class="red" id="tx1_maxamount">${unfreezeMoney?c}</b> 元
+    		</span>
+    		<img src="<@spring.url '/images/order/tip.png'/>"  title="最高可提取金额=账户余额-正在审核中提现金额" style="width:26px;height:26px;" />
+    	</p>
+        <div class="clear"></div>
+        <div class="input_wrap03">
+        	<div class="input_title">开户行：</div>
+        	<div>
+        	<select name="bankname">
+        		<option value="0" selected="selected">请选择开户行</option>
+        		<option value="1">中国工商银行</option>
+        		<option value="2">招商银行</option>
+        		<option value="3">中国建设银行</option>
+        		<option value="4">中国银行</option>
+        		<option value="5">中国农业银行</option>
+        		<option value="6">交通银行</option>
+        		<option value="7">上海浦东发展银行</option>
+        		<option value="8">广东发展银行</option>
+        		<option value="9">中信银行</option>
+        		<option value="10">中国光大银行</option>
+        		<option value="11">兴业银行</option>
+        		<option value="12">平安银行</option>
+        		<option value="13">中国民生银行</option>
+        	</select>
+        	</div>
+        	<div name="bankname_notice" class="drawmoney_notice"></div>
+        </div>
+        <div class="clear"></div>
+        <div class="input_wrap03">
+        	<div class="input_title">收款人：</div>
+        	<div><input type="text" name="receiver"/></div>
+        	<div name="receiver_notice" class="drawmoney_notice"></div>
+        </div>
+        <div class="clear"></div>
+        <div class="input_wrap03">
+        	<div class="input_title">银行账号：</div>
+        	<div><input type="text" name="account"/></div>
+        	<div name="account_notice" class="drawmoney_notice"></div>
+        </div>
+        <div class="clear"></div>
+        <div class="input_wrap03">
+        	<div class="input_title">提取金额：</div>
+        	<div style="line-height:34px;"><input type="text" class="money" name="amount"/>&nbsp;元</div>
+        	<div name="amount_notice" class="drawmoney_notice blue">(金额须为100的整数倍)</div>
+        </div>
+        <div class="clear"></div>
+        <div class="input_wrap03">
+        	<div class="input_title">手机验证码：</div>
+        	<div>
+        		<input type="text" name="checkcode" id="checkcode_drawmoney"/>
+        		<input type="button" id="sendcode_drawmoney" clicked="" value="获取验证码" />
+        	</div>
+        	<div name="checkcode_notice" class="drawmoney_notice"></div>
+        </div>
+        <span class="btn02"><button type="button" id="next">确定提现</button></span>
+      </form>
+    </div>
+    
+</div>
+<div class="clear"></div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+	$(function() {
+		
+		var amountValue = $("input[name='amount']").val();
+		var bankname_notice = $("div[name='bankname_notice']");
+		var receiver_notice = $("div[name='receiver_notice']");
+		var account_notice = $("div[name='account_notice']");
+		var amount_notice = $("div[name='amount_notice']");
+		var checkcode_notice = $("div[name='checkcode_notice']");
+		
+		$("select[name='bankname']").click(function(){
+			$(bankname_notice).text("");
+		});
+		$("select[name='bankname']").focus(function(){
+			$(bankname_notice).text("");
+		});
+					
+		$("input[name='receiver']").click(function(){
+			$(this).val("");
+			$(receiver_notice).text("");
+		});
+		$("input[name='receiver']").focus(function(){
+			$(this).val("");
+			$(receiver_notice).text("");
+		});
+		
+		$("input[name='account']").click(function(){
+			$(this).val("");
+			$(account_notice).text("");
+		});
+		$("input[name='account']").focus(function(){
+			$(this).val("");
+			$(account_notice).text("");
+		});
+		
+		$("input[name='amount']").click(function(){
+			$(this).val("");
+			$(amount_notice).text("(金额须为100的整数倍)");
+			$(amount_notice).css("color","#4684d3");
+		});
+		$("input[name='amount']").focus(function(){
+			$(this).val("");
+			$(amount_notice).text("(金额须为100的整数倍)");
+			$(amount_notice).css("color","#4684d3");
+		});
+		
+		$("#checkcode_drawmoney").click(function(){
+			$(this).val("");
+			$(checkcode_notice).text("");
+		});
+		$("#checkcode_drawmoney").focus(function(){
+			$(this).val("");
+			$(checkcode_notice).text("");
+		});
+		
+		$("#sendcode_drawmoney").click(function(){
+			time(this);
+			$.getJSON("<@spring.url '/drawMoney/getCheckCode.json'/>",function(data){
+				$("#sendcode_drawmoney").attr("clicked","clicked");
+			});
+		});
+			
+		$("#next").click(function() {
+			var flag=true;
+			var bankname_value = $("select[name='bankname']").val();
+			var receiver_value = $("input[name='receiver']").val();
+			var account_value = $("input[name='account']").val();
+			var amountValue = $("input[name='amount']").val();
+			
+			if(bankname_value==0){
+				$(bankname_notice).text("必须选择开户行");
+				$(bankname_notice).css("color","red");
+				flag=false;
+			} 
+			if($.trim(receiver_value) == ""){
+				$(receiver_notice).text("收款人不能为空");
+				$(receiver_notice).css("color","red");
+				flag=false;
+			} 
+			if($.trim(account_value) == ""){
+				$(account_notice).text("银行账号不能为空");
+				$(account_notice).css("color","red");
+				flag=false;
+			}
+			
+			if(isNaN(amountValue)) {
+				$(amount_notice).text("(金额须是数字且为100的整数倍)");
+				$(amount_notice).css("color","red");
+				flag=false;
+			} else if(amountValue%100 !== 0){
+				$(amount_notice).text("(金额须是数字且为100的整数倍)");
+				$(amount_notice).css("color","red");
+				flag=false;
+			} else if(amountValue.charAt(0)=="0"){
+				$(amount_notice).text("(金额不能为0且不能以0开头)");
+				$(amount_notice).css("color","red");
+				flag=false;
+			} else if($.trim(amountValue) == ""){
+				$(amount_notice).text("(金额不能为空)");
+				$(amount_notice).css("color","red");
+				return;
+			} else if(amountValue > $("#tx1_maxamount").text()){
+				$(amount_notice).text("(提现金额不能大于最高可提取金额)");
+				$(amount_notice).css("color","red");
+				flag=false;
+			} 
+			if(flag==false) return;
+			var code = $("#checkcode_drawmoney").val();
+			if(code==null || code==""){
+				$(checkcode_notice).text("动态验证码不能为空");
+				$(checkcode_notice).css("color","red");
+				return;
+			} else if($("#sendcode_drawmoney").attr("clicked")=="clicked"){
+				$.ajax("<@spring.url '/drawMoney/checkCheckCode.json'/>",{
+					data:{'checkcode':code},
+					success:function(data){
+						if(data['success']==0){
+							$(checkcode_notice).text("输入验证码不正确");
+							$(checkcode_notice).css("color","red");
+							return;
+						} else{
+							$.get("<@spring.url '/drawMoney/analyBalance.json?amount="+amountValue+"'/>",function(data){
+								var result=data['result'];
+								var cash=data['cash'];
+								var unfreezemoney=data['unfreezemoney'];
+								if(result==0){//余额不足100元
+									alert("您当前余额为"+cash+"元，不足100元，不能提现！");
+									$("#tx1_balance").text(cash);
+									$("#tx1_maxamount").text(unfreezemoeny);
+									return;
+								} else if(result==1){
+									$("#tx1_balance").text(cash);
+									$("#tx1_maxamount").text(unfreezemoney);
+									alert("提现金额不能大于最高可提取金额，您当前最高可提取余额为"+unfreezemoney+"元");
+									return;
+								} else{
+									$("form").submit();
+								}
+							});
+						}
+					}
+				});
+			} else{
+				$(checkcode_notice).text("请先获取验证码");
+				$(checkcode_notice).css("color","red");
+				return 0;
+			}
+		});
+	});
+	
+	var wait = 30;
+	//设置再次发送验证码的时间
+	function time(o) {
+			if (wait == 0) {
+				$(o).attr("disabled",false);
+				$(o).val("获取验证码");
+				wait = 30;
+			} else {
+				$(o).attr("disabled", true);
+				$(o).val(wait + "秒后可以重新获取");
+				wait--;
+				setTimeout(function() {
+					time(o)
+				}, 1000)
+			}
+	}
+</script>

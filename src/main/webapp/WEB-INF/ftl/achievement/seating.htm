@@ -1,0 +1,65 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<#include "logheader.htm" parse="true" encoding="UTF-8" >
+<style>
+.nav ul li a { padding-top:0px;}
+</style>
+ <div id="perIndexMain" >
+			<div class="per_nav">
+				<div class="nav">
+	   				<div class="top">
+	   					<ul>
+		   					<li><a href="<@spring.url '/achievement/myoffice.html'/>">我的办公室</a></li>
+		   					<li><a href="<@spring.url '/achievement/class/ability.html'/>">班级能力</a></li>
+		   					<li><a href="<@spring.url '/achievement/lesson.html'/>">课程表</a></li>
+		   					<li class="perIndexNavLi">座位表</li>
+		   					<li><a href="<@spring.url '/achievement/scoreNotice.html'/>">考试分析</a></li>
+	   					</ul>
+	   				</div>
+	   				<div id="indexNavFirst" class="bottom" >
+			   			<ul>
+			   				<li>座位表</li>
+			   			</ul>
+	   				</div>
+	   			</div>
+			</div>
+			<div class="resa_abl">
+				<div class="res_clttp">
+					<select name="classId">
+						<#if classes??>
+							<#list classes as class>
+								<option value="${class.classId}">${class.className}</option>
+							</#list>
+						<#else>
+							<option value="-1">未带班级</option>
+						</#if>
+					</select>
+				
+				</div>
+				<div class="res_clttpc">
+				</div>
+				
+			</div>	
+	   </div>	
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+
+<script>
+	$(function(){
+		$(".resz_l1").sortable({
+		      connectWith: ".resz_l1"
+	    });
+		$( ".resz_l1" ).disableSelection();
+		
+		$("select[name='classId']").change(function(){
+			showStudent($(this).val());
+		});
+		
+		function showStudent(classId){
+			if(classId != -1){
+				$.get("<@spring.url '/achievement/getStudnet.html'/>",{'classId':classId},function(data){
+					$(".res_clttpc").html(data);
+				},"html")
+			}
+		}
+		showStudent($("select[name='classId']").val());
+	});
+</script>

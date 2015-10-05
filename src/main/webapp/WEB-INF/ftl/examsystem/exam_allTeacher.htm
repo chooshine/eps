@@ -1,0 +1,310 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+
+<div class="or_top">
+	<div class="or_tlt"><a href="<@spring.url '/' />"><div class="intop1" ></div></a></div>
+	<div class="or_trt">
+		<ul class="or_trtcl">
+			<li id="myExam">我的试卷</li>
+			<li id="myTeacher">我的老师</li>
+			<li id="myRelease">我的发布</li>
+		</ul>
+		<div class="or_trtcr">
+			
+		</div>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="testl_con" style=" padding-top:12px;">
+	<div class="or_t_top">
+		<div class="testh_crightoptl">${SORTPARENTNAME} <span id="changeType">[切换科目]</span></div>
+		
+	</div>
+	<div class="or_t_top1">
+		<div  class="or_t_te1">
+			<div  class="testh_crightoptx_ceml">科目：</div>
+			<div  class="or_t_te2">
+				<#assign cksub=0>
+				<#list SUBLIST as sub>
+					<#assign cksub=cksub+sub.COUNT_SUB>
+				</#list>
+				<a class="con1" parentSubjectno="-1">全部</a>   
+				<#list SUBLIST as sub>
+					<a class="con1" parentSubjectno="${sub.SORT_ID}">${sub.SORT_NAME}</a>
+				</#list>
+				<div class="nofl"></div>
+			</div>
+			<div class="nofl"></div>
+		</div>
+		<div  class="or_t_te1">
+			<div  class="testh_crightoptx_ceml">地区：</div>
+			<div  class="or_t_te2">
+				<#assign ckarea=0>
+				<#list AREALIST as area>
+					<#assign ckarea=ckarea+area.COUNT_AREA>
+				</#list>
+				<a class="con2" examarea="-1"}>全部</a>   
+				<#list AREALIST as area>
+					<a class="con2" examarea=${area.EXAM_AREA}>${area.NAME}</a>
+				</#list>
+				<div class="nofl"></div>
+			</div>
+			<div class="nofl"></div>
+		</div>
+		
+	</div>
+	<div class="or_t_comt">
+		<div class="testh_crighceml">
+			<span>排序：</span>
+			 <a id="default" type="COUNT_ORDER" class="sortCon"> 默认 </a> | <a id="price" type="MIN_PRICE" class="sortCon"> 价格 </a>| <a id="countAss" type="COUNT_ASS" class="sortCon"> 评论数 </a> 
+		</div>
+		<div class="nofl"></div>
+	</div>
+	<div>
+	
+		<#list TEACHERLIST as tlist>
+		<dl class="or_t_x">
+			<dt class="ph" teacherId=${tlist.TEACHER_ID?c}><a ><img src="<@spring.url '/${tlist.PHOTO}'/>" width="160" height="175"/></a></dt>
+			<dd>
+				<div class="or_tx1">
+					<div class="or_tx1l"><span class="nm">${tlist.TEACHER_NAME}</span>老师</div>
+					<div class="or_tx1r">资源(<span>${tlist.COUNT_EXAM}</span>)</div>
+				</div>
+				<div class="or_tx2">
+					<div class="or_tx2l">${tlist.SCHOOL_NAME}</div>
+					<div class="or_tx2r"><img src="<@spring.url '/images/result/shu.jpg'/>" width="23" height="21"/></div>
+				</div>
+				<div class="or_tx3">
+					<div class="or_tx3x1">￥<span>${tlist.MIN_PRICE}</span></div>
+					<div class="or_tx3x2 toAssess" teacherId="${tlist.TEACHER_ID?c}" goodsId="${tlist.GOODS_ID}"><a>评论(${tlist.COUNT_ASS})</a></div>
+				</div>
+			</dd>			
+		</dl>
+		</#list>
+		<div class="nofl"></div>
+	</div>	
+</div>
+
+<div class="answerspop_up" id="answerspop_up">
+	
+	<#if sortList??>
+		<#list sortList?keys as key>
+			<dl>
+				<#list sortList[key] as sortp>
+					<dt class="getPsubjectNo" parentId=${sortp.sort_parent_id}>${key}</dt>
+					<#break>
+				</#list>
+				<dd>
+					<#list sortList[key] as sort>
+					<div class="answerspop_upcem getSubjectno " parentTitle=${key} parentId=${sort.sort_parent_id} divTitle=${sort.sort_id}><a>${sort.sort_name}</a></div>
+					</#list>
+					<div class="nofl"></div>
+				</dd>
+			</dl>
+			
+		</#list>
+	</#if>
+	<div class="nofl"></div>
+</div>
+
+	<form id="getExamForm" method="GET" action="<@spring.url '/exam_orderExam.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="sortNo" id="sortNo">
+			<input type="hidden" value="-1" name="commitFlag" id="commitFlag">
+	</form>
+	
+	<form id="getTeacherForm" method="GET" action="<@spring.url '/exam_orderTeacher.html' />" />
+			<input type="hidden" value="12" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="isLose" id="isLose">
+			<input type="hidden" value="-1" name="subjectNo" id="subjectNo">
+	</form>
+	
+	<form id="getReleaseForm" method="GET" action="<@spring.url '/exam_orderRelease.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="release" id="release">
+	</form>
+
+
+	<form id="getParentSortForm" method="GET" action="<@spring.url '/exam_allTeacher.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="${SORTPARENTNAME}" name="sortParentName" id="sortParentName">
+			<input type="hidden" value="${SORTPARENTID}" name="sortParentId" id="sortParentId">
+			<input type="hidden" value="" name="parentSubjectno" id="parentSubjectno">
+			<input type="hidden" value="" name="examarea" id="examarea">
+			<input type="hidden" value="${SORTNAME}" name="sortName" id="sortName">
+			<input type="hidden" value="${SORTTYPE}" name="sortType" id="sortType">
+	</form>
+	
+	<form id="getGAssessForm" method="GET" action="<@spring.url '/exam_orderComDetail.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="assType" id="assType">
+			<input type="hidden" value="" name="teacherId">
+			<input type="hidden" value="" name="goodsId">
+			
+	</form>	
+
+	<form id="getOrderForm" method="GET" action="<@spring.url '/exam_orderView.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="" name="teacherId" id="teacherId">
+			<input type="hidden" value="first" name="whatType" id="whatType">
+			<input type="hidden" value="order" name="payType" id="payType">
+	</form>		
+	
+	<div style=" width:1024px;padding-top:20px; margin-top:20px; height:35px; margin:0 auto;">
+		<#include "pagination.htm" parse="true" encoding="UTF-8" >
+		<@pagination page=page />
+	</div>
+
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<script>
+	$(function(){
+		
+		var conditionOne=${CONDITION1};
+		var conditionTwo=${CONDITION2};
+		
+		$("#myExam").click(function(){
+			$("#getExamForm").submit();
+		});
+		
+		$("#myTeacher").click(function(){
+			$("#getTeacherForm").submit();		
+		});
+		
+		$("#myRelease").click(function(){
+			$("#getReleaseForm").submit();
+		});
+		
+		$(".show,.fcenter").each(function(index){
+			$(this).click(function(){
+				$("input[name='pageNo']").val($(this).attr("url"));
+				$("#getParentSortForm").submit();
+			});
+		});
+		
+		$(".con1").each(function(){
+			if($(this).attr("parentSubjectno")==conditionOne){
+				$(this).attr("class","or_t_sjte2 con1");
+				$("#parentSubjectno").val(conditionOne);
+			}
+			
+			$(this).click(function(){
+				$(".con1").each(function(){
+					$(this).attr("class","con1");
+				});
+				
+				$(this).attr("class","or_t_sjte2 con1");
+				getCondition();
+			});
+		});
+		
+		$(".con2").each(function(){
+			if($(this).attr("examarea")==conditionTwo){
+				$(this).attr("class","or_t_sjte2 con2");
+				$("#examarea").val(conditionTwo);
+			}
+			
+			$(this).click(function(){
+				$(".con2").each(function(){
+					$(this).attr("class","con2");
+				});
+				
+				$(this).attr("class","or_t_sjte2 con2");
+				getCondition();
+			});
+		});
+		
+		//获得条件
+		function getCondition(){
+			$(".con1").each(function(){
+				if($(this).hasClass("or_t_sjte2")){
+					conditionOne=$(this).attr("parentSubjectno");
+				}
+			});
+			
+			$(".con2").each(function(){
+				if($(this).hasClass("or_t_sjte2")){
+					conditionTwo=$(this).attr("examarea");
+				}
+			});
+
+			$("#parentSubjectno").val(conditionOne);
+			$("#examarea").val(conditionTwo);
+			
+			$("#getParentSortForm").submit();
+		}
+		
+		
+		$(".sortCon").each(function(){
+			$(this).click(function(){
+				if($("#sortType").val()=="DESC" && $("#sortType").attr("id")!="default"){
+					$("#sortType").val("ASC")
+				}else{
+					$("#sortType").val("DESC")
+				}
+				$("#parentSubjectno").val(conditionOne);
+				$("#examarea").val(conditionTwo);
+				$("#sortName").val($(this).attr("type"));
+				$("#getParentSortForm").submit();
+			});
+		});
+		
+		$(".toAssess").each(function(){
+			$(this).click(function(){
+				$("input:hidden[name='teacherId']").val($(this).attr("teacherId"));
+				$("input:hidden[name='goodsId']").val($(this).attr("goodsId"));
+				$("#getGAssessForm").submit();
+			});
+			
+		});
+		
+		$('#answerspop_up').dialog({
+			title:"切换科目",
+			autoOpen: false,
+			height: 350,
+		    width: 1023,
+		    modal: true,
+		});
+		
+		//切换试卷类型
+		$("#changeType").click(function(){
+			$("#answerspop_up").dialog("open");
+		});
+		
+		
+		$(".getSubjectno").each(function(){
+			$(this).click(function(){
+				$("input:hidden[name='parentSubjectno']").val($(this).attr("divTitle"));
+				$("input:hidden[name='examarea']").val(-1);
+				$("input:hidden[name='sortParentId']").val($(this).attr("parentid"));
+				$("input:hidden[name='sortParentName']").val($(this).attr("parenttitle"));
+				$("#getParentSortForm").submit();
+			});
+		});
+		
+		$(".getPsubjectNo").each(function(){
+			$(this).click(function(){
+				$("input:hidden[name='parentSubjectno']").val(-1);
+				$("input:hidden[name='examarea']").val(-1);
+				$("input:hidden[name='sortParentId']").val($(this).attr("parentid"));
+				$("input:hidden[name='sortParentName']").val($(this).html());
+				$("#getParentSortForm").submit();
+			});
+		});
+		
+		$(".ph").each(function(){
+			$(this).click(function(){
+				$("#teacherId").val($(this).attr("teacherId"));
+				$("#getOrderForm").submit();
+			});
+		})
+		
+	})
+	
+	
+
+</script>

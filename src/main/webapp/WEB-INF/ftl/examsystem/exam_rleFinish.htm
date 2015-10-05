@@ -1,0 +1,27 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+
+<div class="test_bennerx">
+	<img src="<@spring.url '/images/examsystem/test_cx3.png'/>" width="1024" height="77"/>
+</div>
+<div class="testl_con">
+	<div class="test_paper_kfb">
+		<div class="or_fkclu2cgfb">
+			<span><img src="<@spring.url '/images/order/dui.png'/>" width="128" height="128"/></span>
+		</div>
+		<div class="or_fkclu2cg"><label class="or_fkclu2cg1">恭喜您！</label>发布成功</div>
+	</div>
+</div>
+<div class="textw_con">
+	
+	<div class="test_paper_kbotfb">
+		<div class="txbtn_1"><button>返回试卷首页</button></div>
+	</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<script>
+	$(function(){
+		$("button").click(function(){
+			location.href="<@spring.url '/order_index.html'/>";
+		});
+	});
+</script>

@@ -1,0 +1,51 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">手机绑定</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+<form method="post" action="<@spring.url '/person/center/bind-phone-last.html'/>">
+<div class="safe_step">
+		<h2>绑定手机</h2>
+        <div class="step_icon">
+        	<span class="step01 step02"></span>
+        	<p><span class="blue02">输入手机号码</span><span class="has_margin blue">输入验证码</span><span>完成</span></p>
+            <div class="input_wrap">
+            	<input type="hidden" name="phone" value="${phone}">
+            	<div class="input"><span class="area">输入验证码：</span><span><input type="text"  name="phoneCode" value="请输入您手机所收到的验证码" /></span></div>
+                <div class="clear"></div>
+                <span id="msg" class="area"><#if error??>${error}</#if></span>
+                <span class="btn02"><button  type="button" id="nextBtn">下一步</button></span>
+            </div>
+        </div>
+    </div>
+</form>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+ $(function(){
+	 $("input[name=phoneCode]").focus(function(){
+		 if($("input[name=phoneCode]").val() == "请输入您手机所收到的验证码")
+			 $("input[name=phoneCode]").val("");
+	 });
+	 $("input[name=phoneCode]").blur(function(){
+		 if($("input[name=phoneCode]").val() == "")
+			 $("input[name=phoneCode]").val("请输入您手机所收到的验证码");
+	 });
+	 $("#nextBtn").click(function(){
+			var code = $("input[name=phoneCode]").val();
+			if(code && code!="请输入您手机所收到的验证码" && code.length == 6){
+				$("form").submit();
+			}else{
+				$("#msg").text("请输入正确的验证码");
+			}
+		});
+	 
+ })
+</script>

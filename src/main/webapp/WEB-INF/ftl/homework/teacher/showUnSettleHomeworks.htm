@@ -1,0 +1,62 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<#include "homework/teacher/arrangeHomeworkLogo.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eeeeee;}
+.nr_wrap03 {min-height:500px;background-color:#ffffff;box-shadow:0 0 5px #aaa;}
+.wrap03_nr ul li span.span-objectname {width:830px;}
+.wrap03_nr ul li span.span01 .ap_ks {font-size:16px;color:#00afed;}
+.wrap03_nr ul li span.span01 .ap_ks:HOVER {color:#ff9966;}
+</style>
+<div class="nr_wrap03">
+	<div class="wrap03_title"><span class="wrap03_current">未出完的作业</span></div>
+    <div class="wrap03_nr" >
+    	<ul>
+            <#if hwList?? && hwList?size&gt;0>
+				<#list hwList as hw>
+					<li class="li_nr">
+						<span class="span-objectname">
+							<img alt="作业" src="<@spring.url '/images/examsystem/exam_2.png'/>">
+							<div>
+								<div class="objectname">${hw.hw_name}</div>
+								<div class="commoninfo">
+									<label>科目：<em class="sortname color-orange">${hw.sort_name}</em></label>
+									<label>题数：<em class="releasetime color-orange">${hw.topic_num}</em></label>
+									<label>创建时间：<em class="releasetime color-orange">${hw.create_time}</em></label>
+								</div>
+							</div>
+						</span>
+						<span class="span01">
+							<a href="<@spring.url '/homework/teacher/edithomework.html?hwId=${hw.hw_id?c}&oldHwId=${hw.refer_hwid?c}'/>" >
+								<b class="ap_ks">继续出题</b>
+							</a>
+							|
+							<a class="del" hwId="${hw.hw_id?c}">
+								<b class="ap_ks">删除</b>
+							</a>
+						</span>
+					</li>
+				</#list>
+			<#else>
+			<li class="li_nr" style='line-height:79px;text-align:center;'><span style='width:100%;'>您没有未出完的作业</span></li>
+			</#if>
+        </ul>
+    </div>
+	<div class="nofl"></div>
+</div>
+
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+$(function() {
+	$(".del").each(function(){
+		$(this).click(function(){
+			var hwId = $(this).attr("hwid");
+			$.chooshine.confirm("确定要删除？",function(){
+				$.get("<@spring.url '/homework/teacher/deleteHomework.json?hwId="+hwId+"'/>",function() {
+					location.reload();
+				});
+			});
+		});
+	});
+	
+});
+</script>

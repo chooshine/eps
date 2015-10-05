@@ -1,0 +1,244 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eee;}
+.fixed {position:fixed;top:0;}
+.cq-left {width:200px;border:1px solid #aaa;float:left;}
+.cq-left.fixed .kpcontainer {height:591px;}
+.cq-left .kpcontainer {height:589px;padding-top:20px;padding-bottom:10px;background-color:#fff;}
+.cq-right {width:776px;float:right;margin-left:20px;}
+.cq-right .topinfo {width:736px;padding:20px;border:1px solid #aaa;background-color:#fff;margin-bottom:20px;}
+.cq-right .topinfo .info {float:left;}
+.cq-right .topinfo .info > div {line-height:37px;font-size:14px;float:left;margin-right:30px;}
+.cq-right .topinfo .chooshine-btn {width:86px;}
+.cq-right .topinfo .cq-return {float:right;margin-right:0px;}
+.cq-right .centercontainer {padding-left:20px;}
+.cq-right .center-left {float:left;}
+.cq-right .center-left .types {margin-bottom:20px;}
+.cq-right .center-left .type, .cq-right .center-left .wharehouse {float:left;font-size:14px;margin-right:25px;}
+.cq-right .center-left .wharehouse:HOVER {color:#ff9966;cursor:pointer;}
+<#if !(examInfo??)>
+.cq-right .center-left .type:HOVER {color:#ff9966;cursor:pointer;}
+</#if>
+.cq-right .center-right {float:right;margin-top:16px;margin-bottom:20px;}
+.cq-right .center-right .search .chooshine-input {float:left;margin-right:10px}
+.cq-right .center-right .search img {cursor:pointer;}
+.topinfo span.color-orange {font-weight:bold;margin-left:5px;}
+.cq-sortname {font-size:16px;background-color:#00afed;padding:10px;color:#fff;}
+.cq-firstkp {margin-bottom:20px;}
+.cq-imgwrap {width:40px;text-align:center;float:left;}
+.cq-imgwrap img {cursor:pointer;}
+.cq-first-kpinfo .cq-kpname {height:25px;line-height:25px;float:left;}
+.cq-second-kpinfo .cq-kpname {height:17px;line-height:17px;float:left;}
+.cq-thirdkpinfo .cq-kpname {height:15px;line-height:15px;float:left;}
+.cq-kpname a:hover {color:#ff9966;}
+.cq-questionnum {color:#aaa;margin-left:20px;}
+.cq-associatedline {height:20px;border-left:1px solid #00afed;margin-top:-2px;margin-left:19px;}
+.cq-currentkp {color:#ff9966;}
+.cq-currenttype, .cq-currentwharehouse {color:#00afed;}
+.text_sju .paperx_comx {width:776px;}
+</style>
+<#if examInfo??>
+	<#include "network/teacher/weblogos/createExamLogo.htm" parse="true" encoding="UTF-8" >
+<#else>
+	<#include "homework/teacher/weblogos/arrangeLogo.htm" parse="true" encoding="UTF-8" >
+</#if>
+<div class="content">
+	<div class="cq-left">
+		<div>
+			<div class="cq-sortname"><span>${sortNamesInfo.schoollevel+sortNamesInfo.sort_name}</span>知识点</div>
+		</div>
+		<div class="kpcontainer">
+			<div id="KpsWrap">
+				<#include "network/teacher/kpsTree.htm" parse="true" encoding="UTF-8" >
+			</div>
+		</div>
+	</div>
+	<div class="cq-right">
+		<#if examInfo??>
+			<div class="topinfo">
+				<div class="info">
+					<div>全卷已有<label><span class="color-orange">${examInfo.B_TOPIC_NUM}</span>道大题</label>/共<label><span id="TotalQuesNum" class="color-orange">${examInfo.M_TOPIC_NUM}</span>小题</label>/共<label><span id="Total" class="color-orange">${nowScore}</span>分</label></div>
+					<div>当前大题为【<span class="color-orange">${typeInfo.type_num}、${typeInfo.type_name}</span>】，已有<span id="TypeQuesNum" class="color-orange">${typeInfo.ques_num}</span>小题/共<span id="TypeTotalScore" class="color-orange">${typeInfo.type_score}</span>分</div>
+					<div class="nofl"></div>
+				</div>
+				<div class="cq-return">
+					<div id="Return" class="chooshine-btn">返回试卷</div>
+				</div>
+				<div class="nofl"></div>
+			</div>
+		<#else>
+			<div class="topinfo">
+				<div class="info">
+					<div>作业共有<label><span id="TotalQuesNum" class="color-orange">${hwInfo.topic_num}</span>道题目</label></div>
+					<div class="nofl"></div>
+				</div>
+				<div class="cq-return">
+					<div id="Return" class="chooshine-btn">返回作业</div>
+				</div>
+				<div class="nofl"></div>
+			</div>
+		</#if>
+		
+		<div class="centercontainer">
+			<div class="center-left">
+				<div class="types">
+					<#list quesTypes as type>
+						<div class="type<#if tsId??&&type.ts_id?c==tsId?c> cq-currenttype struct-currenttype</#if>" tsid="${type.ts_id?c}"><span>${type.ts_name}</span></div>
+					</#list>
+					<div class="nofl"></div>
+				</div>
+				<div class="wharehouses">
+					<div class="wharehouse struct-wharehouse" range="0"><span>全部题库</span></div>
+					<div class="wharehouse struct-wharehouse" range="1"><span>收藏题库</span></div>
+					<div class="wharehouse struct-wharehouse" range="2"><span>我的题库</span></div>
+					<div class="nofl"></div>
+				</div>
+			</div>
+			<div class="center-right">
+				<div class="search">
+					<input id="Keyword" type="text" class="chooshine-input" placeholder="关键词"/>
+					<img id="Search" src="<@spring.url '/images/search_blue.png'/>"  title="查找含有关键词的小题" />
+				</div>
+				<div class="nofl"></div>
+			</div>
+			<div class="nofl"></div>
+		</div>
+		<div id="Questions" class="questions"></div>
+		<div class="nofl"></div>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+
+<script>
+var subjectId = ${sortNamesInfo.sort_id?c};
+var lastTypeMtopic = ${currentMtopic};//当前大题的最后一个小题
+<#if examInfo??>
+var quesType = ${quesType};//题目类型
+var total = ${examInfo.total};
+var nowScore = ${nowScore};//当前试卷的总分
+var examId = ${examInfo.exam_id?c};
+var typeId = ${typeInfo.type_id?c};//当前大题的编号
+var defaultScore = ${typeInfo.default_score};//大题默认得分
+<#else>
+var hwId = ${hwInfo.hw_id?c};
+</#if>
+//得到知识点
+function getKnowledgepoints() {
+	$.ajax({
+		url:"<@spring.url '/network/teacher/getKnowledgepoints.html'/>",
+		type:"POST",
+		data:"subjectId="+subjectId+"&tsId="+$(".struct-currenttype").attr("tsid")+
+			 "&range="+$(".cq-currentwharehouse").attr("range")+"&keyword="+encodeURIComponent(encodeURIComponent($("#Keyword").val())),
+		contentType:"application/x-www-form-urlencoded;charset=utf-8",
+		dataType:"html",
+		success:function(result) {
+			$("#KpsWrap").html(result);
+			var kpId = $($(".struct-kpname")[0]).addClass("cq-currentkp").attr("kpid");//设置第一个知识点为选中状态
+			showQuestions(1);//搜索条件设为空字符串
+			
+			addClickEventToKp($(".struct-kpname"));//为新增的知识点添加点击事件
+			
+			$(".cq-first-kpinfo").find(".cq-imgwrap").each(function() {
+				addClickEventToKpImg(this);
+			});
+			$(".cq-second-kpinfo").find(".cq-imgwrap").each(function() {
+				addClickEventToKpImg(this);
+			});
+		}
+	});
+}
+//查询小题信息
+function showQuestions(pageNo) {
+	var keyword = $("#Keyword").val()==undefined?"":$("#Keyword").val(),
+		keyword = encodeURIComponent(encodeURIComponent(keyword)),
+		kpId = $(".cq-currentkp").attr("kpid");
+	if(kpId == undefined) kpId = 0;//知识点为undefined，代表当前题库没有小题，这时设kpId为0（一个不存在的知识点）
+	var tsId = $(".struct-currenttype").attr("tsid"),
+		range = $(".cq-currentwharehouse").attr("range");
+	$.ajax({
+		<#if examInfo??>
+		url:"<@spring.url '/network/teacher/optionalQuestions.html'/>",
+		data:"examId="+examId+"&subjectId="+subjectId+"&kpId="+kpId+"&tsId="+tsId+"&range="+range+"&keyword="+keyword+"&pageNo="+pageNo,
+		<#else>
+		url:"<@spring.url '/homework/optionalQuestions.html'/>",
+		data:"hwId="+${hwInfo.hw_id?c}+"&subjectId="+subjectId+"&kpId="+kpId+"&tsId="+tsId+"&range="+range+"&keyword="+keyword+"&pageNo="+pageNo,
+		</#if>
+		type:"POST",
+		contentType:"application/x-www-form-urlencoded;charset=utf-8",
+		dataType:"html",
+		success:function(result) {
+			$("#Questions").html(result);
+		}
+	});
+}
+//给知识点添加点击事件
+function addClickEventToKp(kpNode) {
+	$(kpNode).click(function() {
+		$(".cq-currentkp").removeClass("cq-currentkp");
+		$(this).addClass("cq-currentkp");
+		showQuestions(1);
+	});
+}
+//给题库添加点击事件
+function addClickEventToWharehouse(whareHouseNode) {
+	$(whareHouseNode).click(function() {
+		$(".cq-currentwharehouse").removeClass("cq-currentwharehouse");//之前的题库去除选中状态
+		$(this).addClass("cq-currentwharehouse");//当前题库变为选中状态
+		getKnowledgepoints();
+	});
+}
+//给题目类型添加点击事件
+function addClickEventToTypeNode(typeNode) {
+	$(typeNode).click(function() {
+		$(".struct-currenttype").removeClass("cq-currenttype struct-currenttype");
+		$(this).addClass("cq-currenttype struct-currenttype");
+		getKnowledgepoints();
+	});
+}
+$(function() {
+	<#if (examInfo??)>$(".type").addClass("color-gray");</#if>//如果是试卷的选题，就设置题库相应题型为灰色的
+	//突出题型、第一个知识点、全部题库
+	<#if quesType??>
+	$(".type[tsid='${tsId}']").addClass("cq-currenttype struct-currenttype");
+	<#else>
+	$(".type").eq(0).addClass("cq-currenttype struct-currenttype");
+	</#if>
+	
+	addClickEventToKp($(".struct-kpname"));//为初始加载的知识点添加点击事件
+	addClickEventToWharehouse($(".struct-wharehouse"));//为初始加载的题库添加点击事件
+	<#if !(examInfo??)>addClickEventToTypeNode($(".type"));</#if>//为初始加载的题目类型添加点击事件
+	$(".struct-wharehouse:first").trigger("click");
+	
+	//返回试卷
+	$("#Return").click(function() {
+		<#if examInfo??>
+		location.href = "<@spring.url '/network/getExamInfo.html?examId='/>"+examId+"&defaultType=${quesType}";
+		<#else>
+		location.href = "<@spring.url '/homework/teacher/edithomework.html?hwId=${hwInfo.hw_id?c}&oldHwId=${hwInfo.refer_hwid?c}'/>";
+		</#if>
+	});
+	
+	//点击搜索
+	$("#Search").click(function() {
+		showQuestions(1);
+	});
+	
+});
+//知识点树左边的加号、减号点击事件
+function addClickEventToKpImg(node) {
+	$(node).click(function() {
+		var nextLayerKpsWrap = $(this).parent().next();
+		if(nextLayerKpsWrap[0] != undefined) {
+			if(nextLayerKpsWrap.hasClass("hide")) {
+				nextLayerKpsWrap.removeClass("hide");
+				$(node).find("img").attr("src", "<@spring.url '/images/close.png'/>");
+			} else {
+				nextLayerKpsWrap.addClass("hide");
+				$(node).find("img").attr("src", "<@spring.url '/images/open.png'/>");
+			}
+		}
+	});
+}
+</script>

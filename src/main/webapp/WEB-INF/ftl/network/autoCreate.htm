@@ -1,0 +1,320 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background:#eee;}
+ul.createul {min-height:600px;border:1px solid #aaa;box-shadow:0 0 5px #aaa;background:#fff;}
+table {width:100%;}
+th {padding:20px;font-size:16px;font-weight:normal;color:#999;text-align:center;}
+td {padding:10px;font-size:16px;color:#999;text-align:center;}
+.typetr {border-bottom:1px dashed #aaa;}
+.typetr:hover {background:#eee;}
+.typeno {display:inline-block;line-height:30px;font-size:30px;font-family:Arial;color:#00afed;}
+.quesnumwrap {display:inline-block;}
+.quesnumwrap .chooshine-input {width:40px;text-align:center;border:1px solid #aaa;}
+.quesnumwrap label.changequesnum {display:inline-block;width:30px;height:32px;line-height:28px;padding-right:0px;font-size:18px;font-weight:bold;color:#fff;text-align:center;cursor:pointer;background:#99CCCC;float:left;}
+.quesnumwrap label.disabled {background:#ccc;}
+.quesnumwrap .quesnumlabel {display:inline-block;height:32px;line-height:32px;padding-right:0px;float:left;}
+.kpnum {font-size:16px;font-weight:bold;color:#f00;font-style:normal;}
+.addkps {line-height:16px;font-size:16px;font-weight:bold;color:#00afed;cursor:pointer;float:left;}
+.addkps:hover {color:#f96;}
+.operates img {visibility:hidden;width:16px;height:16px;cursor:pointer;}
+tr:hover .operates img {visibility:visible;}
+.addquesli {padding:5px;border-bottom:1px dashed #aaa;}
+.addqueswrap {line-height:42px;font-size:15px;}
+.addqueswrap img {width:42px;height:42px;float:left;margin-left:36px;margin-right:5px;}
+.addqueswrap .addbigques {font-size:16px;font-weight:bold;color:#00afed;cursor:pointer;}
+.addqueswrap .addbigques:hover {color:#f96;}
+.startcreate {width:200px;height:50px;font-weight:normal;font-family:'Microsoft YaHei';background:#0075c9;margin-top:50px;margin-left:400px;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">在线考场</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"><a href="<@spring.url '/network/paperFactory.html'/>">出卷</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/room.html'/>">考场</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/result.html'/>" style="border-right:none;">阅卷</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+	<ul class="createul">
+		<li>
+			<table id="TypeTable">
+				<tr style="border-bottom:1px dashed #aaa;">
+					<th style='width:96px;'>大题号</th>
+					<th style='width:243px;'>题型</th>
+					<th style='width:200px;'>数量</th>
+					<th style='width:134px;'>考点</th>
+					<th style='width:125px;'>&nbsp;</th>
+				</tr>
+				<#if quesTypes??>
+				<#list quesTypes as type>
+				<tr id="tr${type.type_id?c}" class="struct-typetr typetr">
+					<td><span class="struct-typeno typeno"></span></td>
+					<td>
+						<select typeid="${type.type_id?c}" class="struct-typeselect chooshine-select" disabled="disabled">
+							<#if typeSubjects??&&(typeSubjects?size>0)>
+							<#list typeSubjects as ts>
+							<option value="${ts.ts_id?c}" <#if type.ts_id?c==ts.ts_id?c>selected="selected"</#if>>${ts.ts_name}</option>
+							</#list>
+							</#if>
+						</select>
+					</td>
+					<td>
+						<div class="quesnumwrap">
+							<label class="struct-minus changequesnum disabled">-</label>
+							<label class="quesnumlabel"><input type="text" value="1" class="struct-quesnum chooshine-input"/></label>
+							<label class="struct-plus changequesnum">+</label>
+							<div class='nofl'></div>
+						</div>
+					</td>
+					<td>
+						<span>已选&nbsp;<em class="struct-kpnum kpnum">0</em>&nbsp;个考点</span>
+					</td>
+					<td>
+						<div class="operates">
+							<span class="struct-addkps addkps">添加考点</span>
+							<div class="nofl"></div>
+						</div>
+					</td>
+				</tr>
+				</#list>
+				</#if>
+			</table>
+		</li>
+		<li class="addquesli">
+			<div class="addqueswrap">
+				<img src="<@spring.url '/images/examsystem/add.png' />" />
+				<span id="AddBigQues" class="addbigques">增加大题</span>
+				<div class="nofl"></div>
+			</div>
+		</li>
+		<li style="padding:10px;">
+			<div style="line-height:30px;font-size:16px;margin:9px 16px 0 36px;float:left;"><span>试题难度</span></div>
+			<div class="paperx_diff">
+				<div class="difficultywrap">
+					<div class="difficulty fl" style="margin-top:9px;">3.0</div>
+			    	<div class="selectwrap fl" style="margin-top:9px;">
+			        	<span class="simplespan fl">简单</span>
+			            <div class="fl">
+			            	<div class="selectdiv">
+			                	<div class="selectdot" style="left:47px"></div>
+			                </div>
+			            </div>
+			            <span class="diffspan fl">困难</span>
+			        </div>
+				</div>
+			</div>
+			<div class="nofl"></div>
+			<button id="StartCreate" class="chooshine-btn startcreate">开始组卷</button>
+			<form id="CreateForm" action="<@spring.url '/network/autoCreate.html'/>" method="post">
+				<input type="hidden" name="examId" value="${examId?c}">
+				<input type="hidden" name="subjectId" value="${subjectId}">
+				<input type="hidden" name="orderNums">
+				<input type="hidden" name="tsIds">
+				<input type="hidden" name="typeIds">
+				<input type="hidden" name="quesNums">
+				<input type="hidden" name="kps">
+				<input type="hidden" name="diff">
+			</form>
+		</li>
+	</ul>
+</div>
+
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<#include "network/teacher/subjectKpsTree.htm" parse="true" encoding="UTF-8" >
+<script type="text/javascript">
+$(function() {
+	var isMove = false,	//移动标记，当鼠标在某个难度游标上按下的时候，该值为true
+		startX = 0,
+		startLevel = 0;
+	diffDeal();//为难度相关节点添加事件
+	//难度处理
+	function diffDeal() {
+		//游标鼠标事件
+		$(".selectdot").mousedown(function(e) {
+			isMove = true;
+			startX = e.clientX,	startLevel = e.target.offsetLeft;
+		}).mouseup(function(e) {
+			isMove = false;
+		});
+		//文档鼠标事件
+		$(document).mousemove(function(e) {
+			if(isMove) {
+				var t = e.clientX-startX,
+					n = startLevel+t,
+					n = n>100-6?100-6:n,
+					n = 0>n?0:n;
+				$(".selectdot").css({"left":n+"px"});
+				//显示难度系数
+				var diffNum = (n/(100-6))*4+1,
+					diffNum = diffNum*10>Math.floor(diffNum*10)?(diffNum*10+1)/10:diffNum,
+					diffNum = (Math.floor(diffNum*10)/10).toFixed(1);
+				$(".difficulty").text(diffNum);
+			}
+		}).mouseup(function() {
+			isMove = false;
+		});
+		//标尺点击事件
+		$(".selectdiv").click(function(e) {
+			var eX = e.clientX,
+				divX = $(".selectdiv").offset().left,
+				n = eX>divX+100-6?divX+100-6:eX,
+				n = n<0?0:n;
+				
+			$(".selectdot").offset({left:n});
+			n = $(".selectdot").position().left;
+			//显示难度系数
+			var diffNum = (n/(100-6))*4+1,
+				diffNum = diffNum*10>Math.floor(diffNum*10)?(diffNum*10+1)/10:diffNum,
+				diffNum = (Math.floor(diffNum*10)/10).toFixed(1);
+			$(".difficulty").text(diffNum);
+		});
+	}
+	/**
+	 * 难度游标mouse事件
+	 * @param node 难度游标节点
+	 */
+	function addDiffMouseEvent(node) {
+		$(node).mousedown(function(e) {
+			var normalQues = $(node).parents(".paperx_tl"),
+				artArea = $(node).closest(".paperxt_stx");
+			if((normalQues[0]!=undefined && normalQues.next().is(".pep_bc")) || (artArea[0]!=undefined && artArea.find(".savArticle").is(":visible"))) {
+				isMove = true;
+				nowSelectDot = this;
+				startX = e.clientX,	startLevel = e.target.offsetLeft;
+			}
+		}).mouseup(function (e) {
+	        isMove = false;
+	        nowSelectDot = undefined;
+	    });
+	}
+	
+	$("tr:not(:first)").each(function() {
+		addEventsToNodes(this);
+	});
+	//给大题中的各个节点添加事件
+	function addEventsToNodes(tr) {
+		var newTr = $(tr),
+			typeNo = newTr.find(".struct-typeno"),
+			typeSelect = newTr.find(".struct-typeselect"),
+			minusBtn = newTr.find(".struct-minus"),
+			plusBtn = newTr.find(".struct-plus"),
+			quesNumInput = newTr.find(".struct-quesnum"),
+			kpNum = newTr.find(".struct-kpnum"),
+			addKpBtn = newTr.find(".struct-addkps"),
+			deleteBtn = newTr.find(".struct-deletetype");
+		
+		typeNo.text(newTr.index());//设置大题号
+		//给大题各节点添加事件******************开始*******************
+		//小题量的增减按钮点击事件
+		minusBtn.click(function() {
+			var nowNum = parseInt(quesNumInput.val());
+			switch(nowNum) {
+				case 1:
+					break;
+				case 2:
+					quesNumInput.val(1);
+					$(this).addClass("disabled");
+					break;
+				default:
+					quesNumInput.val(--nowNum);
+					break;
+			}
+		});
+		newTr.find(".struct-plus").click(function() {
+			var nowNum = parseInt(quesNumInput.val());
+			switch(nowNum) {
+			case 1:
+				minusBtn.removeClass("disabled");
+				quesNumInput.val(++nowNum);
+				break;
+			default:
+				quesNumInput.val(++nowNum);
+				break;
+			}
+		});
+		disableInputKeyUpNoNumber(quesNumInput);//禁止题量输入框输入非数字
+		quesNumInput.blur(function() {//题量输入框失去焦点的事件
+			if($(this).val() == "") $(this).val(1);
+		});
+		//点击“添加考点”，弹出弹框，根据大题所存考点信息进行设置需要突出的考点，并且在弹框右侧重新设置显示的考点
+		newTr.find(".struct-addkps").click(function() {
+			openKpsDialog($(this).closest("tr"));
+		});
+		deleteBtn.click(function() {//删除大题
+			removeTypeKpsData(newTr);//清空当前大题对应的考点数据
+			newTr.remove();//删除当前大题对应的行
+			$(".struct-typeno").each(function(index) {//重置其余所有大题的大题号
+				$(this).text(index+1);
+			});
+		});
+		//给大题各节点添加事件******************结束*******************
+	}
+	
+	//点击添加大题
+	$("#AddBigQues").click(function() {
+		//新增一行大题
+		$("#TypeTable").find("tbody").append(
+			"<tr id='tr"+new Date().getTime()+"' class='struct-typetr typetr'>"+
+				"<td><span class='struct-typeno typeno'></span></td>"+
+				"<td>"+
+					"<select class='struct-typeselect chooshine-select'>"+
+						<#if typeSubjects??&&(typeSubjects?size>0)>
+						<#list typeSubjects as ts>
+						"<option value='${ts.ts_id?c}'>${ts.ts_name}</option>"+
+						</#list>
+						</#if>
+					"</select>"+
+				"</td>"+
+				"<td>"+
+					"<div class='quesnumwrap'>"+
+						"<label class='struct-minus changequesnum disabled'>-</label>"+
+						"<label class='quesnumlabel'><input type='text' value='1' class='struct-quesnum chooshine-input'/></label>"+
+						"<label class='struct-plus changequesnum'>+</label>"+
+						"<div class='nofl'></div>"+
+					"</div>"+
+				"</td>"+
+				"<td>"+
+					"<span>已选&nbsp;<em class='struct-kpnum kpnum'>0</em>&nbsp;个考点</span>"+
+				"</td>"+
+				"<td>"+
+					"<div class='operates'>"+
+						"<span class='struct-addkps addkps'>添加考点</span>"+
+						"<img class='struct-deletetype' title='删除大题' src='<@spring.url '/images/delete.png' />'/>"+
+						"<div class='nofl'></div>"+
+					"</div>"+
+				"</td>"+
+			"</tr>"
+		);
+		
+		addEventsToNodes($("#TypeTable tr:last"));//为新增大题的各节点添加事件
+	});
+	
+	$("#StartCreate").click(function() {
+		var orderNums = [],
+			tsIds = [],
+			typeIds = [],
+			quesNums = [],
+			kps = [],
+			diff = $(".difficulty").text();
+		$("#TypeTable tr").each(function(i) {
+			if($(this).find(".struct-typeno")[0] != undefined) {
+				orderNums[i-1] = $(this).find(".struct-typeno").text();
+				tsIds[i-1] = $(this).find(".struct-typeselect").val();
+				typeIds[i-1] = $(this).find(".struct-typeselect").attr("typeid");
+				quesNums[i-1] = $(this).find(".struct-quesnum").val();
+				kps[i-1] = dialogKpsMap[$(this).attr("id")];
+			}
+		});
+		$("input[name='orderNums']").val(JSON.stringify(orderNums));
+		$("input[name='tsIds']").val(JSON.stringify(tsIds));
+		$("input[name='typeIds']").val(JSON.stringify(typeIds));
+		$("input[name='quesNums']").val(JSON.stringify(quesNums));
+		$("input[name='kps']").val(JSON.stringify(kps));
+		$("input[name='diff']").val(diff);
+		$("#CreateForm").submit();
+	});
+});
+</script>

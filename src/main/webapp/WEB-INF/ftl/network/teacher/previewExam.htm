@@ -1,0 +1,344 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style type="text/css">
+#StructSets {height:40px;line-height:40px;background:#00afed;color:#fff;}
+#StructSets table {margin:0 auto;}
+#StructSets .struct-structtitle {padding-right:10px;cursor:pointer;}
+#StructSets .checkbox {display:block;margin:0 3px 0 5px;}
+
+#Main {width:1000px;margin:0 auto;margin-top:40px;position:relative;}
+#Main div, #Main span, #Main td, #Main a {line-height:18px;font-size:12px;font-family:"Microsoft YaHei",arial,simsun,sans-serif;}
+.seal-wrap {width:550px;height:98px;line-height:18px;padding:0;margin:0;border:1px solid #000;background-color:#ECECEC;text-align:center;cursor:pointer;overflow:hidden;filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);-webkit-transform:translate(-226px,226px) rotate(270deg);-moz-transform:translate(-226px,226px) rotate(-90deg);position:absolute;top:0;left:0;}
+.seal-wrap:hover {color:#ff0000;background-color:#FFFF80;}
+.seal-wrap .seal-line {height:20px;line-height:20px;text-align:center;overflow:hidden;}
+.seal-wrap .seal-input {height:55px;line-height:55px;text-align:center;background-color:#fff;border-top:1px solid #000;border-bottom:1px solid #000;}
+.seal-wrap .seal-inputtable {line-height:55px;padding:0;margin:0;text-align:center;}
+.seal-wrap:hover .seal-inputtext {color:#ff0000;}
+.seal-wrap .seal-block {width:50px;height:55px;line-height:55px;background-color:#999;text-align:center;}
+.seal-wrap:hover .seal-block {background-color:#CAC009;}
+
+.exam-main {position:relative;width:890px;min-height:600px;margin-left:110px;float:left;}
+#Main #Exam-Marktag {font-weight:bold;cursor:pointer;}
+#Main #Exam-Marktag:hover {color:#ff0000;}
+#Main #Exam-Title {line-height:30px;font-size:20px;font-weight:bold;text-align:center;}
+#Exam-ExamInfo, #Exam-StudentInput, #Exam-Score {text-align:center;cursor:pointer;margin-top:5px;}
+#Exam-Score table {border:1px solid #666;}
+#Exam-Score td {width:50px;height:25px;text-align:center;border: 1px solid #666;}
+#Exam-Score:hover table, #Exam-Score:hover td {color:#ff0000;border:1px solid #ff0000;}
+#Exam-Notice {cursor:pointer;margin-top:5px;}
+#Exam-ExamInfo:hover, #Exam-StudentInput:hover, #Exam-Score:hover, #Exam-Notice:hover {color:#ff0000;}
+
+.exam-body {margin-top:40px;}
+.exam-body .type-box {margin-bottom:20px;}
+.exam-body .typeinfo {font-weight:bold;margin-bottom:20px;}
+.exam-body .ques-box {margin-top:5px;}
+.ques-box * {color:#000;}
+.quesinfo * {display:inline;}
+.exam-body .articleques-wrap {margin-bottom:10px;}
+
+#RightMenu {right:0px;position:fixed;background:#ddd;width:120px;min-height:40px;text-align:center;color:#fff;top:40%;}
+#RightMenu div {width:90px;background:#FA446B;margin:10px 0 10px 15px;}
+#RightMenu a {line-height:28px;font-size:14px;}
+#RightMenu div:hover a {color:#000;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f" style="margin-right:487px;">试卷预览</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f"><a href="<@spring.url '/homework/entrance.html'/>">课后作业</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/network/paperFactory.html'/>" style="border-right:none;">在线考场</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div id="StructSets">
+	<table border="0" cellpadding="0" cellspacing="0">
+		<tr>
+			<td>结构隐藏或显示：</td>
+			<td><input type="checkbox" name="checkbox-seal" class="struct-checkbox checkbox"<#if previewInfo.seal_flag=1> checked="checked"</#if>/></td>
+			<td class="struct-structtitle">装订线</td>
+			<td><input type="checkbox" name="checkbox-marktag" class="struct-checkbox checkbox"<#if previewInfo.marktag_flag=1> checked="checked"</#if>/></td>
+			<td class="struct-structtitle">保密标记</td>
+			<td><input type="checkbox" name="checkbox-examinfo" class="struct-checkbox checkbox"<#if previewInfo.examinfo_flag=1> checked="checked"</#if>/></td>
+			<td class="struct-structtitle">试卷信息栏</td>
+			<td><input type="checkbox" name="checkbox-studentinput" class="struct-checkbox checkbox"<#if previewInfo.studentinput_flag=1> checked="checked"</#if>/></td>
+			<td class="struct-structtitle">考生输入栏</td>
+			<td><input type="checkbox" name="checkbox-score" class="struct-checkbox checkbox"<#if previewInfo.score_flag=1> checked="checked"</#if>/></td>
+			<td class="struct-structtitle">誊分栏</td>
+			<td><input type="checkbox" name="checkbox-notice" class="struct-checkbox checkbox"<#if previewInfo.notice_flag=1> checked="checked"</#if>/></td>
+			<td class="struct-structtitle">注意事项栏</td>
+		</tr>
+	</table>
+</div>
+<div id="Main">
+	<!-- 装订线 -->
+    <div id="Exam-Seal" class='struct-setenter seal-wrap' title="点击设置“装订线”">
+        <div class='seal-line'>…………○…………外…………○…………装…………○…………订…………○…………线…………○…………</div>
+        <div class='seal-input'>
+            <table class='seal-inputtable' width="100%" border="0" cellpadding="0" cellspacing="0">
+                <td class='seal-block'></td>
+                <td align="center"><div class='seal-inputtext'>学校:___________姓名：___________班级：___________考号：___________</div></td>
+                <td class='seal-block'></td>
+            </table>
+        </div>
+        <div class='seal-line'>…………○…………外…………○…………装…………○…………订…………○…………线…………○…………</div>
+    </div>
+    <!-- 装订线 -->
+    
+    <div class="exam-main">
+        <div class="exam-header">
+            <div id="Exam-Marktag" class="struct-setenter" title="点击设置“保密标记”"></div>
+            <div id="Exam-Title">${examInfoMap["exam_name"]!}</div>
+            <div id="Exam-ExamInfo" class="struct-setenter" title="点击设置“试卷信息栏”"></div>
+            <div id="Exam-StudentInput" class="struct-setenter" title="点击设置“考生信息填写栏”"></div>
+            <div id="Exam-Score" class="struct-setenter" title="点击设置“试卷誊分栏”">
+            	<table align="center" cellpadding="0" cellspacing="0">
+                	<tr>
+                    	<td>题号</td>
+                        <td>一</td>
+                        <td>二</td>
+                        <td>三</td>
+                        <td>四</td>
+                        <td>五</td>
+                        <td>六</td>
+                        <td>七</td>
+                        <td>总分</td>
+                    </tr>
+                    <tr>
+                    	<td>得分</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </table>
+            </div>
+            <div id="Exam-Notice" class="struct-setenter" title="点击设置“考生注意事项栏”">
+            	<div id="Notice-tip">注意事项：</div>
+                <div id="Notice-text"></div>
+            </div>
+        </div>
+        
+        <div class="exam-body">
+       	<#if qiMap?? && qtList??>
+		<#list qtList as list>
+			<#if list.type_id??>
+			    <#assign items=qiMap[list.type_id?c] >
+				<div class="type-box" id=${"ques"+list.type_id?c}>
+					<div class="typeinfo">
+						<span class="type-num">${bctList[list_index]}、</span><span class="type-name">${list.TYPE_DETAIL!}</span>
+					</div>
+					
+					<ul id=${"ul"+list.type_id?c}>
+					<#list items?keys as key>
+						<#assign qi = items[key]>
+						<#if key?starts_with("normal")>
+						<li class="struct-quesbox ques-box" id="${qi.ques_id?c}">
+							<div>
+								<dl>
+									<dt class="quesinfo">
+										<span class="ques-number" mTopic=${qi.M_TOPIC}><b>${qi.M_TOPIC}．</b> </span>
+										<span quesid="${qi.QUES_ID?c}" questype="${qi.QUES_TYPE?c}">${qi.QUES_CONTENT}</span>
+										<div class="nofl"></div>
+									</dt>
+									<#if qi.QUES_TYPE=='1' || qi.QUES_TYPE=='2'>
+										<#list qi.OPT_CONTENT as optContent>
+											<#list qi.OPT_ID as optId>
+											    <#if optContent_index==optId_index>
+													<dd><span>${qi.OPT_NO[optId_index]} . ${optContent}</span></dd>
+												</#if>
+											</#list>
+										</#list>
+									</#if>
+									<div class="nofl"></div>
+								</dl>
+							</div>
+						</li>
+						<#else>
+						<li>
+							<#assign articleUlId="">
+							<div class="articleques-wrap">
+								<div>
+								<#list qi as tkList>
+									<#list tkList as tkl>
+										<#if tkl.ques_type==6>
+											<#assign articleUlId=tkl.QUES_ID?c>
+											<div>
+												<div artid=${tkl.QUES_ID?c}>${tkl.QUES_CONTENT}</div>
+											</div>
+											<div class="nofl"></div>
+										</#if>
+									</#list>
+								</#list>
+								</div>
+								<div>
+									<ul id=${"ul"+articleUlId+"a"}>
+									<#list qi as tkList>
+										<#list tkList as tkl>
+											<#if tkl.ques_type!=6>
+												<li  class="struct-quesbox ques-box" id="${tkl.QUES_ID?c}">
+													<div>
+														<dl>
+															<dt class="quesinfo">
+																<span class="ques-number" mTopic=${tkl.M_TOPIC}><b>${tkl.M_TOPIC}．</b> </span>
+																<span quesid="${tkl.QUES_ID?c}" questype="${tkl.QUES_TYPE?c}">${tkl.QUES_CONTENT}</span>
+																<div class="nofl"></div>
+															</dt>
+															<#if tkl.QUES_TYPE=='1' || tkl.QUES_TYPE=='2'>
+															<#list tkl.OPT_CONTENT as optContent>
+																<#list tkl.OPT_ID as optId>
+																	<#if optContent_index==optId_index>
+																	<dd><span>${tkl.OPT_NO[optId_index]} . ${optContent}</span></dd>
+																	</#if>
+																</#list>
+															</#list>
+															</#if>
+															<div class="nofl"></div>
+														</dl>
+													</div>
+												</li>
+											</#if>
+										</#list>
+									</#list>
+									</ul>
+								</div>
+							</div>
+						</li>
+						</#if>
+					</#list>
+					</ul>
+				</div>
+			</#if>
+		</#list>
+		</#if>
+        </div>
+    </div>
+
+	<div id="RightMenu">
+		<div id="SaveExamSets">
+			<a title="保存当前试卷的设置">保存设置</a>
+		</div>
+		<div id="ExportExam"><a>下载试卷</a></div>
+		<div id="Return"><a>返回</a></div>
+	</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<#include "network/teacher/previewExamDialog.htm" parse="true" encoding="UTF-8" >
+
+<script type="text/javascript">
+$(function() {
+	saveSets();//自动执行设置操作
+	//当小题加载完成后的操作
+	quesReady();
+	function quesReady() {
+		$(".struct-quesbox").each(function() {
+			var flag = false;
+			$(this).find("dd").each(function() {
+				var optWidth = $($(this).children()[0]).width();
+				if(optWidth > 438) {
+					$(this).parents(".struct-quesbox").find("dd").css({float:"left", width:"890px"});
+					flag = true;
+					return false;
+				} else if(optWidth > 210) {
+					$(this).parents(".struct-quesbox").find("dd").css({float:"left", width:"445px"});
+					flag = true;
+				}
+			});
+			
+			if(!flag) {
+				$(this).find("dd").css({float:"left", width:"222px"});
+			}
+		});
+	}
+	
+	
+	$("#Exam-StudentInput").click(function() {
+		$("#SetsDialog").dialog("open");
+	});
+	
+	/**
+	*设置弹框的滚动条位置
+	*@param clickNode 点击的节点
+	*@param settingNode 弹框中要突出的节点
+	*/
+	function moveDivScroller(clickNode, settingNode) {
+		$(".box_current").removeClass("box_current");
+		$(settingNode).addClass("box_current");
+		$("#Sets").scrollTop($(settingNode).position().top-45);
+	}
+	$(".struct-setenter").click(function() {
+		var node = $("#Set"+$(this).attr("id").substring(4));
+		showSets();//将网页内容反映到弹框的设置上
+		$("#SetsDialog").dialog("open");
+		moveDivScroller(this, node);
+	});
+	
+	//点击多选框
+	$(".struct-structtitle").click(function() {
+		triggerMouseEvent($(this).prev().children(".struct-checkbox")[0], "click");
+	});
+	$(".struct-checkbox").click(function() {
+		if(!this.checked) {//如果点击之前是选中状态，则自动触发“不显示”单选按钮的点击
+			$("input[name='radio"+$(this).attr("name").substr(8)+"']").each(function() {
+				if($(this).hasClass("struct-radiohide")) {
+					this.checked = true;
+					$(this).parents(".struct-box").find(".text").attr("disabled", true);
+					setHideOrShow();
+				}
+			});
+		} else {
+			$("input[name='radio"+$(this).attr("name").substr(8)+"']").each(function() {
+				if($(this).hasClass("struct-radioshow")) {
+					this.checked = true;
+					$(this).parents(".struct-box").find(".text").removeAttr("disabled");
+					setHideOrShow();
+				}
+			});
+		}
+	});
+	
+	//保存试卷的设置
+	$("#SaveExamSets").click(function() {
+		var postData = {
+			examId:"${examInfoMap.exam_id?c}",
+			sealFlag:$("input[name='radio-seal']:checked").val(),
+			marktagFlag:$("input[name='radio-marktag']:checked").val(),
+			marktagContent:$("input[name='text-marktag']").val(),
+			examinfoFlag:$("input[name='radio-examinfo']:checked").val(),
+			examinfoContent:$("input[name='text-examinfo']").val(),
+			studentinputFlag:$("input[name='radio-studentinput']:checked").val(),
+			studentinputContent:$("input[name='text-studentinput']").val(),
+			scoreFlag:$("input[name='radio-score']:checked").val(),
+			noticeFlag:$("input[name='radio-notice']:checked").val(),
+			noticeContent:$("textarea[name='textarea-notice']").val()
+		};
+		$.ajax({
+			type:"POST",
+			url:"<@spring.url '/saveExamPreviewSets.json' />",
+			contentType:"application/x-www-form-urlencoded;charset=utf-8",
+			data:postData,
+			success:function(result) {
+				if(result.success) {
+					$.chooshine.alert("保存成功");
+				} else {
+					$.chooshine.alert("保存失败，请重试");
+				}
+			}
+		});
+	});
+	
+	$("#ExportExam").click(function() {
+		location.href = "<@spring.url '/network/exportExamWord.html' />?examId="+${examInfoMap.exam_id?c};
+	});
+	
+	$("#Return").click(function() {
+		var page = "${page}";
+		if(page=="unFinished") location.href = "<@spring.url '/network/continue.html' />";
+		else if(page=="edit") location.href = "<@spring.url '/network/getExamInfo.html' />?examId=${examInfoMap['exam_id']?c}";
+	});
+});
+</script>

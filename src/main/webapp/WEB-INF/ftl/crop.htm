@@ -1,0 +1,188 @@
+<link rel="stylesheet" href="<@spring.url '/stylesheets/jquery.Jcrop.min.css'/>">
+<style>
+.cropwrap{margin-bottom:10px;}
+.crop-imgoperates {height:25px;float:left;margin-top:4px;margin-left:12px;}
+.crop-imgoperate {display:inline-block;line-height:32px;cursor:pointer;float:left;margin-right:20px;}
+.crop-imgoperate a {display:block;line-height:25px;float:left;}
+.crop-imgoperate:hover a {color:#ff9966;}
+.crop-imgoperate .crop-operateimg {width:25px;height:25px;margin-right:5px;}
+.dialogoperates {float:right;margin-right:3px;}
+.dialogoperates .dialogoperate {width:52px;height:28px;border:1px solid #d3d3d3;border-radius:4px;cursor:pointer;color:#555;background: #e6e6e6 url("<@spring.url '/stylesheets/images/ui-bg_glass_75_e6e6e6_1x400.png' />") 50% 50% repeat-x;}
+.dialogoperates .dialogoperate:hover {border-color:#999;color:#fff;background:#0293cd;}
+.title span {float:left;}
+.title img {height:20px;cursor:pointer;float:right;margin-right:10px;}
+.jcrop-holder .right {padding:0;margin:0;float:none;}
+.jcrop-holder .bottom {padding:0;}
+</style>
+<div id='CropDialog'>
+	<div class="cropwrap">
+		<div id='Target' style='width:516px;height:286px;border:1px solid #aaa;background:#efefef;margin-left:1px;margin-top:1px;'>
+		  <img src="" id="TargetImg">
+		</div>
+	</div>
+	<div class='crop-imgoperates'>
+		<label id="lRotaImg" class='crop-imgoperate'>
+			<a class="crop-operateimg" style="background:url('<@spring.url '/images/uploadimgs.png' />') -126px -90px;">&nbsp;</a>
+			<a>左旋转</a>
+			<span class="nofl"></span>
+		</label>
+		<label id="rRotaImg" class='crop-imgoperate'>
+			<a class="crop-operateimg" style="background:url('<@spring.url '/images/uploadimgs.png' />') -154px -90px;">&nbsp;</a>
+			<a>右旋转</a>
+			<span class="nofl"></span>
+		</label>
+		<label id='DeleteImg' class='crop-imgoperate'>
+			<a class="crop-operateimg" style="background:url('<@spring.url '/images/uploadimgs.png' />') -184px -90px;">&nbsp;</a>
+			<a>删除</a>
+			<span class="nofl"></span>
+		</label>
+	</div>
+	<div class='dialogoperates'>
+		<button id="cropImg" class='dialogoperate' style='margin-right:10px;'>确定</button>
+		<button class='struct-close dialogoperate'>取消</button>
+	</div>
+</div>
+
+<script src="<@spring.url '/javascripts/jquery.Jcrop.min.js'/>"></script>
+<script type="text/javascript">
+$("#CropDialog").dialog({
+	title:"剪切图片",
+	dialogClass:"chooshine-dialog showtitle-dialog",
+	autoOpen:false,
+	width:520,
+	height:380,
+	resizable:false,
+	modal:true
+});
+//得到剪裁框的最小值，在调用该插件的页面中可以重新写一个重名方法覆盖该方法，用于设置最小值
+function getMinSize() {
+	return [0, 0];
+}
+var _jcrop,
+	imgPath = "",
+	scaleRefer = "width",//计算比例的参照，默认是width，即默认以宽进行比例计算
+	scaleLength = 1,//如果width占满了，则scaleLength的值为页面上显示的图片的width，否则为height
+	ctx = "<@spring.url '/' />",
+	boundx,
+	boundy;
+
+//绑定jcrop
+function bindJcrop() {
+	$("#TargetImg").Jcrop({
+		aspectRatio:getRatio(),
+		bgFade:true,
+		bgOpacity:0.2,
+		minSize:getMinSize(),
+		bgColor:"#888"
+  	},function(){
+  		_jcrop = this;
+  	});
+}
+
+$("#rRotaImg").click(function(){
+	rrotateEvent();
+});
+$("#lRotaImg").click(function(){
+	lrotateEvent();
+});
+
+//左旋转事件
+function lrotateEvent() {
+	$("#lRotaImg").unbind('click');
+	$("#rRotaImg").unbind('click');
+	
+	$.get("<@spring.url '/test/rotating/270.json' />",{path:imgPath,_dc:new Date().getTime()},function(data){
+		afterChangeImg(data.img);
+	});
+}
+//右旋转事件
+function rrotateEvent() {
+	$("#lRotaImg").unbind('click');
+	$("#rRotaImg").unbind('click');
+	$.get("<@spring.url '/test/rotating/90.json' />",{path:imgPath,_dc:new Date().getTime()},function(data){
+		afterChangeImg(data.img);
+	});
+}
+
+//给剪裁按钮添加点击事件，savePath为剪裁后的图片保存的目录
+$("#cropImg").click(function(){
+	var c = _jcrop.tellScaled();
+	c.path = imgPath;
+	c.savePath = getSavePath();
+	c.scaleRefer = scaleRefer;
+	c.scaleLength = scaleLength;
+	$.get("<@spring.url '/test/crop.json' />",c,function(img){
+		doAfterCrop(img.path);
+	});
+});
+
+//设置剪裁框中的图片地址
+function afterChangeImg(path, time) {
+	if(path != undefined) {
+		imgPath = path;
+	}
+	
+	if(_jcrop != undefined) _jcrop.destroy();//销毁原有jcrop
+	
+	target = $('#TargetImg');
+	//动态创建一个img元素，用于调整图片显示在剪裁框中的大小
+	var img=document.createElement("img");
+	img.src=ctx + imgPath;
+	img.onload=function(){
+		target.parent().css("padding", "0px");
+  		var imageW = this.width, imageH = this.height;
+
+  		//长和宽需要至少其中之一占满剪裁框，且两者都不能超出剪裁框
+		if(parseInt(imageW*(284/imageH))+1 > 514) {
+			target.css('width', '514px');
+			target.css('height', parseInt(imageH*(514/imageW))+1+'px');
+			scaleRefer = "width";
+			scaleLength = 514;
+		} else if(parseInt(imageH*(514/imageW))+1 > 284) {
+			target.css('height', '284px');
+			target.css('width', parseInt(imageW*(284/imageH))+1+'px');
+			scaleRefer = "height";
+			scaleLength = 284;
+		}
+		
+  		//设置剪裁框的padding，以让图片居中显示
+		var tW=target.width(), tH=target.height(),paddingTop=(284-tH)/2, paddingLeft=(514-tW)/2;
+		target.parent().css({padding:paddingTop+"px "+paddingLeft+"px", width:tW, height:tH});
+	
+		if(time != undefined) {
+			target.attr("src",ctx + imgPath+"?"+time);
+		} else {
+			target.attr("src",ctx + imgPath);
+		}
+		bindJcrop();
+		$("#rRotaImg").click(function(){
+			rrotateEvent();
+		});
+		$("#lRotaImg").click(function(){
+			lrotateEvent();
+		});
+	}
+}
+
+//删除图片
+$('#DeleteImg').click(function() {
+	$('#CropDialog').dialog('close');
+	openUploadDialog();
+});
+
+//关闭弹框
+$('.struct-close').click(function() {
+	$('#CropDialog').dialog('close');
+});
+//关闭剪裁弹框的函数
+function closeCropDialog() {
+	$('#CropDialog').dialog('close');
+}
+
+//显示错误信息
+function showErrorMsg(msg) {
+	closeCropDialog();
+	openUploadDialog();
+	$.chooshine.alert(msg);
+}
+</script>

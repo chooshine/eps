@@ -1,0 +1,92 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">修改邮箱</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+	<div class="safe_step" >
+        <div class="step_icon" >
+        	<span class="step01"></span>
+        	
+        	<p>&nbsp;<span class="blue">用户验证</span>&nbsp;<span class="has_margin">输入新邮箱地址</span>&nbsp;<span>完成</span></p>
+            <div class="input_wrap" style="border: 1px solid #ccc;">
+	            <form name="phoneForm" method="post" action="<@spring.url '/person/center/updateMailAddress-second.html'/>">
+	            	<div class="input"><span class="area" style="margin-top: 2px;float: left;">验证方式：</span>
+	            	<div style=" width: 80px; height: 22px;  padding-top: 4px;float: left;  padding-bottom: 1px;">
+	            	<select name="authenType" style="width: 60px; height: 25px;">
+	            		<option value="mail">邮箱</option>
+	            		<#if USER_CONTEXT.phone != "">
+	            			<option value="phone">手机</option>
+	            		</#if>
+	            	</select>
+	            	</div>
+	            	
+	            	<button type="button" id="getcodeBtn" style=" margin-top: 5px; width:125px;">获取验证码</button></span></div><div>
+	            	<div class="clear"></div>
+	                <div class="input" >&nbsp;<span class="area">&nbsp;&nbsp;&nbsp;验证码：</span><span><input type="text" name="code" value="" /></span></div>
+	                <#if error?? && error !="">
+	                	<div class="clear"></div>
+						<div class="input"><span class="red">${error}</span></div>
+				    </#if>
+				    <div class="clear"></div>
+	                <span class="btn02"><button  type="button" id="nextBtn">下一步</button></span>
+	            </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+
+var isSend = false;
+var t = 0;
+var m=60;
+$(function(){
+	//alert(t);
+	
+	$("#getcodeBtn").click(function(){
+		$(this).attr("disabled","disabled");
+		var type = $("select[name=authenType]").val();
+		//alert(type);
+		$.ajax("<@spring.url '/person/center/sendCode.json'/>",{
+			data:{"type":type},
+			success:function(data){
+				//$("#getcodeBtn").removeAttr("disabled");
+				setBtn();
+			}
+		})
+	});
+	function setBtn(){
+		$("#getcodeBtn").text((m) + "秒后再次获取")
+		t = setTimeout(setBtn, 1000);
+		m=m-1;
+		if(m < 0) {
+			//clearTimeout(t);
+			stopCount();
+			//m=t;
+			m=60;
+			$("#getcodeBtn").text("获取验证码");
+			$("#getcodeBtn").removeAttr("disabled");
+		}
+	}
+	
+	 function stopCount(){
+	        clearTimeout(t);
+	    }
+	$("#nextBtn").click(function(){
+		var code = $("input[name=code]").val();
+		if(code && code.length == 6){
+			$("form").submit();
+		}else{
+			alert("验证码为6位随机数字，请输入正确的验证码");
+		}
+	});
+})
+</script>

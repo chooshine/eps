@@ -1,0 +1,24 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">修改邮箱</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+   <div class="safe_step">
+        <div class="step_icon">
+        	<span class="step01 step02 step03"></span>
+        	<p><span class="blue02">&nbsp;&nbsp;用户验证</span><span class="has_margin blue02">&nbsp;&nbsp;&nbsp;输入新邮箱</span><span class="blue">&nbsp;&nbsp;完成</span></p>
+            <div class="input_wrap">
+            	<p><span class="blue tishi">恭喜！您已完成邮箱修改！</span><a href="<@spring.url '/person/center.html'/>" class="blue">&gt;&gt;完成其他认证</a></p>
+                <p>新的邮箱地址：${USER_CONTEXT.mailAddress} &nbsp;&nbsp; &nbsp;&nbsp;<a href="<@spring.url '/person/center/updateMailAddress.html'/>" class="bule">修改</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >

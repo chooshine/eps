@@ -1,0 +1,25 @@
+<div class="tanceng" style="display: block;">
+    	<div class="kong_wrap"></div>
+        <div class="bianji_wrap" id="classess">
+        	<div class="guanbi"></div>
+        	
+        	<#if claList??>
+       			<#list claList as cla>
+        			<div class="bianji_bk bianji_current">
+            			<p>${cla.CLASS_NAME}</p>
+                		<p class="input_wrap04"><label>时间</label>
+                			<!-- <select><option value="1" selected="selected">请选择考试时间</option><option value="1"></option></select> -->
+                			<input type="text" id="testTime" class="start" value="请选择考试开始时间" name="testTime">
+                			<span class="select_icon"></span></p>
+                		<p class="input_wrap04"><label>考场</label><input type="text" value="请填写考场" /></p>
+                		<p class="input_wrap04"><label>监考</label><input type="text" value="" /></p>
+                		<div class="baocun_btn"></div>
+           			 </div>
+            	</#list>
+       		</#if>
+        
+            内容
+           
+        </div>    
+    </div>
+	

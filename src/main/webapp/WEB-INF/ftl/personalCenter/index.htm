@@ -1,0 +1,133 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eeeeee;}
+.center {width:1024px;padding:0;}
+.left {border:1px solid #d7d7d7;margin-top:30px;margin-left:3px;background-color:#fdfdfd;box-shadow:0 0 3px #aaaaaa;}
+.left .pic {margin-top:-50px;}
+img.left_img {margin-left:30px;box-shadow:1px 1px 6px rgba(6, 7, 7, 0.25), -1px -1px 3px rgba(6, 7, 7, 0.25);}
+.pic .chgimg {display:none;}
+.pic:hover .chgimg {display:block;position:relative;width:120px;height:20px;line-height:20px;text-align:center;color:#ff9966;background-color:#eee;margin-top:-23px;margin-left:31px;}
+.pic .chgimg:hover {text-decoration:underline;}
+.right {width:750px;border:1px solid #ccc;padding:25px 30px 10000px;margin-left:20px;background-color:#fdfdfd;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">个人中心</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+	<div class="center">
+    	<div class="left">
+    		<#if USER_CONTEXT.photo!="">
+				<div class="pic"><img class="left_img" src="<@spring.url '/${USER_CONTEXT.photo}'/>" width="120" height="120" title="头像"/><a id='ChangeImg' class='chgimg'>更换头像</a></div>
+			<#else>
+				<div class="pic"><img class="left_img" src="<@spring.url '/images/headImage/default_head.jpg'/>" width="120" height="120" title="头像"/><a id='ChangeImg' class='chgimg'>上传头像</a></div>
+  			</#if>
+        	<h3>账号管理</h3>
+            <ul>
+            	<li><a href="javascript:void(0)" class="left_current">安全设置</a></li>
+<!--                 <li><a href="javascript:void(0)">个人资料</a></li>
+                <li><a href="javascript:void(0)">隐私设置</a></li> -->
+                <li><a href="<@spring.url '/person/accountAndBalance.html'/>">个人账户</a></li>
+            </ul>
+        </div>
+    	<div class="right">
+             	<div class="base">
+                	<h4>您的基本资料</h4>
+                    <ul>
+                    	<li>注册邮箱：<span>${USER_CONTEXT.mailAddress}</span>&nbsp;&nbsp;<a href="<@spring.url '/person/center/updateMailAddress.html'/>">修改邮箱</a></li>
+                        <li>上次登录：<span>${prvVisit?date?string("yyyy-MM-dd hh:mm:ss")}</span>（异常登录？请<a href="<@spring.url '/resetPassword/sendmail.html'/>">修改密码</a>）</li>
+                        <li class="safe">
+                        	<span>安全认证：</span>
+                        	<span class="email"></span>
+                        	<#if USER_CONTEXT.isAuthenMail?? && USER_CONTEXT.isAuthenMail==1>
+                        	<a class="index_clickeda">已认证</a>
+                        	<#else>
+                        	<a href="<@spring.url '/person/center/authen-email.html'/>">未认证</a>
+                        	</#if>
+                        	<span class="phone"></span>
+                        	<#if USER_CONTEXT.phone == "">
+                        		<a href="<@spring.url '/person/center/bind-phone.html'/>">未绑定</a>
+                        	<#else>
+                        		<a class="index_clickeda">已绑定</a>
+                        	</#if>
+                        </li>
+                    </ul>
+                    <div class="clear"></div>
+                </div>
+                <div class="base base02">
+                	<h4>您的安全设置</h4>
+                    <ul>
+                    	<li>
+                    	<#if USER_CONTEXT.phone == "">
+                        	<span class="li01">未绑定</span><span class="li02">手机绑定</span><span class="li03">绑定手机后，您即可享受畅选网丰富的手机服务，如手机登陆、手机找回密码、开通手机动态密码等。</span><span class="li04"><a href="<@spring.url '/person/center/bind-phone.html'/>"><b>绑定</b></a></span>
+                        <#else>
+                        	<span class="li01">已绑定</span><span class="li02">手机绑定</span><span class="li03">绑定手机后，您即可享受畅选网丰富的手机服务，如手机登陆、手机找回密码、开通手机动态密码等。</span><span class="li04"><a href="<@spring.url '/person/center/bind-phone.html'/>"><b>换手机</b></a></span>
+                        </#if>
+                        </li>
+                        <div class="clear"></div>
+                        <li>
+                        <#if USER_CONTEXT.isAuthenMail?? && USER_CONTEXT.isAuthenMail==1>
+                        	<span class="li01">已认证</span><span class="li02">邮箱认证</span><span class="li03">认证邮箱。</span><span class="li04"><a href="<@spring.url '/person/center/updateMailAddress.html'/>"><b>修改邮箱</b></a></span>
+                        <#else>
+                        	<span class="li01">未认证</span><span class="li02">邮箱认证</span><span class="li03">认证邮箱。</span><span class="li04"><a href="<@spring.url '/person/center/authen-email.html'/>"><b>认证</b></a></span>
+                        </#if>
+                        </li>
+                        <div class="clear"></div>
+                         <li>
+                        	<span class="li01">强度：<b class="red">低</b></span><span class="li02">登录密码</span><span class="li03">登陆密码，请牢记。</span><span class="li04"><a href="<@spring.url '/resetPassword/sendmail.html'/>"><b>修改密码</b></a></span>
+                        </li>
+                        <div class="clear"></div>
+                        <li>
+                        	<#if authen_status==0>
+                        	<span class="li01">等待审核</span><span class="li02">教师认证</span><span class="li03">认证教师后，可享有教师特权</span><span class="li04"><b style="color:#3075CE;">等待审核</b></span>
+                        	<#elseif authen_status==1>
+                        	<span class="li01">已认证</span><span class="li02">教师认证</span><span class="li03">认证教师后，可享有教师特权</span><span class="li04"><a href="<@spring.url'/inputAuthenInfo.html'/>"><b>修改信息</b></a></span>
+                        	<#elseif authen_status==2>
+                        	<span class="li01">认证失败</span><span class="li02">教师认证</span><span class="li03">认证教师后，可享有教师特权</span><span class="li04"><a href="<@spring.url'/inputAuthenInfo.html'/>"><b>再次认证</b></a></span>
+                        	<#else>
+                        	<span class="li01">未认证</span><span class="li02">教师认证</span><span class="li03">认证教师后，可享有教师特权</span><span class="li04"><a href="<@spring.url'/authenExplain.html'/>"><b>认证</b></a></span>
+                        	</#if>
+                        </li>
+                        <div class="clear"></div>
+                    </ul>
+                    <div class="clear"></div>
+                </div>
+        </div>
+        <div class="clear"></div>
+	</div>
+	<form id='UpdateHeadImg' action="<@spring.url '/updateHeadImage.html' />" method="post">
+		<input name='image' type='hidden'/>
+	</form>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<#include "uploadImgDialog.htm" parse="true" encoding="UTF-8" >
+<script type='text/javascript'>
+$(function() {
+	$('#ChangeImg').click(function() {
+		openUploadDialog();
+	});
+});
+//设置剪裁图片的存放位置
+function getSavePath() {
+	return "/images/headImage";
+}
+//设置剪裁选择区域的宽高比
+function getRatio() {
+	return 1;
+}
+//重新定义获取剪裁选择区域最小值的方法，用于覆盖插件原有方法
+function getMinSize() {
+	return [50, 50];
+}
+//剪裁之后需要做的处理，图片上传插件调用者可以在这里做操作
+function doAfterCrop(savePath) {
+	$("input[name='image']").val(savePath);
+	$('#UpdateHeadImg').submit();
+}
+</script>

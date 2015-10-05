@@ -1,0 +1,45 @@
+<div class="answerspop_up" id="answerspop_up" style="display:none;">
+	<#if sortList??>
+		<#list sortList?keys as key>
+			<dl>
+				<dt>${key}</dt>
+				<dd>
+					<#list sortList[key] as sort>
+						<div class="answerspop_upcem" parentTitle='${key}' sortno="${sort.p_sort_no}" data-value='${sort.sort_id}'>${sort.sort_name}</div>
+					</#list>
+					<div class="nofl"></div>
+				</dd>
+			</dl>
+		</#list>
+	</#if>
+	<div class="nofl"></div>
+</div>
+<script>
+$('#answerspop_up').dialog({
+	title:"选择科目",
+	autoOpen: false,
+    height: 280,
+    width: 1023,
+    modal: true
+});
+
+function sortClick(selectNode, otherSubjectOption) {
+	$('.answerspop_upcem').each(function(e){
+		$(this).click(function(){
+			$(selectNode).find("option[status='temp']").remove();
+			var str = $(this).attr('parentTitle')+"·"+$(this).html();
+			var value = $(this).attr("data-value");
+			if($(selectNode).find("option[value='"+value+"']")[0] != undefined) {
+				$(selectNode).find("option[value='"+value+"']")[0].selected = "selected";
+				$("#answerspop_up" ).dialog("close");
+			} else {
+				var tempOptionNode = "<option status='temp' value='"+value+"'>"+str+"</option>";
+				$(tempOptionNode).insertBefore($(otherSubjectOption));
+				$("#answerspop_up" ).dialog("close");
+				$(selectNode).find("option[status='temp']")[0].selected = "selected";
+			}
+		});
+	});
+}
+
+</script>

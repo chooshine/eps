@@ -1,0 +1,55 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">手机绑定</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+	<div class="safe_step">
+		<h2>绑定手机</h2>
+        <div class="step_icon">
+        	<span class="step01"></span>
+        	<p><span class="blue">输入手机号码</span><span class="has_margin">输入验证码</span><span>完成</span></p>
+            <div class="input_wrap">
+            <form name="phoneForm" method="post" action="<@spring.url '/person/center/bind-phone-second.html'/>">
+            	<div class="input"><span class="area">归属地区：</span><span><input type="text" name="area" value="中国" /></span></div>
+                <div class="clear"></div>
+                <div class="input"><span class="area">手机号码：</span><span><input type="text" name="phone" value="+86" /></span></div>
+                <div class="clear"></div>
+                <span class="btn02"><button  type="button" id="nextBtn">下一步</button></span>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+	$(function(){
+		$("input[name=area]").attr("disabled","disabled");
+		$("input[name=phone]").focus(function(){
+			if($("input[name=phone]").val() == "+86")
+				$("input[name=phone]").val("");
+		});
+		$("input[name=phone]").blur(function(){
+			if($("input[name=phone]").val() == "")
+				$("input[name=phone]").val("+86");
+		});
+		$("#nextBtn").click(function(){
+			var phone = $("input[name=phone]").val();
+			if(isMPhone(phone)){
+				$.getJSON("<@spring.url '/person/center/bind-phone-check.json'/>",{'phone':phone},function(data){
+					if(data['hasMatchCount']){
+						$("form").submit();
+					}else{
+						alert("该手机号码已被绑定");
+					}
+				});
+			}
+		});
+	})
+</script>

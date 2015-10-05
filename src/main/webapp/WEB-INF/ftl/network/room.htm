@@ -1,0 +1,69 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eeeeee;}
+.nr_wrap a {box-shadow:1px 4px 6px #aaa;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">在线考场</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f"><a href="<@spring.url '/network/paperFactory.html'/>">出卷</a></li>
+	   		<li class="weblog-f curNav"><a href="<@spring.url '/netWork/room.html'/>">考场</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/result.html'/>" style="border-right:none;">阅卷</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="nr_wrap" style="width:800px;margin:70px auto 200px;">
+	<div class="shijuan show">
+    	<a href="<@spring.url '/netWork/networ.html'/>" class="nr_left02">
+        	<span class="nr_icon"></span>
+        	<span class="nr_content">
+        		<h2>当前考场</h2>
+            	<p>当前共有
+	                <#if listStu??>
+					<#list listStu as lstu>
+						${lstu.countSub}	
+					</#list>
+					</#if>
+                	场考试正在进行
+                </p>
+            </span>
+        </a>
+        <a href="<@spring.url '/netWork/net_plan.html'/>" class="nr_right02">
+        	<span class="nr_icon nr_icon01"></span>
+        	<span class="nr_content">
+        		<h2>考场安排</h2>
+            	<p>您还有
+               		<#if listNoPlan?size \gt 0>
+						<#list listNoPlan as lnoPlan>
+							${lnoPlan.noplan}									
+						</#list>
+					<#else>
+						0
+					</#if>
+                	门考试未安排考场
+                </p>
+            </span>
+        </a>
+        <a href="<@spring.url '/netWork/result.html'/>"class="nr_bottom02">
+        	<span class="nr_icon nr_icon02"></span>
+        	<span class="nr_content">
+        		<h2>考场回顾</h2>
+                <p>
+                	本学年进行了
+                	<#if listStus??>
+					<#list listStus as lstus>
+						${lstus.stus}	
+					</#list>
+					</#if>
+                	门考试
+                </p>
+            </span>
+        </a>
+    </div>
+</div>
+<div class="clear"></div>
+<!----footer  code------>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >

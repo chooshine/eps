@@ -1,0 +1,132 @@
+<style>
+#test_paper_kmenrtx {width:auto;}
+.test_paper_kmenrtx .questype {cursor:pointer;}
+.test_paper_kmenrtx .questype:hover {color:#F96;}
+#test_paper_kmenrtx .curr-type {color:#00AFED;}
+.test_paper_kmenrtx #DefaultScore .chooshine-input {width:40px;text-align:center;border:1px solid #aaa;}
+.test_paper_kmenrtx label.changescore {display:inline-block;width:30px;height:32px;line-height:28px;padding-right:0px;font-size:18px;font-weight:bold;color:#fff;text-align:center;cursor:pointer;background:#99CCCC;float:left;}
+.test_paper_kmenrtx label.disabled {background:#ccc;}
+.test_paper_kmenrtx #DefaultScore {display:inline-block;height:32px;line-height:32px;padding-right:0px;float:left;}
+.test_paper_kmenrtx #DefaultScore input {margin-top:0px;}
+</style>
+<div id="test_paper_k" style="display:none;">
+	<h3>创建大题</h3>
+	<form id="upAddQuesTypeForm" method="post" action="<@spring.url '/network/network_addOrUpdate.html'/>">
+		<div class="test_paper_kmenlm" id="quesTypeRadio">
+			<div class="test_paper_kmenl">大题类型</div>
+			<div class="test_paper_kmenrtx" id="test_paper_kmenrtx">
+				<#list quesTypes as type>
+					<label tsid=${type.ts_id?c} type=${type.type} class="questype struct-type">${type.ts_name}</label>
+				</#list>
+			</div>
+			<span id="TypeErrorSpan" style="display:none;height:32px;line-height:33px;font-size:12px;color:#f00;margin-left:10px;float:left;">请选择大题类型</span>
+			<div class="nofl"></div>
+		</div>
+		<div class="test_paper_kmenlm">
+			<div class="test_paper_kmenl">大题名称</div>
+			<div class="test_paper_kmenr">
+				<input type="text" name="typeName" id="typeName" value="" class="chooshine-input"/><span style="display:none; color:red; margin-left:10px;">大题名称不能为空</span>
+			</div>
+			<div class="nofl"></div>
+		</div>
+		<div class="test_paper_kmenlm">
+			<div class="test_paper_kmenl">小题分值</div>
+			<div class="test_paper_kmenrtx" style="margin-top:-4px;">
+				<label id="MinusScore" class="changescore disabled">-</label>
+				<label id="DefaultScore"><input type="text" name="defaultScore" value="1" class="chooshine-input"/></label>
+				<label id="PlusScore" class="changescore">+</label>
+				<div class="nofl"></div>
+			</div>
+			<div class="nofl"></div>
+		</div>
+		<input type="hidden" name="orderNum" id="orderNum" />
+		<input type="hidden" name="examId" value="${examInfoMap['exam_id']?c}" />
+		<input type="hidden" name="typeId" id="typeId"/>
+		<input type="hidden" name="tsId">
+		<input type="hidden" name="type">
+		<div class="test_paper_kmenlm">
+			<div class="test_paper_kmenl">大题描述</div>
+			<div class="test_paper_kmenr">
+				<input type="text" name="typeDetail" id="typeDetail" value="" class="chooshine-input"/>
+			</div>
+			<div class="nofl"></div>
+		</div>
+		<div class="test_paper_kbot">
+			<div class="btn_1asa" style="margin-left:120px;">
+				<input id="sureAdd" type="button" value="确认添加" class="chooshine-btn" style="font-size:14px;font-family:SimSun;"/>
+				<span id="cencleAdd" class="chooshine-cancel">取消</span>
+			</div>
+		</div>
+	</form>
+</div>
+<script>
+$(function() {
+	//创建大题的dialog
+	$('#test_paper_k').dialog({
+		autoOpen: false,
+		dialogClass: "chooshine-dialog",
+	    height: 380,
+	    width: 840,
+	    modal: true,
+	    close:function() {
+	    	$("#test_paper_k").find("h3").html("创建大题");
+			$("#sureAdd").val("确认添加");
+	    }
+	});
+	
+	$("input[name='tsId']").val($(".curr-type").attr("tsid"));
+	$("input[name='type']").val($(".curr-type").attr("type"));
+	
+	//大题类型的点击事件
+	$(".struct-type").click(function() {
+		$("input[name='tsId']").val($(this).attr("tsid"));
+		$("input[name='type']").val($(this).attr("type"));
+		$(".curr-type").removeClass("curr-type");
+		$(this).addClass("curr-type");
+		$("input[name='typeName']").val($(this).text());
+		$("#TypeErrorSpan").hide();
+	});
+	
+	//大题分数的增减按钮点击事件
+	$("#MinusScore").click(function() {
+		var nowScore = parseInt($("input[name='defaultScore']").val());
+		switch(nowScore) {
+		case 1:
+			break;
+		case 2:
+			$("input[name='defaultScore']").val(1);
+			$(this).addClass("disabled");
+			break;
+		default:
+			$("input[name='defaultScore']").val(--nowScore);
+			break;
+		}
+	});
+	$("#PlusScore").click(function() {
+		var nowScore = parseInt($("input[name='defaultScore']").val());
+		switch(nowScore) {
+		case 1:
+			$("#MinusScore").removeClass("disabled");
+			$("input[name='defaultScore']").val(++nowScore);
+			break;
+		default:
+			$("input[name='defaultScore']").val(++nowScore);
+			break;
+		}
+	});
+	disableInputKeyUpNoNumber($("input[name='defaultScore']"));
+	$("input[name='defaultScore']").blur(function() {
+		if($(this).val() == "") $(this).val(1);
+	});
+	
+	//点击大题名称文本框，提示信息隐藏
+	$("#typeName").focus(function() {
+		$(this).next().hide();
+	});
+	
+	//取消添加，或者取消编辑大题
+	$('#cencleAdd').click(function(){
+		$('#test_paper_k').dialog( "close" );
+	});
+});
+</script>

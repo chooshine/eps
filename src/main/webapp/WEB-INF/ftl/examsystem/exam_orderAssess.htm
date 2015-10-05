@@ -1,0 +1,154 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+
+<div class="or_top">
+	<div class="or_tlt"><a href="<@spring.url '/' />"><div class="intop1" ></div></a></div>
+	<div class="or_trt">
+		<ul class="or_trtcl">
+			<li id="myExam">我的试卷</li>
+			<li id="myTeacher">我的老师</li>
+			<li id="myRelease">我的发布</li>
+		</ul>
+		<div class="or_trtcr">
+		
+		</div>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<#list ONETEACHER as onet>
+	<#assign onet=onet>
+	<#break>
+</#list>
+<div class="testl_con" style=" padding-top:12px;">
+	<div class="or_c">
+		<div class="or_b_sjcomr3">
+			<div  id="returnTeacher"><a>返回老师资源</a></div>
+		</div>
+		<div class="or_c_top">
+			<div class="or_tsj_top"><a>${onet.TEACHER_NAME}</a>老师的资源</div>
+		</div>
+		<div class="or_c_com">
+			<div class="or_c_cl">
+				
+				<dl class="or_txc">
+					<#if onet.PHOTO!="">
+						<dt><img src="<@spring.url '/${onet.PHOTO}'/>" width="160" height="175"/></dt>
+					<#else>
+						<dt><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="160" height="175"/></dt>
+					</#if>
+					<dd>
+						<div class="or_tx1">
+							<div class="or_tx1l"><span class="nm">${onet.TEACHER_NAME}</span>老师</div>
+							<div class="or_tx1r">资源(<span>${onet.COUNT_EXAM}</span>)</div>
+						</div>
+						<div class="or_tx2">
+							<div class="or_tx2l">${onet.SCHOOL_NAME}</div>
+							<div class="or_tx2r"><img src="<@spring.url '/images/result/shu.jpg'/>" width="23" height="21"/></div>
+						</div>
+						<!-- div class="or_tx3">
+							<div class="or_tx3l">未评论</div>
+							<div class="or_tx3r"><span class="nm1">使用中</span> <span class="nm2">续费</span></div>
+						</div-->
+					</dd>			
+				</dl>
+			</div>
+			<form id="addAssessForm" method="GET" action="<@spring.url '/saveAssess/exam_orderComDetail.html' />" >
+			<div class="or_c_cr">
+				<div class="or_c_crttop">
+					<label><input type="radio" name="assessType" value="1" checked="checked"> 好评</label>
+					<label> <input type="radio" name="assessType" value="2">中评</label>
+					<label> <input type="radio" name="assessType" value="3">差评</label>
+				</div>
+				<div class="or_c_crt">
+					<textarea name="assessInfo" cols="" rows="" id="assText">请输入评价！！！</textarea>
+				</div>
+				<div class="or_c_crb">
+					<input type="hidden" name="goodsId" value=${onet.GOODS_ID}>
+					<input type="hidden" name="teacherId" value=${onet.TEACHER_ID?c}>
+					<input type="hidden" value="20" name="pageSize">
+					<input type="hidden" value="1" name="pageNo" >
+					<input type="hidden" value="-1" name="assType" id="assType">
+					<input type="hidden" value="${payType}" name="payType" id="payType">
+					<div  class="or_c_crban" id="addAssess">提交评价</div>
+				
+				</div>
+			</div>
+			</form>
+		</div>
+	
+	</div>
+</div>
+
+	<form id="getExamForm" method="GET" action="<@spring.url '/exam_orderExam.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="sortNo" id="sortNo">
+			<input type="hidden" value="-1" name="commitFlag" id="commitFlag">
+	</form>
+	
+	<form id="getTeacherForm" method="GET" action="<@spring.url '/exam_orderTeacher.html' />" />
+			<input type="hidden" value="12" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="isLose" id="isLose">
+			<input type="hidden" value="-1" name="subjectNo" id="subjectNo">
+	</form>
+	
+	<form id="getReleaseForm" method="GET" action="<@spring.url '/exam_orderRelease.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="release" id="release">
+	</form>
+	
+	<form id="getOrderForm" method="GET" action="<@spring.url '/exam_orderView.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="${onet.TEACHER_ID}" name="teacherId" id="teacherId">
+			<input type="hidden" value="first" name="whatType" id="whatType">
+			<input type="hidden" value="${payType}" name="payType" id="payType">
+	</form>
+
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<script>
+
+	$(function(){
+		
+		$("#myExam").click(function(){
+			$("#getExamForm").submit();
+		});
+		
+		$("#myTeacher").click(function(){
+			$("#getTeacherForm").submit();		
+		});
+		
+		$("#myRelease").click(function(){
+			$("#getReleaseForm").submit();
+		});
+		
+		$("#returnTeacher").click(function(){
+			$("#getOrderForm").submit();
+		});
+		
+		
+		$("#addAssess").click(function(){
+			$("#addAssessForm").submit();
+		});
+
+		$("#assText").focus(function(){
+			if($(this).val()=="请输入评价！！！"){
+				$(this).val("");
+			}
+			
+		});
+		
+		$("#assText").blur(function(){
+			if($(this).val()==""){
+				$(this).val("请输入评价！！！");
+			}
+		});
+	});
+
+
+
+
+</script>
+

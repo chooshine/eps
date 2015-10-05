@@ -1,0 +1,360 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+
+<div class="or_top">
+	<div class="or_tlt"><a href="<@spring.url '/' />"><div class="intop1" ></div></a></div>
+	<div class="or_trt">
+		<ul class="or_trtcl">
+			<li id="myExam">我的试卷</li>
+			<li id="myTeacher" style="background:#2878b0;">我的老师</li>
+			<li id="myRelease">我的发布</li>
+		</ul>
+		<div class="or_trtcr">
+			
+		</div>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<div class="testl_con" style=" padding-top:12px;">
+  <div class="or_let">
+  		<#if PHOTO!="">
+			<div class="or_leth"><img src="<@spring.url '/${PHOTO}'/>" width="106" height="120"/></div>
+		<#else>
+			<div class="or_leth"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="106" height="120"/></div>
+  		</#if>
+		<div class="or_letl">我的订阅</div>
+		<dl class="or_letlx">
+			<dt>我订阅的试卷</dt>
+			<#list ORDEXAM as examq>
+			<dd subjectNo=${examq.SUBJECT_NO} class="leftSub">${examq.SORT_NAME}(${examq.PARENT_SORT_NAME})</dd>
+			</#list>
+			<dt>我订阅的老师</dt>
+			<#list ORDTEACHER as teacherq>
+			<dd subjectNo=${teacherq.SUBJECT_NO} class="leftTeacher">${teacherq.SORT_NAME}</dd>
+			</#list>
+		</dl>
+		<div class="or_letl">我的试卷编辑</div>
+		<dl class="or_letlx">
+			<#list RELSTATUS as statusq>
+			<#if statusq.RELEASE_STATUS==1>
+				<dd release=${statusq.RELEASE_STATUS} class="leftRelease">已发布</dd>
+			<#else>
+				<dd release=${statusq.RELEASE_STATUS} class="leftRelease">未发布</dd>
+			</#if>
+			</#list>
+		</dl>
+		<div class="or_letl">推荐老师</div>
+		<div class="or_lettj">
+			
+				<#assign idArr=[]>
+				<#assign count=0>
+				<#list RECTEACHER as recter>
+				<#if count=3><#break></#if>
+				<#assign flag=false>
+				
+				<#list idArr as arr>
+					<#if recter.USER_ID=arr>
+						<#assign flag=true>
+						<#break>
+					</#if>
+				</#list>
+				
+				<#if flag=false>
+				<dl>
+					<#if recter.PHOTO!="">
+						<dt><img class="phototo" teacherId="${recter.TEACHER_ID?c}" src="<@spring.url '/${recter.PHOTO}'/>" width="90" height="100"/></dt>
+					<#else>
+						<dt><img class="phototo" teacherId="${recter.TEACHER_ID?c}"  src="<@spring.url '/images/headImage/default_head.jpg'/>" width="90" height="100"/></dt>
+  					</#if>
+					<dd>
+						<#list RECTEACHER as recter2>
+						<#if recter.USER_ID=recter2.USER_ID>
+							<div class="or_lettj1">${recter2.SORT_NAME}(${recter2.PARENT_SORT_NAME})(<span>${recter2.COUNT_SUB}</span>)</div>
+						</#if>
+						</#list>
+						<div class="or_lettj2">${recter.SCHOOL_NAME}</div>
+					</dd>
+				</dl>
+					<#assign idArr=idArr+[recter.USER_ID]>
+					<#assign count=count+1>
+				</#if>
+				</#list>
+			
+		</div>
+		
+	</div>
+	<div class="or_rgt">
+		<div class="or_rgtt">
+			<div  class="or_rgttlxx">我的订阅中心>我的老师</div>
+			
+		</div>
+		<div class="or_rgttc">
+			<div class="or_rgttc1">
+				<div class="or_rgttc1l">我的订阅老师：</div>
+				<div class="or_rgttc1r">
+					<#assign alltea=0>
+					<#list ORDTEACHER as ordteacher>
+						<#assign alltea=alltea+ordteacher.COUNT_NUM>
+					</#list>
+					<div class="nh1 con1" subjectNo="-1"><a>全部</a></div>
+					<#list ORDTEACHER as ordteacher>
+						<div class="nh1 con1" subjectNo=${ordteacher.SUBJECT_NO}><a>${ordteacher.SORT_NAME}</a></div>
+					</#list>
+					<div class="nofl"></div>
+				</div>
+				<div class="nofl"></div>
+			</div>
+			<div class="or_rgttc1">
+				<div class="or_rgttc1l">我的订阅期限：</div>
+				<div class="or_rgttc1r">
+					<#assign alllose=0>
+					<#list ISLOSE as lose>
+						<#assign alllose=alllose+lose.COUNT_LOSE>
+					</#list>
+					<div class="nh1 con2" isLose="-1"><a>全部</a></div>
+					<#list ISLOSE as lose>
+						<#if lose.IS_LOSE=0>
+							<div class="nh1 con2" isLose=${lose.IS_LOSE}><a>未过期</a></div>
+						<#else>
+							<div class="nh1 con2" isLose=${lose.IS_LOSE}><a>已过期</a></div>
+						</#if>
+					</#list>
+					<div class="nofl"></div>
+				</div>
+				<div class="nofl"></div>
+			</div>
+		</div>
+		<div class="or_rgttconx">
+			<#list TINFO as tin>
+			<dl class="or_tx">
+				<dt class="ph" teacherId=${tin.TEACHER_ID?c}><img src="<@spring.url '/${tin.PHOTO}'/>" width="160" height="175"/></dt>
+				<dd>
+					<div class="or_tx1">
+						<div class="or_tx1l"><span class="nm">${tin.TEACHER_NAME}</span>老师</div>
+						<div class="or_tx1r">资源(<span>${tin.COUNT_EXAM}</span>)</div>
+					</div>
+					<div class="or_tx2">
+						<div class="or_tx2l">${tin.SCHOOL_NAME}</div>
+						<div class="or_tx2r"><img src="<@spring.url '/images/result/shu.jpg'/>" width="23" height="21"/></div>
+					</div>
+					<div class="or_tx3">
+						<div class="or_tx3l isAssess" teacherId=${tin.TEACHER_ID?c}>未评论</div>
+						<div class="or_tx3r"><span class="nm1">使用中</span> <span class="nm2 xoxj ph" teacherId=${tin.TEACHER_ID?c}>续费</span></div>
+					</div>
+				</dd>			
+			</dl>
+			</#list>
+			<dl class="or_txtj" id="addTeacher">
+				<dt class="or_txs"><img src="<@spring.url '/images/order/tjia.png'/>" style="margin:30px 12px 12px 22px;"" width="120" height="110"/></dt>
+				<dd>
+					<div class="or_tx4"></div>
+				</dd>			
+			</dl>
+			<div class="nofl"></div>
+			
+			<dl>
+				<div class="or_feny">
+					<#include "pagination.htm" parse="true" encoding="UTF-8" >
+					<@pagination page=page />
+				</div>
+			</dl>
+		</div>
+	
+	</div>
+	<div class="nofl"></div>
+
+	<form id="getExamForm" method="GET" action="<@spring.url '/exam_orderExam.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="sortNo" id="sortNo">
+			<input type="hidden" value="-1" name="commitFlag" id="commitFlag">
+	</form>
+	
+	<form id="getTeacherForm" method="GET" action="<@spring.url '/exam_orderTeacher.html' />" />
+			<input type="hidden" value="12" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="" name="isLose" id="isLose">
+			<input type="hidden" value="" name="subjectNo" id="subjectNo">
+	</form>
+	
+	<form id="getReleaseForm" method="GET" action="<@spring.url '/exam_orderRelease.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="release" id="release">
+	</form>
+	
+	<form id="getParentSortForm" method="GET" action="<@spring.url '/exam_allTeacher.html' />" />
+			<input type="hidden" value="15" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="小学" name="sortParentName" id="sortParentName">
+			<input type="hidden" value="1" name="sortParentId" id="sortParentId">
+			<input type="hidden" value="-1" name="parentSubjectno" id="parentSubjectno">
+			<input type="hidden" value="-1" name="examarea" id="examarea">
+			<input type="hidden" value="COUNT_ORDER" name="sortName" id="sortName">
+			<input type="hidden" value="DESC" name="sortType" id="sortType">
+	</form>
+	
+	<form id="getOrderForm" method="GET" action="<@spring.url '/exam_orderView.html' />" />
+			<input type="hidden" value="20" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="" name="teacherId" id="teacherId">
+			<input type="hidden" value="first" name="whatType" id="whatType">
+			<input type="hidden" value="order" name="payType" id="payType">
+	</form>			
+	
+	
+</div>
+
+
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+
+<script>
+	$(function(){
+		
+		var conditionOne=${CONDITION1};
+		var conditionTwo=${CONDITION2};
+		
+		$("#myExam").click(function(){
+			$("#getExamForm").submit();
+		});
+		
+		$("#myTeacher").click(function(){
+			$("#getTeacherForm").submit();		
+		});
+		
+		$("#myRelease").click(function(){
+			$("#getReleaseForm").submit();
+		});
+		
+		$(".con1").each(function(){
+			if($(this).attr("subjectNo")==conditionOne){
+				$(this).attr("class","nh2 con1");
+				$("#subjectNo").val(conditionOne);
+			}
+			
+			$(this).click(function(){
+				$(".con1").each(function(){
+					$(this).attr("class","nh1 con1");
+				});
+				
+				$(this).attr("class","nh2 con1");
+				getCondition();
+			});
+		});
+		
+		$(".con2").each(function(){
+			if($(this).attr("isLose")==conditionTwo){
+				$(this).attr("class","nh2 con2");
+				$("#isLose").val(conditionTwo);
+			}
+			
+			$(this).click(function(){
+				$(".con2").each(function(){
+					$(this).attr("class","nh1 con2");
+				});
+				
+				$(this).attr("class","nh2 con2");
+				getCondition();
+			});
+		});
+		
+		//获得条件
+		function getCondition(){
+			$(".con1").each(function(){
+				if($(this).hasClass("nh2")){
+					conditionOne=$(this).attr("subjectNo");
+				}
+			});
+			
+			$(".con2").each(function(){
+				if($(this).hasClass("nh2")){
+					conditionTwo=$(this).attr("isLose");
+				}
+			});
+
+			
+			//alert(conditionOne+":"+conditionTwo);
+			
+			$("#subjectNo").val(conditionOne);
+			$("#isLose").val(conditionTwo);
+			
+			$("#getTeacherForm").submit();
+		}
+		
+		$(".show,.fcenter").each(function(index){
+			$(this).click(function(){
+				$("input[name='pageNo']").val($(this).attr("url"));
+				$("#getTeacherForm").submit();
+			});
+		});
+		
+		
+		$(".isAssess").each(function(){
+			$(this).click(function(){
+				var teacherId=$(this).attr("teacherId");
+				location.href="<@spring.url '/exam_orderAssess.html?teacherId="+teacherId+"&payType=order'/>";	
+			});
+		})
+		
+		$(".leftSub").each(function(){
+			$(this).click(function(){
+				$("#sortNo").val($(this).attr("subjectNo"));
+				$("#commitFlag").val(conditionTwo);
+				$("#getExamForm").submit();
+			});
+		});
+		
+		$(".leftTeacher").each(function(){
+			$(this).click(function(){
+				$("#subjectNo").val($(this).attr("subjectNo"));
+				$("#isLose").val(conditionTwo);
+				$("#getTeacherForm").submit();
+			});
+		});
+		
+		$(".leftRelease").each(function(){
+			$(this).click(function(){
+				$("#release").val($(this).attr("release"));
+				$("#getReleaseForm").submit();
+			});
+		});
+		
+		$("#addTeacher").click(function(){
+			$("#getParentSortForm").submit();
+		});
+		
+
+		$(".ph").each(function(){
+			$(this).click(function(){
+				$("#teacherId").val($(this).attr("teacherId"));
+				$("#getOrderForm").submit();
+			});
+		})
+		
+		$(".xoxj").each(function(){
+			$(this).click(function(){
+				$("#getOrderForm").submit();
+			});
+		});
+		
+		//点击头像跳转
+		$(".phototo").each(function(){
+			$(this).click(function(){
+				$("#teacherId").val($(this).attr("teacherId"));
+				$("#getOrderForm").submit();
+			});
+		});
+	});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+

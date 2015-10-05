@@ -1,0 +1,315 @@
+<style>
+.text_sju {border:none;box-shadow:none;background-color:#eee;}
+.text_sju li {border:1px solid #aaa;margin-bottom:20px;background-color:#fff;}
+.paperx_fxk .paperx_zsdr, .paperx_fxk .paperx_jxxqr {width:660px;}
+.paperx_jxxqr .fftxt {min-height:50px;}
+</style>
+
+<div class="text_sju">
+	<div class="paperx_comx">
+		<ul id="QuestionsUl">
+			<#if qiMap??>
+				<#list qiMap?keys as oneKey>
+					<#assign qi=qiMap[oneKey]>
+					<#if oneKey?starts_with("normal")>
+						<li id="${qi.ques_id?c}">
+							<div class="paperx_tl">
+								<dl>
+									<dt>
+										<div class="allNum" mTopic=${qi.M_TOPIC}>${qi.M_TOPIC}</div>
+										<div class="paperx_tlxr" quesid=${qi.QUES_ID?c}>
+											<div type='title' class='ttxt test_box equ' >
+												${qi.QUES_CONTENT}
+											</div>
+										</div>
+										<input class="onequesscore" type="hidden" value="${qi.SCORE}">
+										<div class="nofl"></div>
+									</dt>
+									<#if qi.QUES_TYPE=='1' || qi.QUES_TYPE=='2'>
+										<#list qi.OPT_CONTENT as optContent>
+											<#list qi.OPT_ID as optId>
+											    <#if optContent_index==optId_index>
+													<dd class="test_box2_bgc border-hover hidden">
+														<div class="pap_tlt">${qi.OPT_NO[optId_index]+"."}</div>
+														<div type="option" class="pap_tct questionItme" optid=${optId?c}>
+															<div class='ttxt test_box2 equ' >${optContent}</div>
+														</div>
+														<div class="nofl"></div>
+													</dd>
+												</#if>
+											</#list>
+										</#list>
+									</#if>
+								</dl>
+								<div class="paperx_btda hidden">
+									<#if qi.QUES_TYPE=='4'>
+									<div class="paperx_tjx paperx_line_tjx">
+									<#else>
+									<div class="paperx_tjx">
+									</#if>
+										<input type="hidden" value=${qi.QUES_TYPE}>
+										<#assign ascArr2=["对","错"] >
+										<#assign index2=-1 > <#-- 选项索引，即A、B、C等的索引 -->
+										<#assign index3=-1 > <#--填空题的选项号索引-->
+										<#list qi.OPT_REFER as l>
+											<#assign index2=index2+1 >
+											<#if qi.QUES_TYPE=='1'>
+												<#if l=='0'>
+													<label class="paperx_tjxb2 radc">
+													 	<input class='markc' type="radio" name=${"rad"+qi.QUES_ID} value="0">
+													 	<span>${qi.OPT_NO[l_index]}</span>
+													</label>
+												<#else>
+													<label class="paperx_tjxb2 radc radio">
+													 	<input class='markc' type="radio" name=${ "rad"+qi.QUES_ID} value="0" checked="checked" />
+													 	<span>${qi.OPT_NO[l_index]}</span> 
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='2'>
+												<#if l=='0'>
+													<label class="paperx_tjxb2 chkc">
+														<input class='markc' type="checkbox" name=${"rad"+qi.QUES_ID} value="0"/>
+														<span>${qi.OPT_NO[l_index]}</span>
+													</label>
+												<#else>
+												 	<label class="paperx_tjxb2 chkc radio">
+														<input class='markc' type="checkbox" name=${"rad"+qi.QUES_ID} value="0" checked="checked"/>
+														<span>${qi.OPT_NO[l_index]}</span>
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='3'>
+												<#if l=='0'>
+													<label class="paperx_tjxb2 radc">
+														<input class='markc' type="radio" name=${"rad"+qi.QUES_ID} value="0"/>
+														<span>${ascArr2[index2]}</span> 
+													</label>
+												<#else>
+													<label class="paperx_tjxb2 radc radio">
+														<input class='markc' type="radio" name=${ "rad"+qi.QUES_ID} value="0" checked="checked"/>
+														<span>${ascArr2[index2]}</span>
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='4'>
+												<#assign index3=index3+1>
+												<div class="paperxt_tjxb2">
+													<div class="cleanBoth">
+														<span class="tkNum">${qi.OPT_NO[index3]}</span>
+														<div class='markc test_box4 equ'>${l}</div>
+														<input type='hidden' value='1' class='tkScore' />
+													</div>
+												</div>
+											<#elseif qi.QUES_TYPE=='5'>
+												<div class="jiedati-tip">答：</div>
+												<div class="paperxt_tjxb2 answer-type5">
+													<div class='markc equ test_box5'>${l!}</div>
+												</div>
+											</#if>
+										</#list>
+										<div class="nofl"></div>
+									</div>
+									<div class="nofl"></div>
+									<div class="paperx_fxk">
+										<div class="paperx_zsd">
+											<div class="paperx_zsdl">考点：</div>
+											<div class="paperx_zsdr">
+											<#if qi.knowledge_point??>
+											<#list qi.knowledge_point as kp>
+												<div class="knowledgepointdiv-nodelete" kpid="${kp.kpId}" title="${kp.kpPath}">${kp.kpName}</div>
+											</#list>
+											</#if>
+											</div>
+											<div class="nofl"></div>
+										</div>
+										<div class="paperx_jxxq">
+											<div class="paperx_zsdl" >解析：</div>
+											<div class="paperx_jxxqr">
+												<div class='fftxt test_box3 equ'>${qi.keyword}</div>
+											</div>
+											<div class="nofl"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+					<#else>
+						<#if qi?size&gt;0>
+							<li>
+								<div class='paperxt_stx'>
+								<#list qi as tkl>
+									<#if tkl.QUES_TYPE==6>
+										<#assign articleUlId=tkl.QUES_ID?c>
+										<#--材料内容部分-->
+										<div class="article_area">
+											<div class='articletip'>（材料）</div>
+											<div remark='article' class="questionItme paperxt_com test_box6 equ" type="artlic" artid=${tkl.QUES_ID?c}>${tkl.QUES_CONTENT}</div>
+										</div>
+										<div class="nofl"></div>
+									</#if>
+								</#list>
+								</div>
+								<div class='paperxt_bot'>
+									<ul id=${"ul"+articleUlId+"a"}>
+										<#list qi as tkl>
+											<#if tkl.QUES_TYPE!=6>
+												<li id=${tkl.QUES_ID?c}>
+													<div class="paperx_tl">
+														<dl>
+															<dt>
+																<div class="allNum" mTopic="${tkl.M_TOPIC}">${tkl.M_TOPIC}</div>
+																<div type="title" class="paperx_tlxr" quesid=${tkl.QUES_ID?c}>
+																	<div  type='title' class='ttxt test_box equ' >
+																		${tkl.QUES_CONTENT}
+																	</div>
+																</div>
+																<input class="onequesscore" type="hidden" value="${tkl.SCORE}" >
+																<div class="nofl"></div>
+															</dt>
+															<#if tkl.QUES_TYPE=='1' || tkl.QUES_TYPE=='2'>
+																<#list tkl.OPT_CONTENT as optContent>
+																	<#list tkl.OPT_ID as optId>
+																		<#if optContent_index==optId_index>
+																			<dd class='test_box2_bgc border-hover hidden'>
+																				<div class="pap_tlt">${tkl.OPT_NO[optId_index]+"."}</div>
+																				<!-- 初始化状态下选项插入公式 -->
+																				<div type="option" class="pap_tct questionItme" optid=${optId?c}>
+																					<div class='ttxt test_box2 equ' >${optContent}</div>
+																				</div>
+																				<div class="nofl"></div>
+																			</dd>
+																		</#if>
+																	</#list> 
+																</#list> 
+															</#if>
+														</dl>
+														<div class="paperx_btda hidden">
+															<#if tkl.QUES_TYPE=='4'>
+															<div class="paperx_tjx paperx_line_tjx">
+															<#else>
+															<div class="paperx_tjx">
+															</#if>
+																<input type="hidden" value=${tkl.QUES_TYPE}>
+																<#assign ascArr2=["对","错"] > 
+																<#assign index2=-1> 
+																<#assign index3=-1>
+																<#list tkl.OPT_REFER as l> 
+																	<#assign index2=index2+1 > 
+																	<#if tkl.QUES_TYPE=='1'>
+																		<#if l=='0'>
+																			<label class="paperx_tjxb2 radc">
+																			 	<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID} value="0"/>
+																			 	<span>${tkl.OPT_NO[l_index]}</span>
+																			</label>
+																		<#else>
+																			<label class="paperx_tjxb2 radc radio">
+																			 	<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID} value="0" checked="checked"/>
+																			 	<span>${tkl.OPT_NO[l_index]}</span>
+																			</label>
+																		</#if>
+																	<#elseif tkl.QUES_TYPE=='2'>
+																		<#if l=='0'> 
+																			<label class="paperx_tjxb2 chkc">
+																				<input class='markc' type="checkbox" name=${"rad"+tkl.QUES_ID} value="0"/>
+																				<span>${tkl.OPT_NO[l_index]}</span>
+																			</label>
+																		<#else> 
+																			<label class="paperx_tjxb2 chkc radio">
+																				<input class='markc' type="checkbox" name=${"rad"+tkl.QUES_ID} value="0" checked="checked"/>
+																				<span>${tkl.OPT_NO[l_index]}</span>
+																			</label>
+																		</#if>
+																	<#elseif tkl.QUES_TYPE=='3'>
+																		<#if l=='0'> 
+																			<label class="paperx_tjxb2 radc">
+																				<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID} value="0"/>
+																				<span>${ascArr2[index2]}</span>
+																			</label>
+																		<#else>
+																			<label class="paperx_tjxb2 radc radio">
+																				<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID} value="0" checked="checked"/>
+																				<span>${ascArr2[index2]}</span>
+																			</label>
+																		</#if>
+																	<#elseif tkl.QUES_TYPE=='4'>
+																		<#assign index3=index3+1>
+																		<div class="paperxt_tjxb2">
+																			<div class="cleanBoth">
+																				<span class="tkNum">${tkl.OPT_NO[index3]}</span>
+																				<div class='markc test_box4'>${l} </div>
+																				<input type='hidden' value='1' class='tkScore' />
+																			</div>
+																			<div class="nofl"></div>
+																		</div>
+																	<#elseif tkl.QUES_TYPE=='5'>
+																		<div class="jiedati-tip">答：</div>
+																		<div class="paperxt_tjxb2 answer-type5">
+																			<div class='markc equ test_box5'>${l!}</div>
+																		</div>
+																	</#if> 
+																</#list>
+																<div class="nofl"></div>
+															</div>
+															<div class="nofl"></div>
+															<div class="paperx_fxk">
+																<div class="paperx_zsd">
+																	<div class="paperx_zsdl">考点：</div>
+																	<div class="paperx_zsdr">
+																		<#if tkl.knowledge_point??>
+																		<#list tkl.knowledge_point as kp>
+																			<div class="knowledgepointdiv-nodelete" kpid="${kp.kpId}" title="${kp.kpPath}">${kp.kpName}</div>
+																		</#list>
+																		</#if>
+																	</div>
+																	<div class="nofl"></div>
+																</div>
+																<div class="paperx_jxxq">
+																	<div class="paperx_zsdl">解析：</div>
+																	<div class="paperx_jxxqr">
+																		<div class='fftxt test_box3 equ'>${tkl.keyword}</div>
+																	</div>
+																	<div class="nofl"></div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</li>
+											</#if>
+										</#list>
+									</ul>
+								</div>
+							</li>
+						</#if>
+					</#if>
+				</#list>
+			</#if>
+		</ul>
+	</div>
+</div>
+
+<script>
+$(function() {
+	//为所有的小题添加小题号
+	$(".allNum").each(function(index) {
+		$(this).attr("mtopic", index+1).html(index+1);
+	});
+	
+	$(".paperx_tl").click(function() {
+		if($(this).find(".paperx_btda").hasClass("hide")) {
+			$(this).find("dd").removeClass("hide");
+			$(this).find(".paperx_btda").removeClass("hide");
+		} else {
+			$(this).find("dd").addClass("hide");
+			$(this).find(".paperx_btda").addClass("hide");
+		}
+	});
+	//为单选框添加事件
+	$(".radc").each(function(){
+		$(this).children("input").attr("disabled",true);	//初始化禁用单选框
+	});
+	//为多选框添加事件
+	$(".chkc").each(function(){
+		$(this).children("input").attr("disabled",true);	//初始化禁用多选框
+	});
+	
+});
+
+</script>

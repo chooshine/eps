@@ -1,0 +1,376 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eeeeee;}
+.nr_wrap03 {min-height:500px;background-color:#ffffff;box-shadow:0 0 5px #aaaaaa;}
+.wrap03_nr ul li span.span01 {width:190px;}
+.wrap03_nr ul li span.span00 {width:140px;}
+.nr_wrap03 .wrap03_select {padding-bottom:10px; border-bottom:1px #cccccc solid;}
+.wrap03_select div.netshare-conditioncontainer {float:left;}
+.or_rgttconanu {position:static;width:95px;float:left;padding-top:3px;}
+.testh_problemrbotrjx {float:left;}
+.testh_problemrbotrjx:HOVER {color:#dddddd;}
+#releasetime, #s2 {width:80px;}
+em {font-style:normal;}
+
+#ArrangeTest-Dialog h3 {margin-top:20px; margin-bottom:120px; font-size:30px;}
+#ArrangeTest-Dialog #ArrangeTest-Container {text-align:center;}
+#TestSelect {width:300px; padding-top:4px; padding-bottom:4px; font-size:14px;}
+#ArrangeTest-Dialog #CreateTestContainer {margin-top:20px; margin-left:-70px; font-size:16px;}
+#ArrangeTest-Dialog #CreateTestContainer #CreateTest {color:red;}
+.arragetest-operates {height:32px; margin-top:80px; padding-left:192px;}
+.arragetest-operates .rectanglebtn {float:left; width:170px; margin-right:40px;}
+.arragetest-operates #CloseArrangeDialog {width:60px; float:left; margin-top:10px; font-weight:700; color:red; cursor:pointer;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">在线考场</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"><a href="<@spring.url '/network/paperFactory.html'/>">出卷</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/room.html'/>">考场</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/result.html'/>" style="border-right:none;">阅卷</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="nr_wrap03">
+	<div class="wrap03_title">
+		<a href="<@spring.url '/network/paperLibrary.html'/>"><span>我的试卷</span></a>
+		<a href="<@spring.url '/teacher/myWharehouse.html'/>"><span>我的题库</span></a>
+		<a href="<@spring.url '/network/net_share.html'/>"><span class="wrap03_current">他人共享</span></a>
+	</div>
+	<div class="wrap03_select">
+		<div class="netshare-conditioncontainer">
+			<b class="padd25">时间:</b>
+			<select id="releasetime" class="chooshine-select" name="releasetime" >
+				<#if dateList??>
+					${dateList_index}
+						<#list dateList as dd>
+						<#if dd_index==(dateList?size-2)>
+							<option value=${dd?c} selected="selected">${dd?c}</option>
+						<#else>
+							<option value=${dd?c}>${dd?c}</option>
+						</#if>
+						</#list>
+					</#if>
+			</select>
+			<b>以后</b>
+		</div>
+		
+		<div class="netshare-conditioncontainer">
+			<b class="padd25">考试地区:</b>
+			<select id="s2" class="chooshine-select" name="area">
+				<#if areaList??>
+					<#list areaList as etl>
+						<#if etl.CODE=5>
+							<option value=${etl.CODE} selected="selected">${etl.NAME!}</option>
+						<#else>
+							<option value=${etl.CODE} >${etl.NAME!}</option>
+						</#if>
+					</#list>
+				</#if>
+			</select>
+		</div>
+		
+		<div class="netshare-conditioncontainer">
+			<b class="padd25">学校:</b>
+			<select id="s3" class="chooshine-select" name="schoolid">
+				<#if schoolList??>
+					<#list schoolList as etl>
+						<option value=${etl.school_id}>${etl.school_name!}</option>
+					</#list>
+				</#if>
+			</select>
+		</div>
+		
+		<div class="netshare-conditioncontainer">
+			<b class="padd25">科目：</b>
+			<select name="subjectid" class="chooshine-select">
+				<#if teacherSortList??>
+					<#if teacherSortList?size &gt; 0>
+						<#list teacherSortList as sort>
+							<option value="${sort.sort_id}">${sort.parent_sort+"·"+sort.sort_name}</option>
+						</#list>
+					<#else>
+						<option valu="-2">请选择科目</option>
+					</#if>
+				<#else>
+					<option valu="-2">请选择科目</option>
+				</#if>
+				<option value="-1" id="OtherSubject">其他</option>
+			</select>
+		</div>
+		<div class="or_rgttconanu">
+			<button type="submit" id="searchAll" class="testh_problemrbotrjx ckbj">搜索试卷</button>
+		</div>
+		<div class="nofl"></div>
+	</div>
+				
+	<div class="shaList">
+		<#include "network/shareList.htm" parse="true" encoding="UTF-8">
+	</div>
+</div>
+
+
+<input name="arrange-examid" type="hidden" />
+<input name="arrange-subjectno" type="hidden" />
+<div class="answerspop_up" id="answerspop_up" style="display:none;">
+	<#if sortList??>
+		<#list sortList?keys as key>
+			<dl>
+				<dt>${key}</dt>
+				<dd>
+					<#list sortList[key] as sort>
+						<div class="answerspop_upcem" parentTitle='${key}' data-value='${sort.sort_id}'>${sort.sort_name}</div>
+					</#list>
+					<div class="nofl"></div>
+				</dd>
+			</dl>
+		</#list>
+	</#if>
+	<div class="nofl"></div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script src="<@spring.url '/javascripts/jquery-ui-timepicker-addon.js'/>" ></script>
+<form id="getLibers" method="POST" action="<@spring.url '/network/net_share.html' />" >
+	<input type="hidden" value="20" name="pageSize">
+	<input type="hidden" value="1" name="pageNo" >
+	<input type="hidden"  name="releaseTime" >
+	<input type="hidden"  name="examArea" >
+	<input type="hidden"  name="school_id" >
+	<input type="hidden"  name="pageType" value="getAll" />
+</form>
+
+<form id="getExam" method="POST" action="<@spring.url '/exam/getExamInfo.html'/>" >
+	<input type="hidden" name="examId" >
+</form>
+
+
+<div id="ArrangeTest-Dialog" style="display:none;">
+	<h3>安排考试</h3>
+	<div id="ArrangeTest-Container">
+		<select id="TestSelect" name="testId">
+			<option id="other" value="-2">请选择考试</option>
+		</select>
+		<div id="CreateTestContainer">
+			<span>没有您要安排的考试？<a href="javascript:void(0);" id="CreateTest">新建考试 》</a></span>
+		</div>
+		
+		<div class="arragetest-operates">
+			<div class="rectanglebtn" id="SaveArrange">下一步（安排考场）</div>
+			<div id="CloseArrangeDialog">[关闭]</div>
+		</div>
+	</div>
+</div>
+
+<#--引入新建考试弹出框-->
+<#include "network/createNewTestDialog.htm" parse="true" encoding="UTF-8" >
+<#--引入安排考场弹出框-->
+<#include "network/includedArrangeDialogPage.htm" parse="true" encoding="UTF-8" >
+<script>
+$(function() {
+	$("#ArrangeTest-Dialog").dialog({
+		autoOpen:false,
+		resizable:false,
+		dialogClass:"chooshine-dialog",
+		width:698,
+		height:500,
+		modal:true
+	});
+	
+	$('#answerspop_up').dialog({
+		title:"选择科目",
+		autoOpen: false,
+	    height: 380,
+	    width: 1023,
+	    modal: true
+	});
+	
+	$(".show,.fcenter").each(function(index) {
+		$(this).click(function() {
+			$("input[name='pageNo']").val($(this).attr('url'));
+			$("#getLibers").submit();
+			showBlock();
+		});
+	});
+
+	//切换科目类型
+	$("select[name='subjectid']").change(function(){
+		if($(this).val()==-1){
+			$("#answerspop_up").dialog("open");
+		}
+	});
+	//点击选择科目的弹框中的不同科目的事件
+	$('.answerspop_upcem').each(function(e){
+		$(this).click(function(){
+			var subjectSelect = $("select[name='subjectid']");
+			$(subjectSelect).find("option[status='temp']").remove();
+			var str = $(this).attr('parentTitle')+"·"+$(this).html();
+			var value = $(this).attr("data-value");
+			$(subjectSelect).append("<option status='temp' value='"+value+"'>"+str+"</option");
+			$(subjectSelect).find("option[status='temp']").attr("selected",true);
+			$("#answerspop_up" ).dialog("close");
+		});
+	});
+
+	//地区和学校的级联操作
+	$("#s2").each(function(i,o){
+		$(this).change(function(){
+			//拿到地区编号
+			var codeId=$(this).val();
+			 $.ajax({
+				type:"post",
+				url:"<@spring.url '/network/net_shareSelect.json' />",
+				contentType:"application/x-www-form-urlencoded; charset=utf-8",
+				data:{codeId:codeId},
+				success:function(data){
+				//保存成功之后重新查看最新安排的考试
+					var option = "";
+					var dataList = data["schoolList"];
+					var dataT = JSON.parse(dataList);
+					if(dataT.length == 0) {
+						option = "<option value='-1'>无该地区学校信息</option>";
+					} else {
+						$.each(dataT, function(k, v) {
+						  	option += "<option value=\"" + v['school_id'] + "\">" + v['school_name'] + "</option>";
+						});
+					}
+					$("#s3").html("");
+					$("#s3").append(option);
+				}
+			});
+		});
+	});
+	
+
+	//点击“搜索试卷”
+	$("#searchAll").click(function(){
+		var releaseTime = $("select[name='releasetime']").val();
+		var schoolId = $("select[name='schoolid']").val();
+		var subjectId = $("select[name='subjectid']").val();
+		$.ajax({
+			type:"POST",
+			url:"<@spring.url '/network/sharelList.html' />",
+			contentType:"application/x-www-form-urlencoded; charset=utf-8",
+			data:{"releaseTime":releaseTime, "schoolId":schoolId, "subjectId":subjectId},
+			dataType:"html",
+			success:function(data){
+				$(".shaList").html(data);
+
+				$(".arrangetest").each(function() {
+					$(this).click(function() {
+						arrangeTestEvent(this);
+					});
+				});
+				$('.see').each(function(){
+					seeExam(this);
+				});
+			}
+		});
+	});
+	/*****************新建考试*******************************/
+	//点击“新建考试”
+	$("#CreateTest").click(function() {
+		$("#CreatNewTestDialog").dialog("open");
+	});
+	
+	
+	$("#SaveArrange").click(function() {
+		//获得安排考试的试卷编号
+		var examId = $("input[name='arrange-examid']").val();
+		var subjectId = $("input[name='arrange-subjectno']").val();
+		var checkedOptionNode = $("#TestSelect").children("option:checked");
+		//得到考试编号
+		var testId = $(checkedOptionNode).attr("id");
+		var existFlag = $(checkedOptionNode).attr("existflag");
+		if(testId == "other"){
+			$.chooshine.alert("请选择考试！");
+			return;
+		} else if(existFlag == "1") {
+			$.chooshine.confirm("已经为当前考试安排过试卷，确定覆盖原有试卷？", function() {
+				$.ajax({
+					type:"post",
+					url:"<@spring.url '/network/arrangeTest.json' />",
+					contentType:"application/x-www-form-urlencoded; charset=utf-8",
+					data:{testId:testId,examId:examId, subjectId:subjectId},
+					success:function(data){
+						getPlanClazz(subjectId, testId);
+					}
+				});
+			});
+			
+			return;
+		}
+		
+		$.ajax({
+			type:"post",
+			url:"<@spring.url '/network/arrangeTest.json' />",
+			contentType:"application/x-www-form-urlencoded; charset=utf-8",
+			data:{testId:testId,examId:examId, subjectId:subjectId},
+			success:function(data){
+				getPlanClazz(subjectId, testId);
+			}
+		});
+	});
+	
+	
+	//安排考试事件
+	function arrangeTestEvent(node) {
+		var testSelectNode = $("#TestSelect");
+		var examId = $(node).attr("examId");
+		var subjectNo = $(node).attr("subjectNo");
+		$("input[name='arrange-examid']").val(examId);
+		$("input[name='arrange-subjectno']").val(subjectNo);
+		
+		//异步获得考试(获得的安排考试必须是不同的试卷)
+		$.ajax({
+			type:"post",
+			url:"<@spring.url '/network/planTests.json' />",
+			contentType:"application/x-www-form-urlencoded; charset=utf-8",
+			data:{examId:examId,types:'paperLibrary'},
+			success:function(data){
+				//获得考试成功之后,将考试赋予下拉框
+				for(var i=0;i<data.testList.length;i++){
+					$(testSelectNode).append("<option id='"+data.testList[i].test_id+"' existflag='"+data.testList[i].exists_flag+"'>"+data.testList[i].test_name+"</option>");
+				}
+				$("#ArrangeTest-Dialog").dialog("open");
+			}
+		});
+	}
+	$("#CloseArrangeDialog").click(function() {
+		$("#ArrangeTest-Dialog").dialog("close");
+		$("#TestSelect").children().each(function() {
+			if($(this).attr("id") != "other") {
+				$(this).remove();
+			}
+		});
+	});
+	
+
+	$(".arrangetest").each(function() {
+		$(this).click(function() {
+			arrangeTestEvent(this);
+		});
+	});
+	$('.see').each(function(){
+		seeExam(this);
+	});
+	//查看
+	function seeExam(Node){
+		$(Node).click(function(){
+			var examId=$(this).attr("examid");
+			location.href="<@spring.url '/network/getExamInfo.html?examId="+examId+"&type=see'/>";
+		});
+	}
+	
+});
+function afterSaveNewTest(data) {
+	var test = data['testMap'];
+	$("#TestSelect").append("<option id='"+test.testId+"'>"+test.testName+"</option")
+	$("#TestSelect option[id='"+test.testId+"']").attr("selected",true);
+	triggerMouseEvent($("#SaveArrange")[0], "click");//自动触发"下一步"的点击事件
+}
+function closeCreateNewTestEvent() {
+	$("#CreatNewTestDialog").dialog("close");
+};
+</script>

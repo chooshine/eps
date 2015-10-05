@@ -1,0 +1,54 @@
+<#import "spring.ftl" as spring/>
+<#list details as detail>
+<div class='detailwrap'>
+	<div class='detail-above'>
+		<div class='detailimgwrap'>
+			<#if detail.right_flag=1>
+			<img src='<@spring.url '/images/examsystem/gradePaper_right.png' />'/>
+			<#else>
+			<img src='<@spring.url '/images/examsystem/gradePaper_fault.png' />'/>
+			</#if>
+		</div>
+		<div class='recname'><span>${detail.record_name}</span></div>
+		<div class='committime' title='作答日期'><span>${detail.commit_time?string('MM.dd')}</span></div>
+	</div>
+	<div class='nofl'></div>
+	<div class='detail-under'>
+		<#if detail.right_flag=0>
+		<div class='answer-above'><span>你未回答该题，作答用时${detail.answer_time}秒</span></div>
+		<#else>
+			<#if quesType!=4 && quesType!=5>
+				<#if detail.right_flag=1>
+				<div class='answer-above'><span>回答正确，作答用时${detail.answer_time}秒</span></div>
+				<#else>
+				<div class='answer-above'><span>你的回答是：<#list detail.student_answer?split('@@') as answer>${answer}</#list>， 作答用时${detail.answer_time}秒</span></div>
+				</#if>
+			<#else>
+				<#if quesType=4>
+				<div class='answer-above'><span>你的回答是：</span></div>
+				<div>
+				<#list detail.student_answer?split('@@') as line>
+				<div class="paperxt_tjxb2">
+					<div class="cleanBoth">
+						<span class="tkNum">${line?substring(0, 1)}</span>
+						<div class='markc test_box4 equ'>${line?substring(3)}</div>
+					</div>
+				</div>
+				</#list>
+				</div>
+				<div class='nofl'></div>
+				<div><span>作答用时${detail.answer_time}秒</span></div>
+				<#else>
+				<div class='answer-above'><span>你的回答是：</span></div>
+				<div>
+					<div class="paperxt_tjxb2">
+						<div class='markc equ test_box5'>${detail.student_answer}</div>
+					</div>
+				</div>
+				<div><span>作答用时${detail.answer_time}秒</span></div>
+				</#if>
+			</#if>
+		</#if>
+	</div>
+</div>
+</#list>

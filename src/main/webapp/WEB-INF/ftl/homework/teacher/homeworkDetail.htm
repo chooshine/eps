@@ -1,0 +1,526 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+/*头部一直显示在最上面*/
+body {background-color:#eee;}
+.content {padding-top:0px;}
+.fixed {position:fixed;top:0;width:1000px;}
+.largermargin {margin-top:57px;}
+/*头部*/
+.paper_tpct div {display:inline-block;line-height:40px;font-size:20px;margin-right:20px;}
+.paper_tpcmr {padding-top:5px;}
+.paper_tpcmr .chooshine-cancel {width:86px;font-size:15px;background-color:#f5f5f5;}
+
+.text_sju {border:none;box-shadow:none;background-color:#eee;}
+.text_sju li {border:1px solid #aaa;margin-bottom:20px;background-color:#fff;}
+.paperx_fxk .paperx_zsdr, .paperx_fxk .paperx_jxxqr {width:660px;}
+.paperx_zsdr {line-height:16px;}
+.paperx_zsd .homedetail-statistic {background-image:url("<@spring.url '/images/examsystem/graph.png'/>");}
+.test_box3 {padding-left:0;}
+.paperx_jxxqr .fftxt {min-height:50px;}
+
+.hidden {display:none;}
+</style>
+<!--[if IE 6]>
+<style type="text/css">
+html{overflow:hidden;}
+body{height:100%;overflow:auto;}
+.fixed{position:absolute;top:expression(eval(document.body.scrollTop + 25));}
+</style>
+<![endif]-->
+<div class="content">
+<div class="paper_tpct">
+	<div style="width:200px;">${hwInfo.hw_name}</div>
+	<div class="nofl"></div>
+</div>
+<div class="paper_top">
+	<div class="paper_tpcm">
+		<div class="paper_tpcml">
+			<div class="paper_tpcmlx2">
+				<div class="examinfo-container">
+					<div class="examinfo">
+						科目： <span style="color:#000;margin-right:1px;">${hwInfo.sort_name}</span>
+					</div>
+				</div>
+				<div class="examinfo-container">
+					<div class="examinfo">
+						年级： <span style="color:#000;"><#if hwInfo.name??>${hwInfo.name}<#else>无年级限制</#if></span>
+					</div>
+				</div>
+				<div class="examinfo-container">
+					<div class="examinfo">
+						共  <span style="font-weight:bold;color:#ff9966;">${hwInfo.topic_num}</span> 题
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="paper_tpcmr">
+			<label style="float:right;margin-right:8px;"><button type="button" id="HomeworkStatistic" class="chooshine-btn" style="width:86px;line-height:27px;">作业报告</button></label>
+			<div class="nofl"></div>
+		</div>
+	</div>
+</div>
+<#-- 下面的div用于消除滚动时闪屏问题 -->
+<div style="height:20px;"></div>
+
+<div class="text_sju">
+	<div class="paperx_comx">
+		<ul id="QuestionsUl">
+			<#if qiMap??>
+				<#list qiMap?keys as oneKey>
+					<#assign qi=qiMap[oneKey]>
+					<#if oneKey?starts_with("normal")>
+						<li id="${qi.ques_id?c}">
+							<div class="paperx_tl">
+								<dl>
+									<dt>
+										<div class="allNum" mTopic=${qi.M_TOPIC}>${qi.M_TOPIC}</div>
+										<div class="paperx_tlxr" quesid=${qi.QUES_ID?c}>
+											<div type='title' class='ttxt test_box equ' >
+												${qi.QUES_CONTENT}
+											</div>
+										</div>
+										<div id="ErrorPie-${qi.ques_id?c}" class="errorpiediv" style="width:120px;height:120px;float:left;"></div>
+										<#if qi.QUES_TYPE=='1' || qi.QUES_TYPE=='2'>
+										<div id="OptNumPie-${qi.ques_id?c}" class="optnumpiediv" style="width:120px;height:120px;"></div>
+										</#if>
+										<input class="onequesscore" type="hidden" value="${qi.SCORE}">
+										<div class="nofl"></div>
+									</dt>
+									<#if qi.QUES_TYPE=='1' || qi.QUES_TYPE=='2'>
+										<#list qi.OPT_CONTENT as optContent>
+											<#list qi.OPT_ID as optId>
+											    <#if optContent_index==optId_index>
+													<dd class="test_box2_bgc border-hover hidden">
+														<div class="pap_tlt">${qi.OPT_NO[optId_index]+"."}</div>
+														<div type="option" class="pap_tct questionItme" optid=${optId?c}>
+															<div class='ttxt test_box2 equ' >${optContent}</div>
+														</div>
+														<div class="nofl"></div>
+													</dd>
+												</#if>
+											</#list>
+										</#list>
+									</#if>
+								</dl>
+								<div class="paperx_btda hidden">
+									<#if qi.QUES_TYPE=='4'>
+									<div class="paperx_tjx paperx_line_tjx">
+									<#else>
+									<div class="paperx_tjx">
+									</#if>
+										<input type="hidden" value=${qi.QUES_TYPE}>
+										<#assign ascArr2=["对","错"] >
+										<#assign index2=-1 > <#-- 选项索引，即A、B、C等的索引 -->
+										<#assign index3=-1 > <#--填空题的选项号索引-->
+										<#list qi.OPT_REFER as l>
+											<#assign index2=index2+1 >
+											<#if qi.QUES_TYPE=='1'>
+												<#if l=='0'>
+													<label class="paperx_tjxb2 radc">
+													 	<input class='markc' type="radio" name=${"rad"+qi.QUES_ID} value="0">
+													 	<span>${qi.OPT_NO[l_index]}</span>
+													</label>
+												<#else>
+													<label class="paperx_tjxb2 radc radio">
+													 	<input class='markc' type="radio" name=${ "rad"+qi.QUES_ID} value="0" checked="checked" />
+													 	<span>${qi.OPT_NO[l_index]}</span> 
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='2'>
+												<#if l=='0'>
+													<label class="paperx_tjxb2 chkc">
+														<input class='markc' type="checkbox" name=${"rad"+qi.QUES_ID} value="0"/>
+														<span>${qi.OPT_NO[l_index]}</span>
+													</label>
+												<#else>
+												 	<label class="paperx_tjxb2 chkc radio">
+														<input class='markc' type="checkbox" name=${"rad"+qi.QUES_ID} value="0" checked="checked"/>
+														<span>${qi.OPT_NO[l_index]}</span>
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='3'>
+												<#if l=='0'>
+													<label class="paperx_tjxb2 radc">
+														<input class='markc' type="radio" name=${"rad"+qi.QUES_ID} value="0"/>
+														<span>${ascArr2[index2]}</span> 
+													</label>
+												<#else>
+													<label class="paperx_tjxb2 radc radio">
+														<input class='markc' type="radio" name=${ "rad"+qi.QUES_ID} value="0" checked="checked"/>
+														<span>${ascArr2[index2]}</span>
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='4'>
+												<#assign index3=index3+1>
+												<div class="paperxt_tjxb2">
+													<div class="cleanBoth">
+														<span class="tkNum">${qi.OPT_NO[index3]}</span>
+														<div class='markc test_box4 equ'>${l}</div>
+														<input type='hidden' value='1' class='tkScore' />
+													</div>
+												</div>
+											<#elseif qi.QUES_TYPE=='5'>
+												<div class="jiedati-tip">答：</div>
+												<div class="paperxt_tjxb2 answer-type5">
+													<div class='markc equ test_box5'>${l!}</div>
+												</div>
+											</#if>
+										</#list>
+										<div class="nofl"></div>
+									</div>
+									<div class="nofl"></div>
+									<div class="paperx_fxk">
+										<div class="paperx_zsd">
+											<div class="paperx_zsdl homedetail-statistic">统计</div>
+											<div class="paperx_zsdr">
+												<span>全站数据:</span>
+												<span>本题共被作答${qi.ques_total_num}次，正确率为${qi.CORRECT_PERCENT}
+													<!-- 对易错项的处理，只有单选和多选有易错项 -->
+													<#if qi.QUES_TYPE=='1' || qi.QUES_TYPE=='2'>
+														<#if qi.ERROR_NUM!=0>
+															，易错项为${qi.EASY_ERROR_OPT}
+														<#else>
+															，暂无易错项
+														</#if>
+													</#if>
+												</span>
+											</div>
+											<div class="nofl"></div>
+										</div>
+										<div class="paperx_zsd">
+											<div class="paperx_zsdl">考点</div>
+											<div class="paperx_zsdr">
+											<#if qi.knowledge_point??>
+											<#list qi.knowledge_point as kp>
+												<div class="knowledgepointdiv-nodelete" kpid="${kp.kpId}" title="${kp.kpPath}">${kp.kpName}</div>
+											</#list>
+											</#if>
+											</div>
+											<div class="nofl"></div>
+										</div>
+										<div class="paperx_jxxq">
+											<div class="paperx_zsdl" >解析</div>
+											<div class="paperx_jxxqr">
+												<div class='fftxt test_box3 equ'>${qi.keyword}</div>
+											</div>
+											<div class="nofl"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+					<#else>
+						<#if qi?size&gt;0>
+							<li>
+								<div class='paperxt_stx'>
+								<#list qi as tkl>
+									<#if tkl.QUES_TYPE==6>
+										<#assign articleUlId=tkl.QUES_ID?c>
+										<#--材料内容部分-->
+										<div class="article_area">
+											<div class='articletip'>（材料）</div>
+											<div remark='article' class="questionItme paperxt_com test_box6 equ"  type="artlic" artid=${tkl.QUES_ID?c}>${tkl.QUES_CONTENT}</div>
+										</div>
+										<div class="nofl"></div>
+									</#if>
+								</#list>
+								</div>
+								<div class='paperxt_bot'>
+									<ul id=${"ul"+articleUlId+"a"}>
+										<#list qi as tkl>
+											<#if tkl.QUES_TYPE!=6>
+												<li id=${tkl.QUES_ID?c}>
+													<div class="paperx_tl">
+														<dl>
+															<dt>
+																<div class="allNum" mTopic="${tkl.M_TOPIC}">${tkl.M_TOPIC}</div>
+																<div type="title" class="paperx_tlxr" quesid=${tkl.QUES_ID?c}>
+																	<div  type='title' class='ttxt test_box equ' >
+																		${tkl.QUES_CONTENT}
+																	</div>
+																</div>
+																<div id="ErrorPie-${tkl.ques_id?c}" class="errorpiediv" style="width:120px;height:120px;float:left;"></div>
+																<#if tkl.QUES_TYPE=='1' || tkl.QUES_TYPE=='2'>
+																<div id="OptNumPie-${tkl.ques_id?c}" class="optnumpiediv" style="width:120px;height:120px;"></div>
+																</#if>
+																<input class="onequesscore" type="hidden" value="${tkl.SCORE}" >
+																<div class="nofl"></div>
+															</dt>
+															<#if tkl.QUES_TYPE=='1' || tkl.QUES_TYPE=='2'>
+																<#list tkl.OPT_CONTENT as optContent>
+																	<#list tkl.OPT_ID as optId>
+																		<#if optContent_index==optId_index>
+																			<dd class='test_box2_bgc border-hover hidden'>
+																				<div class="pap_tlt">${tkl.OPT_NO[optId_index]+"."}</div>
+																				<!-- 初始化状态下选项插入公式 -->
+																				<div type="option" class="pap_tct questionItme" optid=${optId?c}>
+																					<div class='ttxt test_box2 equ' >${optContent}</div>
+																				</div>
+																				<div class="nofl"></div>
+																			</dd>
+																		</#if>
+																	</#list> 
+																</#list> 
+															</#if>
+														</dl>
+														<div class="paperx_btda hidden">
+															<#if tkl.QUES_TYPE=='4'>
+															<div class="paperx_tjx paperx_line_tjx">
+															<#else>
+															<div class="paperx_tjx">
+															</#if>
+																<input type="hidden" value=${tkl.QUES_TYPE}>
+																<#assign ascArr2=["对","错"] > 
+																<#assign index2=-1> 
+																<#assign index3=-1>
+																<#list tkl.OPT_REFER as l> 
+																	<#assign index2=index2+1 > 
+																	<#if tkl.QUES_TYPE=='1'>
+																		<#if l=='0'>
+																			<label class="paperx_tjxb2 radc">
+																			 	<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID} value="0"/>
+																			 	<span>${tkl.OPT_NO[l_index]}</span>
+																			</label>
+																		<#else>
+																			<label class="paperx_tjxb2 radc radio">
+																			 	<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID} value="0" checked="checked"/>
+																			 	<span>${tkl.OPT_NO[l_index]}</span>
+																			</label>
+																		</#if>
+																	<#elseif tkl.QUES_TYPE=='2'>
+																		<#if l=='0'> 
+																			<label class="paperx_tjxb2 chkc">
+																				<input class='markc' type="checkbox" name=${"rad"+tkl.QUES_ID} value="0"/>
+																				<span>${tkl.OPT_NO[l_index]}</span>
+																			</label>
+																		<#else> 
+																			<label class="paperx_tjxb2 chkc radio">
+																				<input class='markc' type="checkbox" name=${"rad"+tkl.QUES_ID} value="0" checked="checked"/>
+																				<span>${tkl.OPT_NO[l_index]}</span>
+																			</label>
+																		</#if>
+																	<#elseif tkl.QUES_TYPE=='3'>
+																		<#if l=='0'> 
+																			<label class="paperx_tjxb2 radc">
+																				<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID} value="0"/>
+																				<span>${ascArr2[index2]}</span>
+																			</label>
+																		<#else>
+																			<label class="paperx_tjxb2 radc radio">
+																				<input class='markc' type="radio" name=${"rad"+tkl.QUES_ID} value="0" checked="checked"/>
+																				<span>${ascArr2[index2]}</span>
+																			</label>
+																		</#if>
+																	<#elseif tkl.QUES_TYPE=='4'>
+																		<#assign index3=index3+1>
+																		<div class="paperxt_tjxb2">
+																			<div class="cleanBoth">
+																				<span class="tkNum">${tkl.OPT_NO[index3]}</span>
+																				<div class='markc test_box4'>${l} </div>
+																				<input type='hidden' value='1' class='tkScore' />
+																			</div>
+																			<div class="nofl"></div>
+																		</div>
+																	<#elseif tkl.QUES_TYPE=='5'>
+																		<div class="jiedati-tip">答：</div>
+																		<div class="paperxt_tjxb2 answer-type5">
+																			<div class='markc equ test_box5'>${l!}</div>
+																		</div>
+																	</#if> 
+																</#list>
+																<div class="nofl"></div>
+															</div>
+															<div class="nofl"></div>
+															<div class="paperx_fxk">
+																<div class="paperx_zsd">
+																	<div class="paperx_zsdl">统计</div>
+																	<div class="paperx_zsdr">
+																		<span>全站数据:</span>
+																		<span>本题共被作答${tkl.ques_total_num}次，正确率为${tkl.CORRECT_PERCENT}
+																			<!-- 对易错项的处理，只有单选和多选有易错项 -->
+																			<#if tkl.QUES_TYPE=='1' || tkl.QUES_TYPE=='2'>
+																				<#if tkl.ERROR_NUM!=0>
+																					，易错项为${tkl.EASY_ERROR_OPT}
+																				<#else>
+																					，暂无易错项
+																				</#if>
+																			</#if>
+																		</span>
+																	</div>
+																	<div class="nofl"></div>
+																</div>
+																<div class="paperx_zsd">
+																	<div class="paperx_zsdl">考点</div>
+																	<div class="paperx_zsdr">
+																		<#if tkl.knowledge_point??>
+																		<#list tkl.knowledge_point as kp>
+																			<div class="knowledgepointdiv-nodelete" kpid="${kp.kpId}" title="${kp.kpPath}">${kp.kpName}</div>
+																		</#list>
+																		</#if>
+																	</div>
+																	<div class="nofl"></div>
+																</div>
+																<div class="paperx_jxxq">
+																	<div class="paperx_zsdl">解析</div>
+																	<div class="paperx_jxxqr">
+																		<div class='fftxt test_box3 equ'>${tkl.keyword}</div>
+																	</div>
+																	<div class="nofl"></div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</li>
+											</#if>
+										</#list>
+									</ul>
+								</div>
+							</li>
+						</#if>
+					</#if>
+				</#list>
+			</#if>
+		</ul>
+	</div>
+</div>
+
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<div id="DetailDialog" style="display:none;">
+
+</div>
+<script src="<@spring.url '/javascripts/amcharts.js'/>" ></script>
+<script>
+$(function() {
+	$("#DetailDialog").dialog({
+		dialogClass:"chooshine-dialog",
+		autoOpen: false,
+	    height: 580,
+	    width: 830,
+	    resizable:false,
+	    modal: true
+	});
+	$("#StudentsOfStarDialog").find(".chooshine-btn").click(function() {
+		$("#StudentsOfStarDialog").dialog("close");
+	});
+	var errorPieData = ${errorInfoOfQuestions};
+	var errorStus = ${errorStudentsOfQuestions};
+	$(".errorpiediv").each(function() {
+		var errorPieDiv = $(this).attr("id");
+		var liNode = $(this).parents("li")[0];
+		var errorPieChart;
+	    var errorLegend;
+	    var key = $(liNode).attr("id");
+		var errorChartData = errorPieData[key];
+		AmCharts.ready(function () {
+			errorPieChart = new AmCharts.AmPieChart();
+			errorPieChart.addListener("clickSlice", sliceClickListener);
+			errorPieChart.dataProvider = errorChartData;
+			errorPieChart.titleField = "type";
+			errorPieChart.valueField = "num";
+			errorPieChart.outlineColor = "#FFFFFF";
+			errorPieChart.outlineAlpha = 0.8;
+			errorPieChart.outlineThickness = 2;
+			errorPieChart.labelsEnabled = false;
+			errorPieChart.balloonText = "[[title]][[value]]人";
+			errorPieChart.colors = ['#CC3333', '#6699CC'];
+			errorPieChart.write(errorPieDiv);
+		});
+	});
+	function sliceClickListener(event) {
+		var liNode = $(event.chart.div).parents("li")[0];
+		var quesId = $(liNode).attr("id");
+    	
+		$.ajax({
+			type:"get",
+			url:"<@spring.url '/homework/teacher/showDetailDialog.html'/>",
+			data:"hwId=${hwId?c}&classId=${classId?c}&quesId="+quesId,
+			dataType:"html",
+			success:function(data) {
+				$("#DetailDialog").html(data).dialog("open");
+				triggerMouseEvent($("#DuiCuoTip")[0], "click");
+			}
+		});
+	}
+	function optSliceClickListener(event) {
+		var stus = "";
+		var liNode = $(event.chart.div).parents("li")[0];
+		var quesId = $(liNode).attr("id");
+    	
+		$.ajax({
+			type:"get",
+			url:"<@spring.url '/homework/teacher/showDetailDialog.html'/>",
+			data:"hwId=${hwId?c}&classId=${classId?c}&quesId="+quesId,
+			dataType:"html",
+			success:function(data) {
+				$("#DetailDialog").html(data).dialog("open");
+				triggerMouseEvent($("#OptDistributeTip")[0], "click");
+			}
+		});
+	}
+	var optNumPieData = ${numOfOptions};
+	$(".optnumpiediv").each(function() {
+		var optnumPieDiv = $(this).attr("id");
+		var liNode = $(this).parents("li")[0];
+		var optNumPieChart;
+	    var optNumLegend;
+	    var key = $(liNode).attr("id");
+		var optNumChartData = optNumPieData[key];
+		AmCharts.ready(function () {
+			optNumPieChart = new AmCharts.AmPieChart();
+			optNumPieChart.addListener("clickSlice", optSliceClickListener);
+			optNumPieChart.dataProvider = optNumChartData;
+			optNumPieChart.titleField = "opt_no";
+			optNumPieChart.valueField = "option_num";
+			optNumPieChart.outlineColor = "#FFFFFF";
+			optNumPieChart.outlineAlpha = 0.8;
+			optNumPieChart.outlineThickness = 2;
+			optNumPieChart.labelsEnabled = false;
+			optNumPieChart.balloonText = "选[[title]][[value]]人";
+			optNumPieChart.colors = ['#CC3333', '#FFCC33', '#6699CC', '#339966', '#FF99CC', '#CC9999', '#9966CC', '##336666'];
+			optNumPieChart.write(optnumPieDiv);
+		});
+	});
+
+	//*****************************页面初始加载操作***********************
+	//滚动条滚动时，让div一直显示在页面顶部
+	var paperTop = $(".paper_top")[0];
+	var startPos = $(paperTop).offset().top;
+	$(window).scroll(function() {
+		fixDiv(paperTop, startPos, "fixed", "largermargin");
+	});
+	
+	//*****************************作业操作****************************
+	$(".paperx_tl").find("dt").click(function() {
+		if($($(this).parents("li")[0]).find(".paperx_btda").hasClass("hidden")) {
+			$(this).find("dd").removeClass("hidden");
+			$($(this).parents("li")[0]).find(".paperx_btda").removeClass("hidden");
+		} else {
+			$(this).find("dd").addClass("hidden");
+			$($(this).parents("li")[0]).find(".paperx_btda").addClass("hidden");
+		}
+	});
+	//为单选框添加事件
+	$(".radc").each(function(){
+		$(this).children("input").attr("disabled",true);	//初始化禁用单选框
+	});
+	//为多选框添加事件
+	$(".chkc").each(function(){
+		$(this).children("input").attr("disabled",true);	//初始化禁用多选框
+	});
+	
+	//****************************发布、退出*******************************
+	$("#HomeworkStatistic").click(function() {
+		location.href = "<@spring.url '/homework/teacher/homeworkStatistic.html?hwId=${hwId?c}&classId=${classId?c}'/>";
+	});
+	
+});
+//点击分页按钮的事件
+function pageChange(pageBtn, ImgsNode) {
+	$(ImgsNode).parent().find(".stuphotos").hide();
+	$(pageBtn).parent().find("img").attr("src", "<@spring.url '/images/bullet-grey.png'/>");
+	$(pageBtn).find("img").attr("src", "<@spring.url '/images/bullet_blue.png'/>");
+	$(ImgsNode).show();
+}
+</script>

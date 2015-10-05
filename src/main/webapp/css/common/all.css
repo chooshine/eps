@@ -1,0 +1,46 @@
+/*
+	所有标记
+*/
+* {
+	margin: 0px;
+	padding: 0px;
+}
+
+.main-top {
+	background: url(../../image/top/top_1.png) !important;
+	background-repeat: no-repeat center;
+	width: auto !important;
+	height: 98px !important;
+}
+
+.ex-panel {
+	border-style: solid;
+	border-color: transparent;
+	border-width: 0;
+}
+
+.login-bg {
+	background: url(../../image/top/login.png) !important;
+	background-repeat: no-repeat center;
+	width: 1024px !important;
+	height: 412px !important;
+}
+
+.login-form {
+	background: url(../../image/top/login_mid.png) !important;
+	background-repeat: no-repeat;
+	padding: 33px 80px 40px 40px;
+}
+/**
+菜单按钮
+*/
+.testbtn {
+	background: url(../../image/security.png) !important;
+	background-repeat: no-repeat;
+	width: 64px !important;
+	height: 64px !important;
+}
+
+.fc {
+	margin: 25px 50px 25px 50px;
+}

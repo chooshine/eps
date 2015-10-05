@@ -1,0 +1,178 @@
+<#include "header.htm" parse="true" encoding="UTF-8" > 
+<#include "logheader.htm" parse="true" encoding="UTF-8" >
+	<div class="center">
+		<div class="left">
+			<h3>提现记录</h3>
+			<ul>
+				<li><a href="<@spring.url '/actives/activeBack.html?state=1'/>">已审核</a></li>
+				<li><a href="<@spring.url '/actives/activeBack.html?state=0'/>">未审核</a></li>
+				<li><a href="<@spring.url '/actives/activeBack.html?state=-1'/>">查看全部</a></li>
+			</ul>
+		</div>
+		
+		<div class="right">
+			<table class="table">
+				<th>申请时间</th>
+				<th>申请人</th>
+				<th>申请额度</th>
+				<th>转账进度</th>
+				<th>处理人员</th>
+				<th>查看详情</th>
+				<#if allDrawMoneyRecord??>
+				<#list allDrawMoneyRecord as record>
+				<tr>
+					<td>${record.drawmoney_time}</td>
+					<td>${record.applicant}</td>
+					<td>${record.amount}元</td>
+					<#if record.state==0>
+					<td>等待转账</td>
+					<#elseif record.state==1>
+					<td>已转账</td>
+					<#elseif record.state==2>
+					<td>审核不通过</td>
+					</#if>
+					<td>${record.transfer_user_no}</td>
+					<td class="lookDetail" drawmoney_id=${record.drawmoney_id}><a>点击查看</a></td>
+				</tr>
+				</#list>
+				</#if>
+			</table>
+		</div>
+		<div class="clear"></div>
+		<div id="recordDialog">
+			<span name="bankname"></span><br />
+			<span name="account"></span><br />
+			<span name="receiver"></span><br />
+			<span name="transfer_user_no"></span><br />
+			<span name="transfer_time"></span><br />
+			<img id='transfer_evidence' />
+			<form action="<@spring.url '/actives/upEvidence.html'/>" enctype="multipart/form-data" method="post" target="cer_hidden">
+				<div>
+					<input type="button" value="审核不通过" id="unpassBtn"/>
+					<span id="unpassTip">不通过原因：</span>
+					<textarea id="unpassReason"></textarea>
+					<span id="unpassNotice" style="color:red;">失败原因不能为空</span>
+					<br />
+					<br />
+					<hr>
+					<span>转账成功操作</span>
+					<br />
+					<br />
+					<input type="file" name="evidence"/><br /><br />
+					<input type="button" id="upevidence" value="上传汇款证明" />
+					<span id="upevidenceInfo"></span>
+				</div>
+				<div class="nofl"></div>
+				<iframe name="cer_hidden" id="cer_hidden" style="display: none;"></iframe>
+			</form>
+		</div>
+	</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+
+<script type="text/javascript">
+	$(function(){
+		$("#unpassNotice").hide();
+		var upEvidenceFlag = true;
+		$("#recordDialog").dialog({
+			title:"记录详情",
+			autoOpen: false,
+			height: 350,
+		    width: 1023,
+		    modal: true,
+		    close:function(){
+		    	if(!upEvidenceFlag){
+		    		window.location.reload();
+		    	}
+		    }
+		});
+	
+		$("#unpassReason").click(function(){
+			$("#unpassNotice").hide();
+		});
+		$(".lookDetail").each(function(){
+			$(this).click(function(){
+				var drawmoney_id = $(this).attr("drawmoney_id");
+				var recordDialog = $("#recordDialog");
+				$.ajax({
+					url:"<@spring.url'/actives/recordDetail.json'/>",
+					data:{'drawmoney_id':drawmoney_id},
+					success:function(data){
+						upEvidenceFlag = true;
+						var drawmoney_id = data['drawmoney_id'];
+						var bankname = data['bankname'];
+						var account = data['account'];
+						var receiver = data['receiver'];
+						var transfer_user_no = data['transfer_user_no'];
+						var transfer_time = data['transfer_time'];
+						var transfer_evidence = data['transfer_evidence'];
+						
+						$("span[name='bankname']").text("开户行："+bankname);
+						$("span[name='account']").text("账号："+account);
+						$("span[name='receiver']").text("收款人："+receiver);
+						if(transfer_user_no != null) {
+							$("span[name='transfer_user_no']").text("汇款人："+transfer_user_no);
+							$("span[name='transfer_time']").text("汇款时间："+transfer_time);
+							if(transfer_evidence != null) {
+								$("#transfer_evidence").attr("src","<@spring.url '/"+transfer_evidence+"'/>");
+							} 
+							$("span[name='transfer_user_no']").show();
+							$("span[name='transfer_time']").show();
+							$("#transfer_evidence").show();
+							$("form").hide();
+							$("#recordDialog").dialog("open");
+						} else {
+							$("#unpassBtn").val("审核不通过");
+							$("#upevidence").val("上传汇款证明");
+							$("#upevidenceInfo").text("");
+							$("span[name='transfer_user_no']").hide();
+							$("span[name='transfer_time']").hide();
+							$("#transfer_evidence").hide();
+							$("form").show();
+							$("#recordDialog").dialog("open");
+							
+							$("#upevidence").click(function(){
+								var flag=true;
+								if($("input[name='evidence']").val()==""){
+									$("#upevidenceInfo").html("");
+									flag=false;
+									return;				
+								}
+								if(flag){
+									var url = $("form").attr("action");
+									$("form").attr("action",url+"?drawmoney_id="+drawmoney_id);
+									$("form").submit();
+									upEvidenceFlag = false;
+									$("form").attr("action",url);
+								}
+							});
+							$("#unpassBtn").click(function(){
+								var unpassReason=$("#unpassReason").val();
+								if(unpassReason==null || unpassReason==""){
+									$("#unpassNotice").show();
+									return;
+								}
+								$.get(
+									"<@spring.url '/drawmoney/unpass.json'/>",
+									{drawmoney_id:drawmoney_id,unpassReason:unpassReason}
+								);
+								$("#unpassReason").remove();
+								$("unpassTip").remove();
+								//$(this).attr("disabled","disabled");
+								$("input[name='evidence']").remove();
+								$("#upevidence").remove();
+								upEvidenceFlag = false;
+								$(this).remove();
+							});
+						}
+					}
+				});
+			});
+		});
+	});
+	
+	//汇款证明上传回调 方法
+		function setCerTt(str,path){
+			$('#upevidence').val("重新上传");
+			$('#upevidenceInfo').html(decodeURI(str));
+		}
+</script>

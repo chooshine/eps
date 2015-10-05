@@ -1,0 +1,376 @@
+<style>
+/*安排考场dialog*/
+.bianji_bk p.input_wrap04 {margin-bottom:26px;}
+.input_wrap04 input {font-family:"微软雅黑";}
+.input_wrap04 label.arrangeroom-keylable {display:block; float:left; margin-top:6px;}
+.input_wrap04 input.arrangeroom-valueinput {float:left;}
+.bianji_bk p.input_wrap04 .input-timelength {width:80px;margin-right:5px;}
+#ArrangeRoom-Dialog #Title {margin-bottom:20px;}
+#ArrangeRoom-Dialog #TestInfo {float:left;padding-top:1px;padding-left:20px;font-size:14px;font-family:"微软雅黑";}
+#IncludeArrangeDialog-AutoMark {float:right;margin-bottom:20px;margin-right:20px;}
+#IncludeArrangeDialog-AutoMarkDiv {float:left;margin-right:5px;}
+#IncludeArrangeDialog-AutoMarkInfo {float:left;}
+#ArrangeRoom-Dialog #classess {min-height:220px;}
+#ArrangeRoomOperates {height:36px;padding-left:233px;margin-top:30px;margin-bottom:20px;}
+#ArrangeRoomOperates div {float:left;}
+#ArrangeRoomOperates .chooshine-btn {margin-right:20px;}
+
+/*完成安排考场dialog*/
+#FinishedArrange-Dialog {font-family:"微软雅黑";}
+#FinishedArrange-Tip {height:39px; margin-top:80px; margin-left:250px; padding-top:25px; padding-left:70px; background-image:url("../images/pwdOK.png"); font-size:18px; color:#589218;}
+#FinishedArrangeInfo {min-height:144px;margin:40px auto;}
+#FinishedArrangeInfo .paperlib-infocontainer {min-height:18px; margin-bottom:30px;}
+#FinishedArrangeInfo .paperlib-infocontainer div {font-size:18px;}
+#FinishedArrangeInfo .paperlib-infocontainer div.paperlib-key {width:305px;text-align:right;float:left;}
+#FinishedArrangeInfo .paperlib-infocontainer div.paperlib-value {width:300px;line-height:24px;text-align:left;float:left;margin-top:-3px;}
+#FinishedArrangeInfo .paperlib-infocontainer div.arrangedclass {float:none;margin-bottom:10px;}
+#FinishedArrangeOperates {padding-left:300px;margin-bottom:20px;}
+</style>
+<#--安排考场dialog-->
+<div class="bianji_wrap" id="ArrangeRoom-Dialog" style="display:none;">
+	<div id="Title">
+		<h3>考场安排</h3>
+		<div id="TestInfo"></div>
+		<div id="IncludeArrangeDialog-AutoMark">
+			<div id="IncludeArrangeDialog-AutoMarkDiv"><input type="checkbox" name="automark" /></div>
+			<div id="IncludeArrangeDialog-AutoMarkInfo">自动阅卷</div>
+		</div>
+		<div class="nofl"></div>
+	</div>
+	<div id="classess"></div>
+	<div class="nofl"></div>
+	<div id="ArrangeRoomOperates">
+		<div id="FinishArrange" class="chooshine-btn">完成</div>
+		<div id="Close-ArrangeRoomDialog" class="chooshine-cancel">关闭</div>
+	</div>
+</div>
+
+<#--安排考场完成dialog-->
+<div id="FinishedArrange-Dialog" style="display:none;">
+	<h3>安排完成</h3>
+	<div id="FinishedArrange-Tip">安排考场完成</div>
+	<div id="FinishedArrangeInfo">
+		<div class="paperlib-infocontainer">
+			<div class="paperlib-key">考试-科目：</div>
+			<div class="paperlib-value">
+				<span id="FinishArrange-Testname"></span>
+				<span id="FinishArrange-Mark"></span>
+			</div>
+			<div class="nofl"></div>
+		</div>
+		<div class="paperlib-infocontainer">
+			<div class="paperlib-key">试卷名称：</div>
+			<div id="FinishArrange-Examname" class="paperlib-value"></div>
+			<div class="nofl"></div>
+		</div>
+		<div class="paperlib-infocontainer">
+			<div class="paperlib-key">参考班级：</div>
+			<div id="FinishArrange-Classnames" class="paperlib-value"></div>
+			<div class="nofl"></div>
+		</div>
+	</div>
+	<div id="FinishedArrangeOperates">
+		<div class="rectanglebtn" id="Close-FinishedArrangeDialog">关闭</div>
+	</div>
+</div>
+<script>
+$("#ArrangeRoom-Dialog").dialog({
+	autoOpen:false,
+	dialogClass:"chooshine-dialog",
+	resizable:false,
+	width:698,
+	height:540,
+	modal:true
+});
+$('#FinishedArrange-Dialog').dialog({
+	autoOpen: false,
+	dialogClass:"chooshine-dialog",
+    width:698,
+    minHeight:540,
+    modal: true
+});
+
+
+//选择自动阅卷的事件
+$("input[name='automark']").click(function() {
+	var testId = $("input[name='testid']").val();
+	var sortId = $("input[name='sortid']").val();
+	var autoMarkFlag = 0;
+	if($(this)[0].checked) {
+		autoMarkFlag = 1;
+	}
+	
+	$.ajax({
+		type:"post",
+		url:"<@spring.url '/network/settle/updateAutoMark.json'/>",
+		contentType:"application/x-www-form-urlencoded",
+		data:"autoMarkFlag="+autoMarkFlag+"&testId="+testId+"&sortId="+sortId
+	});
+});
+
+function getPlanClazz(sortId, testId){
+	$.ajax({
+		type:"post",
+		url:"<@spring.url '/netWork/getClasses.html' />",
+		contentType:"application/x-www-form-urlencoded",
+		data:"sort_Id="+sortId+"&test_Id="+testId,
+		dataType:"html",
+		success:function(data){
+			$("#classess").html(data);//填充班级区域
+			//对于“自动阅卷”的处理
+			if($("input[name='disabledautomark']").val() == "1") {
+				$("input[name='automark']").attr("disabled", "disabled");
+			} else {
+				$("input[name='automark']").attr("disabled", false);
+				if($("input[name='automarkflag']").val() == "1"){
+					$("input[name='automark']").attr("checked", true);
+				} else {
+					$("input[name='automark']").attr("checked", false);
+				}
+			}
+			
+			//组合考试名字和考试时间，并显示出来
+			var testName = $("#classess > input[name='testname']").val();
+			var testTime = $("#classess > input[name='testtime']").val();
+			var testEndTime = $("#classess > input[name='testendtime']").val();
+			$("#ArrangeRoom-Dialog").find("#TestInfo").html(testName+" ， "+testTime+" ～ "+testEndTime);
+			
+			//时间输入框添加时间选择插件
+			$('.choosetime').each(function() {
+				$(this).datetimepicker({
+					showMonthAfterYear: true,
+					showSecond: true, //显示秒
+					timeFormat: 'HH:mm:ss',//格式化时间
+					stepHour: 1,//设置步长
+					stepMinute: 5,
+					stepSecond: 10
+				});
+				
+				$(this).blur(function() {
+					var startTime = stringToTime($(this).val());
+					var costNode = $($(this).parents(".bianji_bk")[0]).find("input[name='costtime']");
+					var enddate = formateUtcDate(new Date(startTime+$(costNode).val()*60*1000));
+					$(costNode).attr("enddate", enddate);
+				});
+			});
+			
+			$('.arrangeroomdialog-edit').each(function() {//调用编辑考场安排事件
+				editEventToNode(this);
+			});
+			$('.arrangeroomdialog-delete').each(function() {//调用删除考场安排事件
+				delEventToNode(this);
+			});
+		    $('.baocun_btn').each(function() { //调用保存考场安排事件
+		    	saveEventToNode(this);
+		    });
+		    
+		    $("#ArrangeRoom-Dialog").dialog("open");
+		}
+	});
+}
+
+
+//每个班级的"保存"的事件处理
+function save(saveNode, fn) {
+	var params = {};
+	var claDiv = $(saveNode).parents(".cla")[0];//当前操作的班级
+	
+	//获得当前班级的信息
+	var tName = $(claDiv).find("input[name='teacher_Name']").val(); 	//监考人
+	var addrName = $(claDiv).find("input[name='netWork_Addr']").val();	//考场
+	var endDate = $(claDiv).find("input[name='costtime']").attr("enddate");//结束时间
+	var costTime = $(claDiv).find("input[name='costtime']").val();
+	var timeName = $(claDiv).find("input[name='date']").val();		//开始时间
+	var cname = $(claDiv).find(".classname").eq(0).html();			//班级名称
+	var classId = $(claDiv).find("input[name='class_Id']").val(); 	//班级ID
+	
+	//获得所有班级共有的信息
+	var gradeId = $("#classess > input[name='gradeid']").val();
+	var testId = $("#classess > input[name='testid']").val();
+	var sortId = $("#classess > input[name='sortid']").val();
+	var testTime = $("#classess > input[name='testtime']").val(); 		//考试的开始时间
+	var testEndTime = $("#classess > input[name='testendtime']").val(); //考试的结束时间
+	if(timeName == "") {
+		$.chooshine.alert("开始时间不能为空！");
+		return;
+	} else if(dateDiff(stringToTime(timeName), new Date()) <= 0){
+		$.chooshine.alert("开始时间已过，请重新选择！");
+		return;
+	} else if(addrName == "") {
+		$.chooshine.alert("考场不能为空！");
+		return;
+	} else if(tName == "") {
+		$.chooshine.alert("监考人不能为空！");
+		return;
+	}
+	
+	//将当前班级的所有信息存到params
+	params['claDiv'] = claDiv;
+	params['tName'] = tName;
+	params['addrName'] = addrName;
+	params['endDate'] = endDate;
+	params['costTime'] = costTime;
+	params['timeName'] = timeName;
+	params['cname'] = cname;
+	params['classId'] = classId;
+	params['tName'] = tName;
+	
+	$.ajax({
+		type:"post",
+		url:"<@spring.url '/netWork/saveClass.json' />",
+		contentType:"application/x-www-form-urlencoded; charset=utf-8",
+		data:"grade_Id="+gradeId+"&class_Id="+classId+"&date="+timeName+"&netWork_Addr="+addrName+"&teacher_Name="+tName+"&test_Id="+testId+"&subject_Id="+sortId+"&endDate="+endDate+"&costTime="+costTime,
+		success:function(data){
+			var arrangeIdNode = $(claDiv).find("input[name='arrange_Id']")[0];
+			if(arrangeIdNode == undefined) {
+				params['arrangeId'] = data['arrangeId'];
+			} else {
+				params['arrangeId'] = $(arrangeIdNode).val();
+			}
+			fn(params);
+		}
+	});
+}
+
+
+/**
+ * 班级考试安排保存按钮点击事件
+ * @param saveNode 保存按钮
+ */
+function saveEventToNode(saveNode){
+	$(saveNode).click(function(){
+		save(saveNode, doAfterSaveArrange);
+	});
+}
+/**
+ * 保存考场安排之后的操作
+ * @param params 考场安排相关参数
+ */
+function doAfterSaveArrange(params) {
+	var claDiv = params['claDiv'];//当前班级
+	$(claDiv).empty();//清空班级信息
+	
+	//重新填充当前班级信息，相应的内容从params取到
+	$(claDiv).append(
+			"<div class='bianji_bk'>"+
+				"<div class='disp'>"+
+					"<p>"+
+						"<span class='struct-classname'>"+params['cname']+"</span>"+
+						"<a class='blue arrangeroomdialog-edit'>&nbsp;&nbsp;&nbsp;&nbsp;编辑</a>"+
+						"<input name='class_Id' value="+params['classId']+" type='hidden' />"+
+					"</p>"+
+					"<p>"+
+						"<span>"+params['timeName']+"</span>"+
+					"</p>"+
+					"<p>"+params['addrName']+"</p>"+
+					"<p>"+params['tName']+" 监考</p>"+
+				"</div>"+
+			"</div>"+
+			"<div class='bianji_bk bianji_current' style='display:none;'>"+
+				"<div class='dip'>"+
+					"<p>"+
+						"<span class='classname'>"+params['cname']+"</span>"+
+						"<input name='class_Id' value="+params['classId']+" type='hidden' />"+
+						"<input name='arrange_Id' value="+params['arrangeId']+" type='hidden' />"+
+						"<a href='javascript:void(0);' class='arrangeroomdialog-delete' style='margin-left:70px;'>删除</a>"+
+					"</p>"+
+					"<p class='input_wrap04'>"+
+						"<label class='arrangeroom-keylable'>时长</label>"+
+						"<input type='text' class='arrangeroom-valueinput input-timelength' name='costtime' enddate='"+params['endDate']+"' value='"+params['costTime']+"' />"+
+						"<label class='arrangeroom-keylable'>分钟</label>"+
+					"</p>"+
+					"<p class='input_wrap04'>"+
+						"<label class='arrangeroom-keylable'>开始</label>"+
+						"<input type='text' class='choosetime arrangeroom-valueinput' name='date' value='"+params['timeName']+"' />"+
+					"</p>"+
+					"<p class='input_wrap04'>"+
+						"<label class='arrangeroom-keylable'>考场</label>"+
+						"<input type='text' class='arrangeroom-valueinput' name='netWork_Addr' value='"+params['addrName']+"' />"+
+					"</p>"+
+					"<p class='input_wrap04'>"+
+						"<label class='arrangeroom-keylable'>监考</label>"+
+						"<input type='text' class='arrangeroom-valueinput' name='teacher_Name' value='"+params['tName']+"' />"+
+					"</p>"+
+					"<div class='baocun_btn'></div>"+
+				"</div>"+
+			"</div>");
+	
+	$(claDiv).find('.arrangeroomdialog-edit').each(function() {//给新加Div的“编辑”增加事件
+		editEventToNode(this);
+	});
+	$(claDiv).find('.baocun_btn').each(function() {//给新加Div的“保存”增加事件
+		saveEventToNode(this);
+	});
+	$(claDiv).find('.arrangeroomdialog-delete').each(function() {
+		delEventToNode(this);
+	});
+    $(claDiv).find(".choosetime").each(function() {
+    	$(this).datetimepicker({
+			showMonthAfterYear: true,
+			showSecond: true, //显示秒
+			timeFormat: 'HH:mm:ss',//格式化时间
+			stepHour: 1,//设置步长
+			stepMinute: 5,
+			stepSecond: 10
+		});
+		
+		$(this).blur(function() {
+			var startTime = stringToTime($(this).val());
+			var costNode = $($(this).parents(".bianji_bk")[0]).find("input[name='costtime']");
+			var enddate = formateUtcDate(new Date(startTime+$(costNode).val()*60*1000));
+			$(costNode).attr("enddate", enddate);
+		});
+    });
+}
+
+
+//编辑考场事件
+function editEventToNode(editNode){
+	$(editNode).click(function(){
+		//点击编辑之后隐藏当前DIV,显示可删除DIV
+		$(this).parents(".bianji_bk").hide();
+		$($($(this).parents(".cla")[0]).find('.dip')[0]).parent().show();
+	});
+}
+
+//删除
+function delEventToNode(deleteNode){
+	$(deleteNode).click(function(){
+		$.chooshine.confirm("确定删除当前班级的考试安排信息？", function() {
+			var aId = $(deleteNode).parent().find("input[name='arrange_Id']").val();
+			 $.ajax({
+				type:"post",
+				url:"<@spring.url '/netWork/delPlan.json' />",
+				contentType:"application/x-www-form-urlencoded; charset=utf-8",
+				data:"arrange_Id="+aId,
+				success:function(data){
+					$(deleteNode).parents(".cla").remove();//移除DIV
+				}
+			});
+		});
+	});
+}
+
+
+//点击安排考场弹框中的“完成”
+$("#FinishArrange").click(function() {
+	$(".disp").each(function() {
+		$("#FinishArrange-Classnames").append("<div class='arrangedclass'>"+$($(this).find(".struct-classname")[0]).html()+"</div>");
+	});
+	$("#FinishArrange-Examname").html($("#classess > input[name='examname']").val());
+	$("#FinishArrange-Testname").html($("#classess > input[name='testname']").val()+"-"+$("#classess > input[name='sortname']").val());
+	if($("input[name='automark']")[0].checked) {
+		$("#FinishArrange-Mark").html("（自动阅卷）");
+	} else {
+		$("#FinishArrange-Mark").html("（手动阅卷）");
+	}
+	$("#FinishedArrange-Dialog").dialog("open");
+});
+$("#Close-ArrangeRoomDialog").click(function() {
+	location.reload();
+});
+$("#Close-FinishedArrangeDialog").click(function() {
+	 location.href = "<@spring.url '/network/plantests.html'/>";
+});
+
+</script>

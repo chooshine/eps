@@ -1,0 +1,504 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eeeeee;}
+.testl_con {box-shadow:0 0 5px #aaaaaa;}
+.test_paper_kbot .chooshine-btn {margin:auto 20px auto 395px;}
+.test_paper_kbot .chooshine-cancel {color:#00afed;}
+.test_paper_kbot .chooshine-cancel:hover {color:#ff9966;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">教师认证</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+<div class="tchshcom"><span><img src="<@spring.url '/images/order/tchsh.png'/>" width="882" height="81"/></span></div>
+<div class="testl_con">
+	<div class="sq_c">
+<form id="inforForm" action="<@spring.url '/authenAudit.html'/>" enctype="multipart/form-data">
+
+		<div class="test_paper_kmenlxf">
+			填写教师信息
+			<span style="padding-left:12px;color:#ff0000;">(带 * 的必填)</span>
+		</div>
+		<div class="sq_cx">
+			<div class="sq_cxl">用户名：</div>
+			<div class="sq_cxr sq_cxrt">${user_no}</div>
+			<div class="nofl"></div>		
+		</div>
+		<div class="sq_cx">
+			<div class="sq_cxl"><span>*</span>专业领域：</div>
+			<div class="sq_cxr">
+				<div class="sq_cxrt1" id="chooseTeach">
+					点击添加专业
+				</div>
+				<div class="sq_cxrx" id="showTeach">
+				</div>
+			</div>
+			<div class="nofl"></div>		
+		</div>
+		<div class="sq_cx sq_cxjj">
+			<div class="sq_cxl"><span>*</span>教师简介：</div>
+			<div class="sq_cxr">
+				<textarea name="teacherIntro" id="teacherIntro" class="input_out" style="font-size:12px;line-height:18px;"><#if authenInfo??>${authenInfo.teacher_intro}<#else>请输入自身相关简介，120以内</#if></textarea>
+				<span id="teacherIntroTT"></span>
+			</div>
+			<div class="nofl"></div>		
+		</div>
+		<div class="sq_cx sq_cxjj">
+			<div class="sq_cxl"><span>*</span>身份证号码：</div>
+			<div class="sq_cxr">
+				<#if authenInfo??>
+					<input type="text" name="identityid" id="identityid" class="input_out" value="${authenInfo.identityid}"/>
+				<#else>
+					<input type="text" name="identityid" id="identityid" class="input_out"/>
+				</#if>
+				<span id="identityidTT"></span>
+			</div>
+			<div class="nofl"></div>		
+		</div>
+		<div class="sq_cx sq_cxjj">
+			<div class="sq_cxl"><span>*</span>工作单位：</div>
+			<div class="sq_cxr">
+				<#if authenInfo??>
+					<input type="text" name="remark" id="remark" class="input_out" value="${authenInfo.remark}"/>
+				<#else>
+					<input type="text" name="remark" id="remark" class="input_out"/>
+				</#if>
+				<span></span>
+			</div>
+			<div class="nofl"></div>		
+		</div>
+		<div class="sq_cx sq_cxjj">
+			<div class="sq_cxl"><span>*</span>老师姓名：</div>
+			<div class="sq_cxr">
+				<#if authenInfo??>
+					<input type="text" name="teacherName" id="teacherName" class="input_out" value="${authenInfo.teacher_name}"/>
+				<#else>
+					<input type="text" name="teacherName" id="teacherName" class="input_out"/>
+				</#if>
+				<span></span>
+			</div>
+			<div class="nofl"></div>		
+		</div>
+		<#if USER_CONTEXT.phone == "">
+		<div class="sq_cx sq_cxjj">
+			<div class="sq_cxl">
+				<span>*</span>手机绑定：</div>
+			<div class="sq_cxr">
+				<input type="text" name="contactPhone" id="contactPhone" class="input_out" value="请输入手机号码"/>
+				<span id="phonetip"></span>
+			</div>
+			<div class="nofl"></div>		
+		</div>
+		<div class="sq_cx sq_cxjj">
+			<div class="sq_cxl" id="checkcodspan"><span>*</span>手机验证码：</div>
+			<div class="sq_cxr" id="checkcodediv">
+				<input type="text" name="checkcode" id="checkcode" class="input_out"/>
+			</div>
+			<button type="button" id="sendcodeBtn" clicked="false">免费获取验证码</button>
+			<div class="nofl"></div>
+		</div>
+		<#else>
+		<div class="sq_cx sq_cxjj">
+			<div class="sq_cxl">
+				<span>*</span>手机已绑定：</div>
+			<div class="sq_cxr">
+				<span id="phoneNum" style="font-size:20px;color:blue;">${USER_CONTEXT.phone}</span>
+			</div>
+			<div class="nofl"></div>
+		</div>
+		</#if>
+		<input type="hidden" name="license" id="license" value="">
+
+</form>
+
+	<form id="photoForm" action="<@spring.url '/upPhoto/inputAuthenInfo.html'/>" enctype="multipart/form-data" method="post" target="photo_hidden">
+		<div class="sq_cx sq_cxjj">
+			<div class="sq_cxl"><div>专家照片：</div></div>
+			<div class="sq_cxr">
+					<div>请上传一张清晰正面免冠照，1M以内</div>
+				<dl>
+						<dd><input type="File" name="photo" id="photo" style="border:0px;"></dd>
+						<dd>
+						<input type="button" id="upPhoto" value="上传图片" style="width:110px;border-radius:4px;">
+						<div id="showPhoto" style="color: red; display: inline;"></div>
+						<span id="photoInfo"></span>
+						</dd>
+				</dl>
+			</div>
+			<div class="nofl"></div>		
+		</div>
+		<iframe name="photo_hidden" id="photo_hidden" style="display: none;"></iframe>
+	</form>
+	
+	<form id="cerForm" action="<@spring.url '/upCer/inputAuthenInfo.html'/>" enctype="multipart/form-data" method="post" target="cer_hidden">
+		<div class="sq_cx sq_cxjj" style=" border-bottom:2px solid #e1e1e1; padding-bottom:5px;">
+			<div class="sq_cxl"><div><span>*</span>专家资质扫描：</div></div>
+			<div class="sq_cxr">
+					<div>请上传相关资历证明扫描件，如教师证，以便快速通过；1M/张（最多五张）</div>
+				<dl>
+					<div id="cerDiv">
+						<div>
+							<#if authenInfo??>
+							<input  type="File" name="locense1" id="locense" style="border:0px;" value="${authenInfo.license}"><span class="sqjssc delcart">删除</span>
+							<#else>
+							<input  type="File" name="locense1" id="locense" style="border:0px;" value="test"><span class="sqjssc delcart">删除</span>
+							</#if>
+						</div>
+						
+					</div>
+					<div id="addCer"><a style="color:#ff6600;" >再加一张</a></div>
+					<dd >
+						<input type="button" id="certificate" value="上传证书" style="width:110px;border-radius:4px;">
+						<div id="showlocense1" style="color: red; display: inline;"></div>
+						<span id="certificateInfo"></span>
+					</dd>
+				</dl>
+			</div>
+			<div class="nofl"></div>
+			<iframe name="cer_hidden" id="cer_hidden" style="display: none;"></iframe>		
+		</div>
+	</form>
+		<div class="test_paper_kbot" style="padding-top:20px;">
+			<div id="but" class="nxbtn_1">
+				<input type="button" id="next" value="完成并提交 " >
+			</div>
+		</div>
+	<div class="answerspop_up" id="answerspop_up">
+		<div style="min-height:160px;">
+			<#if sortList??>
+				<#list sortList?keys as key>
+					<dl>
+						<dt>${key}</dt>
+						<dd>
+							<#list sortList[key] as sort>
+							<div class="answerspop_upcem teach" parentTitle=${key} title=${sort.sort_id} ><a title="${sort.sort_name}">${sort.sort_name}</a></div>
+							</#list>
+							<div class="nofl"></div>
+						</dd>
+					</dl>
+					
+				</#list>
+			</#if>
+		</div>
+		<div class="test_paper_kbot" style="clear:both;padding-top:20px;padding-bottom:15px;">
+			<div id="but">
+				<button id="sure" class="chooshine-btn">确定</button>
+				<a id="cancel" class="chooshine-cancel">取消添加</a>
+			</div>
+		</div>
+
+		<div class="nofl"></div>
+	</div>	
+	</div>
+</div>	
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+
+<script>
+	$(function(){
+		
+		var intro="请输入自身相关简介，120以内";
+		
+		//弹出框
+		$('#answerspop_up').dialog({
+			title:"科目选择",
+			autoOpen: false,
+		    height: 350,
+		    width: 1023,
+		    modal: true
+		});
+		
+		$("#chooseTeach").click(function(){
+			$("#answerspop_up").dialog("open");
+		});
+		
+		//确定
+		$("#sure").click(function(){
+			var k=0;
+			$("#showTeach").html("");
+			$(".teach").each(function(){
+				if($(this).hasClass("answerspop_upcemx")){
+					var p=$(this).attr("parenttitle");
+					var t=$(this).attr("title");
+					var x=$($(this).children()[0]).html();
+					$("#showTeach").append("<a>"+p+'·'+x+"</a>");
+					$("#showTeach").append("<input type='hidden' value="+t+" name=teach"+k+">");
+					k++;
+				}
+			});
+			$("#answerspop_up").dialog("close");
+		});
+		//取消
+		$("#cancel").click(function(){
+			$("#answerspop_up").dialog("close");
+		});
+		
+		var teachArr = ${teach};
+		$(".teach").each(function(){
+			$(this).click(function(){
+				if($(this).hasClass("answerspop_upcem")){
+					$(this).removeClass("answerspop_upcem");
+					$(this).addClass("answerspop_upcemx teach");
+				}else{
+					$(this).removeClass("answerspop_upcemx");
+					$(this).addClass("answerspop_upcem teach");
+				}
+			});
+			
+			if(teachArr != "false"){
+				var t=$(this).attr("title");
+				var p=$(this).attr("parenttitle");
+				var x=$($(this).children()[0]).html();
+				for(var i=0; i<teachArr.length; i++){
+					if(t==teachArr[i]){
+						$(this).addClass("answerspop_upcemx");
+						$("#showTeach").append("<a>"+p+'·'+x+"</a>");
+						$("#showTeach").append("<input type='hidden' value="+t+" name=teach"+i+">");
+						break;
+					}
+				}
+			}
+		});
+		
+		//选中头像作为背景显示
+		$("#photo").change(function(){
+			var	strPath=$(this).val();
+			if(window.URL!=undefined){
+				strPath=window.URL.createObjectURL(document.getElementById("photo").files[0]);
+			}
+			$($(this).parent().prev().children()[0]).attr("src",strPath);
+		});
+		
+		//上传头像
+		$("#upPhoto").click(function(){
+			if($("#photo").val()!=""){
+				$(this).next().html("");
+				$("#photoForm").submit();
+			}
+
+			//$(this).next().html(${photoInfo});
+		});
+		
+		//证书上传
+		$("#certificate").click(function(){
+			var flag=true;
+			$("input[name='locense1']").each(function(){
+				if($(this).val()==""){
+					$("#certificateInfo").html("");
+					flag=false;
+					return;				
+				}
+			});
+			if(flag){			
+				$("#cerForm").submit();
+			}
+		});
+		
+		//确认提交
+		$("#next").click(function(){
+			if($("#photo").val()==""){
+				var message="<span >请先上传图片!</sapn>";
+				document.getElementById("showPhoto").innerHTML="";
+				$("#showPhoto").append(message);
+				
+			}
+			
+			if($("#locense").val()==""){
+				var message="<span>请先上传图片!</sapn>";
+				document.getElementById("showlocense1").innerHTML="";
+				$("#showlocense1").append(message);
+				
+			}
+			
+			
+			
+	
+			
+			$("input[type='text']").each(function(){
+				if($(this).next().attr("success")==0){
+					return;
+				}
+			});
+			
+			if($("#showTeach").children().length==0){return;}
+			if($("textarea").val()=="" || $("textarea").val()==intro){return;}
+			if($("#license").val()==""){return;}
+			
+			analyCode();
+		});
+		
+		//判断提示信息的初始值 
+		$("input[type='text']").each(function(){
+			$(this).next().attr("success",0);
+		});
+		
+		//学校名
+		$("#remark").blur(function(){
+			if($(this).val().trim()!=""){
+				$(this).next().attr("success",1);
+			}else{
+				$(this).next().attr("success",0);
+			}			
+		});
+		
+		$("#teacherName").blur(function(){
+			if($(this).val().trim()!=""){
+				$(this).next().attr("success",1);
+			}else{
+				$(this).next().attr("success",0);
+			}			
+		})
+		
+		//老师简介
+		$("#teacherIntro").focus(function(){
+			$("#teacherIntroTT").attr("success",0);
+			if($(this).val()==intro){
+				$(this).val("");
+			}
+			$("#teacherIntroTT").html("");
+		});
+		
+		$("#teacherIntro").blur(function(){
+			if($(this).val()==""){
+				$(this).val(intro);
+			}else if(parseInt($(this).val().length)>120){
+				$("#teacherIntroTT").html("超过120个字，请减少相关文字描述");
+			}else{
+				$("#teacherIntroTT").attr("scuccess",1);
+			}
+			
+		});
+		//身份证验证
+		function checkIdentityid(){
+			$.getJSON("<@spring.url '/check/autheninfo.json'/>",{"type":"identityid","ckValue":$("#identityid").val()},function(data){
+				if(data.result==""){
+					$("#identityidTT").attr("scuccess",1);
+				}
+				$("#identityidTT").html(data.result);
+			});
+		}
+		$("#identityid").blur(function(){
+			if($(this).val().trim()!=""){
+				checkIdentityid();
+			}
+		});
+		
+		var phonenotice = "请输入手机号码";
+		//手机号码验证
+		$("#contactPhone").blur(function(){
+			var phoneNumber = $(this).val();
+			
+			if(phoneNumber==""){
+				$(this).val(phonenotice);
+			} else if((phoneNumber!=phonenotice) && ((phoneNumber.length!=11)||(isNaN(phoneNumber)))) {
+				$("#phonetip").text("手机号码格式不正确");
+			} else{
+				$("#phonetip").attr("success",1);
+			}
+		});
+		$("#contactPhone").focus(function(){
+			$("#phonetip").text("");
+			
+			if($(this).val()==phonenotice){
+				$(this).val("");
+			}
+		});
+		
+		//发送验证码
+		$("#sendcodeBtn").click(function(){
+			var phone = $("#contactPhone").val();
+			if($("#contactPhone").next().attr("success")==1){
+				$(this).attr("clicked","true");
+				time(this);
+				
+				$.getJSON("<@spring.url '/inputAuthenInfo/bindPhone.json'/>",{'phone':phone});
+			} else {
+				alert("手机号不正确");
+			}
+		});
+		
+	})
+	
+	//头像上传回调 方法
+	function setPhotoTt(str){
+		$('#photoInfo').html(decodeURI(str));
+		$('#upPhoto').val("重新上传");
+	}
+	//证书上传回调 方法
+	function setCerTt(str,path){
+		$('#certificate').val("重新上传");
+		$('#certificateInfo').html(decodeURI(str));
+		$("#license").val(path);
+	}
+	
+	//添加证书上传框
+	$("#addCer").click(function(){
+		if(parseInt($("#cerDiv").children().length)<5){
+			$("#cerDiv").append("<div><input  type='File' name='locense1' id='locense' style='border:0px;'><span class='sqjssc delcart'>删除</span></div>");
+			delCartFunction();
+		}
+	});
+	
+	//删除证书上传框
+	delCartFunction();
+	function delCartFunction(){
+		$(".delcart").each(function(){
+			$(this).click(function(){
+				$(this).parent().remove();
+			});
+		});
+	}
+	
+	//判定验证码是否正确
+		function analyCode(){
+			if($("#sendcodeBtn").length>0) {
+				var code = $("#checkcode").val();
+				var clicked = $("#sendcodeBtn").attr("clicked");
+				if(clicked=="true"){
+					$.ajax("<@spring.url '/inputAuthenInfo/checkCheckCode.json'/>",{
+						data:{'checkcode':code},
+						success:function(data){
+							$("#sendcodeBtn").attr("success",data['success']);
+							if($("#sendcodeBtn").attr("success")==0){
+								alert("您输入的验证码不正确，请重新输入或重新发送验证码");
+								return;
+							}else{
+								$("#inforForm").submit();
+							}
+						}
+					});
+				} else{
+					$("#sendcodeBtn").attr("success",0);
+					alert("请获取动态验证码进行验证");
+				}
+			} else {
+				$("#inforForm").add("<input type='hidden' name='contactPhone' />");
+				$("input[name='contactPhone']").val($("#phoneNum"));
+				$("#inforForm").submit();
+			}
+	}
+	
+	var wait = 30;
+	//设置再次发送验证码的时间
+	function time(o) {
+			if (wait == 0) {
+				$(o).attr("disabled",false);
+				$(o).text("免费获取验证码");
+				wait = 30;
+			} else {
+				$(o).attr("disabled", true);
+				$(o).text(wait + "秒后可以重新发送");
+				wait--;
+				setTimeout(function() {
+					time(o)
+				}, 1000)
+			}
+	}
+</script>

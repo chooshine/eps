@@ -1,0 +1,181 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+.ui-progressbar {position:relative;}
+.ui-widget-header {border:1px solid #aaaaaa;border-bottom:2px solid #0099ff;background:#59F034;color:#222222;font-weight:bold;padding-top:3px;}
+.ui-widget-content {border:0px solid #aaaaaa;}
+.progress-label {position:absolute;left:40%;top:6px;font-weight:bold;text-shadow:1px 1px 0 #fff;}
+</style>
+
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f" style="margin:25px 0 20px;">语料搜索</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"></li>
+	   	</ul>
+	   	<#-- <div class="ziyu">
+			<div class="ziyux">
+				<div class="ziyur"><a href="<@spring.url '/corpus/subscribe.html'/>" style="line-height: 30px; height: 30px;">立即续订</a></div>
+				<div class="ziyul">您订阅的语料搜索服务将在：<span>${endDate}</span> 到期</div>
+			</div>
+		</div> -->
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<div class="content">
+	<div style="width:1000px;margin:0 auto; height:auto" align="center">
+		<div style="width: 1000px;background-color: #FCFCFC;">
+			<div id="nf" style="text-align: left; weight: 900px; height: 50px;">
+				<form id="searchForm" method="GET" action="<@spring.url '/corpus/search.html' />" style="padding: 6px 8px;">
+					<div style="float: left;" id="searchText1">
+						<div class="head_searchl  searchlno"  style="border: 3px solid #3075ce;float: left;">
+							<div style="border:1px solid #CCC; width: 110px; height: 24px; text-align: center; padding-top: 2px; background-color: #FCFCFC;  float: left; padding-bottom: 1px;">
+								<#if repType??>
+									<select id="repos" name="repositoryType" style="font-family:'微软雅黑';BORDER-LEFT-WIDTH: 0px; FONT-SIZE: 14px; BORDER-RIGHT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-TOP-WIDTH: 0px; BACKGROUND-COLOR: #fcfcfc">
+									
+									<#list repType as type>
+									 	<#if comm??>
+									 		<#if type.code == comm.repositoryType>
+									 			<option value="${type.code}"   selected>${type.name}</option></span>
+									 		<#else>
+									 			<option value="${type.code}">${type.name}</option></span>
+									 		</#if>
+									 	</#if>
+										
+									</#list>
+									</select>
+								</#if>
+							</div>
+							<input type="text"  style="width:355px;outline:0 none; background-color:white; height:22px;margin-left:1px;" name="key" value="${key}">
+						</div>
+					</div>
+					<div class="btn_1ss" style="width:88px; height:31px;  display:inline; float:left;border: 2px solid #3075ce;">
+						<input style="background:#3075ce;border-radius:0px;" type="button" class="b1 buttonfont" value="语料搜索" id="btn_search">
+					</div>
+					<div class="index_hed">
+						<span><a href="<@spring.url '/corpus/advanced.html' />">高级</a></span><br>
+						<span><a href="<@spring.url '/corpus/instructions.html' />">帮助</a></span>
+					</div>
+					<div style="clear: both"></div>
+					<input type="hidden" name="pageSize" value="${pageSize}">
+					<input type="hidden" name="pageNo" value="1">
+					<input type="hidden" name="leftNum" value="${comm.leftNum}" >
+					<input type="hidden" name="rightNum" value="${comm.rightNum}" >
+					<input type="hidden" name="intervalNum" value="${comm.intervalNum}" >
+					<#list comm.authors as id>
+						<#assign ids = ids + id + ",">
+						<#assign len = ids?length>
+					</#list>
+					<#if len &gt;=2>
+						<input type="hidden" name="authors" value="${ids[0..(len-2)]}" >
+					</#if>
+					<input type="hidden" name="endPublicationDate" value="${comm.endPublicationDate}" >
+					<input type="hidden" name="startPublicationDate" value="${comm.startPublicationDate}" >
+					<input type="hidden" name="placeType" value="${comm.placeType}" >
+					<input type="hidden" name="articleName" value="${comm.articleName}" >
+					<input type="hidden" name="language" value="${comm.language}" >
+					<input type="hidden" name="isPageQuery" value="${comm.isPageQuery}">
+					<input type="hidden" name="keyTogether" value="${comm.keyTogether}">
+					<input type="hidden" name="searchLimit" value="${comm.searchLimit?c}">
+				</form>
+			</div>
+			<div id="articleList">
+				
+			</div>
+		</div>
+	</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+	$(function() {
+		if ($.blockUI)
+			$.blockUI({
+				message : '<div id="progressbar"><div class="progress-label">正在搜索 0%...</div>',
+				css:{
+					padding:	0,
+					margin:		0,
+					width:		'30%',
+					top:		'40%',
+					left:		'35%',
+					textAlign:	'center',
+					color:		'',
+					border:		'',
+					backgroundColor:'',
+					ursor:		'wait'
+				}
+			});
+		var progressbar = $('#progressbar');
+		var progressbarLabel = $('.progress-label');
+		progressbar.progressbar({
+			value:0,
+			change:function(){
+				progressbarLabel.text('正在搜索'+progressbar.progressbar('value')+'%...');
+			},
+			complete:function(){
+				hiddenBlock();
+			}
+		});
+		function progress(){
+			$.getJSON("<@spring.url '/corpus/progress.json'/>",function(data){
+				if(data['iscomplete']=='false'){
+					progressbar.progressbar('value',data['value']);
+					setTimeout(progress,2000);
+				}else{
+					progressbar.progressbar('value',100);
+					queryArticleList();
+				}
+			})
+		}
+		setTimeout(progress,3000);
+		function queryArticleList(){
+			var data = $('#searchForm').serialize()+"&_dc="+Math.random();
+			$.ajax({
+				url:"<@spring.url '/corpus/article/list.html'/>?"+data,
+				success:function(data){
+					$('#articleList').html(data);
+					addPageEvent();
+				},
+				dataType:"html"
+			});
+		}
+		function addPageEvent(){
+			$(".show,.fcenter").each(function(index){
+				$(this).click(function(){
+					//alert($(this).attr('url'));
+					$("input[name='pageNo']").val($(this).attr('url'));
+					$("input[name='isPageQuery']").val(1);
+					queryArticleList();
+					//$("#searchForm").submit();
+					//showBlock();
+				});
+			});
+			$(".exportExcel").click(function(){
+				$("#searchForm").attr('action',"<@spring.url '/corpus/export.html'/>");
+				$("#searchForm").submit();
+			});
+			$(".newQuery").click(function(){
+				//showBlock();
+				$("input[name='isPageQuery']").val(0);
+				var searchLimit = $('select[name=s_limit]').val();
+				if(searchLimit)
+					$('input[name=searchLimit]').val(searchLimit);
+				$("#searchForm").attr('action',"<@spring.url '/corpus/search.html'/>");
+				$("#searchForm").submit();
+			});
+		}
+		$("#btn_search").click(function(){
+			var key = $('input[name=key]').val();
+			var repositoryType = $('select[name=repositoryType]').val();
+			var searchLimit = $('select[name=s_limit]').val();
+			//this.location.href =  + '?key='+key+'&repositoryType='+repositoryType;
+			$("<form>",{
+				'id':'newSearchForm',
+				'style':'display:none',
+				'action':'<@spring.url '/corpus/search.html' />',
+				'html':'<input type="hidden" name="key" value="'+key+'"><input type="hidden" name="repositoryType" value="'+repositoryType+'"><input type="hidden" name="searchLimit" value="'+searchLimit+'"><input type="hidden" name="pageSize" value="20"><input type="hidden" name="pageNo" value="1">'
+			}).appendTo($('#nf'));
+			$('#newSearchForm').submit();
+		});
+	});
+</script>

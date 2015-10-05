@@ -1,0 +1,101 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style type="text/css">
+body {background-color:#eeeeee;}
+.wrap03_nr {border:1px #DDDDDD solid;background-color:#ffffff;box-shadow:0 0 5px #aaaaaa;}
+.wrap03_nr ul li span.span00, .wrap03_nr ul li span.span01, .wrap03_nr ul li span.span02 {width:199px;}
+.wrap03_nr ul li span.span00 {text-indent:20px;}
+.wrap03_nr ul li span.span02 a {font-size:16px;color:#09aa83;}
+.wrap03_nr ul li span.span02 a:HOVER {color:#ff9966;}
+.span01 > img {width:48px;height:48px;float:left;margin:5px 10px;}
+.span01 > div {line-height:59px;font-size:16px;}
+.li_header .stuname {text-indent:68px;}
+
+.sees-classinfo-wrap {padding:20px;margin-bottom:15px;border:1px solid #cccccc;background-color:#D8EEEC;box-shadow:0 1px 4px #ccc;}
+.sees-classinfo-wrap .sees-classinfo-top {margin-bottom:20px;}
+.sees-classinfo-wrap .sees-classinfo-top div {height:32px;line-height:32px;padding-left:30px;font-size:16px;background:url("<@spring.url '/images/examsystem/info_16_green.png'/>") no-repeat scroll 0 0;color:#ff9966;}
+.sees-classinfo-down {float:left;min-width:200px;height:24px;text-align:left;}
+.sees-classinfo-wrap .sees-classinfo-down div {height:30px;line-height:24px;padding-left:40px;padding-right:50px;font-size:24px;border-right:1px solid #cccccc;margin-left:50px;}
+.sees-classinfo-wrap .sees-classinfo-down .classnum {background:url("<@spring.url '/images/examsystem/user_24_green.png'/>") no-repeat scroll 0 0;}
+.sees-classinfo-wrap .sees-classinfo-down .classnum span {padding-right:5px;}
+.sees-classinfo-wrap .sees-classinfo-down .number {display:inline-block;color:#ff9966;}
+.sees-classinfo-wrap .sees-classinfo-down .actualnum {background:url("<@spring.url '/images/examsystem/cloud_upload_green.png'/>") no-repeat scroll 0 0;}
+.sees-classinfo-wrap .sees-classinfo-down .actualnum span {padding:0px 5px;}
+.sees-classinfo-wrap .sees-classinfo-down .markednum {background:url("<@spring.url '/images/examsystem/check_26_green.png'/>") no-repeat scroll 0 0;}
+.sees-classinfo-wrap .sees-classinfo-down .markednum span {padding:0px 5px;}
+
+.back {font-size:15px;color:#009999;float:right;margin-top:-30px;}
+.back:hover {color:#ff9966;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">在线考场</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f"><a href="<@spring.url '/network/paperFactory.html'/>">出卷</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/room.html'/>">考场</a></li>
+	   		<li class="weblog-f curNav"><a href="<@spring.url '/netWork/result.html'/>" style="border-right:none;">阅卷</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+<div class="sees-classinfo-wrap">
+	<div class="sees-classinfo-top">
+		<div>${testName}</div>
+		<a class="back" href="<@spring.url '/netWork/result.html' />">返回 >></a>
+		<a class="nofl"></a>
+	</div>
+	<div class="sees-classinfo-downwrap">
+		<div class="sees-classinfo-down">
+			<div><span>${className}</span></div>
+		</div>
+		<div class="sees-classinfo-down">
+			<div class="classnum"><span class="number">${classNum}</span>人</div>
+		</div>
+		<div class="sees-classinfo-down">
+			<div class="actualnum">已交<span class="number">${actualNum}</span></div>
+		</div>
+		<div class="sees-classinfo-down">
+			<div style="border-right:none;" class="markednum">已阅<span class="number">${markedNum}</span></div>
+		</div>
+	</div>
+	<div class="nofl"></div>
+</div>
+<!-- 参加了考试的考生列表 -->
+<div class="wrap03_nr">
+	<ul>
+		<li class="li_header">
+			<span class="span01 stuname">姓名</span>
+			<span class="span00">学号</span>
+			<span class="span01">得分</span>
+			<span class="span01">阅卷情况</span>
+			<span class="span02"></span>
+		</li>
+		<#if students??>
+			<#list students as student>
+				<li class="li_nr">
+					<span class="span01">
+						<img src="<@spring.url '/${student.photo}'/>">
+						<div>${student.student_name}</div>
+					</span>
+					<span class="span00 color-orange">${student.student_no}</span>
+					<#if student.mark_flag=0>
+						<span class="span01">暂无得分</span>
+						<span class="span01">未阅</span>
+						<span class="span02"><a href="<@spring.url '/examsystem/gradePapers.html?examId=${student.exam_id?c}&testRecId=${student.test_rec_id?c}&classId=${student.class_id}&testId=${student.test_id?c}&subjectId=${student.subject_id?c}&questype=subjective'/>">阅卷</a></span>
+					<#elseif student.mark_flag=1>
+						<span class="span01">暂无得分</span>
+						<span class="span01">部分已阅</span>
+						<span class="span02"><a href="<@spring.url '/examsystem/gradePapers.html?examId=${student.exam_id?c}&testRecId=${student.test_rec_id?c}&classId=${student.class_id}&testId=${student.test_id?c}&subjectId=${student.subject_id?c}&questype=subjective'/>">继续阅卷</a></span>
+					<#else>
+						<span class="span01 color-orange">${student.score}</span>
+						<span class="span01">已阅完</span>
+						<span class="span02"><a href="<@spring.url '/examsystem/gradePapers.html?examId=${student.exam_id?c}&testRecId=${student.test_rec_id?c}&classId=${student.class_id}&testId=${student.test_id?c}&subjectId=${student.subject_id?c}&questype=subjective'/>">查看试卷</a></span>
+					</#if>
+				</li>
+			</#list>
+		</#if>
+	</ul>
+</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >

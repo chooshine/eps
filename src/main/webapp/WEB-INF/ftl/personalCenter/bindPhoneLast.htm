@@ -1,0 +1,25 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">手机绑定</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+   <div class="safe_step">
+		<h2>绑定手机</h2>
+        <div class="step_icon">
+        	<span class="step01 step02 step03"></span>
+        	<p><span class="blue02">输入手机号码</span><span class="has_margin blue02">输入验证码</span><span class="blue">完成</span></p>
+            <div class="input_wrap">
+            	<p><span class="blue tishi">恭喜！您已完成手机绑定！</span><a href="<@spring.url '/person/center.html'/>" class="blue">&gt;&gt;完成其他认证</a></p>
+                <p>绑定手机号码为：${USER_CONTEXT.phone} &nbsp;&nbsp; &nbsp;&nbsp;<a href="<@spring.url '/person/center/bind-phone.html'/>" class="bule">修改</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >

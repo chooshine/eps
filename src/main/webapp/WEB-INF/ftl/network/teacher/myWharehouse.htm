@@ -1,0 +1,465 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eee;}
+.fixed {position:fixed;top:0;}
+.cq-left {width:200px;border:1px solid #aaa;float:left;}
+.cq-left.fixed .kpcontainer {height:591px;}
+.cq-left .kpcontainer {height:589px;padding-top:20px;padding-bottom:10px;background-color:#fff;}
+.cq-right {width:776px;float:right;margin-left:20px;}
+.cq-right .topinfo {width:736px;padding:20px;border:1px solid #aaa;background-color:#fff;margin-bottom:20px;}
+.cq-right .topinfo .info {float:left;}
+.cq-right .topinfo .info > div {line-height:37px;font-size:14px;float:left;margin-right:30px;}
+.cq-right .topinfo .chooshine-btn {width:86px;}
+.cq-right .topinfo .cq-return {float:right;margin-right:0px;}
+.cq-right .centercontainer {padding-left:20px;margin-bottom:20px;}
+.cq-right .center-left {float:left;}
+.cq-right .center-left .types {margin-bottom:20px;}
+.cq-right .center-left .type, .cq-right .center-left .flag {float:left;font-size:14px;margin-right:25px;}
+.cq-right .center-left .flag:HOVER {color:#ff9966;cursor:pointer;}
+<#if !(examInfo??)>
+.cq-right .center-left .type:HOVER {color:#ff9966;cursor:pointer;}
+</#if>
+.cq-right .center-right {float:right;margin-bottom:20px;}
+.cq-right .center-right .search .chooshine-input {float:left;margin-right:10px}
+.cq-right .center-right .search img {cursor:pointer;}
+.topinfo span.color-orange {font-weight:bold;margin-left:5px;}
+.cq-sortname {font-size:16px;background-color:#00afed;padding:10px;color:#fff;}
+.cq-currenttype, .cq-currentflag {color:#00afed;}
+.text_sju .paperx_comx {width:776px;}
+.test_box, .test_box2, .test_box3, .test_box4, .test_box5 {width:500px;}
+.test_box {margin-left:22px;}
+.linkClass2_postion {margin-left:530px;}
+.linkClass3_postion {margin-left:590px;}
+.mar5 {margin-left:574px;}
+
+/*暂时使用收藏页面的样式，之后需要调整*/
+.sorts {min-width:52px;height:0;position:relative;}
+.sort {height:25px;line-height:25px;padding:0 10px;cursor:pointer;color:#fff;background-color:#00afed;}
+.sort:hover {background-color:#000;color:#fff;}
+
+/*添加题目*/
+.paperx_ksx {height:53px;border:1px dashed #FFD9B8;background-color:#fff;margin-bottom:20px;}
+.paperx_ksx .paperx_boot4, .paperx_ksx .paperx_boot4 img {cursor:default;}
+.newquesinfo {padding-left:19px;border-bottom:1px solid #aaa;background-color:#eff2f9;}
+.newques .newquesinfo {border:1px solid #aaa;border-bottom:none;}
+.paperxt_stx .newquesinfo {margin-top:-9px;margin-bottom:20px;}
+.chooshine-keyvalue-wrap {padding:8px 0 0;float:left;margin-right:40px;}
+.chooshine-keyvalue-wrap > div, .chooshine-keyvalue-wrap > input, .chooshine-keyvalue-wrap > select {float:left;}
+.quesstatus {float:left;padding-top:11px;margin-right:10px;}
+.quesstatus > div {float:left;margin-right:10px;}
+.quesstatus span {float:left;}
+.quesstatus input {float:left;margin-right:3px;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f" style="margin-right:487px;">个人题库</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f"><a href="<@spring.url '/homework/entrance.html'/>">课后作业</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/network/paperFactory.html'/>" style="border-right:none;">在线考场</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+	<div class="cq-left">
+		<div style="padding:10px 0 10px 10px;background-color:#00afed;">
+			<div style="font-size:16px;float:left;margin-right:20px;">
+				<span id="Subject" subjectid="${subjectId?c}" psortno=${pSortNo} style="color:#fff;">${sortName}</span>
+			</div>
+			<div class="sortcontainer" style="float:right;">
+				<div style="text-align:right;cursor:pointer;color:#fff;margin-right:10px;margin-bottom:5px;"><span id="ChangeSort">切换科目</span></div>
+				<div id="Sorts" class="sorts hide">
+					<#list sortList as sort>
+					<div class="sort" sortid="${sort.sort_id?c}" psortno="${sort.sort_no}">${sort.parent_sort+"·"+sort.sort_name}</div>
+					</#list>
+				</div>
+			</div>
+			<div class="nofl"></div>
+		</div>
+		<div class="kpcontainer">
+			<div id="KpsWrap">
+				<#include "network/teacher/kpsTree.htm" parse="true" encoding="UTF-8" >
+			</div>
+		</div>
+	</div>
+	<div class="cq-right">
+		<div class="centercontainer">
+			<div class="center-left">
+				<div class="types">
+					<#list quesTypes as type>
+						<div class="type" tsid="${type.ts_id?c}"><span>${type.ts_name}</span></div>
+					</#list>
+					<div class="nofl"></div>
+				</div>
+				<div class="flags">
+					<div class="flag struct-flag cq-currentflag" flag="1"><span>已发布</span></div>
+					<div class="flag struct-flag" flag="3"><span>已共享</span></div>
+					<div class="flag struct-flag" flag="0"><span>未发布</span></div>
+					<div class="flag struct-flag" flag="2"><span>已作废</span></div>
+					<div class="nofl"></div>
+				</div>
+			</div>
+			<div class="center-right">
+				<div class="search">
+					<input id="Keyword" type="text" class="chooshine-input" placeholder="关键词"/>
+					<img id="Search" src="<@spring.url '/images/search_blue.png'/>"  title="查找含有关键词的小题" />
+				</div>
+				<div class="nofl"></div>
+			</div>
+			<div class="nofl"></div>
+		</div>
+		<div class="paperx_ksx">
+		<div class="paperx_boot4">
+			<img src="<@spring.url '/images/examsystem/add.png'/>" alt="添加小题">
+			<select name="questype" class="chooshine-select">
+				<option value="1">单选题</option>
+				<option value="2">多选题</option>
+				<option value="3">判断题</option>
+				<option value="4">填空题</option>
+				<option value="5">解答题</option>
+				<option value="6">材料题</option>
+			</select>
+			<div id="AddQuestion" class="chooshine-btn">添加一题</div>
+		</div>
+		</div>
+		<div id="Questions" class="questions"></div>
+		<div class="nofl"></div>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<#--添加公式-->
+<#include "insertFormulaDialog.htm" parse="true" encoding="UTF-8" >
+<#include "formulaDialog.htm" parse="true" encoding="UTF-8" >
+<#--添加考点-->
+<#include "homework/teacher/knowledgePoints/knowledgePointsDialog.htm" parse="true" encoding="UTF-8" >
+<#include "homework/teacher/knowledgePoints/knowledgePointsDialogJs.htm" parse="true" encoding="UTF-8" >
+<#--小题添加事件-->
+<#include "network/teacher/quesEventJs.htm" parse="true" encoding="UTF-8" >
+<#include "formula/formulaHistoryDialog.htm" parse="true" encoding="UTF-8" >
+<#include "recorder.htm" parse="true" encoding="UTF-8" >
+<script>
+var defaultKp = 0;//默认知识点，用于在新增或编辑小题的时候，重新加载知识点并选择默认知识点
+openKnowledgePointsDialog($("#Subject").attr("subjectid"));
+/**
+ * 得到页面的考点树，该树的数据是通过科目、题目类型、发布状态以及关键字得到的，得到树之后，再根据树上的考点查询相关题目
+ */
+function getKnowledgepoints() {
+	$.ajax({
+		url:"<@spring.url '/teacher/getKnowledgepoints.html'/>",
+		type:"POST",
+		data:"subjectId="+$("#Subject").attr("subjectid")+
+			 "&tsId="+$(".struct-currenttype").attr("tsid")+
+			 "&flag="+$(".cq-currentflag").attr("flag")+"&keyword="+$("#Keyword").val(),
+		contentType:"application/x-www-form-urlencoded;charset=utf-8",
+		dataType:"html",
+		success:function(result) {
+			$("#KpsWrap").html(result);//填充知识点树
+			if(defaultKp != 0)
+				var kpId = $($(".struct-kpname[kpid='"+defaultKp+"']")).addClass("cq-currentkp").attr("kpid");//设置第一个知识点为选中状态
+			else
+				var kpId = $($(".struct-kpname")[0]).addClass("cq-currentkp").attr("kpid");//设置第一个知识点为选中状态
+			showQuestions(1);//获取小题
+			defaultKp = 0;
+			addClickEventToKp($(".struct-kpname"));//为新增的知识点添加点击事件 
+			$(".cq-first-kpinfo").find(".cq-imgwrap").each(function() {
+				addClickEventToKpImg(this);
+			});
+			$(".cq-second-kpinfo").find(".cq-imgwrap").each(function() {
+				addClickEventToKpImg(this);
+			});
+			
+			$("#AddQuestion").parents(".paperx_ksx").removeClass("hide");
+		}
+	});
+}
+/**
+ * 查询满足条件的小题信息
+ * @param pageNo 页码，查询该页的所有小题信息
+ */
+function showQuestions(pageNo) {
+	var subjectId = $("#Subject").attr("subjectid"),
+		kpId = $(".cq-currentkp").attr("kpid");
+	if(kpId == undefined){kpId = 0;}//知识点为undefined，代表当前题库没有小题，这时设kpId为0（一个不存在的知识点）
+	var tsId = $(".struct-currenttype").attr("tsid"),
+		flag = $(".cq-currentflag").attr("flag"),
+		keyword = encodeURIComponent(encodeURIComponent($("#Keyword").val()));
+	$.ajax({
+		url:"<@spring.url '/teacher/myQuestions.html'/>",
+		data:"subjectId="+subjectId+"&kpId="+kpId+"&tsId="+tsId+"&flag="+flag+"&keyword="+keyword+"&pageNo="+pageNo,
+		type:"POST",
+		contentType:"application/x-www-form-urlencoded;charset=utf-8",
+		dataType:"html",
+		success:function(result) {
+			$("#Questions").html(result);
+		}
+	});
+}
+/**
+ * 给发布和共享状态添加点击事件
+ * @param FlagNode 状态节点
+ */
+function addClickEventToFlag(FlagNode) {
+	$(FlagNode).click(function() {
+		$(".cq-currentflag").removeClass("cq-currentflag");//之前的题库去除选中状态
+		$(this).addClass("cq-currentflag");//当前题库变为选中状态
+		getKnowledgepoints();
+	});
+}
+/**
+ * 给题型添加点击事件
+ * @param 题型节点
+ */
+function addClickEventToTypeNode(typeNode) {
+	$(typeNode).click(function() {
+		$(".struct-currenttype").removeClass("cq-currenttype struct-currenttype");
+		$(this).addClass("cq-currenttype struct-currenttype");
+		getKnowledgepoints();
+	});
+}
+//给知识点添加点击事件
+function addClickEventToKp(kpNode) {
+	$(kpNode).click(function() {
+		$(".cq-currentkp").removeClass("cq-currentkp");
+		$(this).addClass("cq-currentkp");
+		showQuestions(1);
+	});
+}
+$(function() {
+	//如果当前正在编辑一个小题，就不允许对除了当前小题之外的页面其他位置的点击
+	$(".content").mousedown(function(){
+		if(isOutFlag){
+			$.chooshine.alert("请先完成当前小题的编辑！");
+	      	return;
+		}
+		if(articleEditingFlag) {
+			$.chooshine.alert("请先保存正在编辑的材料。");
+	      	return;
+		}
+	});
+	
+	//点击“切换科目”
+	$("#ChangeSort").click(function() {
+		$("#Sorts").toggleClass("hide");
+	});
+	//点击不同的科目
+	$(".sort").click(function() {
+		location.href = "<@spring.url '/teacher/myWharehouse.html?sortId=' />"+$(this).attr("sortid");
+	});
+	addClickEventToKp($(".struct-kpname"));//为初始加载的知识点添加点击事件
+	addClickEventToFlag($(".struct-flag"));//为初始加载的题库添加点击事件
+	addClickEventToTypeNode($(".type"));   //为初始加载的题目类型添加点击事件
+	//点击搜索
+	$("#Search").click(function() {
+		getKnowledgepoints();
+	});
+	
+	//增加小题
+	$("#AddQuestion").click(function() {
+		var tsId = $(".cq-currenttype").attr("tsid"),
+			quesType = $("select[name='questype']").val();
+		$(this).closest(".paperx_ksx").addClass("hide");
+		if(quesType != 6)
+			$.ajax({
+				url:"<@spring.url '/teacher/addOneQues.html'/>",
+				data:"quesType="+quesType+"&tsId="+tsId,
+				type:"POST",
+				contentType:"application/x-www-form-urlencoded;charset=utf-8",
+				dataType:"html",
+				success:function(result) {
+					$("#QuestionsUl").prepend(result);
+				}
+			});
+		else addReadingQues(tsId);
+	});
+	
+	/**
+	 * 选择难度时，鼠标移动的事件处理
+	 */
+	$(document).mousemove(function(e) {
+		if(isMove) {
+			var t = e.clientX-startX,
+				n = startLevel+t,
+				n = n>100-6?100-6:n,
+				n = 0>n?0:n;
+			$(nowSelectDot).css({"left":n+"px"});
+			//显示难度系数
+			var diffNum = (n/(100-6))*4+1;
+			diffNum = diffNum*10>Math.floor(diffNum*10)?(diffNum*10+1)/10:diffNum;
+			diffNum = (Math.floor(diffNum*10)/10).toFixed(1);
+			$(nowSelectDot).parents(".difficultywrap").find(".difficulty").text(diffNum);
+		}
+	}).mouseup(function() {
+		isMove = false;
+		nowSelectDot = undefined;
+	});
+	
+	$(".type:first").trigger("click");//自动触发第一个题型的点击事件
+});
+/**
+ * 给考点树左边的加号、减号添加点击事件
+ * @param node 考点树上的加号或减号
+ */
+function addClickEventToKpImg(node) {
+	$(node).click(function() {
+		var nextLayerKpsWrap = $(this).parent().next();
+		if(nextLayerKpsWrap[0] != undefined) {
+			if(nextLayerKpsWrap.hasClass("hide")) {
+				nextLayerKpsWrap.removeClass("hide");
+				$(node).find("img").attr("src", "<@spring.url '/images/close.png'/>");
+			} else {
+				nextLayerKpsWrap.addClass("hide");
+				$(node).find("img").attr("src", "<@spring.url '/images/open.png'/>");
+			}
+		}
+	});
+}
+//将编辑器移动到.text_sju的下面
+function moveUE() {
+	$("#container").addClass("hide");
+	$(".centercontainer").after($("#container"));
+}
+//****************************录音部分********************************
+/**
+* 小题的录音入口点击事件
+* @param node 录音入口节点
+*/
+function enterRecorderEvent(node) {
+	var quesNode = $(node).parents(".paperx_tl"),
+	startRecordNode = quesNode.find(".start-recording")[0],
+	pauseRecordNode = quesNode.find(".pause")[0];
+	
+	triggerMouseEvent(startRecordNode, "click");//自动触发录音按钮点击事件
+	//如果停止录音图标是显示状态，说明当前进入了录音状态，要隐藏录音入口图标;否则，说明当前刚选择了允许flash，不隐藏录音入口图标
+	if(!quesNode.find(".stop-recording").is(":hidden")) {
+		$(node).addClass("hide");
+		triggerMouseEvent(pauseRecordNode, "click");//自动触发暂停按钮点击事件
+	}
+}
+//上传录音并显示播放器之后要做的事情
+function doAfterUploadWav(recorderWrap, path) {
+	//设置小题的录音路径
+	$(recorderWrap).attr("recpath", path.substring(1));
+}
+//删除录音之后做的处理
+function doAfterDeleteWav(recorderWrap) {
+	var quesNode = $(recorderWrap).parents(".paperx_tl");
+	quesNode.find(".struct-quesrec").removeClass("hide");//显示录音入口
+	$(recorderWrap).removeAttr("recpath");
+}
+//点击输入框时要做的特殊处理
+function doWhenClickInput(node) {
+	//只有输入框是解析的输入框才做特殊处理
+	if($(node).parents(".paperx_jxxqr")[0] == undefined) return;
+	//判断当前是否是录音状态或者播放状态，若是，则不显示录音入口，否则显示录音入口
+	var quesNode = $(node).parents(".paperx_tl");
+	if((quesNode.find(".stop-recording").is(":visible")) || (!quesNode.find(".chooshinejp").hasClass("hide"))) {
+		quesNode.find(".struct-quesrec").addClass("hide");
+	}
+}
+/**
+ * 难度游标mouse事件
+ * @param node 难度游标节点
+ */
+function addDiffMouseEvent(node) {
+	$(node).mousedown(function(e) {
+		var normalQues = $(node).parents(".paperx_tl"),
+			artArea = $(node).closest(".paperxt_stx");
+		if((normalQues[0]!=undefined && normalQues.next().is(".pep_bc")) || (artArea[0]!=undefined && artArea.find(".savArticle").is(":visible"))) {
+			isMove = true;
+			nowSelectDot = this;
+			startX = e.clientX,	startLevel = e.target.offsetLeft;
+		}
+	}).mouseup(function (e) {
+        isMove = false;
+        nowSelectDot = undefined;
+    });
+}
+//标尺点击事件
+function addClickEventToSelectDiv(node) {
+	$(node).click(function(e) {
+		//如果是普通小题，则需要小题在编辑状态，如果是材料，则需要材料在编辑状态
+		var paperxtStx = $(this).closest(".paperxt_stx"),
+			canOperate = false;
+		if(paperxtStx[0]==undefined && $(this).closest(".paperx_tl").find(".paperx_tlxr").find(".ttxt").attr("contenteditable")=="true") canOperate = true;
+		else if(paperxtStx.find(".struct-artcontent").attr("contenteditable") == "true") canOperate = true;
+		if(canOperate) {
+			var eX = e.clientX,
+			divX = $(this).offset().left,
+			n = eX>divX+100-6?divX+100-6:eX,
+			n = n<0?0:n,
+			selectDot = $(this).find(".selectdot"),
+			diffSpan = $(this).closest(".difficultywrap").find(".difficulty");
+			
+			selectDot.offset({left:n});
+			n = selectDot.position().left;
+			//显示难度系数
+			var diffNum = (n/(100-6))*4+1,
+				diffNum = diffNum*10>Math.floor(diffNum*10)?(diffNum*10+1)/10:diffNum,
+				diffNum = (Math.floor(diffNum*10)/10).toFixed(1);
+			diffSpan.text(diffNum);
+		}
+	});
+}
+</script>
+<style>
+.text_sju {min-height:0;border:none;box-shadow:none;background-color:#eee;}
+/*小题头部信息样式*/
+.questop {padding:10px 17px;}
+.questop .quesinfowrap {float:left;margin-right:20px;}
+.questop .timewrap {margin-right:0px;}
+.quesinfowrap > div {line-height:24px;font-size:14px;float:left;}
+.quesinfowrap .mtopic {width:49px;font-size:20px;font-weight:bold;text-align:center;color:#b2d5ff;margin-top:-2px;}
+.quesinfowrap .usetimeskey {height:20px;padding-left:24px;cursor:pointer;background:url("<@spring.url '/images/document_alt_stroke_24.png'/>") no-repeat scroll 0 5px;}
+.quesinfowrap .usetimes {width:117px;}
+.quesinfowrap .usetimes .color-orange {font-weight:bold;margin:auto 2px;}
+.quesinfowrap .resourcekey {height:20px;padding-left:24px;cursor:pointer;background:url("<@spring.url '/images/book_gray.png'/>") no-repeat scroll 0 5px;}
+.quesinfowrap .resource {width:160px;}
+.quesinfowrap .paperx_zsd {margin-bottom:auto;}
+.quesinfowrap .paperx_zsd .paperx_zsdl {width:0;cursor:pointer;margin-top:4px;}
+.quesinfowrap .paperx_zsd .paperx_zsdr {width:162px;margin-top:2px;}
+.quesinfowrap .paperx_zsd .paperx_zsdr div {margin-bottom:3px;}
+.paperxt_stx .questop .paperx_zsd {margin-left:auto;margin-top:auto;}
+.quesinfowrap .timekey {height:20px;padding-left:24px;cursor:pointer;background:url("<@spring.url '/images/clock_gray.png'/>") no-repeat scroll 0 4px;}
+.quesinfowrap .quesinfovalue span {padding:2px 0;}
+.questop .joinques {height:25px;padding:0px 10px;color:#fff;border-radius:3px;line-height:23px;float:right;margin-right:auto;cursor:pointer;background-color:#00afed;}
+.questop .removeques {height:25px;padding:0px 10px;color:#fff;border-radius:3px;line-height:23px;float:right;margin-right:auto;cursor:pointer;background-color:#888;}
+.questop .joinques:hover, .questop .removeques:hover {background-color:#039DD3;}
+
+.text_sju li {border:1px solid #aaa;margin-bottom:20px;background-color:#fff;}
+.paperx_fxk .paperx_zsdr, .paperx_fxk .paperx_jxxqr {width:663px;}
+.paperx_jxxqr .fftxt {min-height:50px;}
+.statistic {margin-bottom:20px;}
+.statistic > div {font-size:14px;float:left;}
+.statistic .statistic-left {width:58px;padding-left:22px;color:#acaba8;background:url("<@spring.url '/images/examsystem/graph.png'/>") no-repeat scroll 0 0;}
+.statistic .statistic-right {padding-left:10px;}
+
+/*小题编辑部分*/
+.pep_bj {margin-left:666px;z-index:2;}
+.pep_bj a.toolbar, .pep_bj a.toolbar:LINK, .pep_bj a.toolbar:VISITED, .pep_bj a.toolbar:HOVER, .pep_bj a.toolbar:ACTIVE {padding-left:60px; padding-bottom:30px; font-size:12px; font-weight:700; font-family:"微软雅黑"; color:#5FB708;}
+.pep_bj div.tools {display:none;width:65px;border:1px #888888 solid;background-color:#FCF5F5;margin-top:10px;margin-left:30px;}
+.pep_bjb, .pep_bjc, .copyques, .share, .releaseques {width:65px;line-height:25px;text-align:center;color:#0000CC;cursor:pointer;}
+.pep_bjb:hover, .pep_bjc:hover, .copyques:hover, .share:hover, .releaseques:hover {background-color:#ECE9D8;}
+.pep_bj:hover .tools {display:block;}
+.pep_bc {padding-left:198px;}
+.paperxt_bot .pep_bc {padding-left:312px;}
+.paperx_fxk .paperx_zsdr{width:660px;}
+.paperx_fxk .linkClass2 {float:left;margin-top:-32px;margin-left:532px;}
+.paperx_jxxqr .fftxt {min-height:50px;}
+
+.article-above-operatewrap {margin-left:680px;}
+.article-under-operate {margin-left:312px;}
+.artbc {padding-top:15px;padding-bottom:15px;}
+.paperxt_botbx select {width:100px;}
+.paperx_boot4 select.chooshine-select {width:100px;margin:10px 10px 0px 5px;float:left;}
+.paperx_boot4 div.chooshine-btn {margin-top:8px;float:left;}
+/*录音样式*/
+.quesrec {display:inline-block;width:16px;height:24px;cursor:pointer;background:url("<@spring.url '/images/uploadimgs.png' />") no-repeat scroll -165px -3px transparent;}
+.recorderwrap {margin-top:5px;margin-left:87px;}
+.hide {display:none;}
+
+.paperx_jxxq {margin-bottom:20px;}
+.paperx_diff .paperx_zsdl {height:30px;line-height:29px;background:url("<@spring.url '/images/examsystem/light.png' />") no-repeat scroll 0px 6px transparent}
+</style>

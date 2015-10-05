@@ -1,0 +1,174 @@
+<style>
+#CreatNewTestDialog, #CreatNewTestDialog input, #CreatNewTestDialog select {font-size:13px;font-family:"微软雅黑";}
+#main_container #newTest .createtest-p {margin-bottom:20px;}
+#main_container #newTest .createtest-spankey {display:inline-block; width:230px; margin-right:10px; text-align:right; font-size:15px; font-weight:bold; color:#666666;}
+#main_container #newTest .createtest-select {width:214px;padding:6px;}
+#main_container #newTest .createtest-spantip {color:#FF0000;}
+#CreateNewTestOperates {margin-top:20px; padding-left:140px;}
+#CreateNewTestOperates input {float:left;}
+#CreateNewTestOperates #SaveNewTest {margin-right:20px;font-size:14px;font-family:SimSun;}
+#CreateNewTestOperates #CloseCreateNewTest {height:35px;line-height:35px;float:left;color:#00afed;cursor:pointer;font-size:14px;font-weight:bold;}
+#CreateNewTestOperates #CloseCreateNewTest:HOVER {color:#ff9933;}
+</style>
+<div id="CreatNewTestDialog" style="display:none;">
+	<h3>新建考试</h3>
+	<div id="main_container">
+		<form action="<@spring.url '/netWork/newTest.json'/>" id="newTest" method="post">
+			<p class="createtest-p">
+				<span class="createtest-spankey">考试名称</span>
+				<input id="testName" type="text" class="chooshine-input" />
+				<span class="createtest-spantip" id="TestNameErrorInfo"></span>
+			</p>
+			
+			<p class="createtest-p">
+				<span class="createtest-spankey">学年</span>
+				<select class="createtest-select" id="year">
+					<#if dateList??>
+						${dateList_index}
+						<#list dateList as dd>
+							<#if dd?c=.now?string("yyyy-MM-dd HH:mm")?substring(0,4)>
+								<option value=${dd?c} selected="selected">${dd?c}</option>
+							<#else>
+								<option value=${dd?c}>${dd?c}</option>
+							</#if>
+						</#list>
+					</#if>
+				</select>
+			</p>
+			
+			<p class="createtest-p">
+				<span class="createtest-spankey">学期</span>
+				<select class="createtest-select" id="semester2" >
+					<option value="0">不限</option>
+				    <option value="1">上学期</option>
+				    <option value="2">下学期</option>
+				</select>
+			</p>
+			
+			<p class="createtest-p">
+				<span class="createtest-spankey">考试年级</span>
+				<select class="createtest-select" id="gradeId">
+					<#if grades??>
+						<#list grades as g>
+							<option value="${g.GRADE_ID}" gradelevel="${g.grade_level}">${g.GRADE_NAME}</option>
+						</#list>
+					</#if>
+				</select>
+			</p>
+			
+			<p class="createtest-p">
+				<span class="createtest-spankey">考试类型</span>
+				<select class="createtest-select" id="testType" >
+					<#if testTypeList??>
+						<#list testTypeList as etl>
+							<option value=${etl.CODE}>${etl.NAME!}</option>
+						</#list>
+					</#if>
+				</select>
+			</p>
+			
+			<p class="createtest-p">
+				<span class="createtest-spankey">开始时间</span>
+				<input type="text" id="testTime" class="chooshine-input" placeholder="请选择考试开始时间" />
+				<span class="createtest-spantip" id="showtestTime"></span>
+			</p>
+			
+			<p class="createtest-p">
+				<span class="createtest-spankey">结束时间</span>
+				<input type="text" id="testEndTime" class="chooshine-input" placeholder="请选择考试结束时间" />
+				<span class="createtest-spantip" id="showtestEndTime"></span>
+			</p>
+			
+			<!-- 隐藏学校ID -->
+			<select id="schoolId" style="display:none;" >
+				<#if grades??>
+					<#list grades[0] as g>
+						<option value=${g.school_id}>${g.school_id}</option>
+					</#list>
+				</#if>
+			</select>
+			
+			<div id="CreateNewTestOperates" class="btn_1asa">
+				<input type="button" id="SaveNewTest" value="保存" />
+				<div id="CloseCreateNewTest">关闭</div>
+				<div class="nofl"></div>
+			</div>
+		</form>
+	</div>
+</div>
+<script>
+$('#CreatNewTestDialog').dialog({
+	autoOpen: false,
+	dialogClass:"chooshine-dialog",
+   	width:698,
+	height:540,
+    modal: true
+});
+
+
+$("#testTime").datetimepicker({
+	showMonthAfterYear: true,
+	showSecond: true, //显示秒
+	timeFormat: 'HH:mm:ss',//格式化时间
+	stepHour: 1,//设置步长
+	stepMinute: 5,
+	stepSecond: 10
+});
+$("#testEndTime").datetimepicker({
+	showMonthAfterYear: true,
+	showSecond: true, //显示秒
+	timeFormat: 'HH:mm:ss',//格式化时间
+	stepHour: 1,//设置步长
+	stepMinute: 5,
+	stepSecond: 10
+});
+$("#testName").focus(function() {
+	$("#TestNameErrorInfo").html("");
+});
+$("#testTime").focus(function() {
+	$("#showtestTime").html("");
+});
+$("#testEndTime").focus(function() {
+	$("#showtestEndTime").html("");
+});
+function saveNewTestEvent() {
+	if($("#testName").val() == ''){
+		$("#TestNameErrorInfo").html("请输入考试名称");
+		return;
+	}
+	if($("#testTime").val()=='请选择考试开始时间' || $("#testTime").val()==''){
+		$("#showtestTime").html("请选择考试开始时间");
+		return;
+	}
+	if($("#testEndTime").val()=='请选择考试结束时间' || $("#testTime").val()==''){
+		$("#showtestEndTime").html("请选择考试结束时间");
+		return;
+	}
+	
+	var testName = $("#testName").val();
+	var year = $("#year").val();
+	var semester = $("#semester2").val();
+	var schoolId = $("#schoolId").val();
+	var gradeId = $("#gradeId").val();
+	var testType = $("#testType").val();
+	var testTime = $("#testTime").val();
+	var testEndTime = $("#testEndTime").val();
+
+	ajax_url = $("#newTest").attr('action'); //表单目标 
+	$.get(
+		"<@spring.url '/netWork/newTest.json'/>",
+		{testName:testName,year:year,semester:semester,schoolId:schoolId,gradeId:gradeId,testType:testType,testTime:testTime,testEndTime:testEndTime},
+		function(data){
+			afterSaveNewTest(data);
+		}
+	);
+}
+//保存考试
+$("#SaveNewTest").click(function(){
+	saveNewTestEvent();
+});
+//关闭新建考试
+$("#CloseCreateNewTest").click(function() {
+	closeCreateNewTestEvent();
+});
+</script>

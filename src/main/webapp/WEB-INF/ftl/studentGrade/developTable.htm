@@ -1,0 +1,180 @@
+<div class="res_anbgz">
+	<div class="res_anbgzr">
+		<span id="rankTableBtn">表格</span>|<span id="classRankBtn">班名图形</span>|<span id="gradeRankBtn">年名图形</span>
+	</div>
+</div>
+<table class="table table-bordered table-hover" id="rankTable">
+	<caption style="text-align:left;border:1px solid #dddddd;border-bottom:0px;height:15px;padding-top:4px;">您在${testname}（${sortnames}）得分分布</caption> 
+	<thead>
+		<tr>
+			<th>科目</th>
+			<th>本次成绩</th>
+			<th>本次班名</th>
+			<th>本次年名</th>
+			<th>上次成绩</th>
+			<th>上次班名</th>
+			<th>上次年名</th>
+			<th>发展情况</th>
+		</tr>
+	</thead>
+	<tbody>
+		<#if twoInfo??> 
+		<#list twoInfo as test>
+		<tr>
+			<td>${test.sort_name}</td>
+			<td>${test.score}</td>
+			<td>${test.score_cr}</td>
+			<td>${test.score_gr}</td>
+			<td>${test.score2}</td>
+			<td>${test.score_cr2}</td>
+			<td>${test.score_gr2}</td> 
+			<td>${test.cr_progress}</td> 
+		</tr>
+		</#list> 
+		</#if>
+	</tbody>
+</table>
+<div id="classRankChart" style="height:300px;">
+
+</div>
+<div id="gradeRankChart" style="height:300px;">
+
+</div>
+<script>
+	$(function(){
+	
+		//班级排名升降图
+		 var chartData = ${chartdata};
+               
+		// SERIAL CHART
+		var chart = new AmCharts.AmSerialChart();
+		chart.dataProvider = chartData;
+		chart.categoryField = "sort_name";
+
+		// AXES
+		// category
+		var categoryAxis = chart.categoryAxis;
+		categoryAxis.dashLength = 1;
+		categoryAxis.tickLength = 0;
+		categoryAxis.axisAlpha = 1;
+		categoryAxis.inside = false;
+		categoryAxis.autoGridCount = true;
+		categoryAxis.gridPosition = "start";
+		categoryAxis.gridAlpha = 1;
+
+		// value
+		var valueAxis = new AmCharts.ValueAxis();
+		valueAxis.dashLength = 1;
+		valueAxis.axisAlpha = 1;
+		chart.addValueAxis(valueAxis);
+
+		// GRAPH
+		var graph = new AmCharts.AmGraph();
+		graph.type = "candlestick";
+        graph.fillAlphas = 1;
+		graph.title = "班级名次进退步";
+		// graph colors
+		graph.lineColor = "#7f8da9";
+		graph.fillColors = "#7f8da9";
+		graph.negativeLineColor = "#db4c3c";
+		graph.negativeFillColors = "#db4c3c";
+		// candlestick graph has 4 fields - open, low, high, close
+		graph.openField = "score_cr2";
+		graph.highField = "score_cr2";
+		graph.lowField = "score_cr";
+		graph.closeField = "score_cr";
+		graph.balloonText = "[[sort_name]]:[[cr_progress]]";
+		chart.addGraph(graph);
+		
+		var legend = new AmCharts.AmLegend();
+        legend.markerType = "square";
+        chart.addLegend(legend);
+        
+        var classCursor = new AmCharts.ChartCursor();
+		classCursor.cursorAlpha = 0;
+        chart.addChartCursor(classCursor);
+        
+		// WRITE
+		chart.write("classRankChart");
+		
+		
+		//年级排名升降图
+		var gradeChart = new AmCharts.AmSerialChart();
+		gradeChart.dataProvider = chartData;
+		gradeChart.categoryField = "sort_name";
+
+		// AXES
+		// category
+		var gradeCategoryAxis = gradeChart.categoryAxis;
+		gradeCategoryAxis.dashLength = 1;
+		gradeCategoryAxis.tickLength = 0;
+		gradeCategoryAxis.axisAlpha = 1;
+		gradeCategoryAxis.inside = false;
+		gradeCategoryAxis.autoGridCount = true;
+		gradeCategoryAxis.gridPosition = "start";
+		gradeCategoryAxis.gridAlpha = 1;
+
+		// value
+		var gradeValueAxis = new AmCharts.ValueAxis();
+		gradeValueAxis.dashLength = 1;
+		gradeValueAxis.axisAlpha = 1;
+		gradeChart.addValueAxis(gradeValueAxis);
+
+		// GRAPH
+		var gradeGraph = new AmCharts.AmGraph();
+		gradeGraph.type = "candlestick";
+        gradeGraph.fillAlphas = 1;
+		gradeGraph.title = "年级名次进退步";
+		// gradeGraph colors
+		gradeGraph.lineColor = "#7f8da9";
+		gradeGraph.fillColors = "#7f8da9";
+		gradeGraph.negativeLineColor = "#db4c3c";
+		gradeGraph.negativeFillColors = "#db4c3c";
+		// candlestick gradeGraph has 4 fields - open, low, high, close
+		gradeGraph.openField = "score_gr2";
+		gradeGraph.highField = "score_gr2";
+		gradeGraph.lowField = "score_gr";
+		gradeGraph.closeField = "score_gr";
+		gradeGraph.balloonText = "[[sort_name]]:[[gr_progress]]";
+		gradeChart.addGraph(gradeGraph);
+		
+		//gradeChart.addLegend(legend);
+		
+		var chartCursor = new AmCharts.ChartCursor();
+		chartCursor.cursorAlpha = 0;
+        gradeChart.addChartCursor(chartCursor);
+
+		// WRITE
+		gradeChart.write("gradeRankChart");
+		
+		$("#rankTableBtn").css("color","#DE5B24");
+		$("#classRankChart").hide();
+		$("#gradeRankChart").hide();
+		$("#classRankBtn").click(function(){
+			$("#classRankChart").show();
+			$("#classRankBtn").css("color","#DE5B24");
+			$("#gradeRankChart").hide();
+			$("#rankTable").hide();
+			$("#gradeRankBtn").css("color","black");
+			$("#rankTableBtn").css("color","black");
+		});
+		$("#gradeRankBtn").click(function(){
+			$("#gradeRankChart").show();
+			$("#classRankChart").hide();
+			$("#rankTable").hide();
+			$("#gradeRankBtn").css("color","#DE5B24");
+			$("#classRankBtn").css("color","black");
+			$("#rankTableBtn").css("color","black");
+		});
+		$("#rankTableBtn").click(function(){
+			$("#rankTable").show();
+			$("#gradeRankChart").hide();
+			$("#classRankChart").hide();
+			$("#rankTableBtn").css("color","#DE5B24");
+			$("#gradeRankBtn").css("color","black");
+			$("#classRankBtn").css("color","black");
+		});
+	
+	
+	});
+</script>

@@ -1,0 +1,130 @@
+<#import "spring.ftl" as spring/>
+<div id="StarDistribution" class="module">
+	<#if studentsOfStarMap??>
+	<#list studentsOfStarMap?keys as key>
+	<div>
+		<div class="imgstip starimgstip">
+			<div class="starimgstip-left">
+				<#if key==5>
+				<div class="dialog-starimgs">
+					<img src="<@spring.url '/images/star-full.png'/>">
+					<img src="<@spring.url '/images/star-full.png'/>">
+					<img src="<@spring.url '/images/star-full.png'/>">
+					<img src="<@spring.url '/images/star-full.png'/>">
+					<img src="<@spring.url '/images/star-full.png'/>">
+				</div>
+				<div class="nofl"></div>
+				<#elseif key==4>
+				<div class="dialog-starimgs">
+					<img src="<@spring.url '/images/star-full.png'/>">
+					<img src="<@spring.url '/images/star-full.png'/>">
+					<img src="<@spring.url '/images/star-full.png'/>">
+					<img src="<@spring.url '/images/star-full.png'/>">
+				</div>
+				<div class="nofl"></div>
+				<#elseif key==3>
+				<div class="dialog-starimgs">
+					<img src="<@spring.url '/images/star-full.png'/>"> <img
+						src="<@spring.url '/images/star-full.png'/>"> <img
+						src="<@spring.url '/images/star-full.png'/>">
+				</div>
+				<div class="nofl"></div>
+				<#elseif key==2>
+				<div class="dialog-starimgs">
+					<img src="<@spring.url '/images/star-full.png'/>"> <img
+						src="<@spring.url '/images/star-full.png'/>">
+				</div>
+				<div class="nofl"></div>
+				<#elseif key==1>
+				<div class="dialog-starimgs">
+					<img src="<@spring.url '/images/star-full.png'/>">
+				</div>
+				<div class="nofl"></div>
+				<#elseif key==0>
+				<div class="dialog-starimgs">
+					<img src="<@spring.url '/images/star-empty.png' />">
+				</div>
+				<div class="nofl"></div>
+				</#if>
+			</div>
+			<#assign width=(starStuNumList[key_index].stunum/classNum)*100>
+			<div class="starimgs-progressbar"><div style="width:${width}%;background-color:#ff9966;border-radius:4px;">&nbsp;</div></div>
+			<div style="float: left;">
+				<span>${starStuNumList[key_index].stunum}人 / ${classNum}人</span>
+			</div>
+			<div class="nofl"></div>
+		</div>
+
+		<div class="stuimgs"
+			<#if key_index!=0>style="display:none;"</#if>>
+			<div <#if studentsOfStarMap[key]??&&studentsOfStarMap[key]?size&gt;18>class="imgswrap"</#if>>
+							<#--上面的学生头像-->
+							<#if studentsOfStarMap[key]??&&studentsOfStarMap[key]?size&gt;0>
+							<#list studentsOfStarMap[key] as stu><#--遍历所有学生，每18个学生为一页，每9个学生做一次回车-->
+								<#if stu_index==0><#--如果是第一个学生，就新建一个StarImgs-->
+								<div id="StarImgs${key}0" class="stuphotos">
+									<div class="stuphoto">
+										<img src="<@spring.url '/${stu.photo}'/>" >
+										<div class="stuname"><span>${stu.student_name}</span></div>	
+									</div>
+								<#elseif stu_index%18==0><#--如果是18，36,54这样的数字index，就先添加一个div结束符，并且再新建一个StarImgs-->
+								</div>
+								<div id="StarImgs${key}${stu_index/18}" class="stuphotos" style="display:none;">
+									<div class="stuphoto">
+										<img src="<@spring.url '/${stu.photo}'/>">
+										<div class="stuname"><span>${stu.student_name}</span></div>
+									</div>
+								<#else><#--如果不是18的整数倍也不是0 ， 就新增一个img，并且要判断index是不是9的倍数，如果是，要换行（增加nofl，去除浮动）-->
+									<div class="stuphoto">
+										<img src="<@spring.url '/${stu.photo}'/>">
+										<div class="stuname"><span>${stu.student_name}</span></div>	
+									</div>
+									<#if ((stu_index+1)%9)==0>
+									<div class="nofl"></div>
+									</#if>
+								</#if>
+								
+								<#if stu_index==(studentsOfStarMap[key]?size-1)><#--如果是最后一个头像，就增加div结束符-->
+								</div>
+								</#if>
+							</#list>
+							
+							<#else>
+								<div class="nostu"><span>无${key}星学生</span></div>
+							</#if>
+								<div class="nofl"></div>
+							</div>
+							
+							<#--下面的换页按钮-->
+							<#--只有当学生数量大于18的时候，才会有分页-->
+							<#if studentsOfStarMap[key]??&&studentsOfStarMap[key]?size&gt;18>
+							<ul class="pageul">
+							<#list studentsOfStarMap[key] as stu>
+								<#if stu_index%18==0>
+								<#if stu_index==0>
+								<li id="StarPage${key}${stu_index/18}" class="starpages"><img src="<@spring.url '/images/bullet_blue.png'/>"></li>
+								<#else>
+								<li id="StarPage${key}${stu_index/18}" class="starpages"><img src="<@spring.url '/images/bullet-grey.png'/>"></li>
+								</#if>
+								</#if>
+							</#list>
+								<div class="nofl"></div>
+							</ul>
+							</#if>
+							
+						</div>
+	</div>
+	</#list> </#if>
+</div>
+<script>
+//点击弹框中的星星对应学生的标题
+$(".starimgstip").click(function() {
+	$("#StarDistribution").find(".stuimgs").hide();
+	$(this).parent().find(".stuimgs").show();
+});
+//点击弹框中的星星对应学生的标题
+$(".starimgstip").click(function() {
+	$("#StarDistribution").find(".stuimgs").hide();
+	$(this).parent().find(".stuimgs").show();
+});
+</script>

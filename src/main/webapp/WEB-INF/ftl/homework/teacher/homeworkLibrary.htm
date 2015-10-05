@@ -1,0 +1,209 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<#include "homework/teacher/arrangeHomeworkLogo.htm" parse="true" encoding="UTF-8" >
+<style>
+.hwlibrary-searchwrap {padding:10px 0;border-bottom:1px solid #CCCCCC; }
+.hwlibrary-conditionswarp { float:left; }
+.hwlibrary-releasetimecondition { float:left; }
+.hwlibrary-subjectcondition { float:left; }
+
+.or_rgttconanu { position:static; float:left; margin-left:20px;}
+.or_rgttconanu #SearchAll {height:25px;float:left;margin-top:3px;}
+.hwlibrary-cancelshare b, .hwlibrary-sharehw b {display:inline-block;width:64px;text-align:left;}
+
+body {background-color:#eeeeee;}
+.nr_wrap03 {min-height:500px;background-color:#ffffff;box-shadow:0 0 5px #aaa;}
+.wrap03_nr ul li span.longspan {width:300px;}
+.wrap03_nr ul li span.span00 em {font-style:normal;}
+.wrap03_nr ul li span.span00 a {font-size:16px;color:#00afed;}
+.wrap03_nr ul li span.span00 a:HOVER {color:#ff9966;}
+</style>
+
+<div class="nr_wrap03">
+	<div class="wrap03_title">
+		<span class="wrap03_current">我的作业</span>
+		<a href="<@spring.url '/teacher/myWharehouse.html'/>"><span>我的题库</span></a>
+		<a href="<@spring.url '/homework/teacher/sharedHomeworks.html'/>"><span>他人共享</span></a>
+	</div>
+	<div class="hwlibrary-searchwrap">
+		<div class="hwlibrary-conditionswarp">
+		    <div class="hwlibrary-releasetimecondition">
+		   		<b class="padd25">时间:</b>
+				<select class="chooshine-select" name="releasetime" >
+					<#list releaseTimeMap?keys as key>
+						<#if key_index==4>
+							<option value=${releaseTimeMap[key]} selected="selected">${key}</option>
+						<#else>
+							<option value=${releaseTimeMap[key]}>${key}</option>
+						</#if>
+					</#list>
+				</select>
+			</div>
+		    <div class="hwlibrary-subjectcondition">
+				<b class="padd25">科目：</b>
+				<select name="subjectid" class="chooshine-select">
+					<#if ofterSort??>
+						<#if ofterSort?size &gt; 0>
+							<#list ofterSort as sort>
+								<option value="${sort.sort_id}">${sort.parent_sort+"·"+sort.sort_name}</option>
+							</#list>
+						<#else>
+							<option valu="-2">请选择科目</option>
+						</#if>
+					<#else>
+						<option valu="-2">请选择科目</option>
+					</#if>
+					<option value="-1" id="OtherSubject">其他</option>
+				</select>
+			</div>
+			<div class="nofl"></div>
+    	</div>
+	    <div class="or_rgttconanu">
+			<button type="submit" id="SearchAll" class="testh_problemrbotrjx ckbj" >查找作业</button>
+		</div>
+		<div class="nofl"></div>
+	</div>
+    <div class="hwlibrary-homeworklist">
+    
+    </div>
+	<div class="nofl"></div>
+</div>
+
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script src="<@spring.url '/javascripts/jquery-ui-timepicker-addon.js'/>" ></script>
+<#--布置作业-->
+<#include "homework/teacher/settle/settleHwToClassDialog.htm" parse="true" encoding="UTF-8" >
+<#--其他科目-->
+<#include "allSortDialog.htm" parse="true" encoding="UTF-8" >
+<#--设置作业名称-->
+<#include "homework/teacher/setHwNameDialog.htm" parse="true" encoding="UTF-8" >
+<script>
+$(function() {
+	
+	//加载完页面后自动发送搜索请求
+	if($("select[name='subjectid']").val()!=-2 && $("select[name='subjectid']").val()!=-1) {
+		searchHomework($("select[name='releasetime']").val(), $("select[name='subjectid']").val());
+	}
+	//搜索作业
+	function searchHomework(releaseTime, subjectId) {
+		$.ajax({
+			type:"post",
+			url:"<@spring.url '/homework/teacher/getTeacherHomeworks.html' />",
+			contentType:"application/x-www-form-urlencoded;charset=utf-8",
+			data:"releaseTime="+releaseTime+"&subjectId="+subjectId,
+			dataType:"html",
+			success:function(data) {
+				$(".hwlibrary-homeworklist").html(data);
+				
+				//查看
+				$(".see").each(function(){ viewHomework(this); });
+				//布置作业
+				$(".settlehw").each(function() {
+					$(this).click(function() {
+						openSettleHwDialog($(this).attr("hwid"), $(this).attr("subjectid"));
+					});
+				});
+				//设置共享
+				$(".hwlibrary-sharehw").each(function(){
+					setHwShared(this);
+				});
+				//取消共享
+				$(".hwlibrary-cancelshare").each(function(){//添加取消共享事件
+					setHwUnShared(this);
+				});
+				//删除
+				$(".del").each(function(){
+					deleteHomework(this);
+				});
+				//复制
+				$(".hw-library-copyhomework").each(function() {
+					$(this).click(function() {
+						$("#SetHwNameDialog").dialog("open");
+						var hwId = $(this).attr("hwid");
+						setHwId(hwId);
+					});
+				});
+			}
+		});
+	}
+	
+	//切换科目
+	$("select[name='subjectid']").change(function(){
+		if($(this).val()==-1){
+			$("#answerspop_up" ).dialog("open");
+		}
+	});
+	sortClick($("select[name='subjectid']"), $("#OtherSubject"));
+	
+	//根据年份搜索试卷
+	$("#SearchAll").click(function(){
+		var subjectId = $("select[name='subjectid']").val();
+		if(subjectId==-1 || subjectId==-2) {
+			$.chooshine.alert("请选择科目。");
+			return;
+		}
+		var releaseTime = $("select[name='releasetime']").val();
+		searchHomework(releaseTime, subjectId);
+	});
+	
+	function setHwUnShared(Node){
+		$(Node).click(function(){
+			var hwId = $(this).attr("hwid");
+			 $.ajax({
+				type:"post",
+				url:"<@spring.url '/homework/teacher/setHwShareFlag.json' />",
+				contentType:"application/x-www-form-urlencoded; charset=utf-8",
+				data:{hwId:hwId, operateType:"unshare"},
+				success:function(data){
+					$(Node).find(".ap_ks").html("共享");
+					$(Node).unbind("click");
+					setHwShared(Node);
+				}
+			});
+		});
+	}
+	
+	//共享方法
+	function setHwShared(Node){
+		$(Node).click(function(){
+			 var hwId = $(this).attr("hwid");
+			 $.ajax({
+				type:"post",
+				url:"<@spring.url '/homework/teacher/setHwShareFlag.json' />",
+				contentType:"application/x-www-form-urlencoded; charset=utf-8",
+				data:{hwId:hwId, operateType:"share"},
+				success:function(data){
+					$(Node).find(".ap_ks").html("取消共享");
+					$(Node).unbind("click");
+					setHwUnShared(Node);
+				}
+			 });
+		});
+	}
+	
+	//查看
+	function viewHomework(Node){
+		$(Node).click(function(){
+			var hwId = $(this).attr("hwid");
+			location.href = "<@spring.url '/homework/teacher/edithomework.html?hwId="+hwId+"&type=see'/>";
+		});
+	}
+	//删除
+	function deleteHomework(Node){
+		$(Node).click(function(){
+			var hwId = $(this).attr("hwid");
+			$.chooshine.confirm("确定要删除？",function(){
+				$.ajax({
+					type:"get",
+					url:"<@spring.url '/homework/teacher/deleteHomework.json'/>",
+					contentType:"application/x-www-form-urlencoded;charset=utf-8",
+					data:{hwId:hwId},
+					success:function() {
+						location.reload();
+					}
+				});
+			});
+		});
+	}
+	
+});
+</script>

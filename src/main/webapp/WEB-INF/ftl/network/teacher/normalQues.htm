@@ -1,0 +1,140 @@
+<#import "spring.ftl" as spring/>
+<div class="newques">
+	<div>
+		<div class="newquesinfo">
+			<div class="chooshine-keyvalue-wrap">
+				<div class="chooshine-keyvalue-key">来源</div>
+				<input type="text" name="resource" placeholder="请填写题目来源" class="chooshine-input"/>
+			</div>
+			<div class="chooshine-keyvalue-wrap">
+				<div class="chooshine-keyvalue-key">年级</div>
+				<select name="gradeLevel" class="chooshine-select">
+					<option value="1" sortno='001'>一年级</option>
+					<option value="2" sortno='001'>二年级</option>
+					<option value="3" sortno='001'>三年级</option>
+					<option value="4" sortno='001'>四年级</option>
+					<option value="5" sortno='001'>五年级</option>
+					<option value="6" sortno='001'>六年级</option>
+					<option value="7" sortno='002'>七年级</option>
+					<option value="8" sortno='002'>八年级</option>
+					<option value="9" sortno='002'>九年级</option>
+					<option value="10" sortno='003'>高一</option>
+					<option value="11" sortno='003'>高二</option>
+					<option value="12" sortno='003'>高三</option>
+				</select>
+			</div>
+			<div class="nofl"></div>
+		</div>
+	</div>
+	<li>
+		<div class='paperx_tl' tsid="${tsId}">
+			<div class='pep_bjdyc'>
+				<div class='pep_bj'>
+					<a class='toolbar'>操作▼</a>
+					<div class='tools'>
+						<div class='pep_bjb editOne'>编辑</div>
+						<div class='pep_bjc deleteOne'>删除</div>
+					</div>
+				</div>
+			</div>
+			<dl>
+				<dt>
+					<div class='allNum' style="font-size:14px;color:#aaa;">题干</div>
+					<div class='paperx_tlxr' quesType='${quesType}'>
+						<div class='ttxt test_box equ' contenteditable='true' style="color:#aaa;">点击添加小题题干</div>
+						<div class='linkClass2 linkClass2_postion'>
+							<!-- <span><img title='添加公式' class='addequation' src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+							<span><img title='上传图片' class='addequation_local' src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+							<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+							<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+							<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+						</div>
+					</div >
+					<div class='nofl'></div>
+				</dt>
+			</dl>
+			<#if quesType=1 || quesType=2><div class='paperx_tj' style="display:block;"><img alt='添加选项' src="<@spring.url '/images/examsystem/plus.png'/>"><div>添加选项</div></div></#if>
+			<div class='paperx_btda'>
+				<#if quesType=4>
+				<div class='paperx_tjx paperx_line_tjx'>
+				<#else>
+				<div class='paperx_tjx'>
+				</#if>
+					<input type='hidden' value='${quesType}'>
+				</div>
+				<#if quesType=4>
+				<div class='nofl'></div>
+				<div class='paperx_tj paperx_line_tj' style="display:block;">
+					<img alt='添加空格' src="<@spring.url '/images/examsystem/plus.png'/>"/>
+					<button>添加空格</button>
+				</div>
+				</#if>
+				<div class="nofl"></div>
+				<div class='paperx_fxk'>
+					<div class='paperx_zsd'>
+						<div class='paperx_zsdl'>考点：</div>
+						<div class='paperx_zsdr'>
+							<div class='examaddupdate-addkp'><img alt='添加考点' src="<@spring.url '/images/examsystem/plus.png'/>"><div>添加考点</div></div>
+						</div>
+						<div class='nofl'></div>
+					</div>
+					<div class='paperx_jxxq'>
+						<div class='paperx_zsdl'>解析：</div>
+						<div class='paperx_jxxqr'>
+							<div class='fftxt test_box3 equ' contenteditable='true' style='color:#B4B2A7;'>请输入试题分析</div>
+							<div class='linkClass2'>
+								<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+								<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+								<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+								<span title='录音' class='quesrec struct-quesrec'>&nbsp;</span>
+							</div>
+						</div>
+						<div class='nofl'></div>
+						<div class='recorderwrap'></div>
+						<div class='nofl'></div>
+					</div>
+					<div class="paperx_diff">
+						<div class="paperx_zsdl">难度：</div>
+						<div class="difficultywrap">
+							<div class="difficulty fl">3.0</div>
+					    	<div class="selectwrap fl">
+					        	<span class="simplespan fl">简单</span>
+					            <div class="fl">
+					            	<div class="selectdiv">
+					                	<div class="selectdot" style="left:47px"></div>
+					                </div>
+					            </div>
+					            <span class="diffspan fl">困难</span>
+					        </div>
+					        <div class="nofl"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class='pep_bc'>
+			<div class="quesstatus">
+				<div><input type="checkbox" name="release" /><span>发布</span></div>
+				<div><input type="checkbox" name="share" disabled="disabled"/><span class="color-gray">共享</span></div>
+			</div>
+			<div class='pep_bcx save'>保 存</div>
+			<div class='pep_scx deleteOne chooshine-cancel'>删  除</div>
+		</div>
+	</li>
+</div>
+<script>
+$(function() {
+	addEventToQues($(".newques").find("li"));
+	divElement = $(".newques").find(".paperx_tlxr").find('.ttxt');
+	divElement.focus();
+	triggerMouseEvent(divElement[0], 'click');
+	//如果是判断题和解答题，就创建本题答案部分的内容，创建试题选项，显示出本题答案处的“对”、“错”或者是一个文本框
+	if(${quesType}=="3" || ${quesType}=="5") createOpt($(".newques").find(".paperx_tlxr"),"add");
+	
+	$("select[name='gradeLevel']").find("option[sortno!='"+$("#Subject").attr("psortno")+"']").remove();
+	editFlag = true;//设置编辑标志，表示当前是在编辑小题状态下
+	addMouseOutOver($(".newques"));	//为当前小题添加鼠标移上或离开的事件
+	
+});
+</script>

@@ -1,0 +1,109 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+.span01 .processbarwrap {display:inline-block;width:100px;height:20px;border:1px solid #ddd;border-radius:3px;margin-top:19px;}
+.span01 .processbarwrap .processbar {height:20px;line-height:20px;text-align:center;background-color:#ff9966;border-radius:3px;}
+.span01 .processbarwrap .percent {float:right;position:relative;top:-17px;right:31px;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">在线考场</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f"><a href="<@spring.url '/network/paperFactory.html'/>">出卷</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/room.html'/>">考场</a></li>
+	   		<li class="weblog-f curNav"><a href="<@spring.url '/netWork/result.html'/>" style="border-right:none;">阅卷</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<div class="nr_wrap03">
+	<div class="wrap03_title"><span class="wrap03_current">考试结果查看</span></div>
+    <div class="wrap03_nr">
+    	<ul>
+         	<#if unmarkedInfo?? && (unmarkedInfo?keys?size&gt;0)>
+         		<li class="li_header">
+	        		<span class="span-objectname">考试</span>
+	        		<span class="span01">班级</span>
+	        		<span class="span01">参考人数/总人数</span>
+	        		<span class="span01">已阅数量/提交数量</span>
+	        		<span class="span02"></span>
+	        	</li>
+         		<#list unmarkedInfo?keys as ankey>
+         			<div class="testli">
+	         			<#list unmarkedInfo[ankey] as oneInfo>
+	         			<li class="li_nr">
+							<form action="<@spring.url '/network/plan/showEnterExamStudents.html'/>" method="post">
+								<input type="hidden" name="className" value="${oneInfo.class_name}">
+								<input type="hidden" name="testName" value="${oneInfo.test_name}">
+								<input type="hidden" name="sortName" value="${oneInfo.sort_name}">
+								<input type="hidden" name="classNum" value="${oneInfo.class_num}">
+								<input type="hidden" name="actualNum" value="${oneInfo.actual_num}">
+								<input type="hidden" name="markedNum" value="${oneInfo.marked_num}">
+								<input type="hidden" name="unmarkedNum" value="${oneInfo.unmarked_num}">
+								<input type="hidden" name="classId" value="${oneInfo.class_id?c}">
+								<input type="hidden" name="testId" value="${oneInfo.test_id?c}">
+								<input type="hidden" name="subjectId" value="${oneInfo.sort_id?c}">
+							</form>
+							<#if oneInfo_index==0>
+							<span class="span-objectname">
+							<#else>
+							<span class="span-objectname" style="visibility:hidden;">
+							</#if>
+								<img alt="考试" src="<@spring.url '/images/examsystem/exam_2.png'/>">
+								<div>
+									<div class="objectname">${oneInfo.test_name}</div>
+									<div class="commoninfo">
+										<label>科目：<em class="sortname color-orange">${oneInfo.sort_name}</em></label>
+									</div>
+								</div>
+							</span>
+							<span class="span01">${oneInfo.class_name}</span>
+							<span class="span01">
+								<div class="processbarwrap">
+									<div class="processbar" style="width:${(oneInfo.actual_num/oneInfo.class_num)*100+'%'};"></div>
+									<div class="percent"><label>${oneInfo.actual_num} / ${oneInfo.class_num}</lable></div>
+								</div>
+							</span>
+							<span class="span01">
+								<#if (oneInfo.marked_num+oneInfo.unmarked_num)!=0>
+								<div class="processbarwrap">
+									<div class="processbar" style="width:${(oneInfo.marked_num/(oneInfo.marked_num+oneInfo.unmarked_num))*100+'%'};"></div>
+									<div class="percent"><label>${oneInfo.marked_num} / ${oneInfo.marked_num+oneInfo.unmarked_num}</lable></div>
+								</div>
+								<#else>
+								无人参考
+								</#if>
+							</span>
+							<span class="span02"><a class="submitform" href="javascript:void(0)">查看详情</a></span>
+	          			</li>
+	         			</#list>
+         			</div>
+         		</#list>
+         	<#else>
+			<li class="li_nr" style='line-height:79px;text-align:center;border-bottom:1px solid #ccc;'><span style='width:100%;'>您没有需要批阅的试卷</span></li>
+			</#if>
+        </ul>
+    </div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+
+<script>
+$(".submitform").each(function() {
+	$(this).click(function() {
+		$($($(this).parents("li")[0]).find("form")[0]).submit();
+	});
+});
+</script>
+<style>
+body {background-color:#eeeeee;}
+.testli {border-bottom:1px dotted #CCCCCC;width:100%;}
+.nr_wrap03 {margin-bottom:200px;background-color:#ffffff;min-height:500px;box-shadow:0 0 5px #aaa;}
+.wrap03_nr ul li.li_nr {border:none;}
+.wrap03_nr ul li span.span-objectname {width:400px;}
+.wrap03_nr ul li.li_header span.span-objectname {line-height:59px;color:#999;text-indent:20px;}
+.wrap03_nr ul li span.span01, .wrap03_nr ul li span.span02 {width:155px;}
+.nr_wrap03 a {font-size:16px;font-weight:bold;}
+.nr_wrap03 a:HOVER {color:#ff9966;}
+em {font-style:normal;}
+</style>

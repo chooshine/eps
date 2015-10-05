@@ -1,0 +1,355 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+
+
+<div class="or_top">
+	<div class="or_tlt"><a href="<@spring.url '/' />"><div class="intop1" ></div></a></div>
+	<div class="or_trt">
+		<ul class="or_trtcl">
+			<li id="myExam" style="background:#2878b0;">我的试卷</li>
+			<li id="myTeacher">我的老师</li>
+			<li id="myRelease">我的发布</li>
+		</ul>
+		<div class="or_trtcr">
+		
+		</div>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<div class="testl_con" style=" padding-top:12px;">
+  <div class="or_let">
+  		<#if PHOTO!="">
+			<div class="or_leth"><img src="<@spring.url '/${PHOTO}'/>" width="106" height="120"/></div>
+		<#else>
+			<div class="or_leth"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="106" height="120"/></div>
+  		</#if>
+		<div class="or_letl">我的订阅</div>
+		<dl class="or_letlx">
+			<dt>我订阅的试卷</dt>
+			<#list ORDEXAM as examq>
+			<dd subjectNo=${examq.SUBJECT_NO} class="leftSub">${examq.SORT_NAME}(${examq.PARENT_SORT_NAME})</dd>
+			</#list>
+			<dt>我订阅的老师</dt>
+			<#list ORDTEACHER as teacherq>
+			<dd subjectNo=${teacherq.SUBJECT_NO} class="leftTeacher">${teacherq.SORT_NAME}</dd>
+			</#list>
+		</dl>
+		<div class="or_letl">我的试卷编辑</div>
+		<dl class="or_letlx">
+			<#list RELSTATUS as statusq>
+			<#if statusq.RELEASE_STATUS==1>
+				<dd release=${statusq.RELEASE_STATUS} class="leftRelease">已发布</dd>
+			<#else>
+				<dd release=${statusq.RELEASE_STATUS} class="leftRelease">未发布</dd>
+			</#if>
+			</#list>
+		</dl>
+		<div class="or_letl">推荐老师</div>
+			<div class="or_lettj">
+				<#assign idArr=[]>
+				<#assign count=0>
+				<#list RECTEACHER as recter>
+				<#if count=3><#break></#if>
+				<#assign flag=false>
+				
+				<#list idArr as arr>
+					<#if recter.USER_ID=arr>
+						<#assign flag=true>
+						<#break>
+					</#if>
+				</#list>
+				
+				<#if flag=false>
+				<dl>
+					<#if recter.PHOTO!="">
+						<dt><img class="phototo" teacherId="${recter.TEACHER_ID?c}"  src="<@spring.url '/${recter.PHOTO}'/>" width="90" height="100"/></dt>
+					<#else>
+						<dt><img class="phototo" teacherId="${recter.TEACHER_ID?c}"  src="<@spring.url '/images/headImage/default_head.jpg'/>" width="90" height="100"/></dt>
+  					</#if>
+					<dd>
+						<#list RECTEACHER as recter2>
+						<#if recter.USER_ID=recter2.USER_ID>
+							<div class="or_lettj1">${recter2.SORT_NAME}(${recter2.PARENT_SORT_NAME})(<span>${recter2.COUNT_SUB}</span>)</div>
+						</#if>
+						</#list>
+						<div class="or_lettj2">${recter.SCHOOL_NAME}</div>
+					</dd>
+				</dl>
+			
+					<#assign idArr=idArr+[recter.USER_ID?c]>
+					<#assign count=count+1>
+				</#if>
+				</#list>
+		</div>
+		
+	</div>
+	<div class="or_rgt">
+		<div class="or_rgtt">
+			<div  class="or_rgttlxx">我的订阅中心>我的试卷</div>
+			
+		</div>
+		<div class="or_rgttc">
+			<div class="or_rgttc1">
+				<div class="or_rgttc1l">我的订阅试卷：</div>
+				<div class="or_rgttc1r">
+					<#assign k=0>
+					<#list ORDEXAM as ordexam>
+						<#assign k=k+ordexam.COUNT_SUB>
+					</#list>
+					<div class="nh1 con1" sortNo=-1><a>全部</a></div>
+					<#list ORDEXAM as ordexam>
+					<div class="nh1 con1" sortNo=${ordexam.SUBJECT_NO} ><a>${ordexam.SORT_NAME}(${ordexam.PARENT_SORT_NAME})</a></div>
+					</#list>
+					<div class="nofl"></div>
+				</div>
+				<div class="nofl"></div>
+			</div>
+			<div class="or_rgttc1" style="border:0px;">
+				<div class="or_rgttc1l">我的做题情况：</div>
+				<div class="or_rgttc1r">
+					<div class="nh1 con2" commmitFlag=-1><a>全部</a></div>
+					<#assign commk=0>
+					<#list COMMQU as comm>
+						<div class="nh1 con2" commmitFlag="1"><a>已做过</a></div>
+						<#assign commk=k-comm.COUNT_EXAM>
+						<div class="nh1 con2" commmitFlag="0"><a>未做过</a></div>
+					</#list>
+					<div class="nofl"></div>
+				</div>
+				<div class="nofl"></div>
+			</div>
+		</div>
+		<div class="or_rgttcon">
+			<ul class="or_rgttcontc">
+				<#list EXAMINFO as exinfo>
+				<#list TESTREC[exinfo.EXAM_ID?c] as trec>
+					<#assign rec=trec>
+				</#list>
+				<li>
+					<#if rec.COMMIT_FLAG=0>
+					<div class="or_rgttconanu">
+						<button class="testh_problemrbotrcx enterBtn" testId="${rec.TEST_REC_ID?c}" examId=${exinfo.EXAM_ID?c}>继续答题</button>
+						<button  class="testh_problemrbotrjx enterBtn" examId=${exinfo.EXAM_ID?c} testId="-1">重新测试</button>
+					</div>
+					<#elseif rec.COMMIT_FLAG=1>
+					<div class="or_rgttconanu">
+						<button  class="testh_problemrbotrjx enterBtn" examId=${exinfo.EXAM_ID?c} testId="-1">重新测试</button>
+					</div>
+					<#else>
+					<div class="or_rgttconanu">
+						<button class="testh_problemrbotrjx enterBtn" examId=${exinfo.EXAM_ID?c} testId="-1">进入考场</button>
+					</div>
+					</#if>
+					<#if rec.COMMIT_FLAG=0 || rec.COMMIT_FLAG=1>
+						<div class="testh_probleml"></div>
+					<#else>
+						<div class="testh_probleml3"></div>
+					</#if>
+					<div class="or_rgttcon">
+						<div class="testh_problemrtop">${exinfo.EXAM_NAME}</div>
+						<#if rec.COMMIT_FLAG=0 || rec.COMMIT_FLAG=1>
+							<div class="testh_problemrcm">本卷共有${exinfo.M_TOPIC_NUM}题，作答时间为${exinfo.COST_TIME}分钟。总分${exinfo.TOTAL}，平均得分${exinfo.AVG_SCORE}，最高分${exinfo.MAX_SCORE}<br/>您做了${rec.COUNT_TEST}次，最后一次得分是${rec.SCORE}分，作答用时${rec.EXAM_USE_TIME}</div>
+						<#else>
+							<div class="testh_problemrcm">本卷共有${exinfo.M_TOPIC_NUM}题，作答时间为${exinfo.COST_TIME}分钟。总分${exinfo.TOTAL}，平均得分${exinfo.AVG_SCORE}，最高分${exinfo.MAX_SCORE}<br/></div>
+						</#if>
+						<div class="testh_problemrbot">
+							<div class="testh_problemrbotl">
+								<div class="testh_problemrbotlx1">做题人数：<span>${exinfo.COUNT_TEST}</span></div>
+								<div class="testh_problemrbotlx2">评论：<span>${exinfo.COUNT_ASSESS}</span></div>
+							</div>
+						</div>
+					</div>
+					<div class="nofl"></div>
+				</li>
+				</#list>
+			</ul>
+			
+				<div class="or_feny">
+					<#include "pagination.htm" parse="true" encoding="UTF-8" >
+					<@pagination page=page />
+				</div>
+		</div>
+	</div>
+	<div class="nofl"></div>
+	
+	<form id="getExamForm" method="GET" action="<@spring.url '/exam_orderExam.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="" name="sortNo" id="sortNo">
+			<input type="hidden" value="" name="commitFlag" id="commitFlag">
+	</form>
+	
+	<form id="getTeacherForm" method="GET" action="<@spring.url '/exam_orderTeacher.html' />" />
+			<input type="hidden" value="12" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="isLose" id="isLose">
+			<input type="hidden" value="-1" name="subjectNo" id="subjectNo">
+	</form>
+	
+	<form id="getReleaseForm" method="GET" action="<@spring.url '/exam_orderRelease.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="release" id="release">
+	</form>
+	
+	<form id="getOrderForm" method="GET" action="<@spring.url '/exam_orderView.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="" name="teacherId" id="teacherId">
+			<input type="hidden" value="first" name="whatType" id="whatType">
+			<input type="hidden" value="我要订阅" name="payType" id="payType">
+	</form>	
+
+</div>
+
+
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+
+
+<script>
+	$(function(){
+		
+		var conditionOne=${CONDITION1};
+		var conditionTwo=${CONDITION2};
+
+		
+		$("#myExam").click(function(){
+			$("#getExamForm").submit();
+		});
+		
+		$("#myTeacher").click(function(){
+			$("#getTeacherForm").submit();
+		});
+		
+		$("#myRelease").click(function(){
+			$("#getReleaseForm").submit();
+		});
+		
+		$(".con1").each(function(){
+			
+			if($(this).attr("sortNo")==conditionOne){
+				$(this).attr("class","nh2 con1");
+				$("#sortNo").val(conditionOne);
+			}
+			
+			$(this).click(function(){
+				$(".con1").each(function(){
+					$(this).attr("class","nh1 con1");
+				});
+				
+				$(this).attr("class","nh2 con1");
+				getCondition();
+			});
+		});
+		
+		$(".con2").each(function(){
+			
+			if($(this).attr("commmitFlag")==conditionTwo){
+				$(this).attr("class","nh2 con2");
+				$("#commitFlag").val(conditionTwo);
+			}
+			
+			$(this).click(function(){
+				$(".con2").each(function(){
+					$(this).attr("class","nh1 con2");
+				});
+				
+				$(this).attr("class","nh2 con2");
+				getCondition();
+			});
+		});
+		
+		//获得条件
+		function getCondition(){
+			$(".con1").each(function(){
+				if($(this).hasClass("nh2")){
+					conditionOne=$(this).attr("sortNo");
+				}
+			});
+			
+			$(".con2").each(function(){
+				if($(this).hasClass("nh2")){
+					conditionTwo=$(this).attr("commmitFlag");
+				}
+			});
+			//alert(conditionOne+":"+conditionTwo);
+			
+			/*$.getJSON("<@spring.url '/exam_orderExam.html'/>",{"sortNo":conditionOne,"commitFlag":conditionTwo},function(msg){
+				msgShow("111111111");
+			});*/
+			//location.href="<@spring.url '/exam_orderExam.html?sortNo="+conditionOne+"&commitFlag="+conditionTwo+"'/>";
+			$("#sortNo").val(conditionOne);
+			$("#commitFlag").val(conditionTwo);
+			
+			$("#getExamForm").submit();
+		}
+		
+		$(".show,.fcenter").each(function(index){
+			$(this).click(function(){
+				//alert($(this).attr('url'));
+				//$("#pageNo").val($(this).attr("url"));
+				$("input[name='pageNo']").val($(this).attr("url"));
+				$("#getExamForm").submit();
+			});
+		});
+		
+		$(".leftSub").each(function(){
+			$(this).click(function(){
+				$("#sortNo").val($(this).attr("subjectNo"));
+				$("#commitFlag").val(conditionTwo);
+				$("#getExamForm").submit();
+			});
+		});
+		
+		$(".leftTeacher").each(function(){
+			$(this).click(function(){
+				$("#subjectNo").val($(this).attr("subjectNo"));
+				$("#isLose").val(conditionTwo);
+				$("#getTeacherForm").submit();
+			});
+		});
+		
+		$(".leftRelease").each(function(){
+			$(this).click(function(){
+				$("#release").val($(this).attr("release"));
+				$("#getReleaseForm").submit();
+			});
+		});
+		
+		$(".enterBtn").each(function(){
+			$(this).click(function(){
+				var examId=$(this).attr("examId");
+				var testRecId=$(this).attr("testId");
+				location.href="<@spring.url '/exam_examView.html?examId="+examId+"&testRecId="+testRecId+"'/>";
+			});
+		})
+		
+		//点击头像跳转
+		$(".phototo").each(function(){
+			$(this).click(function(){
+				$("#teacherId").val($(this).attr("teacherId"));
+				$("#getOrderForm").submit();
+			});
+		});
+		
+	});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

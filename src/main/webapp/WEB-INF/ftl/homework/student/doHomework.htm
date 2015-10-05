@@ -1,0 +1,831 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+/*头部一直显示在最上面*/
+.content { padding-top:0px;}
+.fixed{position:fixed; top:0; width:1000px;}
+.largermargin {margin-top:57px;}
+body {background-color:#eee;}
+
+/*小题*/
+.moveup, .movedown { width:75px; height:25px; cursor:pointer; color:#0088FF; font-size:12px;}
+.paperx_tj { display: none;}
+.paperx_fxk .test_box3 {width:515px; float:left;}
+.paperx_fxk .linkClass2 {float:left; margin-left:20px;}
+.paperx_fxk .paperx_zsdr, .paperx_fxk .paperx_jxxqr{width:660px;}
+.paperx_fxk .linkClass2 {margin-top:-32px; margin-left:532px;}
+.paperx_jxxqr .fftxt {min-height:50px;}
+
+/*阅读理解*/
+.paperxt_stx { margin-left:0px;}
+.paperxt_com { width:700px; float:left; margin-right:20px; margin-left:10px;}
+.paperxt_botbx { width:996px; border-bottom:0px;}
+
+/* 阅读理解的操作*/
+.paperxt_com {width:700px; float:left; margin-right:20px;}
+.article_area {margin-left:10px; margin-bottom:100px;}
+
+/*添加公式按钮部分*/
+.linkClass2_postion { width:122px;}
+
+/*使用做卷部分的样式*/
+.netexamview-operate {float:right;margin-top:38px;margin-right:19px;}
+.netexamview-operate .markques {padding-left:23px; background:url("<@spring.url '/images/examsystem/push_pin.png'/>") no-repeat;color:#888888;}
+.netexamview-operate .cancelquesmark {padding-left:23px; background:url("<@spring.url '/images/examsystem/push_pin.png'/>") no-repeat;color:#FF0000;}
+.netexamview-operate .nextques {display:inline-block;padding-left:18px;background:url("<@spring.url '/images/examsystem/arrow_next.png'/>") no-repeat;color:#888;}
+.netexamview-operate .nextques:hover {color:#ff9900;}
+.netexamview-markdiv {height:0px; margin-left:960px;}
+.netexamview-markimg {width:60px; height:60px; margin-top:-8px;}
+
+</style>
+<!--[if IE 6]>
+<style type="text/css">
+html{overflow:hidden;}
+body{height:100%;overflow:auto;}
+.fixed{position:absolute;top:expression(eval(document.body.scrollTop + 25));}
+</style>
+<![endif]-->
+<div class="content">
+<div class="paper_tpct">
+	<label>${hwInfo.hw_name}</label>
+</div>
+<div class="paper_top">
+	<div class="paper_tpcm">
+		<div class="paper_tpcml">
+			<div class="paper_tpcmlx2">
+				<div class="examinfo-container">
+					<img src="<@spring.url '/images/examsystem/list_nested_28.png'/>">
+					<div class="examinfo">
+						共 <span style="font-size:15px;color:#ff9966;font-weight:700;margin-right:1px;">${hwInfo.topic_num}</span> 题<em> | </em>
+						已做 <span style="font-weight:700;color:#ff9966;" id="finished">${finished_num}</span> 题
+					</div>
+				</div>
+				<div class="examinfo-container">
+					<img src="<@spring.url '/images/examsystem/target.png'/>">
+					<div class="examinfo">
+						剩余 <span style="font-weight:700;color:#ff9966;" id="last">${hwInfo.topic_num-finished_num}</span> 题未作答
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="paper_tpcmr_bj">
+			<label><button type="button" id="Save" class="chooshine-btn" style="width:86px;height:32px;line-height:17px;margin-top:2px;">保存</button></label>
+			<label><button id="HandInHomework" type="button" class="paper_tpcmr3" style="padding-right:4px;">交作业</button></label>
+			<label style="margin-left:-10px;margin-right:10px;"><button type="button" id="Quit" class="chooshine-cancel" style="background-color:#f5f5f5;">退出</button></label>
+		</div>
+	</div>
+	<div class="nofl"></div>
+</div>
+<#-- 下面的div用于消除滚动时闪屏问题 -->
+<div style="margin-top:20px;"></div>
+
+<div class="text_sju">
+	<div class="paperx_comx">
+		<ul id="QuestionsUl">
+			<#if qiMap??>
+				<#list qiMap?keys as oneKey>
+					<#assign qi=qiMap[oneKey]>
+					<#if oneKey?starts_with("normal")>
+						<li id="${qi.ques_id?c}" usetime="<#if qi.answer_time?? && qi.answer_time!=''>${qi.answer_time}<#else>0</#if>" questype="${qi.QUES_TYPE?c}">
+							<div class="paperx_tl">
+								<dl>
+									<dt>
+										<div class="allNum" mTopic=${qi.M_TOPIC}>${qi.M_TOPIC}</div>
+										<div type="title" class="paperx_tlxr" quesid=${qi.QUES_ID?c}>
+											<div type='title' class='ttxt test_box' >
+												${qi.QUES_CONTENT}
+											</div>
+										</div>
+										<#if qi.marked_flag=="true">
+											<div class="netexamview-markdiv"><img class="netexamview-markimg" src="<@spring.url '/images/examsystem/sticky_notes.png'/>"/></div>
+										<#else>
+											<div class="netexamview-markdiv" style="visibility:hidden;"><img class="netexamview-markimg" src="<@spring.url '/images/examsystem/sticky_notes.png'/>"/></div>
+										</#if>
+										<div class="nofl"></div>
+									</dt>
+									<#if qi.QUES_TYPE=='1' || qi.QUES_TYPE=='2'>
+										<#list qi.OPT_CONTENT as optContent>
+											<#list qi.OPT_ID as optId>
+											    <#if optContent_index==optId_index>
+													<dd class="test_box2_bgc">
+														<div class="pap_tlt">${qi.OPT_NO[optId_index]}</div>
+														<div type="option" class="pap_tct questionItme" optid=${optId?c}>
+															<div class='ttxt test_box2'>${optContent}</div>
+														</div>
+														<div class="nofl"></div>
+													</dd>
+												</#if>
+											</#list>
+										</#list>
+									</#if>
+								</dl>
+								<div class="paperx_btda">
+									<#if qi.QUES_TYPE=='4'>
+									<div class="paperx_tjx paperx_line_tjx">
+									<#else>
+									<div class="paperx_tjx">
+									</#if>
+										<input type="hidden" value=${qi.QUES_TYPE}>
+										<#assign index3=-1 > <#--填空题的选项号索引-->
+										<#list qi.OPT_NO as l>
+											<#if qi.QUES_TYPE=='1'>
+												<#if l!=qi.STUDENT_ANSWER>
+													<label class="paperx_tjxb2 radc">
+													 	<input class='markc' optId="${qi.OPT_ID[l_index]?c}" type="radio" name=${"rad"+qi.QUES_ID?c} value="0">
+													 	<span>${l}</span>
+													</label>
+												<#else>
+													<label class="paperx_tjxb2 radc radio">
+													 	<input class='markc' optId="${qi.OPT_ID[l_index]?c}" type="radio" name=${"rad"+qi.QUES_ID?c} value="0" checked="checked" />
+													 	<span>${l}</span>
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='2'>
+												<#if qi.STUDENT_ANSWER?? && qi.STUDENT_ANSWER?index_of(l)!=-1>
+													<label class="paperx_tjxb2 chkc radio">
+														<input class='markc' optId="${qi.OPT_ID[l_index]?c}" type="checkbox" name=${"rad"+qi.QUES_ID?c} value="0" checked="checked" />
+														<span>${l}</span>
+													</label>
+												<#else>
+													<label class="paperx_tjxb2 chkc">
+														<input class='markc' optId="${qi.OPT_ID[l_index]?c}" type="checkbox" name=${"rad"+qi.QUES_ID?c} value="0" />
+														<span>${l}</span>
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='3'>
+												<#if l!=qi.STUDENT_ANSWER>
+													<label class="paperx_tjxb2 radc">
+														<input class='markc' optId="${qi.OPT_ID[l_index]?c}" type="radio" name=${"rad"+qi.QUES_ID?c} value="0" />
+														<span>${l}</span>
+													</label>
+												<#else>
+													<label class="paperx_tjxb2 radc radio">
+														<input class='markc' optId="${qi.OPT_ID[l_index]?c}" type="radio" name=${"rad"+qi.QUES_ID?c} value="0" checked="checked" />
+														<span>${l}</span>
+													</label>
+												</#if>
+											<#elseif qi.QUES_TYPE=='4'>
+												<#assign index3=index3+1>
+												<div class="paperxt_tjxb2">
+													<div class="cleanBoth">
+														<span class="tkNum">${l}</span>
+														<#assign lineContent="">
+														<#if qi.STUDENT_ANSWER??>
+															<#list qi.STUDENT_ANSWER?split("@@") as sa>
+																<#if sa?starts_with(l+"##")>
+																	<#assign lineContent=sa?substring(sa?index_of("##")+2)>
+																</#if>
+															</#list>
+														</#if>
+														<#if qi.STUDENT_ANSWER??>
+														<div class='markc equ test_box4 test_bg' optId="${qi.OPT_ID[l_index]?c}" contenteditable="true">${lineContent}</div>
+														<#else>
+														<div class='markc equ test_box4 test_bg' optId="${qi.OPT_ID[l_index]?c}" contenteditable="true" style="color:#ddd;">点击输入答案</div>
+														</#if>
+														<div class='linkClass2 linkClass4_postion'>
+															<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+															<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+															<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+															<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+															<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+														</div>
+													</div>
+												</div>
+											<#elseif qi.QUES_TYPE=='5'>
+												<div class="jiedati-tip">答：</div>
+												<div class="paperxt_tjxb2">
+													<#if qi.STUDENT_ANSWER??>
+													<div class='markc equ test_box5 test_bg' optId="${qi.OPT_ID[l_index]?c}" contenteditable="true">${qi.STUDENT_ANSWER}</div>
+													<#else>
+													<div class='markc equ test_box5 test_bg' optId="${qi.OPT_ID[l_index]?c}" contenteditable="true" style="color:#ddd;">点击输入答案</div>
+													</#if>
+													<div class='linkClass2 mar5'>
+														<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+														<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+														<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+														<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+														<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+													</div>
+												</div>
+											</#if>
+										</#list>
+										<div class="nofl"></div>
+									</div>
+								</div>
+							</div>
+							<div class="netexamview-quesoperates">
+								<div class="netexamview-operate"><a class="nextques">下一题</a></div>
+								<div class="netexamview-operate">
+								<#--本题答案存在且remark为true-->
+								<#if qi.marked_flag=="true">
+									<a class="cancelquesmark" title="标记不确定的题目">取消</a>
+								<#else>
+									<a class="markques" title="标记不确定的题目">标记</a>
+								</#if>
+								</div>
+							</div>
+							<div class="nofl"></div>
+						</li>
+					<#else>
+						<#if qi?size&gt;0>
+							<li>
+								<div class='paperxt_stx'>
+								<#list qi as tkl>
+									<#if tkl.QUES_TYPE==6>
+										<#assign articleUlId=tkl.QUES_ID?c>
+										<div class="article_area">
+											<div class='articletip'>（材料）</div>
+											<div remark='article' class="questionItme paperxt_com test_box6 equ"  type="artlic" artid=${tkl.QUES_ID?c}>${tkl.QUES_CONTENT}</div>
+										</div>
+										<div class="nofl"></div>
+									</#if>
+								</#list>
+								</div>
+								<div class='paperxt_bot'>
+									<ul id=${"ul"+articleUlId+"a"}>
+										<#list qi as tkl>
+											<#if tkl.QUES_TYPE!=6>
+												<li id=${tkl.QUES_ID?c} usetime="<#if tkl.answer_time?? && tkl.answer_time!=''>${tkl.answer_time}<#else>0</#if>" questype="${tkl.QUES_TYPE?c}">
+													<div class="paperx_tl">
+														<dl>
+															<dt>
+																<div class="allNum" mTopic="${tkl.M_TOPIC}">${tkl.M_TOPIC}</div>
+																<div type="title" class="paperx_tlxr" quesid=${tkl.QUES_ID?c}>
+																	<div  type='title' class='ttxt test_box' >
+																		${tkl.QUES_CONTENT}
+																	</div>
+																</div>
+																<#if tkl.marked_flag=="true">
+																	<div class="netexamview-markdiv"><img class="netexamview-markimg" src="<@spring.url '/images/examsystem/sticky_notes.png'/>"/></div>
+																<#else>
+																	<div class="netexamview-markdiv" style="visibility:hidden;"><img class="netexamview-markimg" src="<@spring.url '/images/examsystem/sticky_notes.png'/>"/></div>
+																</#if>
+																<div class="nofl"></div>
+															</dt>
+															<#if tkl.QUES_TYPE=='1' || tkl.QUES_TYPE=='2'>
+																<#list tkl.OPT_CONTENT as optContent>
+																	<#list tkl.OPT_ID as optId>
+																		<#if optContent_index==optId_index>
+																			<dd class='test_box2_bgc'>
+																				<div class="pap_tlt">${tkl.OPT_NO[optId_index]}</div>
+																				<div type="option" class="pap_tct questionItme" optid=${optId?c}>
+																					<div class='ttxt test_box2'>${optContent}</div>
+																				</div>
+																				<div class="nofl"></div>
+																			</dd>
+																		</#if>
+																	</#list>
+																</#list> 
+															</#if>
+														</dl>
+														<div class="paperx_btda">
+															<#if tkl.QUES_TYPE=='4'>
+															<div class="paperx_tjx paperx_line_tjx">
+															<#else>
+															<div class="paperx_tjx">
+															</#if>
+																<input type="hidden" value=${tkl.QUES_TYPE}>
+																<#assign index3=-1>
+																<#list tkl.OPT_NO as l> 
+																	<#if tkl.QUES_TYPE=='1'>
+																		<#if l!=tkl.STUDENT_ANSWER>
+																			<label class="paperx_tjxb2 radc">
+																			 	<input class='markc' optId="${tkl.OPT_ID[l_index]?c}" type="radio" name=${"rad"+tkl.QUES_ID?c} value="0"/>
+																			 	<span>${l}</span>
+																			</label>
+																		<#else>
+																			<label class="paperx_tjxb2 radc radio">
+																			 	<input class='markc' optId="${tkl.OPT_ID[l_index]?c}" type="radio" name=${"rad"+tkl.QUES_ID?c} value="0" checked="checked"/>
+																			 	<span>${l}</span>
+																			</label>
+																		</#if>
+																	<#elseif tkl.QUES_TYPE=='2'>
+																		<#if tkl.STUDENT_ANSWER?? && tkl.STUDENT_ANSWER?index_of(l)!=-1>
+																			<label class="paperx_tjxb2 chkc radio">
+																				<input class='markc' optId="${tkl.OPT_ID[l_index]?c}" type="checkbox" name=${"rad"+tkl.QUES_ID?c} value="0" checked="checked"/>
+																				<span>${l}</span>
+																			</label>
+																		<#else> 
+																			<label class="paperx_tjxb2 chkc">
+																				<input class='markc' optId="${tkl.OPT_ID[l_index]?c}" type="checkbox" name=${"rad"+tkl.QUES_ID?c} value="0" />
+																				<span>${l}</span>
+																			</label>
+																		</#if>
+																	<#elseif tkl.QUES_TYPE=='3'>
+																			<#if l!=tkl.STUDENT_ANSWER>
+																				<label class="paperx_tjxb2 radc">
+																					<input class='markc' optId="${tkl.OPT_ID[l_index]?c}" type="radio" name=${"rad"+tkl.QUES_ID?c} value="0" />
+																					<span>${l}</span>
+																				</label>
+																			<#else>
+																				<label class="paperx_tjxb2 radc radio">
+																					<input class='markc' optId="${tkl.OPT_ID[l_index]?c}" type="radio" name=${"rad"+tkl.QUES_ID?c} value="0" checked="checked" />
+																					<span>${l}</span>
+																				</label>
+																			</#if>
+																	<#elseif tkl.QUES_TYPE=='4'>
+																		<#assign index3=index3+1>
+																		<div class="paperxt_tjxb2">
+																			<div class="cleanBoth">
+																				<span class="tkNum">${l}</span>
+																				<#assign lineContent="">
+																				<#if tkl.STUDENT_ANSWER??>
+																					<#list tkl.STUDENT_ANSWER?split("@@") as sa>
+																						<#if sa?starts_with(l+"##")>
+																							<#assign lineContent=sa?substring(sa?index_of("##")+2)>
+																						</#if>
+																					</#list>
+																				</#if>
+																				<#if tkl.STUDENT_ANSWER??>
+																				<div class='markc equ test_box4 test_bg' optId="${tkl.OPT_ID[l_index]?c}" contenteditable="true">${lineContent}</div>
+																				<#else>
+																				<div class='markc equ test_box4 test_bg' optId="${tkl.OPT_ID[l_index]?c}" contenteditable="true" style="color:#ddd;">点击输入答案</div>
+																				</#if>
+																				<div class='linkClass2 linkClass4_postion'>
+																					<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+																					<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+																					<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+																					<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+																					<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+																				</div>
+																			</div>
+																			<div class="nofl"></div>
+																		</div>
+																	<#elseif tkl.QUES_TYPE=='5'>
+																		<div class="jiedati-tip">答：</div>
+																		<div class="paperxt_tjxb2">
+																			<#if tkl.STUDENT_ANSWER??>
+																			<div class='markc equ test_box5 test_bg' optId="${tkl.OPT_ID[l_index]?c}" contenteditable="true">${tkl.STUDENT_ANSWER}</div>
+																			<#else>
+																			<div class='markc equ test_box5 test_bg' optId="${tkl.OPT_ID[l_index]?c}" contenteditable="true" style="color:#ddd;">点击输入答案</div>
+																			</#if>
+																		</div>
+																		<div class='linkClass2 mar5'>
+																			<!-- <span><img title="添加公式" class="addequation" src="<@spring.url '/images/examsystem/sigma_grey.png'/>"></span>
+																			<span><img title="上传图片" class="addequation_local" src="<@spring.url '/images/examsystem/image_grey.png'/>"></span> -->
+																			<span><img title='创建公式' class='struct-kf' src='<@spring.url '/images/examsystem/kf.png'/>'></span>
+																			<span><img title='使用编辑器' class='struct-ue' src='<@spring.url '/images/examsystem/ue.png'/>'></span>
+																			<span><img title='公式历史' class='struct-hist' src='<@spring.url '/images/clock_gray.png'/>'></span>
+																		</div>
+																	</#if>
+																</#list>
+																<div class="nofl"></div>
+															</div>
+														</div>
+													</div>
+													<div class="netexamview-quesoperates">
+														<div class="netexamview-operate"><a class="nextques">下一题</a></div>
+														<#if tkl.marked_flag=="true">
+														<div class="netexamview-operate">
+															<a class="cancelquesmark" title="标记不确定的题目">取消</a>
+														</div>
+														<#else>
+														<div class="netexamview-operate">
+															<a class="markques" title="标记不确定的题目">标记</a>
+														</div>
+														</#if>
+													</div>
+													<div class="nofl"></div>
+												</li>
+											</#if>
+										</#list>
+									</ul>
+								</div>
+							</li>
+						</#if>
+					</#if>
+				</#list>
+			</#if>
+		</ul>
+	</div>
+</div>
+
+<form action="<@spring.url '/homework/student/handInSuccess.html'/>" method="post" style="display:none;" id="handInHomeworkForm">
+	<input type="hidden" name="questionsTime" />
+	<input type="hidden" name="markInfo" />
+	<input type="hidden" name="answers" />
+	<input type="hidden" name="hwId" />
+	<input type="hidden" name="hwRecId" />
+	<input type="hidden" name="studentAnswers" />
+	<input type="hidden" name="finishedNum" />
+</form>
+<#-- 答题卡 -->
+<#include "homework/answerCard.htm" parse="true" encoding="UTF-8">
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<#-- 插入公式 -->
+<#include "insertFormulaDialog.htm" parse="true" encoding="UTF-8" >
+<#include "formulaDialog.htm" parse="true" encoding="UTF-8" >
+<#include "formula/formulaHistoryDialog.htm" parse="true" encoding="UTF-8" >
+<script>
+$(function(){
+	var hwId = ${hwId?c};
+	var hwRecId = ${hwRecId?c}
+	var answersJson = {"hwId":${hwId?c}};
+	var studentAnswersJson = {};
+	var questionsTimeJson = {};	//存放每个小题的做题用时
+	var markJson = {};
+	var currentQues;			//表示当前不断记录时间的小题
+	var lastInterval = 0;		//当点击一个小题的时候，该变量表示上一个计时器结果
+	var saveInterval = 0;		//该变量表示自动保存的计时器结果
+	var handInHomeworkInterval = 0; //表示自动交作业的计时器
+	var endTime = "${hwClassInfo.end_time}";
+
+//******************************页面整体显示效果的设置*******************************
+	//答题卡中显示标记
+	$(".cancelquesmark").each(function() {
+		$("#mtopic"+$($(this).parents("li")[0]).find(".allNum").attr("mtopic")).addClass("mark");
+	});
+
+	//滚动条滚动时，让div一直显示在页面顶部
+	var paperTopNode = $(".paper_top")[0];
+	var startPos = $(paperTopNode).offset().top;
+	$(window).scroll(function() {
+		fixDiv(paperTopNode, startPos, "fixed", "largermargin");
+		fixAnswerCard();
+	});
+	
+//************************************小题的操作********************************
+	//增加小题的耗时
+	function computeQuesTime() {
+		$(currentQues).attr("usetime",parseInt($(currentQues).attr("usetime"))+1);
+	}
+	//初始化进页面的时候记录第一小题的时间
+	$(".allNum").each(function(index) {
+		if($(this).attr("mTopic") == 1) {
+			currentQues = $(this).parents("li")[0];
+			lastInterval = window.setInterval(computeQuesTime,1000);
+			return false;
+		}
+	});
+	
+	
+	//小题增加是否做过的标记及绑定事件，填空题的判断是只要有一个空填了，就算做过
+	$('.paperx_tl').each(function(index){
+		var liNode = $(this).parents("li")[0];
+		//小题点击事件，点击小题时，要对小题计时
+		$(liNode).click(function() {
+			//如果计时器记录的时间的小题不是当前小题，才取消上个计时器，开始下个计时器
+			if($(currentQues).attr("id") != $(this).attr("id")) {
+				currentQues = this;					//设置当前计时器记录时间的节点为当前的小题
+				window.clearInterval(lastInterval);	//取消上一次计时器
+				lastInterval = window.setInterval(computeQuesTime,1000);
+			}
+		});
+		
+		var liQuesType = $(liNode).attr("questype");
+		var flag = false;	//默认flag为false，代表小题未做
+		if(liQuesType== "1" || liQuesType== "2" || liQuesType== "3") {
+			$(liNode).find(".markc").each(function() {
+				if($(this)[0].checked) {
+					flag = true;
+					return false;
+				}
+			});
+		} else {
+			if(liQuesType== "4")
+				$('#mtopic'+$(liNode).find('.allNum').attr('mtopic')).addClass('answercard-gray');
+			$(liNode).find(".markc").each(function() {
+				if(cleanBr($(this).text().trim())!="" && cleanBr($(this).text().trim())!="点击输入答案") {
+					flag = true;
+					//填空题是否为空，只是靠flag无法判断，所以在页面再做一次判断
+					$('#mtopic'+$(liNode).find('.allNum').attr('mtopic')).removeClass('answercard-gray').addClass('answercard-blue');
+					return false;
+				}
+			});
+		}
+		
+		if(flag) {
+			$(liNode).attr("finishflag", "finished");
+		} else {
+			$(liNode).attr("finishflag", "unfinished");
+		}
+	});
+
+
+	//单选按钮（包括单选题和判断题），点击选项的父标签的事件
+	$("input[type='radio']").each(function(){
+		var liNode = $(this).parents("li")[0];
+		$(this).click(function(){
+			//判断小题是否已经做过。如果小题已经做过，就不做改变;如果小题未做过，就增加做题的个数
+			if($(liNode).attr("finishflag") == "unfinished") {
+				changeQuesNum("add");
+				$("#mtopic"+$($(liNode).find(".allNum")[0]).attr("mtopic")).removeClass("answercard-gray").addClass("answercard-blue");
+				$(liNode).attr("finishflag", "finished");
+			}
+			
+			//移除原有的被选中选项的颜色，增加到选择的选项上
+			$(liNode).find(".radio").each(function() {
+				$(this).removeClass("radio");
+			});
+			$(this).parent().addClass("radio");
+		});
+	});
+	
+	//多选题选择选项的事件
+	$("input[type='checkbox']").each(function(){
+		$(this).click(function() {
+			var liNode = $(this).parents("li")[0];
+			//获得小题是否做过的标记
+			var finishFlag = $(liNode).attr("finishflag");
+			//获得小题当前是否有选中的选项
+			var flag = false;
+			$("input[name="+$(this).attr('name')+"]").each(function(){
+				if($(this)[0].checked){
+					flag = true;
+					return false;
+				}
+			});
+			//如果已做且当前没有选中的选项，则减少做过的个数；如果未做且当前有选中的选项，则增加做过的个数
+			if(finishFlag=="finished" && !flag) {
+				changeQuesNum("del");
+				$("#mtopic"+$($(liNode).find(".allNum")[0]).attr("mtopic")).removeClass("answercard-blue").addClass("answercard-gray");
+				$(liNode).attr("finishflag", "unfinished")
+			} else if(finishFlag=="unfinished" && flag) {
+				changeQuesNum("add");
+				$("#mtopic"+$($(liNode).find(".allNum")[0]).attr("mtopic")).removeClass("answercard-gray").addClass("answercard-blue");
+				$(liNode).attr("finishflag", "finished")
+			}
+			
+			//如果改选项的的父标签原本是有颜色的，则取出颜色，反之，增加颜色
+			var parentNode = $(this).parent();
+			if($(parentNode).hasClass("radio")) {
+				$(parentNode).removeClass("radio");
+			} else {
+				$(parentNode).addClass("radio");
+			}
+			
+		});
+	});
+	
+	//得到所有小题数
+	var all=parseInt(${hwInfo.topic_num});
+	//改变回答问题的个数
+	function changeQuesNum(type){
+		var finishNum = parseInt($("#finished").html());//已做小题个数
+		var lastNum = parseInt($("#last").html());		//未作答小题个数
+		if(type == "add"){
+			$("#finished").html(++finishNum);
+		}else{
+			$("#finished").html(--finishNum);
+		}
+		$("#last").html(all-finishNum);
+	}
+	
+	
+	//初始化加载后"标记"按钮添加点击事件
+	$(".markques").each(function(){
+		var liNode = $(this).parents("li")[0];
+		markJson[$(liNode).attr("id")]="false";
+		$(this).click(function(){
+			if($(this).hasClass("markques")){
+				$(this).css("color", "#FF0000").html("取消").attr("class","cancelquesmark");
+				$("#mtopic"+$($(this).parents("li")[0]).find(".allNum").attr("mtopic")).addClass("mark");
+				$(liNode).find(".netexamview-markdiv").css("visibility", "visible");
+				markJson[$(liNode).attr("id")] = "true";
+			}else{
+				$(this).css("color", "#888888").html("标记").attr("class","markques");
+				$("#mtopic"+$($(this).parents("li")[0]).find(".allNum").attr("mtopic")).removeClass("mark");
+				$(liNode).find(".netexamview-markdiv").css("visibility", "hidden");
+				markJson[$(liNode).attr("id")] = "false";
+			}
+		});
+	});
+	//初始化加载后“取消”按钮添加点击事件
+	$(".cancelquesmark").each(function(){
+		var liNode = $(this).parents("li")[0];
+		markJson[$(liNode).attr("id")]="true";
+		$(this).click(function(){
+			if($(this).hasClass("markques")){
+				$(this).css("color", "#FF0000").html("取消").attr("class","cancelquesmark");
+				$("#mtopic"+$($(this).parents("li")[0]).find(".allNum").attr("mtopic")).addClass("mark");
+				$(liNode).find(".netexamview-markdiv").css("visibility", "visible");
+				markJson[$(liNode).attr("id")] = "true";
+			}else{
+				$(this).css("color", "#888888").html("标记").attr("class","markques");
+				$("#mtopic"+$($(this).parents("li")[0]).find(".allNum").attr("mtopic")).removeClass("mark");
+				$(liNode).find(".netexamview-markdiv").css("visibility", "hidden");
+				markJson[$(liNode).attr("id")] = "false";
+			}
+		});
+	});
+
+//*********************************保存、交作业************************************
+	//保存功能
+	$('#Save').click(function(){
+		if($(this).attr("autoflag")!="auto") {
+			$.chooshine.alert("保存成功！ \n 请继续做题！");
+		}
+		getAnswer();
+		$.ajax({
+			type:"POST",
+			url:"<@spring.url '/homework/student/saveRecord.json'/>",
+			data:{"questionsTime":JSON.stringify(questionsTimeJson),
+				  "markInfo":JSON.stringify(markJson),"answers":encodeURIComponent(JSON.stringify(answersJson)),
+				  "hwId":hwId,"hwRecId":hwRecId,"studentAnswers":encodeURIComponent(JSON.stringify(studentAnswersJson)),
+				  "finishedNum":$("#finished").text()},
+			contentType:"application/x-www-form-urlencoded",
+			success:function(data) {}
+		});
+		
+		$(this).attr("autoflag", "");
+	});
+	
+	
+	//进入页面就自动保存试卷
+	autoSave();
+	//定时自动保存考试记录
+	saveInterval = window.setInterval(autoSave,30000);
+	//调用自动触发点击保存事件的方法
+	function autoSave() {
+		$("#Save").attr("autoflag", "auto");
+		triggerMouseEvent(document.getElementById("Save"), "click");
+	}
+	
+	
+	//交作业事件
+	function handInHomeworkEvent() {
+		getAnswer();
+		//去除自动保存和点击小题记录时间的计时器
+		window.clearInterval(saveInterval);
+		window.clearInterval(lastInterval);
+		window.clearInterval(handInHomeworkInterval);
+
+		var submitForm = $("#handInHomeworkForm");
+		$(submitForm).find("input[name='questionsTime']").val(JSON.stringify(questionsTimeJson));
+		$(submitForm).find("input[name='markInfo']").val(JSON.stringify(markJson));
+		$(submitForm).find("input[name='answers']").val(JSON.stringify(answersJson));
+		$(submitForm).find("input[name='hwId']").val(hwId);
+		$(submitForm).find("input[name='hwRecId']").val(hwRecId);
+		$(submitForm).find("input[name='studentAnswers']").val(JSON.stringify(studentAnswersJson));
+		$(submitForm).find("input[name='finishedNum']").val($('#finished').text());
+		$(submitForm).submit();
+	}
+	function compareTime(){
+		if(formatNowTime() >= endTime) {
+			window.clearInterval(handInHomeworkInterval);
+			$.chooshine.alert("交作业时间到，已自动交作业！");
+			handInHomeworkEvent();
+		}
+	}
+	//每秒钟比较一次当前时间和考试结束时间，如果相等，则交作业
+	handInHomeworkInterval = window.setInterval(compareTime, 1000);
+	//交作业
+	$('#HandInHomework').click(function(){
+		if($("#last").html() == 0) {
+			$.chooshine.confirm("上交后将不能修改，确认提交？",handInHomeworkEvent);
+			return;
+		}
+		$.chooshine.confirm("您还有"+$("#last").html()+"题未做，是否上交？",handInHomeworkEvent);
+	});
+	//得到每个小题的做题情况
+	function getAnswer(){
+		//获得每个小题的用时
+		$(".paperx_tl").each(function() {
+			questionsTimeJson[$(this).parent().attr("id")] = $(this).parent().attr("usetime");
+		});
+		
+		$('.paperx_tjx').each(function(e){
+			var liNode = $(this).parents("li")[0];
+			quesId = $(liNode).attr('id');
+			
+			var answerJson = {};
+			var studentAnswerJson = {};
+			var studentAnswerIndex = 1;
+			$(liNode).find(".markc").each(function(e){
+				if($(this).attr('type')=='radio' || $(this).attr('type')=='checkbox'){
+					if($(this).is(":checked")){
+						$(this).val('1');
+						studentAnswerJson[studentAnswerIndex]=$($(this).next()).text();//存储考生小题选项的答案，如A或者ABC或者对、错
+						studentAnswerIndex++;
+					}
+					answerJson[$(this).attr('optId')] = $(this).val();
+				} else if($(liNode).attr("questype") == "4"){//如果是填空题
+					var tempAnswer = cleanBr($(this).html().trim());
+					if(tempAnswer!="" && tempAnswer!="点击输入答案") {
+						studentAnswerJson[studentAnswerIndex] = $($(this).parent().find(".tkNum")[0]).text()+"##"+tempAnswer;
+						answerJson[$(this).attr('optId')] = cleanBr($(this).html().trim());
+					} else {
+						studentAnswerJson[studentAnswerIndex] = $($(this).parent().find(".tkNum")[0]).text()+"##";
+						answerJson[$(this).attr('optId')] = "";
+					}
+					
+					studentAnswerIndex++;
+				} else {	//如果是解答题
+					if($(this).html()!="" && $(this).html()!="点击输入答案") {
+						studentAnswerJson[studentAnswerIndex] = cleanBr($(this).html().trim());
+						answerJson[$(this).attr('optId')] = cleanBr($(this).html().trim());
+					} else {
+						studentAnswerJson[studentAnswerIndex]="";
+						answerJson[$(this).attr('optId')] = "";
+					}
+					studentAnswerIndex++;
+				}
+			});
+			answersJson[quesId]=answerJson;
+			studentAnswersJson[quesId]=studentAnswerJson;
+		});
+	}
+
+	//退出
+	$("#Quit").click(function() {
+		location.href = "<@spring.url '/homework/student/showRecentlyHomeworks.html'/>"
+	});
+	//*********************************答题卡的操作************************************
+	//点击答题卡中的小题号
+	$(".answercard-question").each(function(){
+		$(this).click(function(){
+			//得到小题的位置
+			var liNode = $("#"+$(this).attr("quesid"));
+			var x = $(liNode).offset().left;
+			var y = $(liNode).offset().top-54;
+			//将滚动条滚动到制定位置
+			window.scrollTo(x, y);
+		});
+	});
+	
+	
+	$(".nextques").each(function(index) {
+		//删除最后一题的“下一题”
+		if(index == $(".nextques").length-1){
+			$(this).parent().remove();
+		}
+		//点击小题的“下一题”
+		$(this).click(function() {
+			var liNode = $(this).closest("li").next();
+			//如果liNode未定义，说明当前小题是材料题的最后一题，这时，要获取材料题所属的li
+			if(liNode[0] == undefined) liNode = $(this).closest(".paperxt_bot").parent().next();
+			var x = $(liNode).offset().left;
+			var y = $(liNode).offset().top-120;
+			//将滚动条滚动到制定位置
+			window.scrollTo(x, y);
+		});
+	});
+	
+	
+	/****************************添加公式*********************************/
+	//解答题和填空题做题的事件
+	$(".equ").each(function() {
+		//将页面加载的转换后的img标签转换回来
+		$(this).html(changeImgToNormal($(this).html(), rootPath));
+		
+		findDivEventMouseup(this);	  //将当前文本框设置为要插入公式的节点
+		textboxClick(this, "点击输入答案");//为当前文本框添加点击事件 
+		
+		//公式图片添加双击事件
+		$(this).find("img").each(function() {
+			if(!($(this).attr("data-latex") == undefined)) {
+				$(this).dblclick(function() {
+					formulaDbClickEvent(this);
+				});
+			}
+		});
+		
+		$(this).blur(function() {
+			var liNode = $(this).parents("li")[0];
+			//获得小题是否做过的标记
+			var finishFlag = $(liNode).attr("finishflag");
+			//获得小题当前是否有已填的空格
+			var flag = false;
+			$(liNode).find(".equ").each(function(){
+				if(cleanBr($(this).text().trim())!="" && cleanBr($(this).text().trim())!="点击输入答案"){
+					flag = true;
+					return false;
+				}/*  else {
+					$(this).html("点击输入答案").css("color", "#ddd");
+				} */
+			});
+			//如果已做且当前所有空格都未填，则减少做过的个数；如果未做且当前有填过的空格，则增加做过的个数
+			if(finishFlag=="finished" && !flag) {
+				changeQuesNum("del");
+				$("#mtopic"+$($(liNode).find(".allNum")[0]).attr("mtopic")).removeClass("answercard-blue").addClass("answercard-gray");
+				$(liNode).attr("finishflag", "unfinished")
+			} else if(finishFlag=="unfinished" && flag) {
+				changeQuesNum("add");
+				$("#mtopic"+$($(liNode).find(".allNum")[0]).attr("mtopic")).removeClass("answercard-gray").addClass("answercard-blue");
+				$(liNode).attr("finishflag", "finished")
+			}
+		});
+	});
+	//点击插入公式和上传图片
+	//初始化的时候加载添加图片方法
+	$(".addequation").each(function(){
+		addEventClick(this);
+	});
+	$(".addequation_local").each(function(){
+		addLocalPhoto(this);
+	});
+	$(".struct-kf").each(function() {
+		$(this).click(function() {
+			openKity();
+		});
+	});
+	$(".struct-ue").each(function() {
+		addClickEventToUeditorBtn(this);
+	});
+	$(".struct-hist").each(function() {
+		$(this).click(function() {
+			openFormulaHistory();
+		});
+	});
+});
+</script>

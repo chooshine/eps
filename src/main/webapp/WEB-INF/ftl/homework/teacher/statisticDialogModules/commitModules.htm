@@ -1,0 +1,142 @@
+<#import "spring.ftl" as spring/>
+<div id="CommitInfo" class="module">
+	<div>
+		<div class="imgstip">
+			<span>已交学生</span>
+		</div>
+		<div id="CommitStusInDialog">
+			<div class="stuimgs">
+				<div <#if commitStus??&&commitStus?size&gt;18>class="imgswrap"</#if>>
+					<#--上面的学生头像-->
+				<#if commitStus?size&gt;0>
+					<#list commitStus as stu>
+					<#if stu_index==0>
+					<div id="CommitImgs0" class="stuphotos">
+						<div class="stuphoto">
+							<img src="<@spring.url '/${stu.photo}'/>">
+							<div class="stuname"><span>${stu.student_name}</span></div>	
+						</div>
+					<#elseif stu_index%18==0>
+					</div>
+					<div id="CommitImgs${stu_index/18}" class="stuphotos" style="display:none;">
+						<div class="stuphoto">
+							<img src="<@spring.url '/${stu.photo}'/>">
+							<div class="stuname"><span>${stu.student_name}</span></div>	
+						</div>
+					<#else>
+						<div class="stuphoto">
+							<img src="<@spring.url '/${stu.photo}'/>">
+							<div class="stuname"><span>${stu.student_name}</span></div>
+						</div>
+						<#if ((stu_index+1)%9)==0>
+						<div class="nofl"></div>
+						</#if>
+					</#if>
+					<#if stu_index==(commitStus?size-1)>
+					</div>
+					</#if>
+					</#list>
+				<#else>
+					<div class="nostu"><span>无学生提交</span></div>
+				</#if>
+					<div class="nofl"></div>
+				</div>
+
+				<#--下面的换页按钮-->
+				<#if commitStus??&&commitStus?size&gt;18>
+				<ul class="pageul">
+					<#list commitStus as stu>
+					<#if stu_index%18==0>
+						<#if stu_index==0>
+						<li id="CommitPage${stu_index/18}" class="commitpages">
+							<img src="<@spring.url '/images/bullet_blue.png'/>">
+						</li>
+						<#else>
+						<li id="CommitPage${stu_index/18}" class="commitpages">
+							<img src="<@spring.url '/images/bullet-grey.png'/>">
+						</li>
+						</#if>
+					</#if>
+					</#list>
+					<div class="nofl"></div>
+				</ul>
+				</#if>
+			</div>
+		</div>
+	</div>
+
+	<div style="float: left; margin-top: 40px;">
+		<div class="imgstip">
+			<span>未交学生</span>
+		</div>
+		<div id="UnCommitStusInDialog">
+			<div class="stuimgs">
+				<div <#if uncommitStus??&&uncommitStus?size&gt;18>class="imgswrap"</#if>>
+					<#--上面的学生头像-->
+					<#if uncommitStus?size&gt;0>
+					<#list uncommitStus as stu>
+					<#if stu_index==0>
+					<div id="UnCommitImgs0" class="stuphotos">
+						<div class="stuphoto">
+							<img src="<@spring.url '/${stu.photo}'/>">
+							<div class="stuname"><span>${stu.student_name}</span></div>
+						</div>
+					<#elseif stu_index%18==0>
+					</div>
+					<div id="UnCommitImgs${stu_index/18}" class="stuphotos" style="display:none;">
+						<div class="stuphoto">
+							<img src="<@spring.url '/${stu.photo}'/>">
+							<div class="stuname"><span>${stu.student_name}</span></div>
+						</div>
+					<#else>
+						<div class="stuphoto">
+							<img src="<@spring.url '/${stu.photo}'/>">
+							<div class="stuname"><span>${stu.student_name}</span></div>
+						</div>
+						<#if ((stu_index+1)%9)==0>
+						<div class="nofl"></div>
+						</#if>
+					</#if>
+					<#if stu_index==(uncommitStus?size-1)>
+					</div>
+					</#if>
+					</#list>
+					<#else>
+						<div class="nostu"><span>无学生提交</span></div>
+					</#if>
+					<div class="nofl"></div>
+				</div>
+
+				<#--下面的换页按钮-->
+				<#if uncommitStus??&&uncommitStus?size&gt;18>
+				<ul class="pageul">
+					<#list uncommitStus as stu>
+					<#if stu_index%18==0>
+						<#if stu_index==0>
+						<li id="UnCommitPage${key}${stu_index/18}" class="uncommitpages">
+							<img src="<@spring.url '/images/bullet_blue.png'/>">
+						</li>
+						<#else>
+						<li id="UnCommitPage${key}${stu_index/18}" class="uncommitpages">
+							<img src="<@spring.url '/images/bullet-grey.png'/>">
+						</li>
+						</#if>
+					</#if>
+					</#list>
+					<div class="nofl"></div>
+				</ul>
+				</#if>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+//点击提交学生数量分页按钮
+$(".commitpages").click(function() {
+	pageChange(this, $("#CommitImgs"+$(this).attr("id").substr(10)));
+});
+//点击未提交学生数量分页按钮
+$(".uncommitpages").click(function() {
+	pageChange(this, $("#UnCommitImgs"+$(this).attr("id").substr(12)));
+});
+</script>

@@ -1,0 +1,40 @@
+﻿/* CSS Document */
+body{padding:0;margin:0;font-family:"Microsoft YaHei", Helvetica, sans-serif;}
+div, h1, h2, h3, h4, p, form, label, input, textarea, img, span{margin:0; padding:0;}
+a{ text-decoration:none; font-size:13px; line-height:14px;}
+div{font-size:13px; line-height:14px;}
+img{ border:0;}
+ul{margin:0; padding:0; list-style-type:none;font-size:12px;line-height:0;}
+.clear{clear:both; font-size:0; line-height:0;}
+b.red{font-weight:normal;color:#F00;}
+.blue{color:#4785d3;}
+.blue02{color:#87bbfe;}
+a {outline: none;}
+a:active {star:expression(this.onFocus=this.blur());}
+/*header code*/
+.header{widht:100%;height:75px;background:url(../img/top-bk.gif) repeat-x;}
+.nav{width:1000px;height:75px;margin:0 auto;}
+.nav ul{float:left;}
+.nav ul li{float:left;}
+.nav ul li a{display:block;width:100px;height:45px;padding-top:25px; text-align:center;font-size:16px;line-height:20px;color:#999;}
+/*.nav ul li a:hover{ background-color:#06F;color:#fff;}*/
+.nav ul.nav_margin{float:right;}
+.nav ul.nav_margin li a{width:65px;}
+.nav ul.nav_margin li a:hover{ background:none;color:#666;}
+/*content code*/
+.content{width:1000px;min-height:500px;margin:0 auto;padding-top:30px;}
+.con_top{height:65px;border-bottom:1px solid #97bae6;}
+.con_top02{border-bottom:none;}
+.con_top span{display:block;float:left;height:50px;}
+.small_logo{width:130px;height:45px;background:url(../img/bk.gif) no-repeat 0 0;}
+.name{font-size:18px;color:#666; font-family:"Microsoft YaHei";padding:17px 0 0 20px;line-height:20px;}
+#search_box{width:443px;height:38px;float:right;border:1px solid #5e94d9;box-shadow:0 2px 3px #cccccc;}
+#s{float:left;width:353px;border:0;padding:10px 0 0 10px;color:#999;font-size:14px;line-height:14px;}
+#search_box #go{ float:right; margin:0;}
+/*footer  code*/
+.footer{padding:20px 0;margin:60px auto 0 auto;text-align:center;background-color:#3d3b4f;}
+.footer p{text-align:center;font-size:13px;color:#ffffff;line-height:20px;padding:5px 0;*padding:0;}
+.footer p span{display:block;}
+.footer_icon{width:17px;height:20px;background:url(../img/bk.gif) no-repeat -144px -19px;margin-left:300px;}
+.footer02{margin:10px auto;}
+

@@ -1,0 +1,466 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<#include "homework/teacher/correctHomeworkLogo.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eee;}
+.left {height:600px;padding-bottom:0px;margin:30px 20px 0 auto;background-color:#fff;box-shadow:0 0 5px #aaa;}
+.left .pic {margin-top:-50px;}
+.left .pic .left_img {box-shadow:0 0 5px #aaa;}
+.right {width:774px;padding:0;margin-bottom:0px;background-color:#fff;}
+.chartContainer {float:left;width:380px;height:380px;}
+#CommitPieContainer {border-right:1px dashed #fff;border-bottom:1px dashed #fff;}
+#StarStuColumnContainer {border-bottom:1px dashed #fff;border-left:1px dashed #00afed;}
+#ErrorNumOfQuesContainer {border-top:1px dashed #00afed;border-right:1px dashed #fff;}
+#stuNumOfDoubtQuesChartContainer {border-top:1px dashed #00afed;border-left:1px dashed #00afed;}
+.charttip {color:#606060;font-weight:bold;font-family:微软雅黑;margin:10px 10px 40px;}
+.charttip h3 img {width:16px;height:16px;float:right;cursor:pointer;}
+.studentname {font-size:14px;padding:5px;}
+#More {width:60px;color:#00afed;text-decoration:underline;cursor:pointer;}
+#More:hover {color:#ff9966;}
+.tip {width:130px;height:141px;border-bottom:1px dashed #aaa;text-align:center;}
+.tipimg {width:80px;height:80px;margin-top:20px;}
+a.tipname {display:block;color:#08c;}
+a.tipname:HOVER {text-decoration:underline;}
+
+.imgstip {font-size:16px;font-weight:bold;color:#00afed;margin-top:10px;margin-bottom:20px;}
+.starimgstip, .errorimgstip, .durationimgstip {cursor:pointer;}
+.errorimgstip .shuoming {width:60px;float:left;}
+.starimgstip-left {float:left;margin-right:10px;}
+.dialog-starimgs {width:64px;}
+.dialog-starimgs img {width:12px;height:12px;float:left;}
+.starimgs-progressbar {width:100px;border:1px solid #aaa;border-radius:5px;float:left;margin-right:10px;}
+
+.stuphoto {float:left;margin-right:20px;margin-bottom:25px;text-align:center;}
+.stuphoto img {width:42px;height:42px;border:1px solid #ddd;cursor:pointer;background-color:#fdfaee;}
+.stuphoto .stuname {width:52px;text-align:center;}
+
+.stuimgs > .imgswrap {height:172px;}
+.stunumofstar {font-size:16px;margin-bottom:20px;}
+.stunumofstar img {width:12px;height:12px;float:left;}
+.stunum {float:right;}
+.starimgs {float:left;margin-right:10px;}
+.nostu {font-size:20px;font-weight:bold;color:#ee0000;margin-bottom:20px;}
+.pageul {text-align:center;}
+.pageul li {display:inline-block;margin-top:-10px;margin-bottom:20px;}
+.pageul li img {width:20px;height:20px;cursor:pointer;}
+
+</style>
+<div class="content">
+	<div class="left">
+  		<#if USER_CONTEXT.photo!="">
+		<div class="pic"><img class="left_img" src="<@spring.url '/${USER_CONTEXT.photo}'/>" width="120" height="120" title="头像"/></div>
+		<#else>
+		<div class="pic"><img class="left_img" src="<@spring.url '/images/headImage/default_head.jpg'/>" width="120" height="120" title="头像"/></div>
+		</#if>
+      	<h3>作业分析</h3>
+        <ul>
+        	<li><a href="javascript:void(0)" class="left_current">作业报告</a></li>
+            <li><a href="<@spring.url '/homework/teacher/homeworkDetail.html?hwId=${hwId?c}&classId=${classId?c}'/>">作业详情</a></li>
+        </ul>
+    </div>
+    <div class="right">
+    	<h2 style="height:40px;line-height:40px;padding:0 10px;color:#fff;background-color:#00afed;"><span>${classBasicInfo.class_name}</span><span>${classBasicInfo.hw_name}</span><span>作业报告</span></h2>
+    	<div>
+	    	<div id="CommitPieContainer" class="chartContainer">
+	    		<div class="charttip">
+	    			<h3>交作业情况<img id="ShowCommitInfo" src="<@spring.url '/images/arrow_expand.png'/>"></h3>
+	    		</div>
+	    		<div>
+	    			<div style="font-size:15px;text-align:center;">全班共 <span class="color-orange" style="font-size:18px;font-weight:bold;">${classBasicInfo.class_num?c}</span> 人， 交作业 <span class="color-orange" style="font-size:18px;font-weight:bold;">${classBasicInfo.marked_num?c}</span> 人</div>
+	    		</div>
+	    		<div>
+		    		<div id="CommitPieDiv" style="width:250px;height:250px;float:left;"></div>
+		    		<div id="UnCommitStusContainer" style="float:left;margin-top:40px;">
+		    			<div style="font-size:16px;margin-bottom:20px;"><span>未交学生：</span></div>
+		    			<div id="UnCommitStusDiv">
+		    				<#if uncommitStus??>
+		    				<#list uncommitStus as stu>
+		    				<#if stu_index==5 && uncommitStus?size&gt;10>
+		    				<div id='More' class='studentname'>查看更多</div>
+		    				<#break>
+		    				<#else>
+		    				<div class='studentname'>${stu.student_name}</div>
+		    				</#if>
+		    				</#list>
+		    				</#if>
+		    			</div>
+		    		</div>
+	    		</div>
+	    	</div>
+	    	<div id="StarStuColumnContainer" class="chartContainer">
+	    		<div class="charttip">
+	    			<h3>星星数量<img src="<@spring.url '/images/arrow_expand.png'/>" id="ShowStudentsOfStar"></h3>
+	    		</div>
+	    		<div>
+	    			<div id="StarStuColumnDiv" class="chartdiv" style="width:250px;height:250px;float:left;"></div>
+	    			<div style="float:left;margin-top:10px;margin-left:20px;">
+	    				<div>
+	    					<#if starStuNumList??>
+	    					<#list starStuNumList as starstu>
+	    					<#if starstu.starnum==5>
+	    						<div class="stunumofstar">
+	    							<div class="starimgs">
+	    								<img src="<@spring.url '/images/star-full.png'/>">
+	    								<img src="<@spring.url '/images/star-full.png'/>">
+	    								<img src="<@spring.url '/images/star-full.png'/>">
+	    								<img src="<@spring.url '/images/star-full.png'/>">
+	    								<img src="<@spring.url '/images/star-full.png'/>">
+	    							</div>
+	    							<div class="stunum"><span>${starstu.stunum}人</span></div>
+	    							<div class="nofl"></div>
+	    						</div>
+	    					<#elseif starstu.starnum==4>
+	    						<div class="stunumofstar">
+	    							<div class="starimgs">
+	    								<img src="<@spring.url '/images/star-full.png'/>">
+	    								<img src="<@spring.url '/images/star-full.png'/>">
+	    								<img src="<@spring.url '/images/star-full.png'/>">
+	    								<img src="<@spring.url '/images/star-full.png'/>">
+	    							</div>
+	    							<div class="stunum"><span>${starstu.stunum}人</span></div>
+	    							<div class="nofl"></div>
+	    						</div>
+	    					<#elseif starstu.starnum==3>
+	    						<div class="stunumofstar">
+	    							<div class="starimgs">
+	    								<img src="<@spring.url '/images/star-full.png'/>">
+	    								<img src="<@spring.url '/images/star-full.png'/>">
+	    								<img src="<@spring.url '/images/star-full.png'/>">
+	    							</div>
+	    							<div class="stunum"><span>${starstu.stunum}人</span></div>
+	    							<div class="nofl"></div>
+	    						</div>
+	    					<#elseif starstu.starnum==2>
+	    						<div class="stunumofstar">
+	    							<div class="starimgs">
+	    								<img src="<@spring.url '/images/star-full.png'/>">
+	    								<img src="<@spring.url '/images/star-full.png'/>">
+	    							</div>
+	    							<div class="stunum"><span>${starstu.stunum}人</span></div>
+	    							<div class="nofl"></div>
+	    						</div>
+	    					<#elseif starstu.starnum==1>
+	    						<div class="stunumofstar">
+	    							<div class="starimgs">
+	    								<img src="<@spring.url '/images/star-full.png'/>">
+	    							</div>
+	    							<div class="stunum"><span>${starstu.stunum}人</span></div>
+	    							<div class="nofl"></div>
+	    						</div>
+	    					<#elseif starstu.starnum==0>
+	    						<div class="stunumofstar">
+	    							<div class="starimgs">
+	    								<img src="<@spring.url '/images/star-empty.png' />">
+	    							</div>
+	    							<div class="stunum"><span>${starstu.stunum}人</span></div>
+	    							<div class="nofl"></div>
+	    						</div>
+	    					</#if>
+	    					</#list>
+	    					</#if>
+	    				</div>
+	    			</div>
+	    		</div>
+	    		<div class="nofl"></div>
+	    	</div>
+	    	<div id="ErrorNumOfQuesContainer" class="chartContainer">
+	    		<div class="charttip">
+	    			<h3>错误小题<img id="ShowErrorStudents" src="<@spring.url '/images/arrow_expand.png'/>"></h3>
+	    		</div>
+	    		<div id="ErrorNumOfQuesDiv" class="chartdiv" style="width:300px;height:300px;"></div>
+	    	</div>
+	    	<div id="stuNumOfDoubtQuesChartContainer" class="chartContainer">
+	    		<div class="charttip">
+	    			<h3>用时分布<img id="ShowDurationStudents" src="<@spring.url '/images/arrow_expand.png'/>"></h3>
+	    		</div>
+	    		<div id="stuNumOfDoubtQuesChartDiv" class="chartdiv" style="width:300px;height:300px;"></div>
+	    		<div class="nofl"></div>
+	    	</div>
+    	</div>
+    </div>
+</div>
+
+<div id="Dialog">
+	<div style="background-color:#FFFAEF;float:left;">
+		<div id="CommitInfoTip" class="tip">
+			<img src="<@spring.url '/images/star-empty.png'/>" class="tipimg"/>
+			<a class="tipname">交作业情况</a>
+		</div>
+		<div id="StarDistributionTip" class="tip">
+			<img src="<@spring.url '/images/star-empty.png'/>" class="tipimg"/>
+			<a class="tipname">星星分布</a>
+		</div>
+		<div id="QuesErrorInfoTip" class="tip">
+			<img src="<@spring.url '/images/star-empty.png'/>" class="tipimg"/>
+			<a class="tipname">小题错误量</a>
+		</div>
+		<div id="TimeOfCommitTip" class="tip">
+			<img src="<@spring.url '/images/star-empty.png'/>" class="tipimg"/>
+			<a class="tipname">提交时长分布</a>
+		</div>
+	</div>
+	
+	<div style="float:left;padding-left:30px;">
+		<div id="Modules" style="width:670px;height:460px;padding:10px 0;overflow:auto;margin-bottom:20px;">
+			
+		</div>
+		<div class="nofl"></div>
+		<div>
+			<div id="Quit" class="chooshine-btn" style="margin-left:175px;">关闭</div>
+		</div>
+	</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script src="<@spring.url '/javascripts/amcharts.js'/>" ></script>
+<script>
+$(function() {
+	$("#Dialog").dialog({
+		dialogClass:"chooshine-dialog",
+		autoOpen: false,
+	    height: 580,
+	    width: 830,
+	    resizable:false,
+	    modal: true
+	});
+	$("#Quit").click(function() {
+		$("#Dialog").dialog("close");
+	});
+	//点击“交作业情况”的右上角的图标
+	$("#ShowCommitInfo").click(function() {
+		showCommitInfo();
+	});
+	//点击“查看更多”
+	$("#More").click(function() {
+		showCommitInfo();
+	});
+	$("#CommitInfoTip").click(function() {
+		showCommitInfo();
+	});
+	//查看作业提交情况的方法
+	function showCommitInfo() {
+		$(".tipimg").attr("src", "<@spring.url '/images/star-empty.png'/>");
+		$("#CommitInfoTip").find(".tipimg").attr("src", "<@spring.url '/images/star-full.png'/>");
+		$.ajax({
+			type:"get",
+			url:"<@spring.url '/homework/teacher/statisticDialogModules/commitModules.html'/>",
+			data:"hwId=${hwId?c}&classId=${classId?c}",
+			dataType:"html",
+			success:function(data) {
+				$("#Modules").html(data);
+				$("#Dialog").dialog("open");
+			}
+		});
+	}
+	
+	//点击“星星数量”右上角的图标
+	$("#ShowStudentsOfStar").click(function() {
+		showStarDistributeInfo();
+	});
+	$("#StarDistributionTip").click(function() {
+		showStarDistributeInfo();
+	});
+	//查看星星分布情况的方法
+	function showStarDistributeInfo() {
+		$(".tipimg").attr("src", "<@spring.url '/images/star-empty.png'/>");
+		$("#StarDistributionTip").find(".tipimg").attr("src", "<@spring.url '/images/star-full.png'/>");
+		$.ajax({
+			type:"get",
+			url:"<@spring.url '/homework/teacher/statisticDialogModules/starModules.html'/>",
+			data:"hwId=${hwId?c}&classId=${classId?c}",
+			dataType:"html",
+			success:function(data) {
+				$("#Modules").html(data);
+				$("#Dialog").dialog("open");
+			}
+		});
+	}
+	
+	//点击“错误小题”右上角的按钮
+	$("#ShowErrorStudents").click(function() {
+		showquesErrorInfo();
+	});
+	$("#QuesErrorInfoTip").click(function() {
+		showquesErrorInfo();
+	});
+	//查看小题错误学生情况的方法
+	function showquesErrorInfo() {
+		$(".tipimg").attr("src", "<@spring.url '/images/star-empty.png'/>");
+		$("#QuesErrorInfoTip").find(".tipimg").attr("src", "<@spring.url '/images/star-full.png'/>");
+		$.ajax({
+			type:"get",
+			url:"<@spring.url '/homework/teacher/statisticDialogModules/quesErrorModules.html'/>",
+			data:"hwId=${hwId?c}&classId=${classId?c}",
+			dataType:"html",
+			success:function(data) {
+				$("#Modules").html(data);
+				$("#Dialog").dialog("open");
+			}
+		});
+	}
+	//点击“用时分布”右上角的头标
+	$("#ShowDurationStudents").click(function() {
+		showTimeDistributeInfo();
+	});
+	$("#TimeOfCommitTip").click(function() {
+		showTimeDistributeInfo();
+	});
+	//查看小题用时分布情况的方法
+	function showTimeDistributeInfo() {
+		$(".tipimg").attr("src", "<@spring.url '/images/star-empty.png'/>");
+		$("#TimeOfCommitTip").find(".tipimg").attr("src", "<@spring.url '/images/star-full.png'/>");
+		$.ajax({
+			type:"get",
+			url:"<@spring.url '/homework/teacher/statisticDialogModules/timeModules.html'/>",
+			data:"hwId=${hwId?c}&classId=${classId?c}",
+			dataType:"html",
+			success:function(data) {
+				$("#Modules").html(data);
+				$("#Dialog").dialog("open");
+			}
+		});
+	}
+	
+	//未交作业、已交作业学生饼图
+	var commitPieChart;
+    var commitLegend;
+	var commitCharData = ${commitPieData};
+	AmCharts.ready(function () {
+		commitInfoPieChart();	//饼图
+		starRadarChart();		//雷达图
+		errorQuesColumnChart()	//柱状图
+		durationLineChart();
+	});
+	function commitInfoPieChart() {
+		commitPieChart = new AmCharts.AmPieChart();
+		commitPieChart.dataProvider = commitCharData;
+		commitPieChart.titleField = "type";
+		commitPieChart.startDuration = 0;
+		commitPieChart.valueField = "stunum";
+		commitPieChart.outlineColor = "#FFFFFF";
+		commitPieChart.outlineAlpha = 0.8;
+		commitPieChart.outlineThickness = 2;
+		commitPieChart.balloonText = "";
+		commitPieChart.labelsEnabled = false;
+		commitPieChart.write("CommitPieDiv");
+	}
+    
+	//星星学生数量雷达图
+	var starStuCharData = ${starStusColumnData};
+	function starRadarChart() {
+		// RADAR CHART
+        starStuChart = new AmCharts.AmRadarChart();
+        starStuChart.dataProvider = starStuCharData;
+        starStuChart.categoryField = "starnum";
+        starStuChart.startDuration = 2;
+        starStuChart.startDuration = 0;
+
+        // VALUE AXIS
+        var starStuValueAxis = new AmCharts.ValueAxis();
+        starStuValueAxis.axisAlpha = 0.15;
+        starStuValueAxis.minimum = 0;
+        starStuValueAxis.dashLength = 3;
+        starStuValueAxis.axisTitleOffset = 20;
+        starStuValueAxis.gridCount = 6;
+        starStuChart.addValueAxis(starStuValueAxis);
+
+        // GRAPH
+        var starStuGraph = new AmCharts.AmGraph();
+        starStuGraph.valueField = "stunum";
+        starStuGraph.bullet = "round";
+        starStuGraph.fillColor = "#FFCC00";
+        starStuGraph.balloonText = "[[value]] 个学生得了[[category]]颗星星";
+        starStuChart.addGraph(starStuGraph);
+
+        // WRITE
+        starStuChart.write("StarStuColumnDiv");
+	}
+	
+	//题目错误数量柱状图
+	var errorNumOfQuesColumnChart;
+    var errorNumOfQuesLegend;
+	var errorNumOfQuesCharData = ${studentsNumOfQuestions};
+    function errorQuesColumnChart() {
+    	// SERIAL CHART
+	    errorNumOfQuesColumnChart = new AmCharts.AmSerialChart();
+	    errorNumOfQuesColumnChart.dataProvider = errorNumOfQuesCharData;
+	    errorNumOfQuesColumnChart.categoryField = "m_topic";
+	    errorNumOfQuesColumnChart.startDuration = 1;
+	    errorNumOfQuesColumnChart.zoomOutButtonSpan=20;
+	    errorNumOfQuesColumnChart.startDuration = 0;
+	    
+	    // AXES
+	    // category
+	    var errorNumOfQuesCategoryAxis = errorNumOfQuesColumnChart.categoryAxis;
+	    errorNumOfQuesCategoryAxis.gridPosition = "start";
+	    // GRAPH
+	    var errorNumOfQuesGraph = new AmCharts.AmGraph();
+	    errorNumOfQuesGraph.valueField = "error_num";
+	    errorNumOfQuesGraph.balloonText = "[[value]]个学生做错了第[[category]]题";
+	    errorNumOfQuesGraph.type = "column";
+	    errorNumOfQuesGraph.lineAlpha = 0;
+	    errorNumOfQuesGraph.fillAlphas = 0.8;
+	    errorNumOfQuesGraph.fillColors = "#ff0000";
+	    errorNumOfQuesColumnChart.addGraph(errorNumOfQuesGraph);
+	    // CURSOR
+	    var errorNumOfQuesChartCursor = new AmCharts.ChartCursor();
+	    errorNumOfQuesChartCursor.cursorAlpha = 0;
+	    errorNumOfQuesChartCursor.zoomable = false;
+	    errorNumOfQuesChartCursor.categoryBalloonEnabled = false;
+	    errorNumOfQuesColumnChart.addChartCursor(errorNumOfQuesChartCursor);
+	    errorNumOfQuesColumnChart.creditsPosition = "top-right";
+	    errorNumOfQuesColumnChart.write("ErrorNumOfQuesDiv");
+    }
+	//做题时长学生对应关系折线图
+	var durationStuLineChart;
+	function durationLineChart() {
+		durationStuLineChart = new AmCharts.AmSerialChart();
+	    durationStuLineChart.dataProvider = ${durationStuLineChartData};
+	    durationStuLineChart.categoryField = "duration";
+	    durationStuLineChart.startDuration = 0;
+	
+	    var balloon = durationStuLineChart.balloon;
+	    balloon.cornerRadius = 6;
+	    balloon.adjustBorderColor = false;
+	    balloon.horizontalPadding = 10;
+	    balloon.verticalPadding = 10;
+	
+	    var categoryAxis = durationStuLineChart.categoryAxis;
+	    categoryAxis.autoGridCount = false;
+	    categoryAxis.gridAlpha = 0;
+	    categoryAxis.labelRotation = 90;
+	    categoryAxis.gridColor = "#000000";
+	    categoryAxis.axisColor = "#555555";
+
+	    var durationAxis = new AmCharts.ValueAxis();
+	    durationAxis.gridAlpha = 0.05;
+	    durationAxis.axisAlpha = 0;
+	    durationStuLineChart.addValueAxis(durationAxis);
+	
+	    var durationGraph = new AmCharts.AmGraph();
+	    durationGraph.title = "num";
+	    durationGraph.valueField = "num";
+	    durationGraph.type = "line";
+	    durationGraph.valueAxis = durationAxis;
+	    durationGraph.lineColorField = "lineColor";
+	    durationGraph.fillColorsField = "lineColor";
+	    durationGraph.fillAlphas = 0.3;
+	    durationGraph.balloonText = "用时在[[category]]内的有[[value]]人";
+	    durationGraph.lineThickness = 1;
+	    durationGraph.legendValueText = "[[value]]";
+	    durationGraph.bullet = "square";
+	    durationGraph.bulletBorderThickness = 1;
+	    durationGraph.bulletBorderAlpha = 1;
+	    durationStuLineChart.addGraph(durationGraph);
+	
+	    durationStuLineChart.write("stuNumOfDoubtQuesChartDiv");
+	}
+	
+});
+
+//点击分页按钮的事件
+function pageChange(pageBtn, ImgsNode) {
+	$(ImgsNode).parent().find(".stuphotos").hide();
+	$(pageBtn).parent().find("img").attr("src", "<@spring.url '/images/bullet-grey.png'/>");
+	$(pageBtn).find("img").attr("src", "<@spring.url '/images/bullet_blue.png'/>");
+	$(ImgsNode).show();
+}
+</script>

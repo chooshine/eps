@@ -1,0 +1,278 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eee;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">免费注册</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div id="registMain" >
+	<div id="registMain_in"  style=" widht:100%;">
+		<div id="registForm" style=" widht:100%;">
+			<div class="regis_com">
+				<div>
+					<div class="regis_right">
+						<div style="height:40px;line-height:40px;padding-left:15px;font-size:16px;font-weight:bold;background-color:#ddd;text-align:left;margin-bottom:20px;">注册用户</div>
+						<form id="registForm" method="post" action="<@spring.url '/regist.html'/>">
+							<div class="regis_reach">
+								<div>
+									<div class="regis_reach3">用户名</div>
+									<div style="float:right;">
+										<#if errortype?? && errortype == 1>
+											<div id="picVno" class="icon-20 picDiv silk-cancel"></div>
+											<span id="div" class="registspanWrong">${error}</span>
+										<#else>
+											<div id="picVno" class="icon-20 picDiv silk-information"></div>
+											<span id="vNo" class="registspanOk"><@spring.message 'regist.userNo' /></span>
+										</#if>
+									</div>
+									<div class="nofl"></div>
+								</div>
+								<div>
+									<input type="text" id="userNo" style="width:320px;"	name="userNo" class="chooshine-input"/>
+								</div>
+							</div>
+							<div class="regis_reach">
+								<div>
+									<div class="regis_reach3">电子邮箱</div>
+									<div style="float:right;">
+										<#if errortype?? && errortype == 2>
+											<div id="picVem" class="icon-20 picDiv silk-cancel"></div>
+											<span id="vEm" class="registspanWrong">${error}</span>
+										<#else>
+											<div id="picVem" class="icon-20 picDiv silk-information"></div>
+											<span id="vEm" class="registspanOk"><@spring.message 'regist.mail' /></span>
+										</#if>
+									</div>
+									<div class="nofl"></div>
+								</div>
+								<div>
+									<input type="text" style="width:320px;" id="email" name="mailAddress" class="chooshine-input" />
+								</div>
+							</div>
+							<div class="regis_reach">
+								<div>
+									<div class="regis_reach3">密码</div>
+									<div style="float:right;">
+										<div id="picVpwdone" class="icon-20 picDiv silk-information"></div>
+										<span id="pwdone" class="registspanOk"><@spring.message 'regist.password'/></span>
+									</div>
+									<div class="nofl"></div>
+								</div>
+								<div>
+									<input type="password" style="width:320px;" id="password" name="password" class="chooshine-input" />
+								</div>
+								<div class="nofl"></div>
+							</div>
+							<div class="regis_reach_h">
+								<div>
+									<div class="regis_reach3">验证码</div>
+									<div style="float:right;">
+										<#if errortype?? && errortype == 3>
+											<div id="picVerror" class="icon-20 picDiv silk-cancel"></div>
+											<span id="verError"class="registspanWrong">${error}</span>
+										<#else>
+											<div id="picVerror" class="icon-20 picDiv silk-information"></div>
+											<span id="verError"class="registspanOk"><@spring.message 'checkcode.text' /></span>
+										</#if>
+									</div>
+									<div class="nofl"></div>
+								</div>
+								<div>
+									<div style="height:30px;border:1px solid #aaa;">
+										<div>
+											<input type="text" style="width:210px;margin-right:20px;float:left;border:none;" name="checkcode" id="checkcode" class="chooshine-input"/>
+										</div>
+										<div style="float:left;cursor:pointer;">
+											<img id="verPic" src="<@spring.url '/getCheckCode.html'/>" height="30" width="90"/>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="regis_reach1">
+								<div class="regis_1">
+									<button type="submit" id="zc">同意以下协议并注册</button>
+								</div>
+							</div>
+	
+							<div class="regis_reach2">
+								<a href="<@spring.url '/agreement.html'/>" target="_blank">《畅选网站用户注册协议》</a>
+								&nbsp;&nbsp;<span style="float:right;">已有账号 >><a href="<@spring.url '/login.html'/>">直接登陆</a></span>
+							</div>
+						</form>
+					</div>
+				
+					<div style="float:right;padding-top:12px;text-align:center;"><span><img src="<@spring.url '/images/689.png'/>" width="500" height="407"/></span></div>
+					
+					<div class="nofl"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+
+<script>
+	<#if user??>
+		$("#userNo").val('${user.userNo}');
+		$("#email").val('${user.mailAddress}');
+	</#if>
+	$(function() {
+		//刷新验证码
+		$("#verPic").click(
+				function() {
+					$(this).attr(
+							"src",
+							"<@spring.url '/getCheckCode.html' />" + "?_dc="
+									+ Math.random());
+				});
+		//用户名验证 获得焦点事件及失去焦点事件
+		$("#userNo")
+				.focus(function() {
+					changeClass($("#picVno"), $("#vNo"), "N");
+					$("#picVno").hide();
+					$("#vNo").text("<@spring.message 'regist.userNo' />").show();
+				})
+				.focusout(function() {
+							var name = /^[a-zA-Z0-9_\u4e00-\u9fa5]{2,18}$/;
+							if (!name.test($("#userNo").val())) {
+								changeClass($("#picVno"), $("#vNo"), "E");
+								return;
+							}
+							$.getJSON("<@spring.url '/ajax/checkUserName.json'/>",
+										{
+											'username' : $("#userNo").val()
+										},
+										function(data) {
+											if (data.success) {
+												changeClass($("#picVno"),$("#vNo"), "S");
+												$("#picVno").show();
+												$("#picVno").next().hide();
+											} else {
+												changeClass($("#picVno"),$("#vNo"), "E");
+												$("#vNo").text("<@spring.message 'regist.userno.nounique' />");
+											}
+										});
+							//changeClass($("#picVno"),$("#vNo"),"S");
+						});
+		//邮箱验证 获得焦点事件及失去焦点事件
+		$("#email").focus(function() {
+			changeClass($("#picVem"), $("#vEm"), "N");
+			$("#picVem").hide();
+			$("#vEm").text("<@spring.message 'regist.mail' />").show();
+		}).focusout(function() {
+			if (!isEmail($("#email").val())) {
+				changeClass($("#picVem"), $("#vEm"), "E");
+				$("#vEm").text("<@spring.message 'regist.mail.error' />");
+				return;
+			}
+			$.getJSON("<@spring.url '/ajax/checkUserName.json'/>", {
+				'username' : $("#email").val()
+			}, function(data) {
+				if (data.success) {
+					changeClass($("#picVem"), $("#vEm"), "S");
+					$("#picVem").show();
+					$("#picVem").next().hide();
+				} else {
+					changeClass($("#picVem"), $("#vEm"), "E");
+				}
+			});
+		});
+		$("#password").focus(function() {
+			$("#picVpwdone").hide();
+			$("#picVpwdone").next().show();
+			changeClass($("#picVpwdone"), $("#pwdone"), "N");
+		}).focusout(function() {
+			var pw = /^[\dA-Za-z(!@#$%&*-,.?;:)]{6,15}$/
+			if (!pw.test($("#password").val())) {
+				changeClass($("#picVpwdone"), $("#pwdone"), "E");
+				return;
+			}
+			changeClass($("#picVpwdone"), $("#pwdone"), "S");
+			$("#picVpwdone").show();
+			$("#picVpwdone").next().hide();
+		});
+		$("#checkcode").focus(function() {
+			changeClass($("#picVerror"), $("#verError"), "N");
+			$("#picVerror").hide();
+			$("#verError").text("<@spring.message 'checkcode.text' />").show();
+		}).focusout(
+				function() {
+					if ($("#checkcode").val() == "") {
+						changeClass($("#picVerror"), $("#verError"), "E");
+						return;
+					}
+					$.getJSON("<@spring.url '/ajax/validateCode.json'/>", {
+						"checkcode" : $("#checkcode").val()
+					}, function(data) {
+						if (data.success) {
+							changeClass($("#picVerror"), $("#verError"), "S");
+							$("#picVerror").show();
+							$("#picVerror").next().hide();
+						} else {
+							changeClass($("#picVerror"), $("#verError"), "E");
+							$("#verError").text(
+									"<@spring.message 'checkcode.error' />");
+						}
+					});
+
+				});
+     	$("form[id=registForm]").submit(function(){
+			if($("#userNo").val()=="") return false;
+			if($("#email").val() == "") return false;
+			if($("#password").val()=="") return false;
+			if($("#checkcode").val()=="") return false;
+			//有任何一个条件不符合，都要中断提交
+			var name = /^[a-zA-Z0-9_\u4e00-\u9fa5]{2,18}$/;
+			if (!name.test($("#userNo").val())) {
+				changeClass($("#picVno"), $("#vNo"), "E");
+				return false;
+			}
+			if (!isEmail($("#email").val())) {
+				changeClass($("#picVem"), $("#vEm"), "E");
+				$("#vEm").text("<@spring.message 'regist.mail.error' />");
+				return false;
+			}
+			var pw = /^[\dA-Za-z(!@#$%&*-,.?;:)]{6,15}$/
+			if (!pw.test($("#password").val())) {
+				changeClass($("#picVpwdone"), $("#pwdone"), "E");
+				return false;
+			}
+			return true;
+		}); 
+		function removeClassName(pic, text) {
+			if (pic.hasClass("silk-cancel"))
+				pic.removeClass("silk-cancel");
+			if (pic.hasClass("silk-accept"))
+				pic.removeClass("silk-accept");
+			if (pic.hasClass("silk-information"))
+				pic.removeClass("silk-information");
+
+			if (text.hasClass("registspanTs"))
+				text.removeClass("registspanTs");
+			if (text.hasClass("registspanWrong"))
+				text.removeClass("registspanWrong");
+		}
+		function changeClass(p, t, type) {
+			removeClassName(p, t);
+			if (type == "N") {//普通状态
+				p.addClass("silk-information");
+				t.addClass("registspanTs");
+			}
+			if (type == "S") {//成功状态
+				p.addClass("silk-accept");
+				t.addClass("registspanTs");
+			}
+			if (type == "E") {//错误状态
+				p.addClass("silk-cancel");
+				t.addClass("registspanWrong");
+			}
+		}
+	});
+</script>

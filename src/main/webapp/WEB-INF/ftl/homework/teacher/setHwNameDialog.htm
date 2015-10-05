@@ -1,0 +1,67 @@
+<style>
+#SetHwNameDialog { display:none;}
+.sethwname-wrp { padding-top:30px; padding-bottom:50px;}
+.sethwname-key {height:35px;line-height:32px;float:left;font-size:16px;margin-left:143px;}
+.sethwname-inputwrap { float:left; text-align:center;}
+.sethwname-tip { height:26px; line-height:26px; float:left; margin-left:10px; color:#FF0000; }
+#SetHwName-Sure {float:left;margin-left:201px;margin-right:20px;}
+#SetHwName-Cancel {height:32px;line-height:32px;float:left;cursor:pointer;}
+.sethwname-gray {color:gray;}
+</style>
+<div id="SetHwNameDialog">
+	<h3>复制作业</h3>
+	<div class="sethwname-wrp">
+		<div class="sethwname-key">新作业名称：</div>
+		<div class="sethwname-inputwrap"><input type="text" name="sethwname-hwname" value="请输入新作业的名称" class="chooshine-input"/></div>
+		<div class="sethwname-tip">作业名称不能为空</div>
+		<div class="nofl"></div>
+	</div>
+	
+	<div class="sethwname-operates">
+		<div id="SetHwName-Sure" class="chooshine-btn">确定</div>
+		<div id="SetHwName-Cancel" class="chooshine-cancel">取消</div>
+	</div>
+	<input type="hidden" name="sethwname-hwid" />
+</div>
+<script>
+$("#SetHwNameDialog").dialog({
+	autoOpen: false,
+	dialogClass:"chooshine-dialog",
+	width: 600,
+	height:270,
+    modal: true
+});
+
+$("#SetHwName-Sure").click(function() {
+	var hwName = $("input[name='sethwname-hwname']").val();
+	if(hwName=="" || hwName=="请输入新作业的名称") {
+		$(".sethwname-tip").show();
+		return;
+	}
+	var hwId = $("input[name='sethwname-hwid']").val();
+	location.href = "<@spring.url '/homework/teacher/copyHomework.html?hwId=' />"+hwId+"&hwName="+hwName;
+});
+
+$("#SetHwName-Cancel").click(function() {
+	$("#SetHwNameDialog").dialog("close");
+});
+
+function setHwId(hwId) {
+	$("input[name='sethwname-hwid']").val(hwId);
+}
+
+$("input[name='sethwname-hwname']").focus(function() {
+	if($(this).val() == "请输入新作业的名称") {
+		$(this).val("");
+		$(this).removeClass("sethwname-gray");
+	}
+	$(".sethwname-tip").hide();
+}).blur(function() {
+	if($(this).val() == "") {
+		$(this).val("请输入新作业的名称");
+		$(this).addClass("sethwname-gray");
+	} else if($(this).val() == "请输入新作业的名称") {
+		$(this).addClass("sethwname-gray");
+	}
+});
+</script>>

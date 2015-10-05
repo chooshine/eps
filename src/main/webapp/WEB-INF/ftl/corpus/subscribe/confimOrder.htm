@@ -1,0 +1,34 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">语料订购</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<div class="content">
+<div class="testl_con" style="padding-top:12px;margin-bottom:200px;">
+	<div class="or_fkc">
+		<div class="or_fkclu1"><span><img src="<@spring.url '/images/order/fk1.png'/>" width="826" height="92"/></span></div>
+		<div class="or_fkclu2">您当前订购<span>${body}个月</span>语料搜索服务------总价：<span>${total_fee}元</span></div>
+		<div class="or_fkclu3">请选择<span class="or_fkclu3l">支付</span><span class="or_fkclu3r">方式</span></div>
+		<div class="inPiaMoney2" style=" text-align:center;" >
+			<a target="_blank"><span><img src="<@spring.url '/images/personcenter/u70_normal2.png'/>"/></span></a>
+		</div>
+	</div>
+</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<script>
+	$(function(){
+		var url = "<@spring.url '/corpus/pay.html?total_fee=${total_fee}&subject=${subject}&body=${body}&tradeNo=${tradeNo}'/>";
+		$($(".inPiaMoney2").find("a")).attr("href",encodeURI(url));
+		$($(".inPiaMoney2").find("a")).click(function(){
+			location.href="<@spring.url '/corpus/paying.html?total_fee=${total_fee}&subject=${subject}&body=${body}&tradeNo=${tradeNo}'/>";
+		});
+	})
+</script>

@@ -1,0 +1,126 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<#include "homework/teacher/correctHomeworkLogo.htm" parse="true" encoding="UTF-8" >
+<style type="text/css">
+body {background-color:#eee;}
+.wrap03_nr {border:1px #DDDDDD solid;background-color:#fff;box-shadow:0 0 5px #aaa;}
+.wrap03_nr ul li.li_nr {width:100%;}
+.wrap03_nr ul li span.span00 {width:234px;}
+.wrap03_nr ul li span.span01 {width:144px;}
+.wrap03_nr ul li span.span02 {width:186px;text-align:left;}
+.li_header .span00 {text-indent:86px;}
+.span00 > img {width:48px;height:48px;float:left;margin:5px 18px;}
+.span00 > div {line-height:59px;font-size:16px;}
+.span01 > img {width:12px;}
+.span01 .processbarwrap {display:inline-block;width:100px;height:20px;border:1px solid #ddd;border-radius:3px;margin-top:19px;}
+.span01 .processbarwrap .processbar {height:20px;line-height:20px;text-align:center;background-color:#D8EEEC;border-radius:3px;}
+.span01 .processbarwrap .percent {float:right;position:relative;top:-17px;right:31px;}
+.li_nr a {font-size:16px;color:#00afed;font-weight:bold;}
+.li_nr a:HOVER {color:#ff9966;}
+
+.cioc-classinfo-wrap {padding:20px;margin-bottom:15px;border:1px solid #cccccc;background-color:#D8EEEC;box-shadow:0 1px 4px #ccc;}
+.cioc-classinfo-wrap .cioc-classinfo-top {margin-bottom:20px;}
+.cioc-classinfo-wrap .cioc-classinfo-top div {height:32px;line-height:32px;padding-left:30px;font-size:16px;background:url("<@spring.url '/images/examsystem/info_16_green.png'/>") no-repeat scroll 0 0;color:#ff9966;}
+.cioc-classinfo-down {float:left;min-width:200px;height:24px;text-align:left;}
+.cioc-classinfo-wrap .cioc-classinfo-down div {height:30px;line-height:24px;padding-left:40px;padding-right:50px;font-size:24px;border-right:1px solid #cccccc;margin-left:50px;}
+.cioc-classinfo-wrap .cioc-classinfo-down .classnum {background:url("<@spring.url '/images/examsystem/user_24_green.png'/>") no-repeat scroll 0 0;}
+.cioc-classinfo-wrap .cioc-classinfo-down .classnum span {padding-right:5px;}
+.cioc-classinfo-wrap .cioc-classinfo-down .number {display:inline-block;color:#ff9966;}
+.cioc-classinfo-wrap .cioc-classinfo-down .actualnum {background:url("<@spring.url '/images/examsystem/cloud_upload_green.png'/>") no-repeat scroll 0 0;}
+.cioc-classinfo-wrap .cioc-classinfo-down .actualnum span {padding:0px 5px;}
+.cioc-classinfo-wrap .cioc-classinfo-down .markednum {background:url("<@spring.url '/images/examsystem/check_26_green.png'/>") no-repeat scroll 0 0;}
+.cioc-classinfo-wrap .cioc-classinfo-down .markednum span {padding:0px 5px;}
+
+.back {font-size:15px;color:#009999;float:right;margin-top:-30px;}
+.back:hover {color:#ff9966;}
+</style>
+<div class="content">
+	<div class="cioc-classinfo-wrap">
+		<div class="cioc-classinfo-top">
+			<div>${classBasicInfo.hw_name}</div>
+			<a class="back" href="<@spring.url '/homework/teacher/pastHomeworks.html' />">返回 >></a>
+			<a class="nofl"></a>
+		</div>
+		<div class="cioc-classinfo-downwrap">
+			<div class="cioc-classinfo-down">
+				<div><span>${classBasicInfo.class_name}</span></div>
+			</div>
+			<div class="cioc-classinfo-down">
+				<div class="classnum"><span class="number">${classBasicInfo.class_num}</span>人</div>
+			</div>
+			<div class="cioc-classinfo-down">
+				<div class="actualnum">已交<span class="number">${classBasicInfo.actual_num}</span></div>
+			</div>
+			<div class="cioc-classinfo-down">
+				<div style="border-right:none;" class="markednum">已阅<span class="number">${classBasicInfo.marked_num}</span></div>
+			</div>
+		</div>
+		<div class="nofl"></div>
+	</div>
+	<div class="wrap03_nr">
+		<ul>
+			<li class="li_header">
+				<span class="span00">姓名</span>
+				<span class="span01">学号</span>
+				<span class="span02">上交时间</span>
+				<span class="span01">正确率</span>
+				<span class="span01">阅卷情况</span>
+				<span class="span01"></span>
+			</li>
+			<#if students??>
+				<#list students as student>
+					<li class="li_nr">
+						<span class="span00">
+							<img src="<@spring.url '/${student.photo}'/>">
+							<div>${student.student_name}</div>
+						</span>
+						<span class="span01">${student.student_no}</span>
+						<span class="span02 color-orange"><#if student.commit_time??>${student.commit_time?string("M-d HH:mm")}</#if></span>
+						<span class="span01 color-orange">
+							<#if student.right_percent??><div class="processbarwrap"><div class="processbar" style="width:${student.right_percent};"></div><div class="percent"><label>${student.right_percent}</lable></div></div></#if>
+						</span>
+						<#if student.commit_flag==1>
+							<#if student.correct_flag==0>
+								<span class="span01">未批改</span>
+								<span class="span01"><a href="<@spring.url '/homework/teacher/correctHomework.html?hwId=${student.hw_id?c}&hwRecId=${student.hw_rec_id?c}&questype=subjective' />">批改作业</a></span>
+							<#elseif student.correct_flag==1>
+								<span class="span01">正在批改</span>
+								<span class="span01"><a href="<@spring.url '/homework/teacher/correctHomework.html?hwId=${student.hw_id?c}&hwRecId=${student.hw_rec_id?c}&questype=subjective'/>">继续批改</a></span>
+							<#else>
+								<span class="span01">
+								<#if student.star??>
+									<#if student.star==5>
+									<img alt="星星" src="<@spring.url '/images/star-full.png'/>">
+									<img alt="星星" src="<@spring.url '/images/star-full.png'/>">
+									<img alt="星星" src="<@spring.url '/images/star-full.png'/>">
+									<img alt="星星" src="<@spring.url '/images/star-full.png'/>">
+									<img alt="星星" src="<@spring.url '/images/star-full.png'/>">
+									<#elseif student.star==4>
+									<img alt="星星" src="<@spring.url '/images/star-full.png'/>">
+									<img alt="星星" src="<@spring.url '/images/star-full.png'/>">
+									<img alt="星星" src="<@spring.url '/images/star-full.png'/>">
+									<img alt="星星" src="<@spring.url '/images/star-full.png'/>">
+									<#elseif student.star==3>
+									<img alt="星星" src="<@spring.url '/images/star-full.png'/>">
+									<img alt="星星" src="<@spring.url '/images/star-full.png'/>">
+									<img alt="星星" src="<@spring.url '/images/star-full.png'/>">
+									<#elseif student.star==2>
+									<img alt="星星" src="<@spring.url '/images/star-full.png'/>">
+									<img alt="星星" src="<@spring.url '/images/star-full.png'/>">
+									<#else>
+									<img alt="星星" src="<@spring.url '/images/star-full.png'/>">
+									</#if>
+								</#if>
+								</span>
+								<span class="span01"><a href="<@spring.url '/homework/teacher/correctHomework.html?hwId=${student.hw_id?c}&hwRecId=${student.hw_rec_id?c}'/>">查看作业</a></span>
+							</#if>
+						<#else>
+							<span class="span01">未批改</span>
+							<span class="span01">尚未提交</span>
+						</#if>
+					</li>
+				</#list>
+			</#if>
+		</ul>
+	</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >

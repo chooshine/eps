@@ -1,0 +1,156 @@
+<style>
+.chooshine-keyvalue-wrap > div, .chooshine-keyvalue-wrap > input, .chooshine-keyvalue-wrap > select {float:left;}
+.chooshine-keyvalue-key {width:130px;}
+.chooshine-keyvalue-wrap > input, .chooshine-keyvalue-wrap > select {margin-right:10px;}
+.operates div {float:left;}
+.operates {margin-top:10px;}
+.operates .chooshine-btn {width:200px;height:50px;line-height:50px;font-size:16px;font-weight:normal;font-family:"Microsoft Yahei";background:#0075c9;margin-right:20px;}
+.operates .byhand {margin-left:40px;}
+.operates .auto {background:#096;}
+.operates .auto:hover {border-color:#096;}
+</style>
+<div id="CreateHomeworkInfo-Dialog" style="padding-top:15px;">
+	<div>
+		<form id="CreateNewHwForm" action="<@spring.url '/homework/teacher/edithomework.html'/>">
+			<input type="hidden" name="way" />
+			<div class="chooshine-keyvalue-wrap">
+				<div class="chooshine-keyvalue-key">名称</div>
+				<input type="text" name="hwName" placeholder="请填写作业名称" class="chooshine-input"/>
+				<div class="chooshine-tip">作业名称不能为空</div>
+			</div>
+			<div class="chooshine-keyvalue-wrap">
+				<div class="chooshine-keyvalue-key">科目</div>
+				<select name="subjectId" class="chooshine-select">
+					<#if ofterSort??>
+						<#if ofterSort?size &gt; 0>
+							<#list ofterSort as sort>
+								<option value="${sort.sort_id?c}" sortno="${sort.sort_no}">${sort.parent_sort+"·"+sort.sort_name}</option>
+					  		</#list>
+						<#else>
+							<option value="-2">请选择科目</option>
+						</#if>
+				  	<#else>
+				  		<option value="-2">请选择科目</option>
+					</#if>
+				 	<option value="-1" id="OtherSort">其它</option>
+				</select>
+				<div class="chooshine-tip">请选择科目名称</div>
+			</div>
+			<div class="chooshine-keyvalue-wrap">
+				<div class="chooshine-keyvalue-key">年级</div>
+				<select name="gradeLevel" class="chooshine-select"></select>
+			</div>
+		</form>
+	</div>
+	<div class="operates">
+		<div id="ByHand" class="chooshine-btn byhand">人工出题</div>
+		<div id="Auto" class="chooshine-btn auto">自动选题</div>
+		<div class="nofl"></div>
+	</div>
+</div>
+<script>
+//获得所有年级
+var grades = [<#if allGrades??><#list allGrades as grade><#if grade_index!=0>,</#if>{"remark":"${grade.remark}","data":{value:"${grade.code}",name:"${grade.name}"}}</#list></#if>];
+$(function() {
+	$("#CreateHomeworkInfo-Dialog").dialog({
+		title:"新建作业",
+		autoOpen:false,
+		dialogClass:"showtitle-dialog",
+		width:500,
+		height:310,
+		modal:true,
+		resizable:false
+	});
+	
+	//改变年级下拉框中显示的年级
+	function changeGrade(sortNo) {
+		if(sortNo == $("select[name='gradeLevel'] option:selected").attr("remark")) {
+			return;
+		}
+		//删除原有option
+		$("select[name='gradeLevel'] option").remove();
+		//新增option
+		for(var i=0; i<grades.length; i++) {
+			if(grades[i].remark == sortNo) {
+				$("select[name='gradeLevel']").append("<option value="+grades[i].data.value+" remark="+grades[i].remark+">"+grades[i].data.name+"</option>");
+			}
+		}
+		//如果此时没有年级，就设置年级为“无年级限制”
+		$("select[name='gradeLevel']").append("<option value='0' remark="+sortNo+">不限年级</option>");
+	}
+	//页面加载后，填充创建作业名称弹框的年级信息
+	var sortNo = $("select[name='subjectId'] option:selected").attr("sortno");
+	changeGrade(sortNo);
+	//切换科目类型
+	$("select[name='subjectId']").change(function(){
+		if($(this).val() == -1){
+			$("#answerspop_up").dialog("open");
+		} else {
+			changeGrade($("select[name='subjectId'] option:selected").attr("sortno"));
+		}
+	});
+	//点击科目弹框中的科目
+	$('.answerspop_upcem').each(function(e){
+		$(this).click(function(){
+			var selectNode = $("select[name='subjectId']");
+			
+			//获得选择的科目的信息
+			var str=$(this).attr('parentTitle')+"·"+$(this).html();
+			var value = $(this).attr("data-value");
+			var sortNo = $(this).attr("sortno");
+			var node = "<option sortno="+sortNo+" value='"+value+"'>"+str+"</option>";
+			//如果选择的科目不存在，则直接在第一位，如果已经存在，则删除原有的该科目，将选择的科目放在第一位
+			if($("option[value='"+value+"']") != undefined) {
+				$("option[value='"+value+"']").remove();
+			}
+			$(selectNode).prepend($(node));
+			changeGrade(sortNo);
+			$("#answerspop_up" ).dialog("close");
+		});
+	});
+	$('#answerspop_up').dialog({
+	    close:function() {
+	    	if($("select[name='subjectId']").val() == -1) {
+	    		var remark = $("select[name='gradeLevel'] option:selected").attr("remark");
+	    		$("select[name='subjectId'] option").each(function() {
+	    			if($(this).attr("sortno") == remark) {
+	    				$(this)[0].selected = true;
+	    				return false;
+	    			}
+	    		});
+	    	}
+	    }
+	});
+	
+	//判断信息是否填写正确
+	function checkInfo() {
+		if($("input[name='hwName']").val() == "") {
+			$("input[name='hwName']").next().show();
+			return false;
+		}
+		if($("select[name='subjectId']").val()==-1 || $("select[name='subjectId']").val()==-2) {
+			$("select[name='subjectId']").next().show();
+			return false;
+		}
+		
+		return true;
+	}
+	//点击"手动出题"
+	$("#ByHand").click(function() {
+		if(!checkInfo()) return;
+		$("input[name='way']").val("byhand");
+		$("#CreateNewHwForm").submit();
+	});
+	//点击“自动选题”
+	$("#Auto").click(function() {
+		if(!checkInfo()) return;
+		$("input[name='way']").val("auto");
+		$("#CreateNewHwForm").submit();
+	});
+	
+	
+	$("input[name='hwName']").click(function() {
+		$(this).next().hide();
+	});
+});
+</script>

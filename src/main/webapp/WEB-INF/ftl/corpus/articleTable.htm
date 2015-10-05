@@ -1,0 +1,20 @@
+<table class="table table-bordered table-hover table-condensed">
+	<thead>
+		<tr>
+			<th>序号</th>
+			<th>作品名称</th>
+			<th>发表日期</th>
+		</tr>
+	</thead>
+	<tbody>
+		<#if articles??>
+			<#list articles as article>
+				<tr>
+					<td>${article_index+1}</td>
+					<td>${article.articleName}</td>
+					<td>${article.publisherDate}</td>
+				</tr>
+			</#list>
+		</#if>
+	</tbody>
+</table>

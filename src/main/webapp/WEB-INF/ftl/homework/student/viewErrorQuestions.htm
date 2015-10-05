@@ -1,0 +1,250 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eee;}
+.sortcontainer {float:right;}
+.sorts {min-width:52px;height:0;position:relative;}
+.sort {height:25px;line-height:25px;padding:0 10px;cursor:pointer;color:#fff;background-color:#00afed;}
+.sort:hover {background-color:#fff;color:#000;}
+.hide {display:none;}
+
+.paperx_tjx {width:600px;}
+.test_box4 {width:509px;margin-left:-3px;}
+
+.cq-right {width:776px;float:right;margin-left:20px;}
+.cq-right .topinfo {width:736px;padding:20px;border:1px solid #aaa;background-color:#fff;margin-bottom:20px;}
+.cq-right .topinfo .info {float:left;}
+.cq-right .topinfo .info > div {line-height:37px;font-size:14px;float:left;margin-right:30px;}
+.cq-right .topinfo .chooshine-btn {width:86px;}
+.cq-right .topinfo .cq-return {float:right;margin-right:0px;}
+.cq-right .centercontainer {padding-left:20px;margin-bottom:20px;}
+.cq-right .center-left {float:left;}
+.cq-right .center-left .types {margin-bottom:20px;}
+.cq-right .center-left .type {float:left;font-size:14px;margin-right:25px;}
+.cq-right .center-left .type:HOVER {color:#ff9966;cursor:pointer;}
+.cq-right .center-right {float:right;margin-bottom:20px;}
+.cq-right .center-right .search .chooshine-input {float:left;margin-right:10px}
+.cq-right .center-right .search img {cursor:pointer;}
+.topinfo span.color-orange {font-weight:bold;margin-left:5px;}
+.cq-currenttype {color:#00afed;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f" style="margin-right:487px;">错题集</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f"><a href="<@spring.url '/homework/student/viewAnaly.html'/>">作业历史</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/student/viewAnaly.html'/>">考试历史</a></li>
+	   		<li class="weblog-f curNav"><a href="<@spring.url '/student/viewErrorQuestions.html'/>" style="border-right:none;">错题集</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+	<div>
+		<#--左侧-->
+		<div style="width:200px;height:589px;border:1px solid #aaa;float:left;background-color:#ddd;">
+			<div style="padding:10px 0 10px 10px;background-color:#00afed;margin-bottom:20px;">
+				<div style="float:left;margin-right:20px;">
+					<span id="Subject" subjectid="${subjectId?c}" style="color:#fff;">${sortName}</span>
+				</div>
+				<div class="sortcontainer">
+					<div style="padding:0 10px;cursor:pointer;color:#fff;margin-bottom:5px;"><span id="ChangeSort">切换科目</span></div>
+					<div id="Sorts" class="sorts hide">
+						<#list sortList as sort>
+						<div class="sort" sortid="${sort.sort_id?c}">${sort.sort_name}</div>
+						</#list>
+					</div>
+				</div>
+				<div class="nofl"></div>
+			</div>
+			
+			<div class="kpcontainer">
+				<div id="KpsWrap">
+					<#include "network/teacher/kpsTree.htm" parse="true" encoding="UTF-8" >
+				</div>
+			</div>
+		</div>
+		
+		<#--右侧-->
+		<div class="cq-right">
+			<div class="centercontainer">
+				<div class="center-left">
+					<div class="types">
+						<#list quesTypes as type>
+							<div class="type<#if type_index==0> cq-currenttype struct-currenttype</#if>" tsid="${type.ts_id?c}"><span>${type.ts_name}</span></div>
+						</#list>
+						<div class="nofl"></div>
+					</div>
+				</div>
+				<div class="center-right">
+					<div class="search">
+						<input id="Keyword" type="text" class="chooshine-input" placeholder="关键词"/>
+						<img id="Search" src="<@spring.url '/images/search_blue.png'/>"  title="查找含有关键词的小题" />
+					</div>
+					<div class="nofl"></div>
+				</div>
+				<div class="nofl"></div>
+			</div>
+			<div id="Questions" class="questions"></div>
+			<div class="nofl"></div>
+		</div>
+	</div>
+</div>
+<div id="ArtDialog">
+	<h3></h3>
+	<div class="struct-artcontent" style="min-height:200px;line-height:27px;font-size:14px;padding:0px 10px;"></div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<#include "homework/student/recordDetailDialog.htm" parse="true" encoding="UTF-8">
+<script>
+$("#ArtDialog").dialog({
+	dialogClass:"chooshine-dialog",
+	autoOpen: false,
+    modal: true,
+    width:700,
+    height:400,
+    resizable:false,
+    buttons: [{
+  		text: "关闭",
+  		click: function() {
+  			$(this).dialog("close");
+  		}
+    }]
+});
+//查询知识点
+function getKnowledgepoints() {
+	$.ajax({
+		url:"<@spring.url '/student/getErrorQuestionsKps.html'/>",
+		type:"POST",
+		data:"subjectId="+$("#Subject").attr("subjectid")+
+			 "&tsId="+$(".struct-currenttype").attr("tsid")+
+			 "&keyword="+$("#Keyword").val(),
+		contentType:"application/x-www-form-urlencoded;charset=utf-8",
+		dataType:"html",
+		success:function(result) {
+			$("#KpsWrap").html(result);//填充知识点树
+			if($(".struct-kpname")[0] == undefined) {
+				$("#Questions").html("");
+				return;
+			}
+			$(".struct-kpname").eq(0).addClass("cq-currentkp").attr("kpid");//设置第一个知识点为选中状态
+			showQuestions(1);//获取小题
+			addClickEventToKp($(".struct-kpname"));//为新增的知识点添加点击事件 
+			$(".cq-first-kpinfo").find(".cq-imgwrap").each(function() {
+				addClickEventToKpImg(this);
+			});
+			$(".cq-second-kpinfo").find(".cq-imgwrap").each(function() {
+				addClickEventToKpImg(this);
+			});
+		}
+	});
+}
+//查询小题信息
+function showQuestions(pageNo) {
+	var subjectId = $("#Subject").attr("subjectid"),
+		kpId = $(".cq-currentkp").attr("kpid"),
+		kpId = (kpId==undefined)?0:kpId,//知识点为undefined，代表当前题库没有小题，这时设kpId为0（一个不存在的知识点）
+		tsId = $(".struct-currenttype").attr("tsid"),
+		keyword = encodeURIComponent(encodeURIComponent($("#Keyword").val()));
+	$.ajax({
+		url:"<@spring.url '/student/getErrorQuestions.html'/>",
+		data:"subjectId="+subjectId+"&kpId="+kpId+"&tsId="+tsId+"&keyword="+keyword+"&pageNo="+pageNo,
+		type:"POST",
+		contentType:"application/x-www-form-urlencoded;charset=utf-8",
+		dataType:"html",
+		success:function(result) {
+			$("#Questions").html(result);
+		}
+	});
+}
+//给题目类型添加点击事件
+function addClickEventToTypeNode(typeNode) {
+	$(typeNode).click(function() {
+		$(".struct-currenttype").removeClass("cq-currenttype struct-currenttype");
+		$(this).addClass("cq-currenttype struct-currenttype");
+		getKnowledgepoints();
+	});
+}
+//给知识点添加点击事件
+function addClickEventToKp(kpNode) {
+	$(kpNode).click(function() {
+		$(".cq-currentkp").removeClass("cq-currentkp");
+		$(this).addClass("cq-currentkp");
+		showQuestions(1);
+	});
+}
+//知识点树左边的加号、减号点击事件
+function addClickEventToKpImg(node) {
+	$(node).click(function() {
+		var nextLayerKpsWrap = $(this).parent().next();
+		if(nextLayerKpsWrap[0] != undefined) {
+			if(nextLayerKpsWrap.hasClass("hide")) {
+				nextLayerKpsWrap.removeClass("hide");
+				$(node).find("img").attr("src", "<@spring.url '/images/close.png'/>");
+			} else {
+				nextLayerKpsWrap.addClass("hide");
+				$(node).find("img").attr("src", "<@spring.url '/images/open.png'/>");
+			}
+		}
+	});
+}
+$(function() {
+	$($(".struct-kpname")[0]).addClass("cq-currentkp");//第一个知识点设为默认知识点
+	$("#ChangeSort").click(function() {//点击“切换科目”
+		$("#Sorts").toggleClass("hide");
+	});
+	$(".sort").click(function() {//点击不同的科目
+		var subjectId = $(this).attr("sortid");
+		if(subjectId != $("#Subject").attr("subjectid"))
+			location.href = "<@spring.url '/student/viewErrorQuestions.html?subjectId=' />"+subjectId;
+		$("#Sorts").addClass("hide");
+	});
+	if($(".struct-kpname")[0] != undefined) {
+		addClickEventToKp($(".struct-kpname"));//为初始加载的知识点添加点击事件
+		$(".struct-kpname").eq(0).trigger("click");//自动触发第一个考点的点击事件
+	}
+	
+	addClickEventToTypeNode($(".type"));   //为初始加载的题目类型添加点击事件
+	$("#Search").click(function() {//点击搜索
+		getKnowledgepoints();
+	});
+});
+</script>
+<style>
+.text_sju {min-height:0;border:none;box-shadow:none;background-color:#eee;}
+/*小题头部信息样式*/
+.questop {padding:10px 17px;}
+.questop .quesinfowrap {float:left;margin-right:20px;}
+.questop .timewrap {margin-right:0px;}
+.quesinfowrap > div {line-height:25px;font-size:14px;float:left;}
+.quesinfowrap .mtopic {width:49px;font-size:20px;font-weight:bold;text-align:center;color:#b2d5ff;margin-top:-2px;}
+.quesinfowrap .usetimeskey {height:20px;padding-left:24px;cursor:pointer;background:url("<@spring.url '/images/document_alt_stroke_24.png'/>") no-repeat scroll 0 5px;}
+.quesinfowrap .usetimes {width:117px;}
+.quesinfowrap .usetimes .color-orange {font-weight:bold;margin:auto 2px;}
+.quesinfowrap .resourcekey {height:20px;padding-left:24px;cursor:pointer;background:url("<@spring.url '/images/book_gray.png'/>") no-repeat scroll 0 5px;}
+.quesinfowrap .resource {width:160px;}
+.quesinfowrap .paperx_zsd {margin-bottom:auto;}
+.quesinfowrap .paperx_zsd .paperx_zsdl {width:0;cursor:pointer;margin-top:4px;}
+.quesinfowrap .paperx_zsd .paperx_zsdr {width:162px;margin-top:2px;}
+.quesinfowrap .paperx_zsd .paperx_zsdr div {margin-bottom:3px;}
+.paperxt_stx .questop .paperx_zsd {margin-left:auto;margin-top:auto;}
+.quesinfowrap .timekey {height:20px;padding-left:24px;cursor:pointer;background:url("<@spring.url '/images/clock_gray.png'/>") no-repeat scroll 0 4px;}
+.quesinfowrap .quesinfovalue span {padding:2px 0;}
+.detailbtn {margin-left:20px;color:#00afed;}
+.detailbtn:hover {color:#ff9966;}
+
+.text_sju li {border:1px solid #aaa;margin-bottom:20px;background-color:#fff;}
+.paperx_fxk .paperx_zsdr, .paperx_fxk .paperx_jxxqr {width:660px;}
+.paperx_jxxqr .fftxt {min-height:50px;}
+.statistic {margin-top:15px;margin-bottom:35px;}
+.statistic > div {font-size:14px;float:left;}
+.statistic .statistic-left {width:58px;padding-left:22px;color:#acaba8;background:url("<@spring.url '/images/examsystem/graph.png'/>") no-repeat scroll 0 0;}
+.statistic .statistic-right {padding-left:10px;}
+
+/*小题编辑部分*/
+.paperx_fxk .paperx_zsdr, .paperx_fxk .paperx_jxxqr {width:660px;}
+.paperx_jxxqr .fftxt {min-height:50px;}
+.pulloutwrap {margin-top:10px;}
+.pullout {padding-left:36px;background:url("<@spring.url '/images/arrow_expand.png' />") no-repeat scroll 0px 0px transparent;color:#ff9966;}
+.pullout:hover {text-decoration:underline;}
+</style>

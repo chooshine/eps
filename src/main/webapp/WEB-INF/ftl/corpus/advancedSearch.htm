@@ -1,0 +1,225 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+
+<#-- <div class="ziyu">
+	<div class="ziyux">
+		<div class="ziyur"><a href="<@spring.url '/corpus/subscribe.html'/>">立即续订</a></div>
+		<div class="ziyul">您订阅的语料搜索服务将在：<span>${endDate}</span> 到期</div>
+	</div>
+</div> -->
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">高级搜索</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="content">
+
+<div id="wordsSearch">
+		<div>
+		<form method="GET" action="<@spring.url '/corpus/search.html'/>">
+			<input type="hidden" name="key" id="key"/>
+			<input type="hidden" name="leftNum">
+			<input type="hidden" name="rightNum">
+			<input type="hidden" name="intervalNum">
+			<div style=" width:350px; float:left;">
+			  <div style="  width:338px;  height:445px;">
+				<div class="advanced_x1">
+					<div class="advanced_x1a">搜索条件</div>
+				</div>
+				<div style=" background:#fff;width:328px; padding:5px;" >
+					<div class="advanced_1">
+						<div class="advanced_3">关键词一:</div>
+						
+						<div class="advanced_2"><input type="text" name="key1" id="key1"   class="input_out"/></div>
+						
+					</div>
+					<div  class="advanced_1">
+						<div class="advanced_3">活用形</div>
+						<div class="advanced_2">
+							<input type="text" name="keyTogether" class="input_out">
+						</div>
+					</div>
+					<div class="advanced_1">
+						<div class="advanced_3">关键词二:</div>
+						
+						<div class="advanced_2"><input type="text" name="key2" id="key2"   class="input_out"/></div>
+						
+					</div>
+					<div class="advanced_1">
+						<div class="advanced_3">前文脉:</div>
+						<div class="advanced_4">
+							<span id="downDigital"></span>
+							<input id="beforeWords" type="text" class="input_out" />
+							<span ></span>字 
+								<span style="margin-left: 20px;"></span>后文脉
+							<input id="afterWords" type="text" class="input_out"/>
+							
+							<span id="upDigital"></span>
+							<span ></span>字
+							</div>
+							
+					</div>
+					<div class="advanced_1">
+						<div class="advanced_3">语料库:</div>
+						<div class="advanced_2">
+						<div class="advanced_x2l">
+						<#if repType??>
+							<select name="repositoryType" class="input_out1" style="font-family:'微软雅黑';">
+							<#list repType as type>
+								<option value="${type.code}" style="line-height: 25px">${type.name}</option>
+							</#list>
+							</select>
+						</#if>
+						</div>
+						</div>
+					</div>
+					<div class="advanced_1">
+						<div class="advanced_3">两词关系:</div>
+						<div class="advanced_x2">
+							<div class="advanced_x2l">
+								<select name="placeType" class="placeType input_out1" id="placetype" style="font-family:'微软雅黑';">
+									<option value="1">有前词并有后词</option>
+					               	<option value="2">有前词无后词</option>
+					               	<option value="3">前词之后有后词</option>
+					                <option value="4">前词之前有后词</option>
+					               	<option value="5">前词之后有后词且间隔小于</option>
+					               	<option value="6">前词之前有后词且间隔小于</option>
+								</select>
+							</div>
+							<div class="advanced_x2r">
+								<input id="itn" type="text" class="input_out" /><span ></span>  字
+							</div>
+						</div>
+					</div>
+					<div class="advanced_1">
+						<div class="advanced_3">篇名:</div>
+						<div class="advanced_2"><div class="advanced_x2l"><input type="text" name="articleName" id="articleName"  class="input_out"/></div></div>
+					</div>
+					<div class="advanced_1">
+						<div class="advanced_3">年代:</div>
+						<div class="advanced_5">
+							
+							<input type="text" name="startPublicationDate" id="sDate"  class="input_out"/>
+							<span></span> 年 至 
+							 <input type="text" name="endPublicationDate" id="eDate" class="input_out"/><span ></span>  年
+						</div>
+					</div>
+					<div class="advanced_1">
+						<div class="advanced_3">样本范围:</div>
+						<div class="advanced_2">
+						<div class="advanced_x2l">
+						<#if searchLimit??>
+							<select name="searchLimit" class="input_out1" style="font-family:'微软雅黑';">
+							<#list searchLimit as type>
+								<option value="${type.code}" style="line-height: 25px">${type.name}</option>
+							</#list>
+							</select>
+						</#if>
+						</div>
+						</div>
+						
+					</div>
+					
+					<div class="advanced_1" style="margin-top:8px;margin-left:75px;">
+						<div class="advanced_a1" >
+							<input type="submit" value="搜索" id="advancedSearch" class="b1" style="width:90px;height:29px;weight:bold;color:#fff; font-size:15px;background:none;border:0px; font-family:'微软雅黑';"/>
+						</div>
+									
+					</div>
+					
+					
+				</div>
+			 </div>
+			</div>
+			<input type="hidden" name="pageNo" value="1" >
+			<input type="hidden" name="pageSize" value="20">
+			<input type="hidden" name="authors" >
+			</form>
+			<div class="authorList">
+				 <#include "corpus/authorList.htm" parse="true" encoding="UTF-8">
+			</div>
+		</div>
+	</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+	$(function(){
+		var authors = [];
+		var rt = $("select[name=repositoryType]").val();
+		//if(rt != 'l_article')$(".authorList").hide();
+		authorListAddEvent();
+		$("select[name=repositoryType]").change(function(){
+			var type = $(this).val();
+			$.get("<@spring.url '/corpus/loadAuthor.html'/>",{"reportName":type},function(data){
+				$(".authorList").html(data);
+				authorListAddEvent();
+			},"html");
+		});
+		function authorListAddEvent(){
+			$("#tabs").tabs({
+				collapsible: true
+			});
+			$(".auList a").each(function(index){
+				var isCreate = false;
+				$(this).click(function(){
+					//showMsg($(this).attr("id"));
+					var me = $(this);
+					if(isCreate)return;
+					me.addClass("authorSelect");
+					authors.push(me.attr("id"));
+					//showMsg(authors);
+					$("<div></div>",{
+						"id":"sel_"+me.attr("id"),
+						//"style":"cursor: pointer; margin: 10px 10px 0px 0px; float: left; border: 1px dashed green; color: rgb(23, 51, 2);",
+						"class" : "authorSelected",
+						"html" :$(this).html(),
+						"title":'点击删除',
+						"click":function(e){
+							//showMsg($(this).attr("id"));
+							//var id = $(this).attr("id");
+							if(me.hasClass("authorSelect")){
+								me.removeClass("authorSelect")
+							}
+							$(this).remove();
+							authors.deleteElement(me.attr("id"));
+							//showMsg(authors);
+							isCreate = false;
+						},
+						"mouseover":function(){
+							//$(this).addClass();
+						}
+					}).appendTo($("#selectList"));
+					isCreate = true;
+				});
+			});
+		}
+		
+		$("form").submit(function(){
+			if($("#key1").val()==""){ 
+				//showError("请填写要搜索的关键词!");
+				return false;
+			}
+			//if($("input[name='leftNum']").val() == "") 
+			$("input[name='leftNum']").val($("#beforeWords").val()==""?"0":$("#beforeWords").val());
+			
+			//if($("input[name='rightNum']").val()=="") 
+			$("input[name='rightNum']").val($("#afterWords").val()==""?"0":$("#afterWords").val());
+			
+			//if($("input[name='intervalNum']").val()=="") 
+			$("input[name='intervalNum']").val($("#itn").val()==""?"0":$("#itn").val());
+			
+			$("input[name='authors']").val(authors);
+			if($("#key2").val() != "")
+				$("#key").val($("#key1").val() + " "+ $("#key2").val());
+			else{
+				$("#key").val($("#key1").val());
+			}
+			showBlock();
+			return true;
+		});
+	})
+</script>

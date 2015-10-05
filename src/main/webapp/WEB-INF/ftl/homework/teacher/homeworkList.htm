@@ -1,0 +1,36 @@
+<#import "spring.ftl" as spring/>
+<div class="wrap03_nr">
+	<ul>
+		<#if homeworkList?? && (homeworkList?size&gt;0)>
+		<#list homeworkList as item>
+		<li class="li_nr">
+			<span class="span-objectname">
+				<img alt="作业" src="<@spring.url '/images/examsystem/exam_2.png'/>">
+				<div>
+					<div class="objectname">${item.hw_name}</div>
+					<div class="commoninfo">
+						<label>科目：<em class="sortname color-orange">${item.sort_name}</em></label>
+						<label>题数：<em class="releasetime color-orange">${item.topic_num}</em></label>
+						<label>创建时间：<em class="releasetime color-orange">${item.create_time}</em></label>
+					</div>
+				</div>
+			</span>
+			<span class="span00">已用 <em class="color-orange"><#if item.use_times??>${item.use_times}<#else>0</#if></em> 次</span>
+			<span class="span00 longspan">
+				<a href="javascript:void(0);" class="see" hwid=${item.hw_id?c} types='see'><b class="ap_ks">查看</b></a>
+		   		| <a href="javascript:void(0);" class="settlehw" hwid="${item.hw_id?c}" subjectid="${item.sort_id}"><b class="ap_ks"><#if item.useful_status=="useful">布置作业<#else>查看布置</#if></b></a>
+		   		| <a href="javascript:void(0);" class="del" hwid="${item.hw_id?c}" ><b class="ap_ks">删除</b></a>
+		   		| <a href="javascript:void(0);" class="hw-library-copyhomework" hwid=${item.hw_id?c} ><b class="ap_ks">复制</b></a>
+		   		| <#if item.share_flag==0>
+		   		  	<a href="javascript:void(0);" class="hwlibrary-sharehw" hwid="${item.hw_id?c}" ><b class="ap_ks">共享</b></a>
+		   		  <#else>
+		   		  	<a href="javascript:void(0);" class="hwlibrary-cancelshare" hwid="${item.hw_id?c}"><b class="ap_ks">取消共享</b></a>
+		   		  </#if>
+		    </span>
+		</li>
+		</#list>
+		<#else>
+		<li class="li_nr" style='height:49px;line-height:49px;text-align:center;border-bottom:1px solid #ccc;'><span style='width:100%;'>当前条件下未搜索到作业</span></li>
+		</#if>
+	</ul>
+</div>

@@ -1,0 +1,52 @@
+<#macro pagination page>
+<#assign currentNo= page.getCurrentPageNo()>
+<#assign totalPageCount= page.getTotalPageCount()>
+<#if totalPageCount gt 1>
+<div id="pagination">
+	        		<div class="page">
+	        			<ul>
+	        				<#if page.isHasPreviousPage() >
+	        					<li class="show" url="1">首页</li>
+	        					<li class="show" url="${page.getCurrentPageNo()-1}">上一页</li>
+	        				</#if>
+	        				<li class="pagenumber">
+	        					<ul>
+	        					<#if currentNo gte 1 && currentNo lte 5>
+	        							<#if (totalPageCount gt 10)>
+	        								<#assign t=10>
+	        							<#else>
+	        								<#assign t=totalPageCount>
+	        							</#if>
+	        						<#assign s=1>
+	        					<#elseif currentNo gt 5 && (totalPageCount-currentNo) gt 5>
+	        						<#assign 
+	        							s=currentNo-4
+	        							t=currentNo+5
+	        						>
+	        					<#else>
+	        						    <#if totalPageCount lte 10>
+	        								<#assign s = 1>
+	        							<#else>
+	        								<#assign s=totalPageCount-9>
+	        							</#if>
+	        						<#assign t=totalPageCount>
+	        					</#if>
+	        					<#list s..t as index>
+	        							<#if index == currentNo>
+	        								<li class="nowPage">${index}</li>
+	        							<#else>
+	        								<li class="fcenter" url="${index}">${index}</li>
+	        							</#if>
+	        							
+	        					</#list>
+	        					</ul>
+	        				</li>
+	        				<#if page.isHasNextPage() >
+	        					<li class="show" url="${page.getCurrentPageNo()+1}">下一页</li>
+	        					<li class="show" url="${page.getTotalPageCount()}">尾页</li>
+	        				</#if>
+	        			</ul>
+	        		</div>
+	        	</div>
+</#if>
+</#macro>

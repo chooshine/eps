@@ -1,0 +1,69 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eeeeee;}
+.nr_wrap03 {min-height:500px;background-color:#ffffff;box-shadow:0 0 5px #aaaaaa;}
+.wrap03_nr ul li span.span01 {width:200px;}
+.wrap03_nr ul li span.span02 {width:120px;}
+em {font-style:normal;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">在线考场</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f"><a href="<@spring.url '/network/paperFactory.html'/>">出卷</a></li>
+	   		<li class="weblog-f curNav"><a href="<@spring.url '/netWork/room.html'/>">考场</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/result.html'/>" style="border-right:none;">阅卷</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="nr_wrap03">
+	<div class="wrap03_title"><span class="wrap03_current">待安排的考试</span><a href="<@spring.url '/network/plantests.html'/>"><span>已安排的考试</span></a></div>
+    <div class="wrap03_nr">
+    	<ul>
+       		<#if testsPage?? && testsPage.data?size&gt;0>
+       			<#list testsPage.data as item>
+   				 	<li class="li_nr" >
+   				 		<span class="span-objectname">
+							<img alt="试卷" src="<@spring.url '/images/examsystem/exam_2.png'/>">
+							<div>
+								<div class="objectname">${item.exam_name}</div>
+								<div class="commoninfo">
+									<label>科目：<em class="sortname color-orange">${item.sort_name}</em></label>
+									<label>年级：<em class="color-orange">${item.grade_name}</em></label>
+								</div>
+							</div>
+						</span>
+   				 		<span class="span01 color-orange">${item.test_name+"（"+item.start_time+"）"}</span>
+   				 		<span class="span01">可安排 <em class="color-orange">${item.countClass}</em> 个班级</span>
+   				 		<span class="span02"><b class="ap_ks">安排考场</b></span>
+   				 		<input value="${item.careaor}" name="userId" type="hidden"/>
+   				 		<input value="${item.grade_id?c}" name="gradeId" type="hidden"/>
+   				 		<input value="${item.sort_id?c}" name="sortId" type="hidden"/>
+   				 		<input value="${item.test_id?c}" name="testId" type="hidden" />
+   				 		<input value="${item.exam_name}" name="examName" type="hidden" />
+   				 	</li>
+       			</#list>
+       		<#else>
+       			<li class="li_nr" style="line-height:79px;"><span style="float:none;text-align:center;">您没有未安排的考试</span></li>
+       		</#if>
+        </ul>
+    </div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script src="<@spring.url '/javascripts/jquery-ui-timepicker-addon.js'/>" ></script>
+<#include "network/includedArrangeDialogPage.htm" parse="true" encoding="UTF-8" >
+<script>
+$(function() {
+	//“点击”安排考场
+	$(".ap_ks").each(function(){
+		var liNode = $(this).parent().parent();
+		$(this).click(function(){
+			var sortId = $(liNode).find("input[name='sortId']").val();
+			var testId = $(liNode).find("input[name='testId']").val();
+			getPlanClazz(sortId, testId);
+		});
+	});
+});
+</script>

@@ -1,0 +1,80 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<div class="or_top">
+	<div class="or_tlt"><a href="<@spring.url '/' />"><div class="intop1" ></div></a></div>
+	<div class="or_trt">
+		<ul class="or_trtcl">
+			<li id="myExam">我的试卷</li>
+			<li id="myTeacher">我的老师</li>
+			<li id="myRelease">我的发布</li>
+		</ul>
+		<div class="or_trtcr">
+			
+		</div>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<div class="testl_con" style=" padding-top:12px;">
+	<div class="or_fkc">
+		<div class="or_fkclu1"><span><img src="<@spring.url '/images/order/fk1.png'/>" width="826" height="92"/></span></div>
+		<div class="or_fkclu2">您当前订购<span>${ORDERMONTH}个月</span>${AUTHORNAME}老师的资源------总价：<span>${PRICE}元</span></div>
+		<div  class="or_fkclu3">请选择<span class="or_fkclu3l">支付</span><span class="or_fkclu3r">方式</span></div>
+		<div class="inPiaMoney2" style=" text-align:center;" >
+			<a href=""><span><img src="<@spring.url '/images/personcenter/u70_normal1.png'/>" ></span></a>
+			<a ><span id="alipay"><img src="<@spring.url '/images/personcenter/u70_normal2.png'/>" ></span></a>
+			<a href="per_bankRemit.html"><span><img src="<@spring.url '/images/personcenter/u70_normal3.png'/>" ></span></a>
+		</div>
+	</div>
+</div>
+	
+	<form id="getExamForm" method="GET" action="<@spring.url '/exam_orderExam.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="sortNo" id="sortNo">
+			<input type="hidden" value="-1" name="commitFlag" id="commitFlag">
+	</form>
+	
+	<form id="getTeacherForm" method="GET" action="<@spring.url '/exam_orderTeacher.html' />" />
+			<input type="hidden" value="12" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="isLose" id="isLose">
+			<input type="hidden" value="-1" name="subjectNo" id="subjectNo">
+	</form>
+	
+	<form id="getReleaseForm" method="GET" action="<@spring.url '/exam_orderRelease.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="release" id="release">
+	</form>
+	
+	<form id="getCreateOrderForm" method="GET" action="<@spring.url '/order_createOrder.html' />" />
+			<input type="hidden" value="${PRICE}" name="price">
+			<input type="hidden" value="${GOODS_ID}" name="goodsId">
+			<input type="hidden" value="${MODEL_ID}" name="modelId">
+			<input type="hidden" value="${ORDERMONTH}" name="modelName">
+	</form>
+	
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<script>
+	$(function(){
+		
+		$("#myExam").click(function(){
+			$("#getExamForm").submit();
+		});
+		
+		$("#myTeacher").click(function(){
+			$("#getTeacherForm").submit();		
+		});
+		
+		$("#myRelease").click(function(){
+			$("#getReleaseForm").submit();
+		});
+		
+		$("#alipay").click(function(){
+			$("#getCreateOrderForm").submit();
+		});
+		
+		
+	});
+
+</script>

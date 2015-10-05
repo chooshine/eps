@@ -1,0 +1,126 @@
+<script>
+	//添加知识点
+	$("#AddKnowledgePoint-Dialog").dialog({
+		dialogClass: "chooshine-dialog",
+		autoOpen: false,
+		width: 500,
+		height:400,
+		modal: true
+	});
+	
+	function openKnowledgePointsDialog(subjectId) {
+		$.ajax({
+			type:"post",
+			url:"<@spring.url '/homework/teacher/getKonwledgePointsBySubjectId.html' />",
+			contentType:"application/x-www-form-urlencoded;charset=utf-8",
+			data:"subjectId="+subjectId,
+			dataType:"html",
+			success:function(data) {
+				$("#AddKnowledgePoint-Dialog").find(".examaddupdate-selectcontainer").html(data);
+				commonChange($("#ExamAddUpdate-OneLayerSelect"), $("#ExamAddUpdate-TwoLayerSelect"));
+				commonChange($("#ExamAddUpdate-TwoLayerSelect"), $("#ExamAddUpdate-ThreeLayerSelect"));
+			}
+		});
+	}
+	//级联改变
+	function commonChange(upNode, downNode) {
+		$(upNode).change(function() {
+			kpSelectChangeEvent(upNode, downNode);
+		});
+	}
+	//考点下拉框改变事件
+	function kpSelectChangeEvent(upNode, downNode) {
+		var upKpId = $(upNode).find("option:selected").attr("kpid");//得到上级知识点Id
+		$.ajax({
+			type:"post",
+			url:"<@spring.url '/network/exam_addOrUpdate/getKnowledgePoints.json'/>",
+			contentType:"application/x-www-form-urlencoded; charset=utf-8",
+			data:"parentKpId="+upKpId,
+			success:function(data) {
+				//在成功后，设置下级知识点下拉框
+				emptySubSelect(upNode);//清空下拉框内容并隐藏下拉框
+				var downKpList = data['kps'];//新增下拉框内容
+				//如果下级知识点有内容
+				if(downKpList.length > 0) {
+					for(var i=0; i<downKpList.length; i++)
+						downNode.append("<option kpid='"+downKpList[i].kp_id+"'>"+downKpList[i].kp_name+"</option>");
+					$(downNode).parent().removeClass("examaddupdate-selecthide");//显示下拉框
+				} else $(downNode).parent().addClass("examaddupdate-selecthide");//隐藏下拉框
+				if(downNode.attr("id") == "ExamAddUpdate-TwoLayerSelect") kpSelectChangeEvent(downNode, $("#ExamAddUpdate-ThreeLayerSelect"));
+			}
+		});
+	}
+	//清空某个知识点的所有孩子知识点的下拉框内容并隐藏下拉框，包括直接孩子和孙子知识点
+	function emptySubSelect(node) {
+		if($(node).parent().next()[0] != undefined) {
+			$(node).parent().next().addClass("examaddupdate-selecthide");
+			$(node).parent().next().find("select").empty();
+			emptySubSelect($(node).parent().next().find("select"));
+		}
+	}
+	//点击添加知识点弹框中的取消
+	$("#AddKnowledgeCancel").click(function() {
+		$("#AddKnowledgePoint-Dialog").dialog("close");
+	});
+	//点击添加知识点弹框中的确定
+	$("#AddKnowledgeSure").click(function() {
+		//获取弹出框内容
+		var title = "";//用于记录完整的知识点路径
+		var threeSelectedOpt = $("#ExamAddUpdate-ThreeLayerSelect").find("option:selected");
+		if(threeSelectedOpt[0] == undefined) {
+			var twoSelectedOpt = $("#ExamAddUpdate-TwoLayerSelect").find("option:selected");
+			if(twoSelectedOpt[0] == undefined) {
+				var oneSelectedOpt = $("#ExamAddUpdate-OneLayerSelect").find("option:selected");
+				var kpId = oneSelectedOpt.attr("kpid");
+				var kpName = oneSelectedOpt.val();
+				title = kpName;
+			} else {
+				var kpId = twoSelectedOpt.attr("kpid");
+				var kpName = twoSelectedOpt.val();
+				title = $("#ExamAddUpdate-OneLayerSelect").val()+" - "+kpName;
+			}
+		} else {
+			var kpId = threeSelectedOpt.attr("kpid");
+			var kpName = threeSelectedOpt.val();
+			title = $("#ExamAddUpdate-OneLayerSelect").val()+" - "+$("#ExamAddUpdate-TwoLayerSelect").val()+" - "+kpName;
+		}
+		
+		//判断添加的知识点是否已经被添加过，是则给出提示
+		var flag = true;
+		var addKpNode = $($($(".pep_bjdyc")[0]).parents("li")[0]).find(".examaddupdate-addkp")[0];
+		if(addKpNode != undefined) {
+			$(addKpNode).parent().find(".knowledgepointdiv-delete").each(function() {
+				if(title == $(this).attr("title")) {
+					$.chooshine.alert("当前小题已添加过该考点，不能重复添加。");
+					flag = false;
+					return false;
+				}
+			});
+		} else {
+			addKpNode = nowAddKpNode;
+			$(addKpNode).parent().find(".knowledgepointdiv-delete").each(function() {
+				if(title == $(this).attr("title")) {
+					$.chooshine.alert("当前材料已添加过该考点，不能重复添加。");
+					flag = false;
+					return false;
+				}
+			});
+		}
+		
+		if(!flag) {
+			return;
+		}
+		
+		//关闭弹出框
+		$("#AddKnowledgePoint-Dialog").dialog("close");
+		//动态增加标签
+		var kpNode = "<div class='knowledgepointdiv-delete' kpid='"+kpId+"' title='"+title+"'>"+kpName+"</div>";
+		$(kpNode).insertBefore($(addKpNode));
+		//给动态增加的标签添加点击事件
+		$(addKpNode).prev().click(function() {
+			if(!$(addKpNode).hasClass("examaddupdate-addkphide")) {
+				$(this).remove();
+			}
+		});
+	});
+</script>

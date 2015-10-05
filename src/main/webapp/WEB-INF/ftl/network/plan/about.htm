@@ -1,0 +1,62 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eee;}
+.wrap03_nr ul li span.span-objectname {width:400px;}
+.wrap03_nr ul .li_header span.span-objectname {line-height:59px;text-indent:20px;color:#999;}
+.wrap03_nr ul li span.span01 {width:155px;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">在线考场</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f"><a href="<@spring.url '/network/paperFactory.html'/>">出卷</a></li>
+	   		<li class="weblog-f curNav"><a href="<@spring.url '/netWork/room.html'/>">考场</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/result.html'/>" style="border-right:none;">阅卷</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<div class="nr_wrap03">
+	<div class="wrap03_title"><a href="<@spring.url '/netWork/networ.html'/>"><span >正在考试</span></a><a href="<@spring.url '/netWork/about.html'/>"><span class="wrap03_current">即将考试</span></a></div>
+    <div class="wrap03_nr">
+    	<ul>
+            <#if aboutList?? && (aboutList.data?size&gt;0)>
+            	<li class="li_header">
+	        		<span class="span-objectname">考试</span>
+		        	<span class="span01">班级</span>
+		        	<span class="span01">开考时间</span>
+		        	<span class="span01">考场</span>
+		        	<span class="span01">应参考人数</span>
+		        </li>
+				<#list aboutList.data as about>
+					<li class="li_nr">
+						<span class="span-objectname">
+							<img alt="试卷" src="<@spring.url '/images/examsystem/exam_2.png'/>">
+							<div>
+								<div class="objectname">${about.test_name}</div>
+								<div class="commoninfo">
+									<label>科目：<em class="sortname color-orange">${about.sort_name}</em></label>
+								</div>
+							</div>
+						</span>
+           				<span class="span01">${about.class_name}</span>
+						<span class="span01 color-orange">${about.date}</span>
+						<span class="span01">${about.network_addr}</span>
+						<span class="span01 color-orange">${about.stu}</span>
+          			</li>
+				</#list>
+			<#else>
+			<li class="li_nr" style='line-height:79px;text-align:center;'><span style='width:100%;'>没有即将开始的考试</span></li>
+			</#if>
+        </ul>
+    </div>
+
+<#include "pagination.htm" parse="true" encoding="UTF-8"> 
+<@pagination page=aboutList/>
+<div style="clear:both"></div>
+<input type="hidden" name="pageSize" value="${pageSize}">
+<input type="hidden" name="pageNo" value="1">
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >

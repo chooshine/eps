@@ -1,0 +1,234 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<div class="or_top">
+	<div class="or_tlt"><a href="<@spring.url '/' />"><div class="intop1" ></div></a></div>
+	<div class="or_trt">
+		<ul class="or_trtcl">
+			<li id="myExam">我的试卷</li>
+			<li id="myTeacher">我的老师</li>
+			<li id="myRelease">我的发布</li>
+		</ul>
+		<div class="or_trtcr">
+		
+		</div>
+	</div>
+	<div class="nofl"></div>
+</div>
+	<#assign teacher=0>
+		<#list TEAINFO as tea>
+			<#assign teacher=tea>
+			<#break>
+		</#list>
+<div class="testl_con" style=" padding-top:12px;">
+	<div class="or_t_top">
+		<div class="or_b_sjcomr3">
+			<div id="returnTeacher"><a>返回资源</a></div>
+		</div>
+		<div class="or_tsj_top">对<a>${teacher.TEACHER_NAME}</a>老师的评论</div>
+	</div>
+	<div  class="or_b_com">
+		<div class="or_b_coml">
+			<div class="or_b_comlc">
+				<#if teacher.PHOTO!="">
+					<img src="<@spring.url '/${teacher.PHOTO}'/>" width="55" height="60"/>
+				<#else>
+					<img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="55" height="60"/>
+				</#if>
+			</div>
+		</div>
+		<div class="or_b_comc">
+			<div class="or_b_comc1">
+				<div class="or_b_comc1l">名称：</div>
+				<div class="or_b_comc1r">${teacher.GOODS_DETAIL!}</div>
+			</div>
+			<div class="or_b_comc1">
+				<div class="or_b_comc1l">考试科目：</div>
+				<div class="or_b_comc1rx">${teacher.TEACH}</div>
+			</div>
+			
+		</div>
+		<div class="or_b_comc">
+			<div class="or_b_comc1">
+				<div class="or_b_comc1l">名师：</div>
+				<div class="or_b_comc1rx">${teacher.TEACHER_NAME}</div>
+			</div>
+			<div class="or_b_comc1">
+				<div class="or_b_comc1l">类型：</div>
+				<div class="or_b_comc1rx">试卷</div>
+			</div>
+		</div>
+		<div class="or_b_comc">
+			<div class="or_b_comc1">
+				<div class="or_b_comc1l">学校：</div>
+				<div class="or_b_comc1rx">${teacher.SCHOOL_NAME}</div>
+			</div>
+		</div>
+		<div class="nofl"></div>
+	</div>
+	
+	<#assign typeone=0>
+	<#assign typetwo=0>
+	<#assign typethree=0>
+	<#assign typeall=0>
+	<#list ASSNUM as ass>
+		<#if ass.ASS_TYPE=1>
+			<#assign typeone=ass.COUNT_TYPE>
+		<#elseif ass.ASS_TYPE=2>
+			<#assign typetwo=ass.COUNT_TYPE>
+		<#else>
+			<#assign typethree=ass.COUNT_TYPE>
+		</#if> 
+		<#assign typeall=typeall+ass.COUNT_TYPE>
+	</#list>
+	
+	<div class="or_b_bot">
+		<div class="or_tbot">
+			<div class="or_b_sjcomr4">
+				<div class="or_b_sjcomr4x"><a id="toAssess">我要评论</a></div>
+			</div>
+			<ul class="or_tbottp">
+				<li class="or_tbottphov"><a>资源评价<span>(${typeall})</span></a></li>	
+			</ul>
+			<div class="testb_tbotcm">
+				<div class="or_tbotcmbott">
+				    <label>
+					    <input type="radio" value="-1" name="RadioGroup1" value="单选" checked="checked"/>
+					    全部
+					</label>
+					<label>
+					    <input type="radio" value="1" name="RadioGroup1" value="单选" />
+					    好评（${typeone}）
+					</label>
+					<label>
+					    <input type="radio" value="2" name="RadioGroup1" value="单选" />
+					    中评（${typetwo}）
+					</label>
+					<label>
+					    <input type="radio" value="3" name="RadioGroup1" value="单选" />
+					    差评（${typethree}）
+					</label>
+				</div>
+				
+				<div  class="or_tbotcmtop">
+					<div class="testb_tbotcmtopb1">网友(共${typeall}人)</div>
+					<div class="testb_tbotcmtopb3">时间</div>
+					<div class="testb_tbotcmtopb2">评价</div>
+				</div>
+				<ul class="or_tbotcmtopxe">
+					<#list TEACHERASS as teaass>
+					<li>
+						<div class="ord_jb">
+							<div  class="ord_jbx"><a href="#">恶意举报</a></div>
+						</div>
+						<div class="testb_tbotcmtopb_1">
+							<dl class="or_pjlt">
+								<#if teaass.PHOTO!="">
+									<dt><img src="<@spring.url '/${teaass.PHOTO}'/>" width="45" height="53"/></dt>
+								<#else>
+									<dt><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="45" height="53"/></dt>
+								</#if>
+								<dd>${teaass.USER_NO}</dd>
+							</dl>
+						
+						</div>
+						<div class="testb_tbotcmtopb_3">${teaass.ASS_TIME}</div>
+						<div class="testb_tbotcmtopb_2">${teaass.ASS_CONTENT}</div>
+						<div class="nofl"></div>
+					</li>
+					</#list>
+				</ul>		
+				<div style=" width:980px;padding-top:20px; margin-top:20px; height:35px; margin:0 auto;">
+					<#include "pagination.htm" parse="true" encoding="UTF-8" >
+					<@pagination page=page />
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</div>
+		<form id="getAssessForm" method="GET" action="<@spring.url '/exam_orderComDetail.html' />" />
+			<input type="hidden" value="20" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="assType" id="assType">
+			<input type="hidden" name="teacherId" value=${TEACHERID?c}>
+			<input type="hidden" name="goodsId" value=${GOODSID}>
+		</form>
+		
+	<form id="getExamForm" method="GET" action="<@spring.url '/exam_orderExam.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="sortNo" id="sortNo">
+			<input type="hidden" value="-1" name="commitFlag" id="commitFlag">
+	</form>
+	
+	<form id="getTeacherForm" method="GET" action="<@spring.url '/exam_orderTeacher.html' />" />
+			<input type="hidden" value="12" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="isLose" id="isLose">
+			<input type="hidden" value="-1" name="subjectNo" id="subjectNo">
+	</form>
+	
+	<form id="getReleaseForm" method="GET" action="<@spring.url '/exam_orderRelease.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="release" id="release">
+	</form>
+	
+	<form id="getOrderForm" method="GET" action="<@spring.url '/exam_orderView.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="${teacher.TEACHER_ID}" name="teacherId" id="teacherId">
+			<input type="hidden" value="first" name="whatType" id="whatType">
+			<input type="hidden" value="${payType}" name="payType" id="payType">
+	</form>
+
+
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<script>
+	$(function(){
+		var assessType=${ASSTYPE};
+		
+		$("#myExam").click(function(){
+			$("#getExamForm").submit();
+		});
+		
+		$("#myTeacher").click(function(){
+			$("#getTeacherForm").submit();		
+		});
+		
+		$("#myRelease").click(function(){
+			$("#getReleaseForm").submit();
+		});
+		
+		//返回资源
+		$("#returnTeacher").click(function(){
+			$("#getOrderForm").submit();
+		});
+		
+		$("input[name='RadioGroup1']").each(function(){
+			if($(this).val()==assessType){
+				$(this).attr("checked",true);
+			}
+		});
+		
+		$("input[name='RadioGroup1']").click(function(){
+			$("#assType").val($(this).val());
+			$("input[name='pageNo']").val("1");
+			$("#getAssessForm").submit();
+		});
+		
+		$(".show,.fcenter").each(function(index){
+			$(this).click(function(){
+				$("input[name='assType']").val(assessType);
+				$("input[name='pageNo']").val($(this).attr("url"));
+				$("#getAssessForm").submit();
+			});
+		});
+		
+		$("#toAssess").click(function(){
+			var teacherId=$("input:hidden[name='teacherId']").val();
+			var payType="${payType}";
+			location.href="<@spring.url '/exam_orderAssess.html?teacherId="+teacherId+"&payType="+payType+"'/>";
+		});
+		
+	});
+</script>

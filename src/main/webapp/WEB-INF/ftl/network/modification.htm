@@ -1,0 +1,245 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+#ArrangeTest-Dialog h3 {margin-top:20px; margin-bottom:120px; font-size:30px;}
+#ArrangeTest-Dialog #ArrangeTest-Container {text-align:center;}
+#TestSelect {width:300px; padding-top:4px; padding-bottom:4px; font-size:14px;}
+#ArrangeTest-Dialog #CreateTestContainer {margin-top:20px; margin-left:-70px; font-size:16px;}
+#ArrangeTest-Dialog #CreateTestContainer #CreateTest {color:red;}
+.arragetest-operates {height:32px; margin-top:80px; padding-left:192px;}
+.arragetest-operates .rectanglebtn {float:left; width:170px; margin-right:40px;}
+.arragetest-operates #CloseArrangeDialog {width:60px; float:left; margin-top:10px; font-weight:700; color:red; cursor:pointer;}
+
+body {background-color:#eeeeee;}
+.nr_wrap03 {width:1024px;min-height:500px;background-color:#ffffff;box-shadow:0 0 5px #aaa;}
+.wrap03_nr ul li {height:79px;}
+.wrap03_nr ul li span.modifi-longspan {width:320px;text-align:left;}
+.wrap03_nr ul li span.span00 {width:180px;text-align:center;}
+.wrap03_nr ul li span.span00, .wrap03_nr ul li span.span01, .wrap03_nr ul li span.span02 {padding:10px 0;font-size:16px;}
+.wrap03_nr ul li.li_nr .color-orange {color:#ff9933;}
+.wrap03_nr ul li.li_nr .color-green {color:#009966;}
+.wrap03_nr ul li.li_nr span.modifi-examname {width:500px;color:#000;}
+.wrap03_nr ul li.li_nr span.modifi-testname {text-align:left;}
+.li_nr .modifi-examname > img {width:48px;height:48px;float:left;margin:5px 10px auto 10px;}
+.li_nr .modifi-examname .examname {font-size:16px;font-weight:bold;text-align:left;margin-bottom:10px;}
+.span01.modifi-longspan.modifi-examname > div {padding-top:10px;}
+.span01.modifi-longspan.modifi-examname > div label {color:#aaa;margin-right:10px;}
+.span01.modifi-longspan.modifi-examname > div em {font-style:normal;}
+.wrap03_nr ul li span.span01 .ap_ks {font-size:16px;color:#00afed;}
+.wrap03_nr ul li span.span01 .ap_ks:HOVER{color:#ff9966;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">在线考场</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"><a href="<@spring.url '/network/paperFactory.html'/>">出卷</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/room.html'/>">考场</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/result.html'/>" style="border-right:none;">阅卷</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<div class="nr_wrap03" style="width:1024px;">
+	<div class="wrap03_title"><a href="<@spring.url '/network/continue.html'/>"><span>未完成的试卷</span></a><a href="<@spring.url '/network/modification.html'/>"><span class="wrap03_current">已发布的试卷</span></a></div>
+    <div class="wrap03_nr" >
+    	<ul>
+            <#if examMap?? && (examMap?keys?size&gt;0)>
+				<#list examMap?keys as key>
+					<#list examMap[key] as exl>
+						<li class="li_nr">
+							<#if exl_index==0>
+								<span class="span01 modifi-longspan modifi-examname">
+									<img alt="试卷" src="<@spring.url '/images/examsystem/exam_2.png'/>">
+									<div>
+										<div class="examname">${exl.exam_name}</div>
+										<div class="commoninfo">
+											<label>科目：<em class="sortname color-orange">${exl.sort_name}</em></label>
+											<label>总分：<em class="color-orange">${exl.total}</em> 分</label>
+											<label>发布时间：<em class="releasetime color-orange">${exl.release_time?string("yyyy-MM-dd")}</em></label>
+										</div>
+									</div>
+								</span>
+							<#else>
+								<span class="span01 modifi-longspan modifi-examname" style="visibility:hidden;">${exl.exam_name}</span>
+							</#if>
+							<span class="span01 modifi-longspan color-green modifi-testname">
+								<#if exl.test_name??>
+									${exl.test_name}（${exl.test_time}）
+								<#else>
+									尚未安排考试
+								</#if>
+							</span>
+							<#if exl.test_id!=''>
+								<span class="span00">
+									<a href="javascript:void(0);" class="modifi-see" examId="${exl.exam_id?c}">
+										<b class="ap_ks">查看</b>
+									</a>
+								</span>
+							<#else>
+								<span class="span00">
+									<a href="javascript:void(0);" class="modifi-see" examId="${exl.exam_id?c}">
+										<b class="ap_ks">查看</b>
+									</a>
+									|
+									<a href="javascript:void(0);" class="del" examId="${exl.exam_id?c}" pageType="delMod">
+										<b class="ap_ks">删除</b>
+									</a>
+									|
+									<a href="javascript:void(0);" class="modifi-arrangetest" examId="${exl.exam_id?c}" subjectNo="${exl.subject_no}" pageType="delMod">
+										<b class="ap_ks">安排考试</b>
+									</a>
+								</span>
+							</#if>
+						</li>
+					</#list>
+				</#list>
+			<#else>
+			<li class="li_nr" style='line-height:79px;text-align:center;'><span style='width:100%;'>您没有已发布的试卷</span></li>
+			</#if>
+        </ul>
+    </div>
+	
+	<div style="clear: both"></div>
+</div>
+
+<input name="arrange-examid" type="hidden" />
+<input name="arrange-subjectno" type="hidden" />
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<div id="ArrangeTest-Dialog" style="display:none;">
+	<h3>安排考试</h3>
+	<div id="ArrangeTest-Container">
+		<select id="TestSelect" name="testId">
+			<option id="other" value="-2">请选择考试</option>
+		</select>
+		<div id="CreateTestContainer">
+			<span>没有您要安排的考试？<a href="javascript:void(0);" id="CreateTest">新建考试 》</a></span>
+		</div>
+		
+		<div class="arragetest-operates">
+			<div class="rectanglebtn" id="SaveArrange">下一步（安排考场）</div>
+			<div id="CloseArrangeDialog">[关闭]</div>
+		</div>
+	</div>
+</div>
+<script src="<@spring.url '/javascripts/jquery-ui-timepicker-addon.js'/>" ></script>
+<#--引入新建考试弹出框-->
+<#include "network/createNewTestDialog.htm" parse="true" encoding="UTF-8" >
+<#--引入安排考场弹出框-->
+<#include "network/includedArrangeDialogPage.htm" parse="true" encoding="UTF-8" >
+<script>
+$(function() {
+	$("#ArrangeTest-Dialog").dialog({
+		autoOpen:false,
+		resizable:false,
+		dialogClass:"chooshine-dialog",
+		width:698,
+		height:500,
+		modal:true
+	});
+	
+	$(".modifi-see").each(function() {
+		$(this).click(function() {
+			var examId = $(this).attr("examid");
+			location.href="<@spring.url '/network/getExamInfo.html?examId="+examId+"&type=see'/>";
+		});
+	});
+	$(".del").each(function(){
+		$(this).click(function(){
+			var examId=$(this).attr("examId");
+			var pageType=$(this).attr("pageType");
+			myDialog.prototype.confirm("确定删除？",function(){
+				location.href="<@spring.url '/delExam.html?examId="+examId+"&pageType="+pageType+"'/>"; 
+			});
+		});
+	});
+	$(".modifi-arrangetest").each(function() {
+		$(this).click(function() {
+			var testSelectNode = $("#TestSelect");
+			var examId = $(this).attr("examId");
+			var subjectNo = $(this).attr("subjectNo");
+			$("input[name='arrange-examid']").val(examId);
+			$("input[name='arrange-subjectno']").val(subjectNo);
+			
+			//异步获得考试(获得的安排考试必须是不同的试卷)
+			$.ajax({
+				type:"post",
+				url:"<@spring.url '/network/planTests.json' />",
+				contentType:"application/x-www-form-urlencoded; charset=utf-8",
+				data:{examId:examId,types:'paperLibrary'},
+				success:function(data){
+					//获得考试成功之后,将考试赋予下拉框
+					for(var i=0;i<data.testList.length;i++){
+						$(testSelectNode).append("<option id='"+data.testList[i].test_id+"' existflag='"+data.testList[i].exists_flag+"' gradeId='"+data.testList[i].grade_id+"' userId='"+data.testList[i].user_id+"'>"+data.testList[i].test_name+"</option>");
+					}
+					$("#ArrangeTest-Dialog").dialog("open");
+				}
+			});
+		});
+	});
+	$("#CloseArrangeDialog").click(function() {
+		$("#ArrangeTest-Dialog").dialog("close");
+		$("#TestSelect").children().each(function() {
+			if($(this).attr("id") != "other") {
+				$(this).remove();
+			}
+		});
+	});
+	
+	/*****************新建考试*******************************/
+	//点击“新建考试”
+	$("#CreateTest").click(function() {
+		$("#CreatNewTestDialog").dialog("open");
+	});
+	
+	$("#SaveArrange").click(function() {
+		//获得安排考试的试卷编号
+		var examId = $("input[name='arrange-examid']").val();
+		var subjectId = $("input[name='arrange-subjectno']").val();
+		var checkedOptionNode = $("#TestSelect").children("option:checked");
+		//得到考试编号
+		var testId=$(checkedOptionNode).attr("id");
+		var existFlag = $(checkedOptionNode).attr("existflag");
+		if(testId=="other"){
+			$.chooshine.alert("请选择考试！");
+			return;
+		} else if(existFlag=="1") {
+			$.chooshine.confirm("已经为当前考试安排过试卷，确定覆盖原有试卷？", function() {
+				$.ajax({
+					type:"post",
+					url:"<@spring.url '/network/arrangeTest.json' />",
+					contentType:"application/x-www-form-urlencoded; charset=utf-8",
+					data:{testId:testId,examId:examId, subjectId:subjectId},
+					success:function(data){
+						getPlanClazz(subjectId, testId);
+					}
+				});
+			});
+			
+			return;
+		}
+		
+		$.ajax({
+			type:"post",
+			url:"<@spring.url '/network/arrangeTest.json' />",
+			contentType:"application/x-www-form-urlencoded; charset=utf-8",
+			data:{testId:testId,examId:examId, subjectId:subjectId},
+			success:function(data){
+				grade_Id = $(checkedOptionNode).attr("gradeId");
+				getPlanClazz(subjectId, testId);
+			}
+		});
+	});
+	
+});
+
+function afterSaveNewTest(data) {
+	var test = data['testMap'];
+	$("#TestSelect").append("<option id='"+test.testId+"'>"+test.testName+"</option")
+	$("#TestSelect option[id='"+test.testId+"']").attr("selected",true);
+	triggerMouseEvent($("#SaveArrange")[0], "click");//自动触发"下一步"的点击事件
+}
+function closeCreateNewTestEvent() {
+	$("#CreatNewTestDialog").dialog("close");
+};
+</script>

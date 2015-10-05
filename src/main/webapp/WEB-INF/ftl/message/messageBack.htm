@@ -1,0 +1,184 @@
+<#include "header.htm" parse="true" encoding="UTF-8" > <#include
+"logheader.htm" parse="true" encoding="UTF-8" >
+	<div class="con_top con_top02">
+        <span id="search_box">
+        	<form id="search_form" method="post" action="<@spring.url '/message/getUserMessage.html'/>">
+				<input type="hidden" name="pageNo" value = "1">
+				<input type="text" name="userNo" id="s" value="${userNo}" style="color:#999;" class="swap_value" />
+				<input type="image" src="../img/search.gif" width="80" height="38" id="go" title="search" />  
+        	</form>
+        </span>
+    </div>
+	<div class="center">
+		<div class="left">
+			<h3>留言板</h3>
+			<ul>
+				<li><a href="<@spring.url '/message/replyState.html?state=1'/>">已回复</a></li>
+				<li><a href="<@spring.url '/message/replyState.html?state=0'/>">未回复</a></li>
+				<li><a href="<@spring.url '/message/replyState.html?state=2'/>">已删除</a></li>
+				<li><a href="<@spring.url '/message/messageBack.html'/>">查看全部</a></li>
+			</ul>
+		</div>
+		
+		<div class="right">
+			<div class="message_tag">
+				<div class="message_wrap02">
+				<form id="form01" action="<@spring.url '/message/messageBack.html'/>">
+					<input type="hidden" name="pageNo">
+					<div class="show_tag">
+					
+						<#if pages??>
+						<#list pages.data as m>
+						<span class="message01">
+						<!-- 留言人头像及名称 -->
+							 <span class="mess_left">
+							 	<span class="mess_pic">
+							 		<#if m.photo!="">
+        								<img src="<@spring.url '/${m.photo}'/>" width="59" height="59"  title="头像" />
+						        	<#else>
+						        		<img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="59" height="59"  title="头像" />
+						        	</#if>
+							 	</span>
+							 	<#if m.MESSAGE_USER_NO!="">
+							 		<span class="mess_name">${m.MESSAGE_USER_NO}</span>
+							 	<#else>
+							 		<span class="mess_name">匿名</span>
+							 	</#if>
+							 </span>
+						<!-- 留言右边内容 --> 
+							<span class="mess_right">
+								<p>${m.message_content}</p>
+								<p id="time" class="mess_time">
+									<span class="ceshi">${m.message_date}</span>
+									<span class="del_btn"><button type="button" class="del" id="${m.message_id}">删 除</button></span>
+									<span class="hf_btn"><button type="button" class="reply">回复</button></span>
+								</p>
+							<#if m.re_content!="">
+								<span class="huifu"> 
+									<span class="hf_content"> 
+										<span class="hf_icon"></span>
+										<p>畅选网回复：${m.re_content}&nbsp;&nbsp;${m.re_date}</p>
+									</span>
+								</span>
+							</#if>
+							<!-- 回复弹出框 -->
+							
+							<span class="huifu02 hide"> 
+								<span class="hf_content hf_content02"> 
+									<span class="hf_icon hf_icon02"></span>
+										<p>
+											<form id="form_${m.message_id}" method="POST" >
+											<input type="hidden" name="messageId" value="${m.message_id}"/>
+											<span class="shuru_hf"> <textarea id="text_${m.message_id}" class="shuru" name="reContent">${m.re_content}</textarea></span> 
+											<span class="btn">
+												<button type="button" class="hf" messageId="${m.message_id}">回复</button>
+												<button type="button" class="quxiao">取消</button>
+											</span>
+											</form>
+										</p>
+								</span>
+							</span>
+							</span>
+						</span>
+						<div class="clear"></div>
+						</#list>
+						</#if>
+					</div>
+					</form>
+				</div>
+				<div class="clear"></div>
+				<div style="width:80%; height:30px; margin-top:12px;">
+					<#include "pagination.htm" parse="true" encoding="UTF-8">
+					<@pagination page=pages/>
+				</div>
+			</div>
+		</div>
+		<div class="clear"></div>
+	</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+
+<script type="text/javascript">
+	
+	//后台留言板回复show/hide切换
+	$(document).ready(function() {
+		$(".reply").each(function(){
+			$(this).click(function() {
+				//var $a = $(this).parents(".mess_time");
+				var $b = $(this).parents(".mess_right");
+				var $c = $b.find(".hide")
+				var $d = $c.find(".shuru");
+				$d.val($d.val().replace(/<br\/>/g, "\n"));
+				$c.removeClass("hide");
+			})
+			
+		});
+		$(".quxiao").each(function(){
+			$(this).click(function() {
+				$(this).parents(".huifu02").addClass("hide");
+			});
+			
+		});
+		
+		//提交回复内容
+		$(".hf").each(function(){
+			$(this).click(function(){
+				var id = $(this).attr("messageId");
+				var content = $("#text_"+id).val().replace(/\n/g, "<br/>");
+				if(content.length == 0) return;
+				//alert(content);
+				//alert(id);
+				//$("#form_"+id).submit();
+				var me = $(this);
+				
+				$.ajax("<@spring.url'/message/reply.json'/>",{
+					data:{'messageId':id,'reContent':content},
+					success:function(data){
+						var ddate = data['reTime'];
+						var hspan = me.parents(".mess_right").children(".huifu");
+						if(hspan.length == 0){
+							hspan = $("<span>",{
+								'class':"huifu",
+								'html':"<span class='hf_content'>"+
+										"<span class='hf_icon'></span>"+ 
+										"<p>畅选网回复："+content+"&nbsp;&nbsp;"+ddate+"</p>"+
+										"</span>"
+							});
+							hspan.insertBefore(me.parents(".huifu02"));
+						}else{
+							hspan.find("p").html('畅选网回复：'+content+' '+ddate);
+						}
+						me.parents(".huifu02").removeClass("hide").addClass("hide");
+						//alert(me.parents(".huifu").length);
+						
+					}
+				});
+			})
+			
+		});
+		
+		//删除按钮
+		$(".del").each(function(){
+			$(this).click(function(){
+				//alert($(this).attr("id"));
+				var me = $(this);
+				$.ajax("<@spring.url'/message/deleteMessage.json'/>",{
+					data:{'messageId':$(this).attr("id")},
+					success:function(data){
+						if(data['message'] == 1)
+							me.parents(".message01").remove();
+					}
+				});
+			});
+		});
+		//分页
+		$(".fcenter,.show").each(function(){
+			$(this).click(function(){
+				var url=$(this).attr("url");
+				$("input[name='pageNo']").val(url);
+				//alert($("form").attr("action"));
+				$("#form01").submit();
+			});
+		});
+		
+	});
+</script>

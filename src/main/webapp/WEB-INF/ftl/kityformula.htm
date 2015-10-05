@@ -1,0 +1,38 @@
+<#import "spring.ftl" as spring/>
+<link rel="stylesheet" href="<@spring.url '/kityformula/assets/styles/base.css'/>">
+<link rel="stylesheet" href="<@spring.url '/kityformula/assets/styles/ui.css'/>">
+<link rel="stylesheet" href="<@spring.url '/kityformula/assets/styles/scrollbar.css'/>">
+<body style='margin:0;'>
+	<div id="kfEditorContainer" class="kf-editor" style='width:780px;height:380px;'></div>
+</body>
+<script src="<@spring.url '/javascripts/jquery.js'/>"></script>
+<script src="<@spring.url '/kityformula/js/kitygraph.all.js'/>"></script>
+<script src="<@spring.url '/kityformula/js/kity-formula-render.all.js'/>"></script>
+<script src="<@spring.url '/kityformula/js/kity-formula-parser.all.min.js'/>"></script>
+<script src="<@spring.url '/kityformula/js/kityformula-editor.all.min.js'/>"></script>
+<script>
+if(window.kf == undefined) {
+	$(parent.document.getElementById('formula_frame')).after("<div style='width:580px;margin-top:-380px;margin-left:30px;'>sorry! Beta版本仅支持IE9及以上版本的浏览器，正式版本将会支持低版本浏览器，谢谢您的关注！</div>");
+} else {
+	var factory = kf.EditorFactory.create($("#kfEditorContainer")[0], {
+	    render: {
+	        fontsize: 24
+	    },
+	    resource: {
+	        path: "/kityformula/resource/"
+	    }
+	});
+	function getKFEditor(){
+		return factory;
+	}
+	factory.ready(function(KFEditor) {
+	    this.execCommand( "render", parent.getLatex() || "\\placeholder" );
+	    this.execCommand( "focus" );
+
+	    window.kfed = this;
+	    if(parent.setKFEditor) parent.setKFEditor(this);
+	});
+
+}
+
+</script>

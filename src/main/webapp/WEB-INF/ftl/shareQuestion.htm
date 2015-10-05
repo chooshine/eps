@@ -1,0 +1,217 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+.indt_top, .footer {display:none;}
+.weblog-subwrap {width:auto;}
+.weblog-wrap .weblog-subwrap h1 {margin-left:10px;}
+.paperx_tl dl dt {padding-left:5px;}
+.allNum {width:100px;line-height:22px;font-size:20px;color:#3075ce;}
+.paperx_tlxr {width:auto;float:none;}
+.test_box {width:auto;left:auto;padding-left:10px;}
+.test_box2_bgc .pap_tlt {width:27px;line-height:33px;}
+.paperx_tjx {width:auto;margin-left:-26px;}
+.paperxt_tjxb2 { width:1000px;}
+.linkClass4_postion {margin-left:7px;}
+.tkNum {width:27px;float:left;padding-top:8px;padding-left:15px;font-size:16px;}
+.paperx_fxk {padding-left:20px;margin-top:-5px;}
+.paperx_fxk .test_box3 {width:515px; float:left;}
+.paperx_fxk .linkClass2 {float:left; margin-left:20px;}
+.paperx_fxk .paperx_zsdr, .paperx_fxk .paperx_jxxqr{width:660px;}
+.paperx_fxk .linkClass2 {margin-top:-32px; margin-left:532px;}
+.paperx_jxxqr .fftxt {min-height:50px;}
+.chkc, .radc {width:30px; height:14px; margin-left:20px; padding:8px 20px;}
+.chkc input, .radc input, .chkc span, .radc span {float:left; height:13px; line-height:13px;}
+.chkc input, .radc input {margin-right:4px;}
+.test_bg {border:1px solid #aaa;}
+
+.paperx_fxk {display:none;margin-top:20px;}
+.paperx_fxk > div {margin-bottom:40px;}
+.shareques-rightanswer-container {line-height:20px;font-size:14px;<#if qs.ques_type=4>margin-left:-20px;</#if>}
+.shareques-rightanswer {color:#0066CC;}
+.shareques-statistic-key {float:left;padding-left:20px;font-size:14px;color:#acaba8;background:url("<@spring.url '/images/examsystem/graph.png' />") no-repeat;}
+.shareques-statistic-value {float:left;font-size:14px;}
+.rectanglebtn {margin:auto;}
+.shareques-line {margin-left:0px;}
+.shareques-analy {padding-left:20px;}
+.shareques-zsd {padding-left:20px;background:url("<@spring.url '/images/examsystem/light.png' />") no-repeat;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">试题分享</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f"><a href="<@spring.url '/index.html'/>" style="border-right:none;">首页</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<#if qs.remark??>
+<div>
+	<div style="margin-top:20px; margin-bottom:20px;font-size:14px;"><span style="color:#0066CC;">（材料）</span>阅读下面的文字，完成下列各小题。</div>
+	<div style="line-height:20px;padding-left:20px;padding-right:20px;margin:20px 0;">${qs.remark}</div>
+</div>
+</#if>
+
+<div>
+	<ul style="padding-top:10px;"><li>
+		<div class="paperx_tl">
+			<dl>
+				<dt>
+					<div class="allNum">
+						<#if qs.ques_type=="1">（单选题）
+						<#elseif qs.ques_type=="2">（多选题）
+						<#elseif qs.ques_type=="3">（判断题）
+						<#elseif qs.ques_type=="4">（填空题）
+						<#elseif qs.ques_type=="5">（解答题）</#if>
+					</div>
+					<div class="paperx_tlxr">
+						<div class='ttxt test_box'>
+							${qs.QUES_CONTENT}
+						</div>
+					</div>
+					<div class="nofl"></div>
+				</dt>
+				<#if qs.QUES_TYPE=='1' || qs.QUES_TYPE=='2'>
+					<#list qs.options as opt>
+						<dd class="test_box2_bgc">
+							<div class="pap_tlt">${opt.opt_no}.</div>
+							<div class="pap_tct questionItme">
+								<div class='ttxt test_box2'>${opt.opt_content}</div>
+							</div>
+							<div class="nofl"></div>
+						</dd>
+					</#list>
+				</#if>
+			</dl>
+			<div class="paperx_btda">
+				<div class="paperx_tjx">
+					<#list qs.options as opt>
+						<#if qs.ques_type==1>
+							<label class="paperx_tjxb2 radc">
+							 	<input type="radio" class='markc' name="answer"/>
+							 	<span>${opt.opt_no}</span>
+							</label>
+						<#elseif qs.ques_type==2>
+						 	<label class="paperx_tjxb2 chkc">
+								<input class='markc' type="checkbox" name="answer"/>
+								<span>${opt.opt_no}</span>
+							</label>
+						<#elseif qs.ques_type==3>
+							<label class="paperx_tjxb2 radc">
+								<input class='markc' type="radio" name="answer"/>
+								<span>${opt.opt_no}</span>
+							</label>
+						<#elseif qs.ques_type==4>
+							<div class="paperxt_tjxb2">
+								<div class="cleanBoth">
+									<span class="tkNum">${opt.opt_no}</span>
+									<div class='markc test_box4 equ test_bg' contenteditable="true"></div>
+									<div class='linkClass2 mar linkClass4_postion'>
+										<span><a class='addequation'>添加公式</a></span>
+										<span class="marRig"><a class='addequation_local'>上传图片</a></span>
+									</div>
+								</div>
+							</div>
+						<#elseif qs.QUES_TYPE==5>
+							<div class="paperxt_tjxb2 answer-type5">
+								<div class='markc equ test_box5 test_bg' contenteditable="true"></div>
+							</div>
+						</#if>
+					</#list>
+				</div>
+				<div class="nofl"></div>
+				<div class="paperx_fxk">
+					<div class="shareques-rightanswer-container">
+						<#if qs.ques_type==1 || qs.ques_type==2>
+						正确答案是：<span class="shareques-rightanswer">${qs.ques_refer?replace("@@","、")}</span>
+						<#elseif qs.ques_type==3>
+						正确答案是：<span class="shareques-rightanswer">${qs.ques_refer}</span>
+						<#elseif qs.ques_type==4>
+						<div style="font-size:14px;margin-bottom:20px;margin-left:20px;">正确答案是：</div>
+						<#list qs.ques_refer?split("@@") as oneLine>
+							<div class="cleanBoth shareques-line">
+								<#list oneLine?split("##") as subline>
+									<#if subline_index==0>
+										<div class="tkNum">${subline}</div>
+									<#else>
+										<div class="markc test_box4">${subline}</div>
+									</#if>
+								</#list>
+							</div>
+							<div class="nofl"></div>
+						</#list>
+						<#elseif qs.ques_type==5>
+						正确答案是：<span>${qs.ques_refer}</span>
+						</#if>
+					</div>
+					
+					<div class="shareques-statistic">
+						<div class="shareques-statistic-key">统<span class="pad15"></span>计：</div>
+						<div class="shareques-statistic-value">
+							本题共被作答<span>${qs.total}</span>次，正确率为<span>${qs.CORRECT_PERCENT}</span><#if qs.ques_type=1 || qs.ques_type==2>，易错项为<span>${qs.EASY_ERROR_OPT}</span></#if>
+						</div>
+						<div class="nofl"></div>
+					</div>
+					
+					<div class="paperx_jxxq">
+						<div class="paperx_zsdl shareques-analy">解<span class="pad15"></span>析：</div>
+						<div>${qs.keywork}</div>
+						<div class="nofl"></div>
+					</div>
+					<div class="paperx_zsd">
+						<div class="paperx_zsdl shareques-zsd">考点：</div>
+						<div class="paperx_zsdr">
+						<#if qs.knowledge_points??>
+						<#list qs.knowledge_points as kp>
+							<div class="knowledgepointdiv-nodelete">${kp}</div>
+						</#list>
+						</#if>
+						</div>
+						<div class="nofl"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="nofl"></div>
+	</li></ul>
+	
+	<div class="rectanglebtn" id="Submit">提交答案</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+$(function() {
+	//单选按钮（包括单选题和判断题），点击选项的父标签的事件
+	$("input[type='radio']").each(function(){
+		var liNode = $(this).parents("li")[0];
+		$(this).click(function(){
+			//移除原有的被选中选项的颜色，增加到选择的选项上
+			$(liNode).find(".radio").each(function() {
+				$(this).removeClass("radio");
+			});
+			$(this)[0].cheched = true;
+			$(this).parent().addClass("radio");
+		});
+	});
+	
+	//多选题选择选项的事件
+	$("input[type='checkbox']").each(function(){
+		$(this).click(function() {
+			//如果改选项的的父标签原本是有颜色的，则取出颜色，反之，增加颜色
+			var parentNode = $(this).parent();
+			if($(parentNode).hasClass("radio")) {
+				$(parentNode).removeClass("radio");
+			} else {
+				$(parentNode).addClass("radio");
+			}
+		});
+	});
+	
+	$("#Submit").click(function() {
+		$(".markc").attr("disabled", true);
+		$(".equ").attr("contenteditable", false);
+		$(".paperx_fxk").show();
+		$(this).hide();
+	});
+	
+});
+</script>

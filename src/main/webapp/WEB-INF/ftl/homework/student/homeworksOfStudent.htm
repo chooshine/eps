@@ -1,0 +1,138 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<#if homeworks??>
+<#include "homework/student/weblogos/viewHomeworksLogo.htm" parse="true" encoding="UTF-8" >
+<#else>
+<#include "homework/student/weblogos/viewAnalyLogo.htm" parse="true" encoding="UTF-8" >
+</#if>
+<div class="nr_wrap03">
+	<#include "/homework/student/tab.htm" parse="true" encoding="UTF-8">
+    <div class="wrap03_nr">
+    	<ul>
+    		<#if homeworks??>
+    			<#if homeworks?size&gt;0>
+        		<#list homeworks as hw>
+	            	<li class="li_nr">
+	           			<span class="span-objectname">
+							<img alt="作业" src="<@spring.url '/images/examsystem/exam_2.png'/>">
+							<div>
+								<div class="objectname">${hw.hw_name}</div>
+								<div class="commoninfo">
+									<label>科目：<em class="sortname color-orange">${hw.sort_name}</em></label>
+									<label>题数：<em class="color-orange">${hw.topic_num}</em> 题</label>
+								</div>
+							</div>
+						</span>
+						<span class="span00 color-orange">${hw.format_start_time} ~ ${hw.format_end_time}</span>
+						<span class="span02">
+							<#if (hw.start_time?datetime?long &gt; sysdate?datetime?long)>
+								未到开始时间
+							</#if>
+							<#if (hw.start_time?datetime?long &lt; sysdate?datetime?long) && (hw.end_time?datetime?long &gt; sysdate?datetime?long) && hw.commit_flag==''>
+								<a href="javascript:void(0);" class="ap_ks jrkc" hwid=${hw.hw_id?c} hwrecid=-1 style="float:none; font-weight:bold;">开始做题</a>
+							</#if>
+							<#if (hw.start_time?datetime?long &lt; sysdate?datetime?long) && (hw.end_time?datetime?long &gt; sysdate?datetime?long) && hw.commit_flag==0>
+								<a href="javascript:void(0);" class="ap_ks jrkc" hwid=${hw.hw_id?c} hwrecid=${hw.hw_rec_id?c} style="font-weight:bold;">继续答题</a>
+							</#if>
+							<#if (hw.start_time?datetime?long &lt; sysdate?datetime?long) && (hw.end_time?datetime?long &gt; sysdate?datetime?long) && hw.commit_flag==1>
+								已交作业
+							</#if>
+							<#if (hw.end_time?datetime?long &lt; sysdate?datetime?long)>
+								已过交作业时间
+							</#if>
+						</span>
+	            	</li>
+				</#list>
+				<#else>
+				<li class="li_nr" style="height:49px; line-height:49px; text-align:center; padding-top:15px; padding-bottom:15px; font-size:18px;">您当前没有作业</li>
+				</#if>
+    		<#elseif commitedHomeworks??>
+    			<#if commitedHomeworks?size&gt;0>
+				<#list commitedHomeworks as hw>
+		 		<li class="li_nr">
+		 			<span class="span-objectname commitedhw">
+						<img alt="作业" src="<@spring.url '/images/examsystem/exam_2.png'/>">
+						<div>
+							<div class="objectname">${hw.hw_name}</div>
+							<div class="commoninfo">
+								<label>科目：<em class="sortname color-orange">${hw.sort_name}</em></label>
+							</div>
+						</div>
+					</span>
+					<span class='span01'><em class="color-orange">${hw.end_time}</em> 截止</span>
+					<span class="span01 imgswrap">
+					<#if hw.star??>
+					<#switch hw.star>
+						<#case 5>
+							<img src="<@spring.url '/images/star-full.png'/>">
+							<img src="<@spring.url '/images/star-full.png'/>">
+							<img src="<@spring.url '/images/star-full.png'/>">
+							<img src="<@spring.url '/images/star-full.png'/>">
+							<img src="<@spring.url '/images/star-full.png'/>">
+							<#break>
+						<#case 4>
+							<img src="<@spring.url '/images/star-full.png'/>">
+							<img src="<@spring.url '/images/star-full.png'/>">
+							<img src="<@spring.url '/images/star-full.png'/>">
+							<img src="<@spring.url '/images/star-full.png'/>">
+							<#break>
+						<#case 3>
+							<img src="<@spring.url '/images/star-full.png'/>">
+							<img src="<@spring.url '/images/star-full.png'/>">
+							<img src="<@spring.url '/images/star-full.png'/>">
+							<#break>
+						<#case 2>
+							<img src="<@spring.url '/images/star-full.png'/>">
+							<img src="<@spring.url '/images/star-full.png'/>">
+							<#break>
+						<#case 1>
+							<img src="<@spring.url '/images/star-full.png'/>">
+							<#break>
+					</#switch>
+					</#if>
+					</span>
+					<span class='operate span01'>
+						<a href="<@spring.url '/homework/student/viewDetail.html?hwId=${hw.hw_id?c}&hwRecId=${hw.hw_rec_id?c}'/>">查看解析</a>
+					</span>
+				</li>
+			 	</#list>
+			 	<#else>
+			 	<li class="li_nr" style="height:49px; line-height:49px; text-align:center; padding-top:15px; padding-bottom:15px; font-size:18px;">您没有作业</li>
+			 	</#if>
+    		</#if>
+        </ul>
+    </div>
+ </div>  
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<script>
+$(function(){
+
+	<#if commitedHomeworks??>
+		$("#ViewAnaly").addClass("wrap03_current");
+	<#else>
+		$("#MyHomework").addClass("wrap03_current");
+		//进入考场判断学生是否已经交卷，如果没有交卷作业时间也没有结束，学生可以继续进入作业
+		$(".jrkc").each(function(){
+			$(this).click(function(){
+				var hwId = $(this).attr("hwid");
+				var hwRecId = $(this).attr("hwrecid");
+				//拿到继续答题的信息
+				location.href = "<@spring.url '/homework/student/doHomework.html?hwId="+hwId+"&hwRecId="+hwRecId+"'/>"; 
+			});
+		});
+	</#if>
+	
+});
+</script>
+<style>
+body {background-color:#eee;}
+.wrap03_nr ul li span.commitedhw {width:400px;}
+.wrap03_nr ul li span.span00 {width:380px;}
+.wrap03_nr ul li span.span01 {text-align:center;}
+.wrap03_nr ul li span.span02 {width:120px;text-align:left;}
+.wrap03_nr ul li span.operate {margin-left:60px;}
+.wrap03_nr ul li span.imgswrap {line-height:69px;text-align:right;margin-left:24px;}
+.wrap03_nr ul li span.imgswrap > img {width:24px;}
+.nr_wrap03 a {font-size:16px;font-weight:bold;}
+.nr_wrap03 a:HOVER {color:#ff9966;}
+em {font-style:normal;}
+</style>

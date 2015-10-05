@@ -1,0 +1,200 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+
+<div class="or_top">
+	<div class="or_tlt"><div class="intop1" ></div></div>
+	<div class="or_trt">
+		<ul class="or_trtcl">
+			<li id="myExam">我的试卷</li>
+			<li id="myTeacher">我的老师</li>
+			<li id="myRelease">我的发布</li>
+		</ul>
+		<div class="or_trtcr">
+			<div class="or_trtc3"><input type="text"/></div>
+			<div class="or_trtc2"><input type="submit" value=" "/></div>
+		</div>
+	</div>
+	<div class="nofl"></div>
+</div>
+
+<div class="testl_con" style=" padding-top:12px;">
+
+	<div class="or_fkc">
+		<div class="or_fkclu1sj">${TEACHER_NAME} 老师您好,请在下面填写资源价格!</div>
+		<div class="or_fuddsj">
+			<form id="addGoodModel" method="GET" action="<@spring.url '/order_setSuccess.html' />" />
+			<div class="or_sjc">
+
+				<div  class="or_sjcx">
+					<#if EXAMMODEL["1"]??>
+						<div class="or_sjcxj"><input name="month1" type="checkbox" value="1" checked="checked"/></div>
+					<#list EXAMMODEL["1"] as model>
+						<input type="hidden" name="modelId1" value=${model.MODEL_ID}>
+					</#list>
+					<#else>
+						<div class="or_sjcxj"><input name="month1" type="checkbox" value="1" /></div>
+					</#if>
+					<div class="or_sjcxc">订阅一个月</div>
+					<#if EXAMMODEL["1"]??>
+					<#list EXAMMODEL["1"] as model>
+						<div class="or_sjcxr"><input class="pp" type="text" name="price1" value=${model.UNIT_PRICE} ><span>元</span></div>
+					</#list>
+					<#else>
+						<div class="or_sjcxr"><input class="pp" type="text" name="price1" value="" ><span>元</span></div>
+					</#if>
+					<div class="nofl"></div>
+				</div>
+				<div  class="or_sjcx">
+					<#if EXAMMODEL["2"]??>
+						<div class="or_sjcxj"><input name="month2" type="checkbox" value="2" checked="checked"/></div>
+					<#list EXAMMODEL["2"] as model>
+						<input type="hidden" name="modelId2" value=${model.MODEL_ID}>
+					</#list>
+					<#else>
+						<div class="or_sjcxj"><input name="month2" type="checkbox" value="2" /></div>
+					</#if>
+					<div class="or_sjcxc">订阅二个月</div>
+					<#if EXAMMODEL["2"]??>
+					<#list EXAMMODEL["2"] as model>
+						<div class="or_sjcxr"><input class="pp" type="text" name="price2" value=${model.UNIT_PRICE} ><span>元</span></div>
+					</#list>
+					<#else>
+						<div class="or_sjcxr"><input class="pp" type="text" name="price2" value="" ><span>元</span></div>
+					</#if>
+					<div class="nofl"></div>
+				</div>
+				<div  class="or_sjcx">
+					<#if EXAMMODEL["3"]??>
+						<div class="or_sjcxj"><input name="month3" type="checkbox" value="3" checked="checked"/></div>
+					<#list EXAMMODEL["3"] as model>
+						<input type="hidden" name="modelId3" value=${model.MODEL_ID}>
+					</#list>
+					<#else>
+						<div class="or_sjcxj"><input name="month3" type="checkbox" value="3" /></div>
+					</#if>
+					<div class="or_sjcxc">订阅三个月</div>
+					<#if EXAMMODEL["3"]??>
+					<#list EXAMMODEL["3"] as model>
+						<div class="or_sjcxr"><input class="pp" type="text" name="price3" value=${model.UNIT_PRICE} ><span>元</span></div>
+					</#list>
+					<#else>
+						<div class="or_sjcxr"><input class="pp" type="text" name="price3" value="" ><span>元</span></div>
+					</#if>
+					<div class="nofl"></div>
+				</div>
+				<div  class="or_sjcx">
+					<#if EXAMMODEL["6"]??>
+						<div class="or_sjcxj"><input name="month6" type="checkbox" value="6" checked="checked"/></div>
+					<#list EXAMMODEL["6"] as model>
+						<input type="hidden" name="modelId6" value=${model.MODEL_ID}>
+					</#list>
+					<#else>
+						<div class="or_sjcxj"><input name="month6" type="checkbox" value="6" /></div>
+					</#if>
+					<div class="or_sjcxc">订阅六个月</div>
+					<#if EXAMMODEL["6"]??>
+					<#list EXAMMODEL["6"] as model>
+						<div class="or_sjcxr"><input class="pp" type="text" name="price6" value=${model.UNIT_PRICE} ><span>元</span></div>
+					</#list>
+					<#else>
+						<div class="or_sjcxr"><input class="pp" type="text" name="price6" value="" ><span>元</span></div>
+					</#if>
+					<div class="nofl"></div>
+				</div>
+				<div  class="or_sjcx">
+					<#if EXAMMODEL["12"]??>
+						<div class="or_sjcxj"><input name="month12" type="checkbox" value="12" checked="checked"/></div>
+					<#list EXAMMODEL["12"] as model>
+						<input type="hidden" name="modelId12" value=${model.MODEL_ID}>
+					</#list>
+					<#else>
+						<div class="or_sjcxj"><input name="month12" type="checkbox" value="12" /></div>
+					</#if>
+					<div class="or_sjcxc">订阅一年</div>
+					<#if EXAMMODEL["12"]??>
+					<#list EXAMMODEL["12"] as model>
+						<div class="or_sjcxr"><input class="pp" type="text" name="price12" value=${model.UNIT_PRICE} ><span>元</span></div>
+					</#list>
+					<#else>
+						<div class="or_sjcxr"><input class="pp" type="text" name="price12" value="" ><span>元</span></div>
+					</#if>
+					<div class="nofl"></div>
+				</div>
+			</div>
+			<input type="hidden" name="countMonth"  id="countMonth">
+			</form>
+			<div class="or_sjcxrx">注释：有不需要的时间，请把前面的“√”取消</div>
+
+		</div>
+		<div class="or_fkan">
+			<div class="or_fkanl" id="sure">确定</div>
+			<div class="or_fkanr" id="return">返回</div>
+			<div class="nofl"></div>	
+		</div>
+	</div>
+</div>
+
+
+	<form id="getExamForm" method="GET" action="<@spring.url '/exam_orderExam.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="sortNo" id="sortNo">
+			<input type="hidden" value="-1" name="commitFlag" id="commitFlag">
+	</form>
+	
+	<form id="getTeacherForm" method="GET" action="<@spring.url '/exam_orderTeacher.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="isLose" id="isLose">
+			<input type="hidden" value="-1" name="subjectNo" id="subjectNo">
+	</form>
+	
+	<form id="getReleaseForm" method="GET" action="<@spring.url '/exam_orderRelease.html' />" />
+			<input type="hidden" value="10" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="release" id="release">
+	</form>
+
+
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<script>
+	$(function(){
+		$("#myExam").click(function(){
+			$("#getExamForm").submit();
+		});
+		
+		$("#myTeacher").click(function(){
+			$("#getTeacherForm").submit();		
+		});
+		
+		$("#myRelease").click(function(){
+			$("#getReleaseForm").submit();
+		});
+		
+		$("#sure").click(function(){
+			var i=0;
+			$("input:checkbox").each(function(){
+				i=$(this).val();
+			});
+			$("#countMonth").val(i);
+			$("#addGoodModel").submit();
+		});
+		
+		$("#return").click(function(){
+			history.back();
+		});
+		
+	/*	$(".pp").each(function(){
+			$(this).blur(function(){
+				var str=$(this).attr("name");
+				var lastStr=str.substr(str.length-1,1);
+				if($(this).val()==""){
+					$("input[type=checkbox][name=month"+lastStr+"]").removeAttr("checked");
+				}else{
+					//$("input:checkbox[name='month"+lastStr+"']").attr("checked");
+					$("input[type=checkbox][name=month"+lastStr+"]").attr("checked","checked");
+				}
+			});
+		});*/
+		
+	})
+</script>

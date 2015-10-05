@@ -1,0 +1,49 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<#include "homework/teacher/arrangeHomeworkLogo.htm" parse="true" encoding="UTF-8" >
+<link rel="stylesheet" href="<@spring.url '/css/homework.css'/>" />
+<style>
+body {background-color:#eeeeee;}
+</style>
+<div class="hw-moduleentrances-wrap">
+	<div class="hw-moduleentrances-subwrap">
+		<a id="CreateNewHw" href="javascript:void(0);" class="hw-moduleentrance-left">
+		    <span class="hw-moduleentrance-leftimg"></span>
+		    <span class="hw-moduleentrance-content">
+		     <h2>新的作业</h2>
+		     <p>您可开始布置一次作业</p>
+		    </span>
+		</a>
+	    <a href="<@spring.url '/homework/teacher/unSettleHomeworks.html'/>" class="hw-moduleentrance-right">
+	        <span class="hw-moduleentrance-rightimg"></span>
+	        <span class="hw-moduleentrance-content">
+	        	<h2>继续布置</h2>
+	         <p>
+	         	您当前还有&nbsp;&nbsp;<#if hwStatistic??>${hwStatistic.unreleased_num}<#else>0</#if>&nbsp;&nbsp;次作业未布置
+	        </p>
+	        </span>
+	    </a>
+	    <a href="<@spring.url '/homework/teacher/homeworkLibrary.html' />" class="hw-moduleentrance-bottom">
+	        <span class="hw-moduleentrance-bottomimg"></span>
+	        <span class="hw-moduleentrance-content">
+	         <h2>作业库</h2>
+	         <p>
+	         	您已布置&nbsp;&nbsp;<#if hwStatistic??>${hwStatistic.undeleted_num}<#else>0</#if>&nbsp;&nbsp;次作业，共&nbsp;&nbsp;<#if hwStatistic??>${hwStatistic.total_num}<#else>0</#if>&nbsp;&nbsp;题
+	         </p>
+	    	</span>
+	    </a>
+   </div>
+</div>
+<div class="clear"></div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<#include "homework/teacher/createHomeworkInfoDialog.htm" parse="true" encoding="UTF-8" >
+<#include "allSortDialog.htm" parse="true" encoding="UTF-8" >
+<script>
+$("#CreateNewHw").click(function() {
+	$("#CreateHomeworkInfo-Dialog").dialog("open");
+});
+$(function() {
+	//设置顶部logo部分突出的标签
+	$($(".hw-logotop-ul").find("li")[0]).addClass("hw-logotop-licurrent");
+	
+});
+</script>

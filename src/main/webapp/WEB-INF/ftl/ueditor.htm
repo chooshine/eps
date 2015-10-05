@@ -1,0 +1,123 @@
+<style>
+.hideinput {display:none;}
+#container {margin-left:-3px;}
+</style>
+<#include "uploadImgDialog.htm" parse="true" encoding="UTF-8" >
+<script>
+window.UEDITOR_HOME_URL = "<@spring.url '/ueditor/'/>";
+</script>
+<!-- 加载编辑器的容器 -->
+<script id="container" name="content" type="text/plain" class="hide">
+在此输入内容
+</script>
+<!-- 配置文件 -->
+<script type="text/javascript" src="<@spring.url '/ueditor/ueditor.config.js' />"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="<@spring.url '/ueditor/ueditor.all.min.js' />"></script>
+<script type="text/javascript" src="<@spring.url '/ueditor/kityformula-plugin/addKityFormulaDialog.js' />"></script>
+<script type="text/javascript" src="<@spring.url '/ueditor/kityformula-plugin/getKfContent.js' />"></script>
+<script type="text/javascript" src="<@spring.url '/ueditor/kityformula-plugin/defaultFilterFix.js' />"></script>
+<script type="text/javascript" src="<@spring.url '/ueditor/delbutton-plugin.js' />"></script>
+<script type="text/javascript" src="<@spring.url '/ueditor/historybutton-plugin.js' />"></script>
+<script type="text/javascript" src="<@spring.url '/ueditor/uploadimgbutton-plugin.js' />"></script>
+<!-- 实例化编辑器 -->
+<script type="text/javascript">
+var content= "在此输入内容";
+//为输入框添加聚焦事件
+function addFocusEventToInputDiv(node) {
+	$(node).focus(function() {
+		hideUE();
+	});
+}
+
+//隐藏编辑器，应该显示编辑器对应的输入框和隐藏编辑器
+function hideUE() {
+	$(".hideinput").html(ue.getContent());
+	$(".hideinput").find("img").each(function() {
+		if(!($(this).attr("data-latex") == undefined)) {
+			$(this).dblclick(function() {
+				formulaDbClickEvent(this);
+			});
+		}
+	});
+	$(".hideinput").removeClass("hideinput");
+	$("#container").addClass("hide");
+}
+
+//将编辑器移动到.text_sju的下面
+function moveUE() {
+	$("#container").addClass("hide");
+	$(".text_sju").after($("#container"));
+}
+
+
+//点击ueditor的图标按钮
+function addClickEventToUeditorBtn(node) {
+	$(node).click(function() {
+		//将编辑器移到当前输入框的下面
+		content = $(divElement).html();
+		if(!$(node).next().hasClass('edui-default')) $(divElement).after($("#container"));
+		ue.setContent(content, false);
+		ue.setShow();
+		$("#container").removeClass("hide");
+		
+		//隐藏所有图片按钮和当前divElement
+		$(node).parents(".linkClass2").css("visibility", "hidden");
+		$(divElement).addClass("hideinput");
+	});
+}
+
+var ue = UE.getEditor('container',{
+	toolbars: [[
+	            'bold', 'italic', 'underline', '|', 'fontsize', 'uploadimg_btn', 'kityformula', '|', 'del_btn', 'history_btn'
+            ]],
+    elementPathEnabled:false,
+    initialFrameWidth:560,
+    autoHeightEnabled:true
+});
+ue.ready(function(){
+ 	ue.setContent(content, false);
+ 	ue.on('showmessage', function(type, opt){
+ 			if (opt.content == '本地保存成功') return true;
+ 		});
+ 	
+ 	ue.addListener('hide',function(){
+     	$(".hideinput").html(ue.getContent());
+     	$(".hideinput").find("img").each(function() {
+ 			if(!($(this).attr("data-latex") == undefined)) {
+ 				$(this).dblclick(function() {
+ 					formulaDbClickEvent(this);
+ 				});
+ 			}
+ 		});
+     	$(".hideinput").removeClass("hideinput").focus();
+     	triggerMouseEvent($('#container').prev()[0], 'click');
+    });
+});
+
+//设置剪裁图片的存放位置
+function getSavePath() {
+	var date = new Date(),
+	year = date.getFullYear(),
+	month = date.getMonth()+1,
+	day = date.getDate();
+	month = month<10?("0"+month):month;
+	day = day<10?("0"+day):day;
+	return "/images/formula/"+year+month+day;
+}
+//设置剪裁选择区域的宽高比
+function getRatio() {
+	return 0;
+}
+//剪裁之后需要做的处理，图片上传插件调用者可以在这里做操作
+function doAfterCrop(savePath) {
+	var html = "<img src='<@spring.url '/"+savePath+"' />'/>";
+	if(ue.hasContents()) {
+		var content = ue.getContent();
+		ue.setContent(content.replace(/<span class="chooshine-placeholder"><\/span>/g, html));
+	} else {
+		ue.setContent(html);
+	}
+	closeCropDialog();
+}
+</script>

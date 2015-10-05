@@ -1,0 +1,182 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<#include "network/teacher/weblogos/testHistoryLogo.htm" parse="true" encoding="UTF-8" >
+<div class="content">
+	<div>
+		<!-- 左边部分 -->
+		<div class="left">
+			<!-- 头像 -->
+		    <#if USER_CONTEXT.photo!="">
+				<div class="pic"><img class="left_img" src="<@spring.url '/${USER_CONTEXT.photo}'/>"  width="120" height="120"  title="头像"/></div>
+			<#else>
+				<div class="pic"><img class="left_img" src="<@spring.url '/images/headImage/default_head.jpg'/>"  width="120" height="120"  title="头像"/></div>
+		  	</#if>
+		    <h3>查看报告</h3>
+		    
+		    <!-- 跳转到其他页面 -->
+		    <ul>
+		    	<li><a class="left_current">查看报告</a></li>
+				<li><a href="<@spring.url '/examsystem/viewDetail.html?examId=${examId}&testRecId=${testRecId?c}&viewType=all'/>">查看解析</a></li>
+			    <li><a href="<@spring.url '/examsystem/viewDetail.html?examId=${examId}&testRecId=${testRecId?c}&viewType=errorQuestions'/>">查看错题</a></li>
+		    </ul>
+		</div>
+		
+		<!-- 右边部分 -->
+		<div class="right">
+			<table style="width:100%;border-right:none;">
+				<!-- 试卷名称、交卷时间 -->
+				<tr class="viewresult-bordertr"><td style="padding-top:10px;padding-bottom:10px;padding-left:20px;">
+					<p style="margin-bottom:5px;font-size:12px;">试卷名称：${recordStatistics.exam_name}</p>
+		        	<p style="font-size:12px;">交卷时间：${recordStatistics.commit_time}</p>
+				</td></tr>
+				<!-- 试卷的统计 -->
+				<tr class="viewresult-bordertr"><td style="padding-top:20px;padding-left:20px;">
+					<div style="float:left;width:280px;margin-right:28px;">
+			        	<div class="pointReport"><span class="basicInfoLeft">得分</span><span class="basicInfoRight"><span>${recordStatistics.score?c}</span>分</span></div>
+			        	<div class="pointReport"><span class="basicInfoLeft">总分</span><span class="basicInfoRight"><span>${recordStatistics.total?c}</span>分</span></div>
+			            <div class="pointReport"><span class="basicInfoLeft">全网该卷平均分</span><span class="basicInfoRight"><span>${recordStatistics.avgscore?c}</span>分</span></div>
+			            <div class="pointReport"><span class="basicInfoLeft">已超过的考生</span><span class="basicInfoRight"><span>${recordStatistics.surpass*100}%</span></span></div>
+			            <div class="pointReport"><span class="basicInfoLeft">答题量</span><span class="basicInfoRight"><span>${recordStatistics.ct?c}/${recordStatistics.m_topic_num?c}</span>道</span></div>
+			            <div class="pointReport"><span class="basicInfoLeft">做题用时</span><span class="basicInfoRight"><span>${recordStatistics.exam_use_time}</span></span></div>
+		        	</div>
+		        	<div class="viewresult_piechart">
+		        		<p class="pietip">考试用时分布图</p>
+		        		<div id="chartdiv" style="height:330px;"></div>
+		        	</div>
+				</td></tr>
+				<!-- 各大题及小题的得分及耗时情况 -->
+				<tr class="viewresult-bordertr"><td style="padding-top:20px;padding-bottom:20px; padding-left:20px;padding-right:20px;">
+					<h3 style="margin-bottom:20px;">本次考试情况</h3>
+			    	<table class="table table-bordered table-hover table-condensed">
+			    		<tr>
+			    			<th>题目</th><th>得分情况</th><th>耗时</th>
+			    		</tr>
+			    		<#if typesAndQuestionsInfo??>
+			    		<#list typesAndQuestionsInfo as type>
+				    		<tr>
+				    			<td class='ques'><img status="open" src="<@spring.url '/images/open.png'/>" class="spreadType" questionTr=${type['TYPE_ID']?c} /><span class="viewresult-typename">${type['type_name']}</span></td>
+				    			<td class='score'>
+				    				<#assign width=0>
+				    				<#if type['type_stu_score']?? && type['type_score']??>
+				    				<#assign width=(type['type_stu_score']/type['type_score'])>
+				    				</#if>
+				    				<div class="processbarwrap">
+				    					<div class="processbar" style="width:${width*100+'%'};"></div>
+				    					<div class="percent"><label>${type['type_stu_score']?c}/${type['type_score']?c}</lable></div>
+				    				</div>
+				    			</td>
+				    			<td>${type['type_answer_time_hms']}</td>
+				    		</tr>
+				    		<#if type['questionsList']??>
+					    		<#list type['questionsList'] as question>
+					    		<tr class="${type['TYPE_ID']?c} view_question">
+					    			<td class="ques mtopic">第 ${question['m_topic']?c} 题</td>
+					    			<td class='score'>
+					    				<#assign width=0>
+					    				<#if question['stu_score']!=-1>
+					    				<#assign width=(question['stu_score']/question['score'])>
+					    				</#if>
+					    				<div class="processbarwrap">
+					    					<div class="processbar" style="width:${width*100+'%'};"></div>
+					    					<div class="percent"><label>${question['stu_score']?c}/${question['score']?c}</lable></div>
+					    				</div>	
+					    			</td>
+					    			<td>${question['answer_time']}</td>
+					    		</tr>
+					    		</#list>
+				    		</#if>
+			    		</#list>
+			    	</table>
+			    	</#if>
+				</td></tr>
+				<tr class="viewresult-bordertr"><td><#include "network/answerCardOfReport.htm" parse="true" encoding="UTF-8"></td></tr>
+			</table>
+		</div>
+		<div class="nofl"></div>
+	</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script src="<@spring.url '/javascripts/amcharts.js'/>" ></script>
+<script>
+$(function(){
+	//页面加载之后
+	$(".view_question").each(function(){
+		$(this).hide();
+	});
+	showDivTop($(".left"));
+	
+	//展示大题用时分布图
+	var chart;
+    var legend;
+	var chartData = ${pieData};
+	chart = new AmCharts.AmPieChart();
+	chart.dataProvider = chartData;
+	chart.titleField = "type_name";
+	chart.valueField = "type_answer_time_ms";
+	chart.outlineColor = "#FFFFFF";
+	chart.outlineAlpha = 0.8;
+	chart.outlineThickness = 2;
+	chart.write("chartdiv");
+	
+	//点击“展开大题”或者“收起大题”
+	$(".spreadType").each(function(){
+		$(this).click(function(){
+			trClass = $(this).attr("questionTr");
+			if($(this).attr("status")=="open"){
+				$(this).attr("status","close");
+				$(this).attr("src","<@spring.url '/images/close.png'/>");
+				$("."+trClass).show();
+			} else {
+				$(this).attr("status","open");
+				$(this).attr("src","<@spring.url '/images/open.png'/>");
+				$("."+trClass).hide();
+			}
+		});
+	});
+	
+	//点击答题卡中的小题号
+	$(".answercard-question").each(function(){
+		$(this).click(function(){
+			var mtopicId = $(this).attr("id");
+			location.href = "<@spring.url '/examsystem/viewDetail.html?examId=${examId}&testRecId=${testRecId?c}&viewType=all&mtopicId='/>"+mtopicId;
+		});
+	});
+	
+	//滚动条滚动时，让某个div显示在页面顶部
+	function showDivTop(Node) {
+		var startPos = $(Node).offset().top;
+		//设置滚动条的滚动事件
+		$(window).scroll(function() {
+			//得到文档相对于滚动条顶部滚动的距离
+			var scrollDistance = $(this).scrollTop();
+			//如果滚动条滚动距离大于startPos，则设置div的position为fixed，且top=0；反之，则取出fiexed
+			if(scrollDistance > startPos) {
+				$(Node).css({"position":"fixed", "top":"0"});
+			} else {
+				$(Node).css({"position":"", "top":""});
+			}
+		});
+	}
+});
+</script>
+<style type="text/css">
+body {background-color:#eee;}
+.left {height:320px;padding-bottom:20px;border:1px solid #d7d7d7;box-shadow:0 0 5px #aaa;margin-bottom:20px;}
+.left ul li a:HOVER, .left ul li .left_current {background-color:#ddd;color:#333;}
+.right {width:816px;border:#d7d7d7 1px solid;padding:0px;box-shadow:0 0 5px #aaa;background-color:#fff;margin-bottom:20px;float:right;}
+.pointReport {margin-bottom:20px; padding-bottom:30px;border-bottom: #d7d7d7 1px dashed;font-size:12px;color:#999999;}
+.basicInfoLeft	{float:left;}
+.basicInfoRight {color:#3A8FFB; float:right;}
+.basicInfoRight span{font-size:16px; margin-right:3px;}
+.viewresult_piechart {width:486px; float:right;}
+.pietip {width:120px; height:16px; line-height:16px; font-size:16px; font-weight:700;}
+.viewresult-bordertr {border-bottom:1px #d7d7d7 solid; border-top: 1px #d7d7d7 solid;}
+.spreadType {width:16px;float:left;margin-top:2px;margin-right:5px;cursor:pointer;}
+.viewresult-typename {display:inline-block;float:left;}
+.ques {width:318px;}
+.mtopic {text-indent:35px;}
+.score {width:288px;}
+
+.processbarwrap {display:inline-block;width:100px;height:20px;border:1px solid #ddd;border-radius:3px;margin-bottom:-4px;}
+.processbarwrap .processbar {height:20px;line-height:20px;text-align:center;background-color:#D8EEEC;border-radius:3px;}
+.processbarwrap .percent {float:right;position:relative;top:-17px;right:31px;}
+</style>

@@ -1,0 +1,353 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+
+<div class="or_top">
+	<div class="or_tlt"><a href="<@spring.url '/' />"><div class="intop1" ></div></a></div>
+	<div class="or_trt">
+		<ul class="or_trtcl">
+			<li id="myExam">我的试卷</li>
+			<li id="myTeacher">我的老师</li>
+			<li id="myRelease">我的发布</li>
+		</ul>
+		<div class="or_trtcr">
+			
+		</div>
+	</div>
+	<div class="nofl"></div>
+</div>
+		<#assign teacher=0>
+		<#list TEAINFO as tea>
+			<#assign teacher=tea>
+			<#break>
+		</#list>
+<div class="testl_con" style=" padding-top:12px;">
+	<div class="or_t_top">
+		<div class="or_b_sjcomr3">
+			<div id="retRes"><a >返回资源</a></div>
+		</div>
+		<div class="or_tsj_top"><a>${teacher.TEACHER_NAME}</a>老师的资源</div>
+	</div>
+	<div  class="or_b_com">
+		<div class="or_b_comr3">
+			<#if payType="order">
+				<div class="or_b_comr3x" id="showOrder">我要订阅</div>
+			<#else>
+				<div class="or_b_comr3x" id="showOrder">我要续订</div>
+			</#if>
+		</div>
+		<div class="or_b_coml">
+			<div class="or_b_comlc">
+				<#if teacher.PHOTO!="">
+					<img src="<@spring.url '/${teacher.PHOTO}'/>" width="55" height="60"/>
+				<#else>
+					<img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="55" height="60"/>
+				</#if>
+			</div>
+		</div>
+		
+		<input type="hidden" value=${teacher.USER_ID?c} id="userId">
+		<input type="hidden" value=${teacher.GOODS_ID} id="goodsId">
+		<div class="or_b_comc">
+			<div class="or_b_comc1">
+				<div class="or_b_comc1l">名称：</div>
+				<div class="or_b_comc1r">${teacher.GOODS_DETAIL!}</div>
+			</div>
+			<div class="or_b_comc1">
+				<div class="or_b_comc1l">类型：</div>
+				<div class="or_b_comc1rx">试卷</div>
+			</div>
+		</div>
+		<div class="or_b_comc">
+			<div class="or_b_comc1">
+				<div class="or_b_comc1l">名师：</div>
+				<div class="or_b_comc1rx">${teacher.TEACHER_NAME}</div>
+			</div>
+			<div class="or_b_comc1">
+				<div class="or_b_comc1l">科目：</div>
+				<div class="or_b_comc1rx">${teacher.TEACH}</div>
+			</div>
+		</div>
+		<div class="or_b_comc">
+			<div class="or_b_comc1">
+				<div class="or_b_comc1l">学校：</div>
+				<div class="or_b_comc1rx">${teacher.SCHOOL_NAME}</div>
+			</div>
+			<div class="or_b_comc1">
+				<div class="or_b_comc1l">总评论：</div>
+				<div class="or_b_comc1rx" id="allAss"><span>${teacher.COUNT_ASS}</span></div>
+			</div>
+		</div>
+		<div class="nofl"></div>
+	</div>
+	<div class="or_b_bot">
+		<div class="or_tbot">
+			<ul class="or_tbottp">
+				<li class="or_tbottphov" id="sTraDiv"><a>老师资源<span>(${RELCOUNT})</span></a></li>	
+				<li id="sRelDiv"><a>成交记录<span>(${TRACOUNT})</span></a></li>
+			</ul>
+			<div class="testb_tbotcm" id="traDiv">
+				<!--?????-->
+				<div  class="or_tbotcmtop">
+					<div class="or_tbotcmtop1" >序号</div>
+					<div class="or_tbotcmtop2">试卷</div>
+					<div class="or_tbotcmtop3">评论数</div>
+					<div class="or_tbotcmtop4">发布时间</div>
+				</div>
+				<ul class="or_tbotcmtopx">
+					<#list RELLIST as rel>
+					<#if RELLIST?size=0>
+						<#break>
+					</#if>
+					<li>
+						<div class="or_tbotcmtop_1">${rel_index+1}</div>
+						<div class="or_tbotcmtop_2">${rel.EXAM_NAME}</div>
+						<div class="or_tbotcmtop_3">共<a href="#">${rel.COUNT_ASS}</a>个评论</div>
+						<div class="or_tbotcmtop_4">${rel.RELEASE_TIME}</div>
+					</li>
+					</#list>
+				</ul>
+				<div style=" width:1024px;padding-top:20px; margin-top:20px; height:35px; margin:0 auto;">
+					<#include "pagination.htm" parse="true" encoding="UTF-8" >
+					<@pagination page=page1 />
+				</div>
+			</div>
+			<div class="testb_tbotcm" id="relDiv" style="display: none">
+				<!--?????-->
+				<div  class="or_tbotcmtop">
+					<div class="testb_tbotcmtop1">网友(共${TRACOUNT}人)</div>
+					<div class="testb_tbotcmtop2">试卷</div>
+					<div class="testb_tbotcmtop3">价格/（时间）</div>
+					<div class="testb_tbotcmtop4">成交时间</div>
+				</div>
+				<ul class="or_tbotcmtopx">
+					<#list TRADELIST as trade>
+					<li>
+						<div class="testb_tbotcmtop_1">${trade.USER_NO}</div>
+						<div class="testb_tbotcmtop_2">${teacher.SCHOOL_NAME}--${teacher.TEACHER_NAME}的试卷</div>
+						<div class="testb_tbotcmtop_3"><span>${trade.MONEY}</span>元(<span>${trade.MODEL_NAME}个月</span>)</div>
+						<div class="testb_tbotcmtop_4">${trade.TRADE_TIME}</div>
+					</li>
+					</#list>
+				</ul>
+				<@pagination page=page2 />
+			</div>
+		</div>
+	</div>
+
+</div>
+	<form id="getOrderForm" method="GET" action="<@spring.url '/exam_orderView.html' />" />
+			<input type="hidden" value="20" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="${TEACHER_ID?c}" name="teacherId" id="teacherId">
+			<input type="hidden" value="${WHATTYPE}" name="whatType" id="whatType">
+			<input type="hidden" value="orderToo" name="payType">
+	</form>
+
+<div class="gou_com">
+	<div class="gou_tx">
+		<div class="gou_txc"></div>
+	</div>
+	<div class="gou_ccn">
+		<div class="gou_ccnx2">
+			<div class="gou_ccnxlx">作&nbsp;&nbsp;&nbsp;&nbsp;者：</div>
+			<div class="gou_ccnxr gou_ccnxr1" id="authorName">${teacher.TEACHER_NAME}</div>
+		</div>
+		<div class="gou_ccnx2">
+			<div class="gou_ccnxlx">名&nbsp;&nbsp;&nbsp;&nbsp;称：</div>
+			<div class="gou_ccnxr gou_ccnxr2">${teacher.GOODS_DETAIL!}</div>
+		</div>
+		<div class="gou_ccnx">
+			<div class="gou_ccnxl">价&nbsp;&nbsp;&nbsp;&nbsp;格：</div>
+			<div class="gou_ccnxr gou_ccnxr3"><span id="price">12</span>元</div>
+		</div>
+		<div class="gou_ccnx">
+			<div class="gou_ccnxl"> 订阅时间：</div>
+			<div  class="gou_ccnxr gou_ccnxr4">
+				<ul>
+					<#list MODELLIST as model>
+						<#if model_index=0>
+							<li class="gou_sj1"><label><input type="radio" style="border:0px; background:none; width:0px;display:none;" name="modelType" value="${model.MODEL_NAME}" price="${model.UNIT_PRICE}" checked="checked"  modelId=${model.MODEL_ID?c}>${model.MODEL_NAME}个月</label></li>
+						<#else>
+							<li class="gou_sj"><label><input type="radio" style="border:0px; background:none; width:0px; display:none;" name="modelType" value="${model.MODEL_NAME}" price="${model.UNIT_PRICE}" modelId=${model.MODEL_ID?c}>${model.MODEL_NAME}个月</label></li>
+						</#if>
+					</#list>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="gou_bot">
+		<div class="gou_botl" id="sureOrder">我要付款</div>
+		<div class="gou_botr" id="cancelOrder">取消付款</div>	
+	</div>
+</div>
+
+	<form id="getExamForm" method="GET" action="<@spring.url '/exam_orderExam.html' />" />
+			<input type="hidden" value="20" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="sortNo" id="sortNo">
+			<input type="hidden" value="-1" name="commitFlag" id="commitFlag">
+	</form>
+	
+	<form id="getTeacherForm" method="GET" action="<@spring.url '/exam_orderTeacher.html' />" />
+			<input type="hidden" value="20" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="isLose" id="isLose">
+			<input type="hidden" value="-1" name="subjectNo" id="subjectNo">
+	</form>
+	
+	<form id="getParentSortForm" method="GET" action="<@spring.url '/exam_allTeacher.html' />" />
+			<input type="hidden" value="20" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="小学" name="sortParentName" id="sortParentName">
+			<input type="hidden" value="1" name="sortParentId" id="sortParentId">
+			<input type="hidden" value="-1" name="parentSubjectno" id="parentSubjectno">
+			<input type="hidden" value="-1" name="examarea" id="examarea">
+			<input type="hidden" value="COUNT_ORDER" name="sortName" id="sortName">
+			<input type="hidden" value="DESC" name="sortType" id="sortType">
+	</form>
+	
+	<form id="getReleaseForm" method="GET" action="<@spring.url '/exam_orderRelease.html' />" />
+			<input type="hidden" value="20" name="pageSize">
+			<input type="hidden" value="1" name="pageNo" >
+			<input type="hidden" value="-1" name="release" id="release">
+	</form>
+	
+	<form id="addAssessForm" method="GET" action="<@spring.url '/exam_orderComDetail.html' />" >
+		<input type="hidden" name="goodsId" value=${teacher.GOODS_ID}>
+		<input type="hidden" name="teacherId" value=${teacher.TEACHER_ID?c}>
+		<input type="hidden" value="20" name="pageSize">
+		<input type="hidden" value="1" name="pageNo" >
+		<input type="hidden" value="-1" name="assType" id="assType">
+		<input type="hidden" value="${payType}" name="payType" id="payType">
+	</form>
+
+<#include "bottom.htm" parse="true" encoding="UTF-8">
+<script>
+
+	$(function(){
+		
+		$("#myExam").click(function(){
+			$("#getExamForm").submit();
+		});
+		
+		$("#myTeacher").click(function(){
+			$("#getTeacherForm").submit();		
+		});
+		
+		$("#myRelease").click(function(){
+			$("#getReleaseForm").submit();
+		});
+		
+		$("#price").html($("input:radio[name='modelType']:checked").attr("price"));
+		var oldNode=$("input:radio[name='modelType']:checked");
+		$("input:radio[name='modelType']").click(function(){
+			$("#price").html($(this).attr("price"));
+			if($(this).parent().parent().hasClass("gou_sj")){
+				$(this).parent().parent().attr("class","gou_sj1");
+				oldNode.parent().parent().attr("class","gou_sj");
+				oldNode=$(this);
+			}
+		});
+		
+		$('.gou_com').dialog({
+			title:"选择套餐",
+			autoOpen: false,
+		    height: 280,
+		    width: 515,
+		    modal: true,
+		});
+		
+		$("#showOrder").click(function(){
+			$(".gou_com" ).dialog("open");
+		});
+		
+		$("#sureOrder").click(function(){
+			var price=$("#price").html();
+			var orderMonth=$("input:radio[name='modelType']:checked").val();
+			var authorName=$("#authorName").html();
+			var goodsId=$("#goodsId").val();
+			var modelId=$("input:radio[name='modelType']:checked").attr("modelId");
+			location.href="<@spring.url '/order_choosePay.html?price="+price+"&orderMonth="+orderMonth+"&authorName="+authorName+"&goodsId="+goodsId+"&modelId="+modelId+"'/>";	
+		});
+		
+		$("#cancelOrder").click(function(){
+			$(".gou_com" ).dialog("close");
+		});
+		
+
+		if($("#whatType").val()=="first"){
+			$("#traDiv").css("display","");
+			$("#relDiv").css("display","none");
+			
+			if($("#sRelDiv").hasClass("or_tbottphov")){
+				$("#sRelDiv").removeClass("or_tbottphov");
+			}
+			$("#sTraDiv").addClass("or_tbottphov");
+		}else{
+			$("#relDiv").css("display","");
+			$("#traDiv").css("display","none");
+			
+			if($("#sTraDiv").hasClass("or_tbottphov")){
+				$("#sTraDiv").removeClass("or_tbottphov");
+			}
+			$("#sRelDiv").addClass("or_tbottphov");
+		}
+		
+		
+		$("#sTraDiv").click(function(){
+			$("#traDiv").css("display","");
+			$("#relDiv").css("display","none");
+			
+			if($("#sRelDiv").hasClass("or_tbottphov")){
+				$("#sRelDiv").removeClass("or_tbottphov");
+			}
+			$(this).addClass("or_tbottphov");
+			
+			$("#whatType").val("first");
+			
+		});
+		
+		$("#sRelDiv").click(function(){
+			$("#relDiv").css("display","");
+			$("#traDiv").css("display","none");
+			
+			if($("#sTraDiv").hasClass("or_tbottphov")){
+				$("#sTraDiv").removeClass("or_tbottphov");
+			}
+			$(this).addClass("or_tbottphov");
+			
+			$("#whatType").val("second");
+		});
+		
+		$(".show,.fcenter").each(function(index){
+			$(this).click(function(){
+				$("input[name='pageNo']").val($(this).attr("url"));
+				$("#getOrderForm").submit();
+			});
+		});
+		
+		$("#retRes").click(function(){
+			$("#getParentSortForm").submit();
+			//window.history.back()
+		});
+		
+		$("#allAss").click(function(){
+			$("#addAssessForm").submit();
+		});
+		
+		
+	});
+	
+	
+</script>
+
+
+
+
+
+
+
+
+
+
+
+

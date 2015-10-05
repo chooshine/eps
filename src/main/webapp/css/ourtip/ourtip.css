@@ -1,0 +1,25 @@
+/*弹出框（dialog）样式*/
+
+/*公司alert及confirm弹出框样式*/
+#dialog-suredelete {display:none;}
+#dialogson {text-align:center;background-color:#FFFFFF;margin-top:40px;}
+#msggrandpa {display:table;width:350px;}
+#msgparent {display:table-cell; vertical-align:middle;}
+#whetherclose {height:60px;line-height:22px;font-size:18px;text-align:center;}
+#choosecontainer {margin-top:20px;text-align:center;}
+#choosecontainer div {float:left;}
+#dialog-suredelete-sureclose {margin-right:20px;}
+
+/*弹出框边框*/
+.chooshine-dialog {display:none;padding:0;border:6px #666 solid;}
+.ui-dialog .ui-dialog-content {padding:0;}
+.ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button, .chooshine input , .chooshine select, .chooshine button, .chooshine textarea {font-family:"Microsoft YaHei";}
+.chooshine-dialog .ui-dialog-titlebar {display:none;}
+/*弹出框标题（隐藏原有标题，使用h3代替原有标题）*/
+.chooshine-dialog h3 {padding:10px 0 10px 10px;font-size:16px;text-align:left;background-color:#eeeeee;margin-bottom:20px;}
+/*弹出框内矩形按钮样式*/
+.rectanglebtn {width:86px;height:32px;line-height:32px;font-size:15px;font-weight:700;color:#FFFFFF;text-align:center;background-color:#0099FF;}
+.rectanglebtn:hover {cursor:pointer; background-color:#4DB2FA;}
+/*显示原有标题的弹框样式*/
+.showtitle-dialog {padding:0;border:6px #666 solid;}
+.showtitle-dialog .ui-dialog-titlebar {background:#eee;border:none;}

@@ -1,0 +1,90 @@
+<input type="hidden" name="testid" value="${currentInfo.test_id?c}"/>
+<input type="hidden" name="gradeid" value="${currentInfo.grade_id?c}"/>
+<input type="hidden" name="sortid" value="${currentInfo.sort_id?c}"/>
+<input type="hidden" name="testname" value="${currentInfo.test_name}"/>
+<input type="hidden" name="sortname" value="${currentInfo.sort_name}"/>
+<input type="hidden" name="examname" value="${currentInfo.exam_name}"/>
+<input type="hidden" name="testtime" value="${currentInfo.test_time?string('yyyy-MM-dd HH:mm:ss')}" />
+<input type="hidden" name="testendtime" value="${currentInfo.test_endtime?string('yyyy-MM-dd HH:mm:ss')}" />
+<input type="hidden" name="examcosttime" value="${currentInfo.cost_time}" />
+<input type="hidden" name="disabledautomark" value="${automark.disabledautomark}" />
+<input type="hidden" name="automarkflag" value="${automark.automark_flag}" />
+<#if classList??>
+	<#list classList as class>
+		<div class='cla'>
+			<#if class.network_status??>
+				<div class='bianji_bk'>
+					<div class='disp'>
+						<p>
+							<span class='struct-classname'>${class.class_name}</span>
+							<a href='javascript:void(0);' class='blue arrangeroomdialog-edit'>&nbsp;&nbsp;&nbsp;&nbsp;编辑</a>
+							<input type='hidden' name='class_Id' value="${class.class_id?c}" />
+						</p>
+						<p>
+							<span>${class.date?string('yyyy-MM-dd HH:mm:ss')}</span>
+						</p>
+						<p>${class.network_addr}</p>
+						<p>${class.teacher_name}监考</p>
+					</div>
+				</div>
+				<div class='bianji_bk bianji_current' style="display:none;">
+					<div class='dip'>
+						<p>
+							<span class='classname'>${class.class_name}</span>
+							<input name='class_Id' value="${class.class_id?c}" type='hidden' />
+							<input name='arrange_Id' value="${class.arrange_id?c}" type='hidden' />
+							<a href='javascript:void(0);' class='arrangeroomdialog-delete' style='margin-left:70px;'>删除</a>
+						</p>
+						<p class='input_wrap04'>
+							<label class='arrangeroom-keylable'>时长</label>
+							<input type='text' name='costtime' enddate="${class.enddate?string('yyyy-MM-dd HH:mm:ss')}" value='${class.cost_time?c}' class='arrangeroom-valueinput input-timelength' />
+							<label class="arrangeroom-keylable">分钟</label>
+						</p>
+						<p class='input_wrap04'>
+							<label class='arrangeroom-keylable'>开始</label>
+							<input type='text' class='choosetime arrangeroom-valueinput' name='date' value="${class.date?string('yyyy-MM-dd HH:mm:ss')}" />
+						</p>
+						<p class='input_wrap04'>
+							<label class='arrangeroom-keylable'>考场</label>
+							<input type='text' class='arrangeroom-valueinput' name='netWork_Addr' value='${class.network_addr}' />
+						</p>
+						<p class='input_wrap04'>
+							<label class='arrangeroom-keylable'>监考</label>
+							<input type='text' class='arrangeroom-valueinput' name='teacher_Name' value='${class.teacher_name}' />
+						</p>
+						<div class='baocun_btn'></div>
+					</div>
+				</div>
+			<#else>
+				<div class='bianji_bk bianji_current'>
+					<div>
+						<p>
+							<span class="classname">${class.class_name}</span>
+							<input name='class_Id' value="${class.class_id?c}" type='hidden' />
+						</p>
+						<p class='input_wrap04'>
+							<label class='arrangeroom-keylable'>时长</label>
+							<input type='text' class='arrangeroom-valueinput input-timelength' name='costtime' value="${currentInfo.cost_time?c}"/>
+							<label class="arrangeroom-keylable">分钟</label>
+						</p>
+						<p class='input_wrap04'>
+							<label class='arrangeroom-keylable'>开始</label>
+							<input type='text' class='choosetime arrangeroom-valueinput' name='date' />
+						</p>
+						<p class='input_wrap04'>
+							<label class='arrangeroom-keylable'>考场</label>
+							<input type='text' class='arrangeroom-valueinput' name='netWork_Addr' />
+						</p>
+						<p class='input_wrap04'>
+							<label class='arrangeroom-keylable'>监考</label>
+							<input type='text' class='arrangeroom-valueinput' name='teacher_Name' />
+						</p>
+						<div class='baocun_btn'>
+							<input type='button' class='saveAp' value='保存' />
+						</div>
+					</div>
+				</div>
+			</#if>
+		</div>
+	</#list>
+</#if>

@@ -1,0 +1,67 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<style>
+body {background-color:#eeeeee;}
+.nr_wrap a {box-shadow:1px 4px 6px #aaa;}
+</style>
+<div class="weblog-wrap">
+	<div class="weblog-subwrap">
+		<h1 class="weblog-f"><a href="<@spring.url '/index.html' />"></a></h1>
+		<h2 class="weblog-f">在线考场</h2>
+	   	<ul class="weblog-f">
+	   		<li class="weblog-f curNav"><a href="<@spring.url '/network/paperFactory.html'/>">出卷</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/room.html'/>">考场</a></li>
+	   		<li class="weblog-f"><a href="<@spring.url '/netWork/result.html'/>" style="border-right:none;">阅卷</a></li>
+	   	</ul>
+	</div>
+	<div class="nofl"></div>
+</div>
+<div class="nr_wrap" style="width:800px;margin:70px auto 200px;">
+<div class="shijuan show">
+	<a href="<@spring.url '/network/exam_createExam.html'/>" class="nr_left">
+    	<span class="nr_icon nr_icon03"></span>
+		<span class="nr_content">
+			<h2>新出卷子</h2>
+            <p>在这里您可以新出一张卷子</p>
+        </span>
+    </a>
+    <a href="<@spring.url '/network/continue.html'/>" class="nr_right">
+    	<span class="nr_icon nr_icon04"></span>
+        <span class="nr_content">
+        	<h2>继续出卷</h2>
+            <p>
+            	您当前还有
+            	<#if examlist??>
+					<#list examlist as ex>
+						${ex.UNRELEASED_NO}	
+					</#list>
+				</#if>
+            	份试卷未发布
+        	</p>
+        </span>
+     </a>
+    <a href="<@spring.url '/network/paperLibrary.html'/>"class="nr_bottom">
+    	<span class="nr_icon nr_icon05"></span>
+        <span class="nr_content">
+        	<h2>试卷库</h2>
+            <p>
+            	您的题库中共有
+             	<#if examlist??>
+				<#list examlist as ex>
+					${ex.UNDELETED_EXAM}
+				</#list>
+				</#if>
+            	份试卷，共
+            	<#if examlist??>
+				<#list examlist as ex>
+					${ex.TOTAL_NUM}	
+				</#list>
+				</#if>
+            	小题
+            </p>
+       	</span>
+    </a>
+</div>
+</div>
+<div class="clear"></div>
+<!----footer  code------>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >

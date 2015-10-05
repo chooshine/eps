@@ -1,0 +1,246 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<#include "logheader.htm" parse="true" encoding="UTF-8" >
+<style>
+.nav ul li a { padding-top:0px;}
+</style>
+<div id="perIndexMain">
+	<div class="per_nav">
+		<div class="nav">
+			<div class="top">
+				<ul>
+					<li><a href="<@spring.url '/studentGrade/myDesk.html'/>">我的课桌</a></li>
+					<li class="perIndexNavLi">我的能力</li>
+					<li><a href="<@spring.url '/studentGrade/studentLesson.html'/>">我的课程表</a></li>
+					<li><a href="<@spring.url '/studentGrade/studentDevelopment.html'/>">发展跟踪</a></li>
+					<li><a href="<@spring.url '/studentGrade/examAnaly.html'/>">试卷分析</a></li>
+				</ul>
+			</div>
+			<div id="indexNavFirst" class="bottom">
+				<ul>
+					<li>我的能力</li>
+
+				</ul>
+			</div>
+
+		</div>
+	</div>
+</div>
+<div class="res_cmx">
+	<ul class="res_cmxt">
+		<li class="res_cmxta1">
+			<div class="res_cmxt1">所在班级</div>
+			<div class="res_cmxb2">${basicInfo.class_name}</div>
+		</li>
+		<li class="res_cmxta2">
+			<div class="res_cmxt1">班主任</div>
+			<div class="res_cmxb2">${basicInfo.teacher_name}</div>
+		</li>
+		<li class="res_cmxta3">
+			<div class="res_cmxt1">班级排名</div>
+			<div class="res_cmxb2">
+				<span>${basicInfo.score_cr}</span>/<span>${basicInfo.student_num_c}</span>
+			</div>
+		</li>
+		<li class="res_cmxta4">
+			<div class="res_cmxt1">年级排名</div>
+			<div class="res_cmxb2">
+				<span>${basicInfo.score_gr}</span>/<span>${basicInfo.student_num_g}</span>
+			</div>
+		</li>
+		<li class="res_cmxta5">
+			<div class="res_cmxt1">活跃度</div>
+			<div class="res_cmxb2">
+				<span>50%</span>
+			</div>
+		</li>
+	</ul>
+</div>
+<div class="res_nlb">
+	<div class="res_nlbl">
+		<div class="res_nlbl1">
+			<div class="ren_ltl">
+				<div class="ren_ltl1">得分与班级平均分比值
+					<img id="radarexplain" src="<@spring.url '/images/helplog.png'/>" title="图形显示的是您的某科考试得分与班级该科考试平均分的比值，比值越大，代表高于平均分的程度越大。" style="width:30px;height:30px;margin-left:10px;"/>
+				</div>
+				<div class="ren_ltl2">
+					<div class="ren_ltl2l">${max.sort_name}</div>
+					<div class="ren_ltl2r">较好继续保持</div>
+				</div>
+				<div class="ren_ltl3">
+					<div class="ren_ltl3l">较弱需要加强</div>
+					<div class="ren_ltl3r">${min.sort_name}</div>
+				</div>
+			</div>
+			<div class="ren_ltr" id="radarChart" style="height:230px">
+			
+			</div>
+			<div class="nofl"></div>
+		</div>
+		<div class="res_nlbl2">
+			<div class="ren_ltl1">学习成绩分科情况<img id="sortexplain" title="图形显示的是您的各科考试最近1或两次的成绩。" src="<@spring.url '/images/helplog.png'/>" style="width:30px;height:30px;margin-left:10px;"/></div>
+			<div id="columnChart" style="height:250px">
+			
+			</div>
+		</div>
+	</div>
+	<div class="res_nlbr">
+		<div class="res_nlbl1">
+			<div class="ren_ltl1">班级成绩情况<img id="classrank" title="图形显示的是您在班级的排名范围。" src="<@spring.url '/images/helplog.png'/>" style="width:30px;height:30px;margin-left:10px;"/></div>
+			<div class="ren_ltr2">
+				<span class="ren_ltr2l">${basicInfo.student_name}</span> 在<span class="ren_ltr2r">${total_point_info.test_name}</span> 
+				中的总成绩为<span class="ren_ltr3">${basicInfo.score}</span><br />
+				平均分为<span class="ren_ltr4">${total_point_info.score_avg}</span> 
+				班级排名第<span class="ren_ltr4">${total_point_info.score_cr}</span> 名。
+			</div>
+			<div class="ren_ltrlr">
+				<ul>
+					<#if position??>
+					<#list 1..14 as number>
+						<#if number==position>
+						<li class="ren_ltrlr2"></li>
+						<#elseif number gt position>
+						<li class="ren_ltrlr3"></li>
+						<#else>
+						<li class="ren_ltrlr1"></li>
+						</#if>
+					</#list>
+					</#if>
+				</ul>
+			</div>
+
+		</div>
+		<div class="res_nlbl2">
+			<div class="ren_ltl1">进步与退步<img id="classrank" title="图形显示的是您本次考试的各科进步和退步的情况。" src="<@spring.url '/images/helplog.png'/>" style="width:30px;height:30px;margin-left:10px;"/></div>
+			<div class="res_nrbr">
+				<div id="candleChart" style="height:250px">
+				
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script src="<@spring.url '/javascripts/amcharts.js'/>" ></script>
+<script>
+	$(function() {
+	
+		var chartData = ${charData};
+		var chart = new AmCharts.AmRadarChart();
+		chart.dataProvider = chartData;
+		chart.categoryField = "sort_name";
+		chart.startDuration = 2;
+
+		// VALUE AXIS
+		var valueAxis = new AmCharts.ValueAxis();
+		valueAxis.axisAlpha = 0.15;
+		valueAxis.minimum = 0;
+		//valueAxis.maximum = 100;
+		valueAxis.dashLength = 3;
+		valueAxis.axisTitleOffset = 20;
+		valueAxis.gridCount = 5;
+		chart.addValueAxis(valueAxis);
+
+		// GRAPH
+		var graph = new AmCharts.AmGraph();
+		graph.valueField = "percents";
+		graph.bullet = "round";
+		graph.balloonText = "[[category]]:[[value]]";
+		chart.addGraph(graph);
+
+		// WRITE
+		chart.write("radarChart");
+		
+
+		//成绩分科情况=========================
+		
+	    var cchart = new AmCharts.AmSerialChart();
+                cchart.dataProvider = ${columnData};
+                cchart.categoryField = "sort_name";
+                cchart.startDuration = 1;
+
+                var categoryAxis = cchart.categoryAxis;
+                categoryAxis.labelRotation = 0;
+                categoryAxis.gridPosition = "start";
+   
+   				var columnData = ${columnData};
+                var graph1 = new AmCharts.AmGraph();
+                graph1.type = "column";
+                graph1.title = columnData[0]["test_name"];
+                graph1.valueField = "score";
+                graph1.balloonText = "[[test_name]] : [[value]]";
+                graph1.lineAlpha = 0;
+                graph1.fillAlphas = 0.8;
+                graph1.fillColors = "#598BC8";
+                cchart.addGraph(graph1);
+		
+				var graph2 = new AmCharts.AmGraph();
+                graph2.valueField = "score2";
+                graph2.balloonText = "[[test_name2]] : [[value]]";
+                graph2.type = "column";
+                graph2.lineAlpha = 0;
+                graph2.fillAlphas = 0.8;
+               	graph2.title = columnData[0]["test_name2"];
+               	graph2.fillColors = "#CC5B57";
+                cchart.addGraph(graph2); 
+                
+                var legend = new AmCharts.AmLegend();
+                legend.markerType = "square";
+               
+				cchart.addLegend(legend);
+
+				cchart.write("columnChart");
+
+		//进步与退步
+
+		var candleChartData = ${columnData};
+
+		// SERIAL CHART
+		candleChart = new AmCharts.AmSerialChart();
+		candleChart.dataProvider = candleChartData;
+		candleChart.categoryField = "sort_name";
+
+		// AXES
+		// category
+		var candleCategoryAxis = candleChart.categoryAxis;
+		candleCategoryAxis.dashLength = 1;
+		candleCategoryAxis.tickLength = 0;
+		candleCategoryAxis.inside = false;
+		candleCategoryAxis.autoGridCount = true;
+		candleCategoryAxis.gridPosition = "start";
+		candleCategoryAxis.gridAlpha = 1;
+
+		// value
+		var candleValueAxis = new AmCharts.ValueAxis();
+		candleValueAxis.dashLength = 1;
+		candleValueAxis.axisAlpha = 1;
+		candleChart.addValueAxis(candleValueAxis);
+
+		// GRAPH
+		var candleGraph = new AmCharts.AmGraph();
+		candleGraph.type = "candlestick";
+		candleGraph.fillAlphas = 1;
+		candleGraph.title = "班级名次进退步";
+		// candleGraph colors
+		candleGraph.lineColor = "#7f8da9";
+		candleGraph.fillColors = "#7f8da9";
+		candleGraph.negativeLineColor = "#db4c3c";
+		candleGraph.negativeFillColors = "#db4c3c";
+		candleGraph.fillAlphas = 1;
+		// candlestick candleGraph has 4 fields - open, low, high, close
+		candleGraph.openField = "score_cr2";
+		candleGraph.highField = "score_cr2";
+		candleGraph.lowField = "score_cr";
+		candleGraph.closeField = "score_cr";
+		candleGraph.balloonText = "[[sort_name]]:[[progress]]";
+		candleChart.addGraph(candleGraph);
+
+		// CURSOR                
+		var candleChartCursor = new AmCharts.ChartCursor();
+		candleChartCursor.cursorAlpha = 0;
+		candleChart.addChartCursor(candleChartCursor);
+
+		// WRITE
+		candleChart.write("candleChart");
+
+	});
+</script>

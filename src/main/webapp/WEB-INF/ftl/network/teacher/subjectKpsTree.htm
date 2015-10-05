@@ -1,0 +1,169 @@
+<style>
+.showtitle-dialog .ui-dialog-titlebar {display:block;border:none;background:#eee;}
+.showtitle-dialog .ui-dialog-buttonpane {margin-top:0px;border-top:none;}
+.treewrap {width:140px;height:300px;padding:10px;border-top:1px solid #aaa;border-right:1px solid #aaa;float:left;overflow-y:scroll;}
+.cq-firstkp {margin-bottom:20px;}
+.cq-imgwrap {width:40px;text-align:center;float:left;}
+.cq-imgwrap img {cursor:pointer;}
+.cq-first-kpinfo .cq-kpname {height:25px;line-height:25px;float:left;}
+.cq-second-kpinfo .cq-kpname {height:17px;line-height:17px;float:left;}
+.cq-thirdkpinfo .cq-kpname {height:15px;line-height:15px;float:left;}
+.cq-kpname a {color:#000;cursor:pointer;}
+.cq-kpname a:hover {color:#ff9966;font-weight:bold;}
+.cq-associatedline {height:20px;border-left:1px solid #00afed;margin-top:-2px;margin-left:19px;}
+.cq-kpname a.cq-currentkp {color:#ff9966;font-weight:bold;}
+.typekps {width:396px;height:280px;padding:20px;border-top:1px solid #aaa;float:left;}
+.kplabel {height:15px;line-height:15px;padding:1px 2px 1px 15px;border:1px dashed #008000;color:#173302;float:left;cursor:pointer;background:#eee;margin-right:10px;margin-bottom:10px;}
+.kplabel:hover {background:url("<@spring.url '/css/icons/fam/cross.png' />") no-repeat transparent;}
+</style>
+<div id="KpsDialog" style="display:none;border-bottom:1px solid #aaa;">
+	<div class="treewrap">
+		<#if knowledgePoints??>
+		<#list knowledgePoints as kp>
+		<div class="cq-firstkp cq-kp struct-kp">
+			<div class="cq-first-kpinfo">
+				<div class="cq-imgwrap">
+					<#if kp.subkps?size&gt;0>
+					<img src="<@spring.url '/images/close.png'/>" style="width:25px;height:25px;">
+					<#else>
+					<img src="<@spring.url '/images/cd.png'/>" style="width:25px;height:25px;">
+					</#if>
+				</div>
+				<div class="cq-kpname"><a class="struct-kpname" kpid=${kp.kp_id?c}>${kp.kp_name}</a></div>
+				<div class="nofl"></div>
+			</div>
+			<#if kp.subkps?size&gt;0>
+			<div class="cq-second-kps">
+			<#list kp.subkps as subkp>
+			<div class="cq-associatedline"></div>
+			<div class="cq-secondkp kp struct-kp">
+				<div class="cq-second-kpinfo">
+					<div class="cq-imgwrap">
+						<#if subkp.subkps?size&gt;0>
+						<img src="<@spring.url '/images/close.png'/>" style="width:17px;height:17px;">
+						<#else>
+						<img src="<@spring.url '/images/cd.png'/>" style="width:17px;height:17px;">
+						</#if>
+					</div>
+					<div class="cq-kpname"><a class="struct-kpname" kpid=${subkp.kp_id?c}>${subkp.kp_name}</a></div>
+					<div class="nofl"></div>
+				</div>
+				<#if subkp.subkps?size&gt;0>
+				<div class="cq-third-kps">
+					<#list subkp.subkps as subkp2>
+					<div class="cq-associatedline"></div>
+					<div class="cq-thirdkp kp struct-kp">
+						<div class="cq-third-kpinfo">
+							<div class="cq-imgwrap"><img src="<@spring.url '/images/cd.png'/>" style="width:15px;height:15px;"></div>
+							<div class="cq-kpname"><a class="struct-kpname" kpid=${subkp2.kp_id?c}>${subkp2.kp_name}</a></div>
+							<div class="nofl"></div>
+						</div>
+					</div>
+					</#list>
+				</div>
+				</#if>
+			</div>
+			</#list>
+			</div>
+			</#if>
+		</div>
+		</#list>
+		</#if>
+	</div>
+	<div id="TypeKps" class="typekps"></div>
+	<div class="nofl"></div>
+</div>
+<script>
+var dialogKpsMap = {},
+	nowTr = undefined,
+	nowTrId = 0;
+$('#KpsDialog').dialog({
+	title:"考点",
+	dialogClass: "chooshine-dialog showtitle-dialog",
+	autoOpen: false,
+    height: 416,
+    width: 600,
+    modal: true,
+    resizable:false,
+    buttons:[
+    	{
+    		text:"确定",
+    		click:function() {
+    			$(this).dialog("close");
+    		}
+    	}
+    ],
+    open:function(event, ui) {
+    	//显示当前大题对应的考点
+    	var tempArray = dialogKpsMap[nowTrId];
+    	if(!tempArray) return;
+    	for(i=0; i<tempArray.length; i++) {
+    		var tempKp = tempArray[i];
+    		$(".struct-kpname[kpid='"+tempKp+"']").trigger("click");
+    	}
+    },
+    close:function(event, ui) {
+    	var total = 0,
+    		tempArray = [];
+    	$(".struct-kplabel").each(function(i) {
+    		total++;
+    		tempArray[i] = $(this).attr("kpid");
+    	});
+    	$(nowTr).find(".struct-kpnum").text(total);//计算考点个数，并设置到对应大题的考点个数节点
+    	dialogKpsMap[nowTrId] = tempArray;	//将当前选中的考点以当前大题的大题号为键名存储到map中，替换map中原有当前大题对应的考点数据
+    	$(".cq-currentkp").removeClass("cq-currentkp");//考点树高亮的考点去除高亮样式
+    	$(".struct-kplabel").remove();//右侧考点全部删除
+    }
+});
+function openKpsDialog(node) {//打开弹框的方法
+	nowTr = node;
+	nowTrId = $(nowTr).attr("id");
+	$("#KpsDialog").dialog("open");
+}
+$(".struct-kpname").click(function() {
+	if($(this).hasClass("cq-currentkp")){
+		$(this).removeClass("cq-currentkp");//去除高亮样式
+		$(".struct-kplabel[kpid='"+$(this).attr("kpid")+"']").remove();//删除右侧对应的考点
+		return;
+	}
+	var path = "",
+		kpName = $(this).text(),
+		kpId = $(this).attr("kpid");;
+	$(this).parents(".struct-kp").each(function() {
+		path = $(this).find(".struct-kpname").eq(0).text()+"-"+path;
+	});
+	path = path.substring(0, path.length-1);
+	//弹框右边添加考点标签，title使用得到的路径
+	$("#TypeKps").append("<label class='struct-kplabel kplabel' title='"+path+"' kpid='"+kpId+"'>"+kpName+"</label>");
+	$(this).addClass("cq-currentkp");//考点突出显示
+	//右侧新增考点添加点击事件
+	$("#TypeKps").find(".struct-kplabel:last").click(function() {
+		var kpId = $(this).attr("kpid");
+		$(this).remove();//删除右侧考点
+		$(".struct-kpname[kpid='"+kpId+"']").removeClass("cq-currentkp");//取消考点树中相应考点去除高亮样式
+	});
+});
+//清空大题考点数据方法
+function removeTypeKpsData(trNode) {
+	dialogKpsMap[$(trNode).attr("id")] = [];
+}
+$(".cq-imgwrap").each(function() {
+	addClickEventToKpImg(this);
+	$(this).trigger("click");
+});
+//知识点树左边的加号、减号点击事件
+function addClickEventToKpImg(node) {
+	$(node).click(function() {
+		var nextLayerKpsWrap = $(this).parent().next();
+		if(nextLayerKpsWrap[0] != undefined) {
+			if(nextLayerKpsWrap.hasClass("hide")) {
+				nextLayerKpsWrap.removeClass("hide");
+				$(node).find("img").attr("src", "<@spring.url '/images/close.png'/>");
+			} else {
+				nextLayerKpsWrap.addClass("hide");
+				$(node).find("img").attr("src", "<@spring.url '/images/open.png'/>");
+			}
+		}
+	});
+}
+</script>

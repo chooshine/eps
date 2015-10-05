@@ -1,0 +1,64 @@
+<style>
+.cq-firstkp {margin-bottom:20px;}
+.cq-imgwrap {width:40px;text-align:center;float:left;}
+.cq-imgwrap img {cursor:pointer;}
+.cq-first-kpinfo .cq-kpname {height:25px;line-height:25px;float:left;}
+.cq-second-kpinfo .cq-kpname {height:17px;line-height:17px;float:left;}
+.cq-thirdkpinfo .cq-kpname {height:15px;line-height:15px;float:left;}
+.cq-kpname a:hover {color:#ff9966;}
+.cq-questionnum {color:#aaa;margin-left:20px;}
+.cq-associatedline {height:20px;border-left:1px solid #00afed;margin-top:-2px;margin-left:19px;}
+.cq-currentkp {color:#ff9966;}
+</style>
+<#import "spring.ftl" as spring/>
+<#if knowledgePoints??>
+<#list knowledgePoints as kp>
+<div class="cq-firstkp cq-kp">
+	<div class="cq-first-kpinfo">
+		<div class="cq-imgwrap">
+			<#if kp.subkps?size&gt;0>
+			<img src="<@spring.url '/images/close.png'/>" style="width:25px;height:25px;">
+			<#else>
+			<img src="<@spring.url '/images/cd.png'/>" style="width:25px;height:25px;">
+			</#if>
+		</div>
+		<div class="cq-kpname"><a class="struct-kpname" kpid=${kp.kp_id?c}>${kp.kp_name}</a><span class="cq-questionnum">${kp.total?c}题</span></div>
+		<div class="nofl"></div>
+	</div>
+	<#if kp.subkps?size&gt;0>
+	<div class="cq-second-kps">
+	<#list kp.subkps as subkp>
+	<div class="cq-associatedline"></div>
+	<div class="cq-secondkp kp">
+		<div class="cq-second-kpinfo">
+			<div class="cq-imgwrap">
+				<#if subkp.subkps?size&gt;0>
+				<img src="<@spring.url '/images/close.png'/>" style="width:17px;height:17px;">
+				<#else>
+				<img src="<@spring.url '/images/cd.png'/>" style="width:17px;height:17px;">
+				</#if>
+			</div>
+			<div class="cq-kpname"><a class="struct-kpname" kpid=${subkp.kp_id?c}>${subkp.kp_name}</a><span class="cq-questionnum">${subkp.total?c}题</span></div>
+			<div class="nofl"></div>
+		</div>
+		<#if subkp.subkps?size&gt;0>
+		<div class="cq-third-kps">
+		<#list subkp.subkps as subkp2>
+		<div class="cq-associatedline"></div>
+		<div class="cq-thirdkp kp">
+			<div class="cq-third-kpinfo">
+				<div class="cq-imgwrap"><img src="<@spring.url '/images/cd.png'/>" style="width:15px;height:15px;"></div>
+				<div class="cq-kpname"><a class="struct-kpname" kpid=${subkp2.kp_id?c}>${subkp2.kp_name}</a><span class="cq-questionnum">${subkp2.total?c}题</span></div>
+				<div class="nofl"></div>
+			</div>
+		</div>
+		</#list>
+		</div>
+		</#if>
+	</div>
+	</#list>
+	</div>
+	</#if>
+</div>
+</#list>
+</#if>

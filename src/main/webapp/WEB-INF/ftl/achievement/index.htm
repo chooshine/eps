@@ -1,0 +1,270 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<#include "logheader.htm" parse="true" encoding="UTF-8" >
+<style>
+.nav ul li a { padding-top:0px;}
+</style>
+<div id="perIndexMain" >
+			<div class="per_nav">
+				<div class="nav">
+	   				<div class="top">
+	   					<ul>
+		   					<li class="perIndexNavLi">我的办公室</li>
+		   					<li><a href="<@spring.url '/achievement/class/ability.html'/>">班级能力</a></li>
+		   					<li><a href="<@spring.url '/achievement/lesson.html'/>">课程表</a></li>
+		   					<li><a href="<@spring.url '/achievement/seating.html'/>">座位表</a></li>
+		   					<li><a href="<@spring.url '/achievement/scoreNotice.html'/>">考试分析</a></li>
+		   					<li><a href="<@spring.url '/scorerecord/init.html'/>">成绩录入</a></li>
+	   					</ul>
+	   				</div>
+	   				<div id="indexNavFirst" class="bottom" >
+			   			<ul>
+			   				<li>我的办公室</li>
+			   				
+			   			</ul>
+	   				</div>
+	   				<div id="indexNavSecond" class="bottom" style="display: none;">
+			   			
+	   				</div>
+	   				<div id="indexNavThird" class="bottom" style="display: none;">
+			   			
+	   				</div>
+	   			</div>
+			</div>
+			<div class="pet_com">
+				<div class="pet_col">
+					<div class="pet_cll1"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="108" height="118"/></div>
+					<div class="pet_cl2">
+						<div class="res_man"><label>${teacher.teacherName}</label> 老师  <span id="ampm">上午好！</span></div>
+						<div class="pet_clx1">
+							<span class="pet_clxt1">会员名：</span>
+							<span class="pet_clxt2">${USER_CONTEXT.userNo}</span>
+							<span class="res_ban"><img src="<@spring.url '/images/result/ban.png'/>" width="19" height="19"/></span>	
+						</div>
+						<div class="pet_clx1">
+							<span class="pet_clxt1">会员类别：</span>
+							<span class="pet_clxt3">教师</span>	
+							<span class="res_ban"><img src="<@spring.url '/images/result/shu.jpg'/>" width="23" height="21"/></span>
+							<span class="res_ban"><img src="<@spring.url '/images/result/yu.jpg'/>" width="23" height="21"/></span>
+						</div>
+						<div class="pet_clx2">
+							<div class="pet_clxt4" title="身份认证">已认证</div>
+							<#if USER_CONTEXT.phone == "">
+							<div class="pet_clxt5" title="手机绑定">未绑定</div>
+							<#else>
+							<div class="pet_clxt5" title="手机绑定">已绑定</div>
+							</#if>
+							<div class="nofl"></div>
+						</div>
+						
+					</div>				
+				</div>
+				<div class="res_cocl">
+				<#if weather??>
+					<div class="res_cocl1">
+						<div class="res_dim">
+							<span class="currentCityName">${weather.city}</span><span><a id="weatherCity" href="javascript:void(0)">[更改]</a></span>
+						</div>
+						<div class="res_dimbt">
+							<div class="res_dimbt1"><span>${weather.currenWeather}</span></div>
+							<div class="res_dimbt1"><span>${weather.minandmax+' '+weather.windpower}</span></div>
+						</div>
+					</div>
+					<div class="res_cocl2">
+						<img class="weatherIcon1" src="<@spring.url '/images/weather/b_${weather.icon}'/>" width="50" height="74"/>
+						<img class="weatherIcon2" src="<@spring.url '/images/weather/b_${weather.icon2}'/>" width="50" height="74"/>
+						<div>${weather.todayweather}</div>
+					</div>
+				</#if>
+				</div>
+				<div class="res_cocr">
+					<#if nextLesson??>
+						<#if nextLesson.lesson_time gt 4 && nextLesson.lesson_time lt 9>
+							<#assign ap='下午'>
+							<#assign num=nextLesson.lesson_time-4>
+						<#elseif nextLesson.lesson_time gt 8>
+							<#assign ap='晚上'>
+							<#assign num=nextLesson.lesson_time-8>
+						<#else>
+							<#assign ap='上午'>
+							<#assign num=nextLesson.lesson_time>
+						</#if>
+						<div class="res_cocrt">${ap}第<span>${num}</span>节课</div>
+						<div class="res_cocrb"><span>${nextLesson.class_name}</span> <span>${nextLesson.lesson_name}</span></div>
+					<#else>
+						<div class="res_cocrb">今天没课了</div>
+					</#if>
+					
+				</div>
+				<div class="res_cor">
+					<div class="res_cort" id="time"></div>
+					<div class="res_corb" id="date"></div>
+				</div>
+				<div class="nofl"></div>			
+			</div>
+	   		<div class="res_con">
+				<div class="res_conl">
+					<div class="res_clttpi">我今日的课表</div>
+					<ul class="resi_kcc">
+						<#if lessons>
+							<#list lessons as lesson>
+								<li> 
+									<div class="resi_kc1">${lesson.lesson_time}</div>
+									<div class="resi_kc2">${lesson.time}</div>
+									<div class="resi_kc3">
+										<div class="resi_kc3x">${lesson.class_name + '  '+ lesson.lesson_name}</div>
+									</div>
+									<div class="nofl"></div>
+								</li>
+							</#list>
+						<#else>
+							<li>今日无课</li>
+						</#if>
+					</ul>
+				</div>
+				<div class="res_conr">
+					<div class="res_crttp">圈子</div>
+					<div class="res_crtbt">
+						<dl>
+							<dt>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+							</dt>
+							<dd>数学科研组</dd>
+						</dl>
+						<dl>
+							<dt>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+							</dt>
+							<dd>数学科研组</dd>
+						</dl>
+						<dl>
+							<dt>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+							</dt>
+							<dd>数学科研组</dd>
+						</dl><dl>
+							<dt>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+							</dt>
+							<dd>数学科研组</dd>
+						</dl>
+						<dl>
+							<dt>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+								<div class="res_crxl"><img src="<@spring.url '/images/headImage/default_head.jpg'/>" width="30" height="33"/></div>
+							</dt>
+							<dd>数学科研组</dd>
+						</dl>
+					
+					</div>
+				</div>
+				<div class="nofl"></div>
+	   		</div>
+	   </div>
+<div id="citydialog" class="answerspop_up">
+	   		<#if citys??>
+					<#list citys?keys as key>
+					<dl>
+						<dt>${key}</dt>
+						<dd>
+							<#list citys[key] as city>
+								<div class="cityName answerspop_upcem"><a>${city}</a></div>
+							</#list>
+							<div class="nofl"></div>
+						</dd>
+					</dl>
+					</#list>
+			</#if>
+	<div class="nofl"></div>
+</div>	
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script>
+	$(function(){
+		var myDay = new Array('日','一','二','三','四','五','六');
+		function setTime(){
+			var todayDate = new Date();
+			var date = todayDate.getDate();
+			var month= todayDate.getMonth() + 1;
+			var year= todayDate.getFullYear();
+			var day = todayDate.getDay();
+			var hour = todayDate.getHours();
+			var min = todayDate.getMinutes();
+			var sec = todayDate.getSeconds();
+			var dateStr = year + '年' + month + '月' + date + '日  星期' + myDay[day];
+			min = min>9?min:'0'+min;
+			sec = sec>9?sec:'0'+sec;
+			var timeStr = hour + ":" + min + ":" + sec;
+			$("#ampm").text(hour>12?'下午好!':'上午好!');
+			$("#time").text(timeStr);
+			$("#date").text(dateStr);
+		}
+		setTime();
+		setInterval(setTime,1000);
+		$("#citydialog").dialog({
+			title:'先择城市',
+			autoOpen: false,
+		    height: 600,
+		    width: 1023,
+		    modal: true,
+		});
+		$("#weatherCity").click(function(){
+			$("#citydialog").dialog("open");
+		});
+		$(".cityName").each(function(){
+			$(this).click(function(){
+				$(this).removeClass("answerspop_upcem");
+				$(".cityName").each(function(){
+					if($(this).hasClass("answerspop_upcemx")){
+						$(this).removeClass("answerspop_upcemx");
+						$(this).addClass("answerspop_upcem");
+					}
+				});
+				
+				$(this).addClass("answerspop_upcemx");
+				$("#citydialog").dialog("close");
+				var cityName=$(this).text();
+				$(".currentCityName").text(cityName);
+				$.get(
+					"<@spring.url '/getCityWeather.json'/>",
+					{cityName:cityName},
+					function(data){
+						var currentWeather=data['currenWeather'];
+						var minandmax=data['minandmax'];
+						var windpower=data['windpower'];
+						var icon=data['icon'];
+						var icon2=data['icon2'];
+						var todayweather=data['todayweather'];
+						$($(".res_dimbt1").get(0)).html("<span>"+currentWeather+"</span>");
+						$($(".res_dimbt1").get(1)).html("<span>"+minandmax+"&nbsp;&nbsp;"+windpower+" </span>");
+						$(".weatherIcon1").attr("src","<@spring.url '/images/weather/b_"+icon+"'/>");
+						$(".weatherIcon2").attr("src","<@spring.url '/images/weather/b_"+icon2+"'/>");
+						$($($(".res_cocl2").children()).get(2)).text(todayweather);
+					}
+				);
+			});
+		});
+		/* $(".cityName").each(function(){
+			$(this).click(function(){
+				var city = $(this).text();
+				//showMsg(city);
+				//$("#citydialog").dialog("close");
+			});
+		}); */
+//		$.getJSON("<@spring.url '/achievement/getWeatherCity.json'/>",function(data){
+//			showMsg(data);
+//		});
+	});
+</script>

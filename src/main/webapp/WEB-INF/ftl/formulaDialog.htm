@@ -1,0 +1,122 @@
+<style>
+.chooshinekitiformula-dialog .ui-dialog-buttonpane {padding-right:0px;border-top:none;margin-top:-30px;margin-bottom:8px;}
+.chooshinekitiformula-dialog .ui-dialog-buttonpane button {width:94px;height:24px;line-height:22px;cursor:auto;margin-right:10px;}
+.chooshinekitiformula-dialog .ui-dialog-buttonpane button:hover {background-color:#F8E6B8;color:#000;}
+.chooshinekitiformula-dialog .ui-dialog-buttonpane button span {display:inline;}
+</style>
+<div id="Kitiformula_dia" style="max-height:414px;padding:2px;">
+	<h3 style="font-size:13px;padding:5px 0 5px 5px;border-bottom:1px solid #aaa;
+		background:url('<@spring.url '/ueditor/themes/default/images/dialog-title-bg.png' />') repeat-x bottom;margin-bottom:0px;">插入公式-KityFormula</h3>
+	<div style='width:783px;height:386px;'>
+		<iframe id="formula_frame" src="" width="100%" height="100%" frameborder="0"></iframe>
+	</div>
+</div>
+<script>
+var kfed="";
+var imgLatex;
+var dbclickImg;//双击的图片
+function setKFEditor(editor){
+	kfed = editor;
+}
+function getLatex(){
+	return imgLatex;
+}
+$('#Kitiformula_dia').dialog({
+	autoOpen: false,
+	dialogClass:"chooshine-dialog chooshinekitiformula-dialog",
+	width: 786,
+	height: 470,
+    modal: true,
+    resizable:false,
+    draggable:true,
+    buttons:{
+    	"确定":function() {
+    		var me = this;
+    		if(!kfed.execCommand) {
+    			if(dbclickImg != undefined) {//如果是双击进入
+    				imgLatex = "";//清空imgLatex
+    				dbclickImg = undefined;//清空双击图片
+    			} else {
+    				var html = $(divElement).html().replace(/(&nbsp;)*##(&nbsp;)*/g, "");
+            		$(divElement).html(html);
+            		$(divElement).find("img").each(function() {
+						if(!($(this).attr("data-latex") == undefined)) {
+							$(this).dblclick(function() {
+	        					formulaDbClickEvent(this);
+	        				});
+						}
+        			});
+    			}
+        		
+        		$("#formula_frame").attr('src','');
+        		$(this).dialog("close");
+        		return;
+    		}
+   			kfed.execCommand('get.image.data', function(data){
+   	            var latex = kfed.execCommand('get.source');
+   	            //上传图片到后台
+   	            $.ajax({
+   					type:"post",
+   					url:"<@spring.url '/uploadFormula.json'/>",
+   					data:"imgData="+encodeURIComponent(data.img)+"&latex="+latex,
+   					contentType:"application/x-www-form-urlencoded;charset=utf-8",
+   					success:function(data) {
+   						var html = '<img src="'+"<@spring.url '' />"+data["path"]+'" data-latex="'+latex+'" />';
+   						if(dbclickImg != undefined) {
+   							$(dbclickImg).before(html);
+   							$(dbclickImg).prev().dblclick(function() {
+   								formulaDbClickEvent(this);
+   							});
+   							$(dbclickImg).remove();//删除双击图片
+   							dbclickImg = undefined;//清空双击图片
+   							imgLatex = "";//清空imgLatex
+   						} else {
+   							var d = $(divElement).html();
+   	   						$(divElement).html(d.replace(/##/,html));
+	   	   					$(divElement).find(".kfformula").each(function() {
+	   							$(this).dblclick(function() {
+	   								formulaDbClickEvent(this);
+	   	   						});
+	   						});
+   						}
+   						
+   						$("#formula_frame").attr('src','');
+   	                    $(me).dialog("close");
+   					}
+   				});
+   	        });
+   		},
+   		"取消":function() {
+   			if(dbclickImg != undefined) {
+   				imgLatex = "";//清空imgLatex
+   				dbclickImg = undefined;//清空双击图片
+   			} else {
+   				var html = $(divElement).html().replace(/(&nbsp;)*##(&nbsp;)*/g, "");
+   	    		$(divElement).html(html);
+   	    		$(divElement).find(".kfformula").each(function() {
+   					$(this).dblclick(function() {
+   						formulaDbClickEvent(this);
+   					});
+   				});
+   			}
+    		
+    		$("#formula_frame").attr('src','');
+    		$(this).dialog("close");
+    	}
+    }
+});
+//打开kityformula公式弹框
+function openKity(node) {
+	if(node == undefined) insertHTML(divElement,'&nbsp;##&nbsp;');//node未定义代表不是双击公式触发该方法
+	$("#Kitiformula_dia").dialog("open");
+	$("#formula_frame").attr('src','<@spring.url "/kityformula.html" />');
+}
+//公式双击事件
+function formulaDbClickEvent(node) {
+	if($(node).parents(".equ").attr("contenteditable") != "true") return;
+	dbclickImg = node;//设置当前图片为双击图片
+	imgLatex = $(node).attr("data-latex");
+	openKity(node);
+}
+//插入公式
+</script>

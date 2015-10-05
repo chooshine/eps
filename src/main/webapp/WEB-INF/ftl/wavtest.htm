@@ -1,0 +1,161 @@
+<#include "header.htm" parse="true" encoding="UTF-8" >
+<link rel="stylesheet" href="<@spring.url '/css/wav.css'/>"/>
+<link href="<@spring.url '/css/jplayer.blue.monday.min.css' />" rel="stylesheet" type="text/css" />
+<style type="text/css">
+.hide {display:none;}
+.recorderwrap {width:200px;height:34px;}
+.deletewav {width:24px;height:24px;background:url("<@spring.url '/images/uploadimgs.png' />") -140px -54px;cursor:pointer;float:left;}
+
+.chooshinejp {float:left;}
+.jp-audio, .jp-audio-stream, .jp-video {width:130px;border:none;}
+.jp-audio .jp-interface, .jp-audio-stream .jp-interface {height:25px;background:#fff;border:none;}
+.jp-play, .jp-play:focus {width:20px;height:24px;background:url("<@spring.url '/images/uploadimgs.png' />") -308px 0;}
+.jp-state-playing .jp-play:focus, .jp-state-playing .jp-play {background:url("<@spring.url '/images/uploadimgs.png' />") -328px 0;}
+.jp-audio .jp-controls {width:130px;padding:0;}
+.jp-audio .jp-type-single .jp-progress {width:100px;left:26px;}
+.jp-audio .jp-progress {height:11px;border-radius:4px;top:7px;}
+.jp-audio .jp-type-single .jp-time-holder {width:100px;left:26px;}
+.jp-audio .jp-time-holder {top:6px;}
+.jp-current-time, .jp-duration {width:auto;}
+</style>
+
+<!-- <div id="testRecorder1"></div>
+<div id="testRecorder2"></div> -->
+
+<div class="recorderwrap">
+
+</div>
+<div class="recorderwrap">
+
+</div>
+
+<#include "bottom.htm" parse="true" encoding="UTF-8" >
+<script src="<@spring.url '/javascripts/swfobject.js'/>"></script>
+<script src="<@spring.url '/javascripts/recorder.js'/>"></script>
+<script src="<@spring.url '/javascripts/jquery.jplayer.min.js' />"></script>
+<script>
+/* $("#testRecorder1").wavRecorder({
+	id:"testRecorder1",
+	saveHandler:function(data){
+		alert(data.path);
+	}
+});
+$("#testRecorder2").wavRecorder({
+	id:"testRecorder2",
+	saveHandler:function(data){
+		alert(data.path);
+	}
+}); */
+/***************************开始遍历所有录音div*******/
+$(".recorderwrap").each(function(index) {
+	var recorderWrap = this;
+	$(recorderWrap).wavRecorder({
+		id:"Recorder"+index,
+		saveHandler:function(data){
+			//alert(data.path);
+			showPlayer(recorderWrap, data.path);
+		}
+	});
+	
+	//增加自定义录音图标
+	$(recorderWrap).prepend("<div class='enterrecorddiv'><button class='enterrecordbtn'></button></div>");
+	var startRecordNode = $(this).find(".start-recording")[0];
+	$(this).find(".enterrecorddiv").click(function() {
+		triggerMouseEvent(startRecordNode, "click");
+		
+		//如果停止录音图标是显示状态，说明当前进入了录音状态，要隐藏录音入口图标;否则，说明当前刚选择了允许flash，不隐藏录音入口图标
+		if(!$(recorderWrap).find(".stop-recording").is(":hidden")) {
+			$(this).addClass("hide");
+		}
+		
+	});
+	
+	//增加播放插件
+	$(this).append("<div class='chooshinejp hide'>"+
+						"<div class='jp-jplayer struct-jp-jplayer'></div>"+
+						"<div class='jp-audio struct-jp-audio' role='application' aria-label='media player'>"+
+							"<div class='jp-type-single'>"+
+								"<div class='jp-gui jp-interface'>"+
+									"<div class='jp-controls'>"+
+										"<button class='jp-play' role='button' tabindex='0'>play</button>"+
+									"</div>"+
+									"<div class='jp-progress'>"+
+										"<div class='jp-seek-bar'>"+
+											"<div class='jp-play-bar'></div>"+
+										"</div>"+
+									"</div>"+
+									"<div class='jp-time-holder'>"+
+										"<div class='jp-current-time' role='timer' aria-label='time'>&nbsp;</div>"+
+										"<div class='jp-duration' role='timer' aria-label='duration'>&nbsp;</div>"+
+									"</div>"+
+								"</div>"+
+								"<div class='jp-no-solution'>"+
+									"<span>Update Required</span>"+
+									"To play the media you will need to either update your browser to a recent version or update your <a href='http://get.adobe.com/flashplayer/' target='_blank'>Flash plugin</a>."+
+								"</div>"+
+							"</div>"+
+						"</div>"+
+					"</div>");
+	//为jplayer添加id
+	$(this).find(".struct-jp-jplayer").attr("id", "jquery_jplayer_"+(index+1));
+	$(this).find(".struct-jp-audio").attr("id", "jp_container_"+(index+1));
+	
+	//增加删除
+	$(this).append("<div class='deletewav hide'>&nbsp;</div>");
+	var deleteRecordNode = $(this).find(".delete")[0];
+	$(this).find(".deletewav").click(function() {
+		$(recorderWrap).find(".chooshinejp").addClass("hide");//隐藏播放器
+		$(this).addClass("hide");//隐藏删除
+		triggerMouseEvent(deleteRecordNode, "click");
+		$(recorderWrap).find(".recorder-container").removeClass("hide");
+		$(recorderWrap).find(".enterrecorddiv").removeClass("hide");//显示录音
+	});
+	
+});
+/***************************结束遍历所有录音div*******/
+//显示jplayer播放器
+function showPlayer(recordwrap, audioPath) {
+	$(recordwrap).find(".recorder-container").addClass("hide");
+	$(recordwrap).find(".chooshinejp").removeClass("hide");
+	$(recordwrap).find(".deletewav").removeClass("hide");
+	if($(recordwrap).find(".struct-jp-jplayer").find("audio")[0] != undefined) {
+		$(recordwrap).find(".struct-jp-jplayer").jPlayer("destroy");
+	};
+	var playerId = $(recordwrap).find(".struct-jp-jplayer").attr("id"),
+		cntId = $(recordwrap).find(".struct-jp-audio").attr("id");
+		
+	$("#"+playerId).jPlayer({
+		ready: function (event) {
+			$(this).jPlayer("setMedia", {
+				title: "Bubble",
+				mp3:"<@spring.url '' />"+audioPath + ".mp3",
+				wav:"<@spring.url '' />"+audioPath + ".wav"
+			});
+		},
+		swfPath: "<@spring.url '/javascripts' />",
+		supplied: "mp3,wav",
+		wmode: "window",
+		cssSelectorAncestor: "#"+cntId,
+		useStateClassSkin: true,
+		autoBlur: false,
+		smoothPlayBar: true,
+		keyEnabled: true,
+		remainingDuration: true,
+		toggleDuration: true
+	});
+}
+
+//录音功能
+/*1、设置自定义录音入口的样式
+ *2、点击录音，显示录音状态
+ *3、点击停止录音，显示播放状态
+ *4、如果需要删除，再增加删除
+ *5、点击删除，显示录音状态
+ */
+defineEnterRecordStyle();
+function defineEnterRecordStyle() {
+	$(".enterrecorddiv").css({width:"24px", height:"24px"});
+	$(".enterrecordbtn").css({width:"24px", height:"24px", background:"url('<@spring.url '/images/uploadimgs.png' />') -162px 0", border:"none", cursor:"pointer"});
+}
+
+</script>
