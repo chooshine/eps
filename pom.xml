@@ -34,21 +34,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.3</version>
-				<executions>
-		          <execution>
-		            <id>default-war</id>
-		            <phase>package</phase>
-		            <goals>
-		              <goal>war</goal>
-		            </goals>
-		          </execution>
-		        </executions>
-				<configuration>
-					<warName>eps</warName>
-					<warSourceDirectory>WebRoot</warSourceDirectory>
-			        <webXml>WebRoot/WEB-INF/web.xml</webXml>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
